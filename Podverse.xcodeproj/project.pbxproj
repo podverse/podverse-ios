@@ -1,0 +1,996 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		B1AE53F4E32D75A0EB47D9CF /* Pods_PodverseTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 88FA166C7706B35F999BC032 /* Pods_PodverseTests.framework */; };
+		E70E4A1A1E038F8F003CEC64 /* PodcastsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E70E4A191E038F8F003CEC64 /* PodcastsTableViewController.swift */; };
+		E70E4A1D1E038FC6003CEC64 /* PlaylistsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E70E4A1C1E038FC6003CEC64 /* PlaylistsTableViewController.swift */; };
+		E70E4A1F1E039047003CEC64 /* FindTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E70E4A1E1E039047003CEC64 /* FindTableViewController.swift */; };
+		E70E4A211E03905B003CEC64 /* DownloadsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E70E4A201E03905B003CEC64 /* DownloadsTableViewController.swift */; };
+		E70E4A231E03907A003CEC64 /* SettingsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E70E4A221E03907A003CEC64 /* SettingsTableViewController.swift */; };
+		E75302861E072F160007B6F7 /* FeedChannel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E753027F1E072F160007B6F7 /* FeedChannel.swift */; };
+		E75302871E072F160007B6F7 /* FeedEnclosure.swift in Sources */ = {isa = PBXBuildFile; fileRef = E75302801E072F160007B6F7 /* FeedEnclosure.swift */; };
+		E75302881E072F160007B6F7 /* FeedItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = E75302811E072F160007B6F7 /* FeedItem.swift */; };
+		E75302891E072F160007B6F7 /* FeedParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = E75302821E072F160007B6F7 /* FeedParser.swift */; };
+		E753028A1E072F160007B6F7 /* NSDate+FeedsDate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E75302831E072F160007B6F7 /* NSDate+FeedsDate.swift */; };
+		E753028B1E072F160007B6F7 /* String+RemoveHTMLCharacters.swift in Sources */ = {isa = PBXBuildFile; fileRef = E75302841E072F160007B6F7 /* String+RemoveHTMLCharacters.swift */; };
+		E753028C1E072F160007B6F7 /* String+Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = E75302851E072F160007B6F7 /* String+Utilities.swift */; };
+		E76C49C61E0F8DFE00F81217 /* PVDownloader.swift in Sources */ = {isa = PBXBuildFile; fileRef = E76C49C51E0F8DFE00F81217 /* PVDownloader.swift */; };
+		E76C49C81E0F94BF00F81217 /* DownloadingEpisodeList.swift in Sources */ = {isa = PBXBuildFile; fileRef = E76C49C71E0F94BF00F81217 /* DownloadingEpisodeList.swift */; };
+		E76C49CA1E0F950E00F81217 /* DownloadingEpisode.swift in Sources */ = {isa = PBXBuildFile; fileRef = E76C49C91E0F950E00F81217 /* DownloadingEpisode.swift */; };
+		E78BF9311E0FA64F002194FE /* PVReachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = E78BF9301E0FA64F002194FE /* PVReachability.swift */; };
+		E79515DD1E03853500382BF8 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E79515DC1E03853500382BF8 /* AppDelegate.swift */; };
+		E79515E41E03853500382BF8 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E79515E21E03853500382BF8 /* Main.storyboard */; };
+		E79515E61E03853500382BF8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E79515E51E03853500382BF8 /* Assets.xcassets */; };
+		E79515E91E03853500382BF8 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E79515E71E03853500382BF8 /* LaunchScreen.storyboard */; };
+		E79515F41E03853500382BF8 /* PodverseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E79515F31E03853500382BF8 /* PodverseTests.swift */; };
+		E79515FF1E03853500382BF8 /* PodverseUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E79515FE1E03853500382BF8 /* PodverseUITests.swift */; };
+		E7B2A5951E1033F100AAE036 /* ParsingPodcastsList.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7B2A5941E1033F100AAE036 /* ParsingPodcastsList.swift */; };
+		E7B2A5971E11F95C00AAE036 /* PVMediaPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7B2A5961E11F95C00AAE036 /* PVMediaPlayer.swift */; };
+		E7B2A5991E12103D00AAE036 /* PVClipStreamer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7B2A5981E12103D00AAE036 /* PVClipStreamer.swift */; };
+		E7B2A59B1E12111500AAE036 /* URL+RemoteSize.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7B2A59A1E12111500AAE036 /* URL+RemoteSize.swift */; };
+		E7B2A59D1E123A4400AAE036 /* UIViewController+InternetRequiredAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7B2A59C1E123A4400AAE036 /* UIViewController+InternetRequiredAlert.swift */; };
+		E7B2A59F1E123C7F00AAE036 /* UIViewController+MediaPlayerUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7B2A59E1E123C7F00AAE036 /* UIViewController+MediaPlayerUI.swift */; };
+		E7B2A5A11E123E9900AAE036 /* PVAuth.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7B2A5A01E123E9900AAE036 /* PVAuth.swift */; };
+		E7B2A5A41E12CC5A00AAE036 /* PodcastTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7B2A5A31E12CC5A00AAE036 /* PodcastTableViewCell.swift */; };
+		E7B2A5A61E12D38200AAE036 /* String+CharacterManipulation.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7B2A5A51E12D38200AAE036 /* String+CharacterManipulation.swift */; };
+		E7B2A5A81E16246B00AAE036 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7B2A5A71E16246B00AAE036 /* LoginViewController.swift */; };
+		E7B2A5AA1E162AE400AAE036 /* Date+Formatters.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7B2A5A91E162AE400AAE036 /* Date+Formatters.swift */; };
+		E7B2A5AC1E162B8500AAE036 /* String+Formatters.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7B2A5AB1E162B8500AAE036 /* String+Formatters.swift */; };
+		E7CB0EED1E3E61AA00A013AC /* PVPlaylistManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7CB0EEC1E3E61AA00A013AC /* PVPlaylistManager.swift */; };
+		E7D25BBD1E0F056600B60368 /* ExtendedFeedParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7D25BBC1E0F056600B60368 /* ExtendedFeedParser.swift */; };
+		E7D25BC01E0F096A00B60368 /* PVTimeHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7D25BBF1E0F096A00B60368 /* PVTimeHelpers.swift */; };
+		E7D25BC21E0F118C00B60368 /* PVFeedParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7D25BC11E0F118C00B60368 /* PVFeedParser.swift */; };
+		E7D25BC41E0F13D300B60368 /* Podcast.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7D25BC31E0F13D300B60368 /* Podcast.swift */; };
+		E7D25BC61E0F141500B60368 /* Episode.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7D25BC51E0F141500B60368 /* Episode.swift */; };
+		E7D25BC81E0F144900B60368 /* Clip.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7D25BC71E0F144900B60368 /* Clip.swift */; };
+		E7D25BCA1E0F16B700B60368 /* Playlist.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7D25BC91E0F16B700B60368 /* Playlist.swift */; };
+		E7D25BCC1E0F176C00B60368 /* PVDeleter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7D25BCB1E0F176C00B60368 /* PVDeleter.swift */; };
+		E7D25BCE1E0F184800B60368 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7D25BCD1E0F184800B60368 /* Constants.swift */; };
+		E7D25BD11E0F1CB000B60368 /* CoreDataHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7D25BD01E0F1CB000B60368 /* CoreDataHelper.swift */; };
+		E7D25BD41E0F23DB00B60368 /* Data+ResizeImageData.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7D25BD31E0F23DB00B60368 /* Data+ResizeImageData.swift */; };
+		E7D25BD91E0F2DF800B60368 /* PodcastSearchResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7D25BD81E0F2DF800B60368 /* PodcastSearchResult.swift */; };
+		E7D25BDC1E0F30C500B60368 /* podverse.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = E7D25BDA1E0F30C500B60368 /* podverse.xcdatamodeld */; };
+		F0F2C4F15FAFA0D9AA912058 /* Pods_Podverse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1F3C4343012A1C14E6A037EB /* Pods_Podverse.framework */; };
+		F94D74B7163C321C46E249D9 /* Pods_PodverseUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9C405914FEE01976B48343E8 /* Pods_PodverseUITests.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		E79515F01E03853500382BF8 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E79515D11E03853400382BF8 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = E79515D81E03853400382BF8;
+			remoteInfo = Podverse;
+		};
+		E79515FB1E03853500382BF8 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E79515D11E03853400382BF8 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = E79515D81E03853400382BF8;
+			remoteInfo = Podverse;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		00DC6B57B728F1969F209A15 /* Pods-PodverseTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PodverseTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-PodverseTests/Pods-PodverseTests.release.xcconfig"; sourceTree = "<group>"; };
+		1F3C4343012A1C14E6A037EB /* Pods_Podverse.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Podverse.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		352685A8C8D7339C77B0CED1 /* Pods-PodverseTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PodverseTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-PodverseTests/Pods-PodverseTests.debug.xcconfig"; sourceTree = "<group>"; };
+		49BE088E3142C7867041D587 /* Pods-PodverseUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PodverseUITests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-PodverseUITests/Pods-PodverseUITests.debug.xcconfig"; sourceTree = "<group>"; };
+		56833ED0B0F54C775CB31272 /* Pods-PodverseUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PodverseUITests.release.xcconfig"; path = "Pods/Target Support Files/Pods-PodverseUITests/Pods-PodverseUITests.release.xcconfig"; sourceTree = "<group>"; };
+		59F23C92401A9A603AAEFACC /* Pods-Podverse.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Podverse.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Podverse/Pods-Podverse.debug.xcconfig"; sourceTree = "<group>"; };
+		88FA166C7706B35F999BC032 /* Pods_PodverseTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PodverseTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		9C405914FEE01976B48343E8 /* Pods_PodverseUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PodverseUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		B16301C0BAC301B56BC1C200 /* Pods-Podverse.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Podverse.release.xcconfig"; path = "Pods/Target Support Files/Pods-Podverse/Pods-Podverse.release.xcconfig"; sourceTree = "<group>"; };
+		E70E4A191E038F8F003CEC64 /* PodcastsTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PodcastsTableViewController.swift; sourceTree = "<group>"; };
+		E70E4A1C1E038FC6003CEC64 /* PlaylistsTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlaylistsTableViewController.swift; sourceTree = "<group>"; };
+		E70E4A1E1E039047003CEC64 /* FindTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FindTableViewController.swift; sourceTree = "<group>"; };
+		E70E4A201E03905B003CEC64 /* DownloadsTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DownloadsTableViewController.swift; sourceTree = "<group>"; };
+		E70E4A221E03907A003CEC64 /* SettingsTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsTableViewController.swift; sourceTree = "<group>"; };
+		E753027F1E072F160007B6F7 /* FeedChannel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedChannel.swift; sourceTree = "<group>"; };
+		E75302801E072F160007B6F7 /* FeedEnclosure.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedEnclosure.swift; sourceTree = "<group>"; };
+		E75302811E072F160007B6F7 /* FeedItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedItem.swift; sourceTree = "<group>"; };
+		E75302821E072F160007B6F7 /* FeedParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedParser.swift; sourceTree = "<group>"; };
+		E75302831E072F160007B6F7 /* NSDate+FeedsDate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSDate+FeedsDate.swift"; sourceTree = "<group>"; };
+		E75302841E072F160007B6F7 /* String+RemoveHTMLCharacters.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "String+RemoveHTMLCharacters.swift"; sourceTree = "<group>"; };
+		E75302851E072F160007B6F7 /* String+Utilities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "String+Utilities.swift"; sourceTree = "<group>"; };
+		E76C49C51E0F8DFE00F81217 /* PVDownloader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PVDownloader.swift; sourceTree = "<group>"; };
+		E76C49C71E0F94BF00F81217 /* DownloadingEpisodeList.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DownloadingEpisodeList.swift; sourceTree = "<group>"; };
+		E76C49C91E0F950E00F81217 /* DownloadingEpisode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DownloadingEpisode.swift; sourceTree = "<group>"; };
+		E78BF9301E0FA64F002194FE /* PVReachability.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PVReachability.swift; sourceTree = "<group>"; };
+		E79515D91E03853500382BF8 /* Podverse.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Podverse.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		E79515DC1E03853500382BF8 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = AppDelegate.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		E79515E31E03853500382BF8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		E79515E51E03853500382BF8 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		E79515E81E03853500382BF8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		E79515EA1E03853500382BF8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		E79515EF1E03853500382BF8 /* PodverseTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PodverseTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		E79515F31E03853500382BF8 /* PodverseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = PodverseTests.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		E79515F51E03853500382BF8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		E79515FA1E03853500382BF8 /* PodverseUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PodverseUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		E79515FE1E03853500382BF8 /* PodverseUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = PodverseUITests.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		E79516001E03853500382BF8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		E7B2A5941E1033F100AAE036 /* ParsingPodcastsList.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParsingPodcastsList.swift; sourceTree = "<group>"; };
+		E7B2A5961E11F95C00AAE036 /* PVMediaPlayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PVMediaPlayer.swift; sourceTree = "<group>"; };
+		E7B2A5981E12103D00AAE036 /* PVClipStreamer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PVClipStreamer.swift; sourceTree = "<group>"; };
+		E7B2A59A1E12111500AAE036 /* URL+RemoteSize.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "URL+RemoteSize.swift"; sourceTree = "<group>"; };
+		E7B2A59C1E123A4400AAE036 /* UIViewController+InternetRequiredAlert.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIViewController+InternetRequiredAlert.swift"; sourceTree = "<group>"; };
+		E7B2A59E1E123C7F00AAE036 /* UIViewController+MediaPlayerUI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIViewController+MediaPlayerUI.swift"; sourceTree = "<group>"; };
+		E7B2A5A01E123E9900AAE036 /* PVAuth.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PVAuth.swift; sourceTree = "<group>"; };
+		E7B2A5A31E12CC5A00AAE036 /* PodcastTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PodcastTableViewCell.swift; sourceTree = "<group>"; };
+		E7B2A5A51E12D38200AAE036 /* String+CharacterManipulation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "String+CharacterManipulation.swift"; sourceTree = "<group>"; };
+		E7B2A5A71E16246B00AAE036 /* LoginViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
+		E7B2A5A91E162AE400AAE036 /* Date+Formatters.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Date+Formatters.swift"; sourceTree = "<group>"; };
+		E7B2A5AB1E162B8500AAE036 /* String+Formatters.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "String+Formatters.swift"; sourceTree = "<group>"; };
+		E7CB0EEC1E3E61AA00A013AC /* PVPlaylistManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PVPlaylistManager.swift; sourceTree = "<group>"; };
+		E7D25BBC1E0F056600B60368 /* ExtendedFeedParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExtendedFeedParser.swift; sourceTree = "<group>"; };
+		E7D25BBF1E0F096A00B60368 /* PVTimeHelpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PVTimeHelpers.swift; sourceTree = "<group>"; };
+		E7D25BC11E0F118C00B60368 /* PVFeedParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PVFeedParser.swift; sourceTree = "<group>"; };
+		E7D25BC31E0F13D300B60368 /* Podcast.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Podcast.swift; sourceTree = "<group>"; };
+		E7D25BC51E0F141500B60368 /* Episode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Episode.swift; sourceTree = "<group>"; };
+		E7D25BC71E0F144900B60368 /* Clip.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Clip.swift; sourceTree = "<group>"; };
+		E7D25BC91E0F16B700B60368 /* Playlist.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Playlist.swift; sourceTree = "<group>"; };
+		E7D25BCB1E0F176C00B60368 /* PVDeleter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PVDeleter.swift; sourceTree = "<group>"; };
+		E7D25BCD1E0F184800B60368 /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		E7D25BD01E0F1CB000B60368 /* CoreDataHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreDataHelper.swift; sourceTree = "<group>"; };
+		E7D25BD31E0F23DB00B60368 /* Data+ResizeImageData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Data+ResizeImageData.swift"; sourceTree = "<group>"; };
+		E7D25BD81E0F2DF800B60368 /* PodcastSearchResult.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PodcastSearchResult.swift; sourceTree = "<group>"; };
+		E7D25BDB1E0F30C500B60368 /* podverse.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = podverse.xcdatamodel; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		E79515D61E03853400382BF8 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F0F2C4F15FAFA0D9AA912058 /* Pods_Podverse.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E79515EC1E03853500382BF8 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B1AE53F4E32D75A0EB47D9CF /* Pods_PodverseTests.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E79515F71E03853500382BF8 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F94D74B7163C321C46E249D9 /* Pods_PodverseUITests.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		996533BAA3C378364D038861 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				59F23C92401A9A603AAEFACC /* Pods-Podverse.debug.xcconfig */,
+				B16301C0BAC301B56BC1C200 /* Pods-Podverse.release.xcconfig */,
+				352685A8C8D7339C77B0CED1 /* Pods-PodverseTests.debug.xcconfig */,
+				00DC6B57B728F1969F209A15 /* Pods-PodverseTests.release.xcconfig */,
+				49BE088E3142C7867041D587 /* Pods-PodverseUITests.debug.xcconfig */,
+				56833ED0B0F54C775CB31272 /* Pods-PodverseUITests.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
+		CAA24F1A2AF45639A4ECA739 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				1F3C4343012A1C14E6A037EB /* Pods_Podverse.framework */,
+				88FA166C7706B35F999BC032 /* Pods_PodverseTests.framework */,
+				9C405914FEE01976B48343E8 /* Pods_PodverseUITests.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		E70E4A1B1E038FA6003CEC64 /* ViewControllers */ = {
+			isa = PBXGroup;
+			children = (
+				E70E4A201E03905B003CEC64 /* DownloadsTableViewController.swift */,
+				E70E4A1E1E039047003CEC64 /* FindTableViewController.swift */,
+				E7B2A5A71E16246B00AAE036 /* LoginViewController.swift */,
+				E70E4A1C1E038FC6003CEC64 /* PlaylistsTableViewController.swift */,
+				E70E4A191E038F8F003CEC64 /* PodcastsTableViewController.swift */,
+				E70E4A221E03907A003CEC64 /* SettingsTableViewController.swift */,
+			);
+			name = ViewControllers;
+			sourceTree = "<group>";
+		};
+		E753027D1E072F160007B6F7 /* Supporting Libraries */ = {
+			isa = PBXGroup;
+			children = (
+				E753027E1E072F160007B6F7 /* FeedParser */,
+			);
+			path = "Supporting Libraries";
+			sourceTree = "<group>";
+		};
+		E753027E1E072F160007B6F7 /* FeedParser */ = {
+			isa = PBXGroup;
+			children = (
+				E753027F1E072F160007B6F7 /* FeedChannel.swift */,
+				E75302801E072F160007B6F7 /* FeedEnclosure.swift */,
+				E75302811E072F160007B6F7 /* FeedItem.swift */,
+				E75302821E072F160007B6F7 /* FeedParser.swift */,
+				E75302831E072F160007B6F7 /* NSDate+FeedsDate.swift */,
+				E75302841E072F160007B6F7 /* String+RemoveHTMLCharacters.swift */,
+				E75302851E072F160007B6F7 /* String+Utilities.swift */,
+			);
+			path = FeedParser;
+			sourceTree = "<group>";
+		};
+		E776A0131E04CB150062FDEB /* Storyboards */ = {
+			isa = PBXGroup;
+			children = (
+				E79515E71E03853500382BF8 /* LaunchScreen.storyboard */,
+				E79515E21E03853500382BF8 /* Main.storyboard */,
+			);
+			name = Storyboards;
+			sourceTree = "<group>";
+		};
+		E776A0141E04CB220062FDEB /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				E753027D1E072F160007B6F7 /* Supporting Libraries */,
+				E79515E51E03853500382BF8 /* Assets.xcassets */,
+				E79515EA1E03853500382BF8 /* Info.plist */,
+				E7D25BCD1E0F184800B60368 /* Constants.swift */,
+				E7D25BDA1E0F30C500B60368 /* podverse.xcdatamodeld */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		E776A0151E04CB430062FDEB /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				E7D25BC31E0F13D300B60368 /* Podcast.swift */,
+				E7D25BC51E0F141500B60368 /* Episode.swift */,
+				E7D25BC71E0F144900B60368 /* Clip.swift */,
+				E7D25BC91E0F16B700B60368 /* Playlist.swift */,
+				E7D25BD81E0F2DF800B60368 /* PodcastSearchResult.swift */,
+				E76C49C91E0F950E00F81217 /* DownloadingEpisode.swift */,
+			);
+			name = Models;
+			sourceTree = "<group>";
+		};
+		E79515D01E03853400382BF8 = {
+			isa = PBXGroup;
+			children = (
+				E79515DB1E03853500382BF8 /* Podverse */,
+				E79515F21E03853500382BF8 /* PodverseTests */,
+				E79515FD1E03853500382BF8 /* PodverseUITests */,
+				E79515DA1E03853500382BF8 /* Products */,
+				996533BAA3C378364D038861 /* Pods */,
+				CAA24F1A2AF45639A4ECA739 /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		E79515DA1E03853500382BF8 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				E79515D91E03853500382BF8 /* Podverse.app */,
+				E79515EF1E03853500382BF8 /* PodverseTests.xctest */,
+				E79515FA1E03853500382BF8 /* PodverseUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		E79515DB1E03853500382BF8 /* Podverse */ = {
+			isa = PBXGroup;
+			children = (
+				E79515DC1E03853500382BF8 /* AppDelegate.swift */,
+				E7D25BCF1E0F1C9F00B60368 /* Custom Helpers */,
+				E7B2A5A21E12CBFF00AAE036 /* Custom UI Classes */,
+				E7D25BD21E0F23C800B60368 /* Extensions */,
+				E776A0151E04CB430062FDEB /* Models */,
+				E7D25BBE1E0F092200B60368 /* PVHelpers */,
+				E776A0131E04CB150062FDEB /* Storyboards */,
+				E7D25BBB1E0F054900B60368 /* Subclasses */,
+				E776A0141E04CB220062FDEB /* Supporting Files */,
+				E70E4A1B1E038FA6003CEC64 /* ViewControllers */,
+			);
+			path = Podverse;
+			sourceTree = "<group>";
+		};
+		E79515F21E03853500382BF8 /* PodverseTests */ = {
+			isa = PBXGroup;
+			children = (
+				E79515F31E03853500382BF8 /* PodverseTests.swift */,
+				E79515F51E03853500382BF8 /* Info.plist */,
+			);
+			path = PodverseTests;
+			sourceTree = "<group>";
+		};
+		E79515FD1E03853500382BF8 /* PodverseUITests */ = {
+			isa = PBXGroup;
+			children = (
+				E79515FE1E03853500382BF8 /* PodverseUITests.swift */,
+				E79516001E03853500382BF8 /* Info.plist */,
+			);
+			path = PodverseUITests;
+			sourceTree = "<group>";
+		};
+		E7B2A5A21E12CBFF00AAE036 /* Custom UI Classes */ = {
+			isa = PBXGroup;
+			children = (
+				E7B2A5A31E12CC5A00AAE036 /* PodcastTableViewCell.swift */,
+			);
+			name = "Custom UI Classes";
+			sourceTree = "<group>";
+		};
+		E7D25BBB1E0F054900B60368 /* Subclasses */ = {
+			isa = PBXGroup;
+			children = (
+				E7D25BBC1E0F056600B60368 /* ExtendedFeedParser.swift */,
+			);
+			name = Subclasses;
+			sourceTree = "<group>";
+		};
+		E7D25BBE1E0F092200B60368 /* PVHelpers */ = {
+			isa = PBXGroup;
+			children = (
+				E7D25BBF1E0F096A00B60368 /* PVTimeHelpers.swift */,
+				E7CB0EEC1E3E61AA00A013AC /* PVPlaylistManager.swift */,
+				E7B2A5A01E123E9900AAE036 /* PVAuth.swift */,
+				E7B2A5981E12103D00AAE036 /* PVClipStreamer.swift */,
+				E7B2A5961E11F95C00AAE036 /* PVMediaPlayer.swift */,
+				E78BF9301E0FA64F002194FE /* PVReachability.swift */,
+				E7D25BC11E0F118C00B60368 /* PVFeedParser.swift */,
+				E7D25BCB1E0F176C00B60368 /* PVDeleter.swift */,
+				E76C49C51E0F8DFE00F81217 /* PVDownloader.swift */,
+			);
+			name = PVHelpers;
+			sourceTree = "<group>";
+		};
+		E7D25BCF1E0F1C9F00B60368 /* Custom Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				E7D25BD01E0F1CB000B60368 /* CoreDataHelper.swift */,
+				E76C49C71E0F94BF00F81217 /* DownloadingEpisodeList.swift */,
+				E7B2A5941E1033F100AAE036 /* ParsingPodcastsList.swift */,
+			);
+			name = "Custom Helpers";
+			sourceTree = "<group>";
+		};
+		E7D25BD21E0F23C800B60368 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				E7D25BD31E0F23DB00B60368 /* Data+ResizeImageData.swift */,
+				E7B2A59A1E12111500AAE036 /* URL+RemoteSize.swift */,
+				E7B2A5A51E12D38200AAE036 /* String+CharacterManipulation.swift */,
+				E7B2A59C1E123A4400AAE036 /* UIViewController+InternetRequiredAlert.swift */,
+				E7B2A59E1E123C7F00AAE036 /* UIViewController+MediaPlayerUI.swift */,
+				E7B2A5A91E162AE400AAE036 /* Date+Formatters.swift */,
+				E7B2A5AB1E162B8500AAE036 /* String+Formatters.swift */,
+			);
+			name = Extensions;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		E79515D81E03853400382BF8 /* Podverse */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E79516031E03853500382BF8 /* Build configuration list for PBXNativeTarget "Podverse" */;
+			buildPhases = (
+				D176A09B9767EB1B111FC443 /* [CP] Check Pods Manifest.lock */,
+				E79515D51E03853400382BF8 /* Sources */,
+				E79515D61E03853400382BF8 /* Frameworks */,
+				E79515D71E03853400382BF8 /* Resources */,
+				CF46E910D91895C8E00E28DB /* [CP] Embed Pods Frameworks */,
+				EDA70E776935C27D53452D69 /* [CP] Copy Pods Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Podverse;
+			productName = Podverse;
+			productReference = E79515D91E03853500382BF8 /* Podverse.app */;
+			productType = "com.apple.product-type.application";
+		};
+		E79515EE1E03853500382BF8 /* PodverseTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E79516061E03853500382BF8 /* Build configuration list for PBXNativeTarget "PodverseTests" */;
+			buildPhases = (
+				61E93D39328B10A32BB434E4 /* [CP] Check Pods Manifest.lock */,
+				E79515EB1E03853500382BF8 /* Sources */,
+				E79515EC1E03853500382BF8 /* Frameworks */,
+				E79515ED1E03853500382BF8 /* Resources */,
+				B4D1026EC1F2EA96D9ED0634 /* [CP] Embed Pods Frameworks */,
+				4DA498D35ACC0D752BAD90E7 /* [CP] Copy Pods Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				E79515F11E03853500382BF8 /* PBXTargetDependency */,
+			);
+			name = PodverseTests;
+			productName = PodverseTests;
+			productReference = E79515EF1E03853500382BF8 /* PodverseTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		E79515F91E03853500382BF8 /* PodverseUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E79516091E03853500382BF8 /* Build configuration list for PBXNativeTarget "PodverseUITests" */;
+			buildPhases = (
+				DD7A5414C03315961C4E4F3F /* [CP] Check Pods Manifest.lock */,
+				E79515F61E03853500382BF8 /* Sources */,
+				E79515F71E03853500382BF8 /* Frameworks */,
+				E79515F81E03853500382BF8 /* Resources */,
+				97D63572EE40E61B7213FBED /* [CP] Embed Pods Frameworks */,
+				4761345175AD19E2CDE98608 /* [CP] Copy Pods Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				E79515FC1E03853500382BF8 /* PBXTargetDependency */,
+			);
+			name = PodverseUITests;
+			productName = PodverseUITests;
+			productReference = E79515FA1E03853500382BF8 /* PodverseUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		E79515D11E03853400382BF8 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 0820;
+				LastUpgradeCheck = 0820;
+				ORGANIZATIONNAME = "Podverse LLC";
+				TargetAttributes = {
+					E79515D81E03853400382BF8 = {
+						CreatedOnToolsVersion = 8.2;
+						DevelopmentTeam = NVBK9KF43L;
+						ProvisioningStyle = Automatic;
+					};
+					E79515EE1E03853500382BF8 = {
+						CreatedOnToolsVersion = 8.2;
+						DevelopmentTeam = NVBK9KF43L;
+						ProvisioningStyle = Automatic;
+						TestTargetID = E79515D81E03853400382BF8;
+					};
+					E79515F91E03853500382BF8 = {
+						CreatedOnToolsVersion = 8.2;
+						DevelopmentTeam = NVBK9KF43L;
+						ProvisioningStyle = Automatic;
+						TestTargetID = E79515D81E03853400382BF8;
+					};
+				};
+			};
+			buildConfigurationList = E79515D41E03853400382BF8 /* Build configuration list for PBXProject "Podverse" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = E79515D01E03853400382BF8;
+			productRefGroup = E79515DA1E03853500382BF8 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				E79515D81E03853400382BF8 /* Podverse */,
+				E79515EE1E03853500382BF8 /* PodverseTests */,
+				E79515F91E03853500382BF8 /* PodverseUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		E79515D71E03853400382BF8 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E79515E91E03853500382BF8 /* LaunchScreen.storyboard in Resources */,
+				E79515E61E03853500382BF8 /* Assets.xcassets in Resources */,
+				E79515E41E03853500382BF8 /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E79515ED1E03853500382BF8 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E79515F81E03853500382BF8 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		4761345175AD19E2CDE98608 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-PodverseUITests/Pods-PodverseUITests-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		4DA498D35ACC0D752BAD90E7 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-PodverseTests/Pods-PodverseTests-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		61E93D39328B10A32BB434E4 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		97D63572EE40E61B7213FBED /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-PodverseUITests/Pods-PodverseUITests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		B4D1026EC1F2EA96D9ED0634 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-PodverseTests/Pods-PodverseTests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		CF46E910D91895C8E00E28DB /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Podverse/Pods-Podverse-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		D176A09B9767EB1B111FC443 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		DD7A5414C03315961C4E4F3F /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		EDA70E776935C27D53452D69 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Podverse/Pods-Podverse-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		E79515D51E03853400382BF8 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E7B2A5A41E12CC5A00AAE036 /* PodcastTableViewCell.swift in Sources */,
+				E7B2A59D1E123A4400AAE036 /* UIViewController+InternetRequiredAlert.swift in Sources */,
+				E7D25BBD1E0F056600B60368 /* ExtendedFeedParser.swift in Sources */,
+				E7B2A5AA1E162AE400AAE036 /* Date+Formatters.swift in Sources */,
+				E7B2A59F1E123C7F00AAE036 /* UIViewController+MediaPlayerUI.swift in Sources */,
+				E7B2A5AC1E162B8500AAE036 /* String+Formatters.swift in Sources */,
+				E7B2A5971E11F95C00AAE036 /* PVMediaPlayer.swift in Sources */,
+				E7D25BD91E0F2DF800B60368 /* PodcastSearchResult.swift in Sources */,
+				E7D25BD11E0F1CB000B60368 /* CoreDataHelper.swift in Sources */,
+				E7CB0EED1E3E61AA00A013AC /* PVPlaylistManager.swift in Sources */,
+				E7D25BCE1E0F184800B60368 /* Constants.swift in Sources */,
+				E7D25BC81E0F144900B60368 /* Clip.swift in Sources */,
+				E7D25BC41E0F13D300B60368 /* Podcast.swift in Sources */,
+				E753028C1E072F160007B6F7 /* String+Utilities.swift in Sources */,
+				E70E4A211E03905B003CEC64 /* DownloadsTableViewController.swift in Sources */,
+				E70E4A1F1E039047003CEC64 /* FindTableViewController.swift in Sources */,
+				E7B2A5991E12103D00AAE036 /* PVClipStreamer.swift in Sources */,
+				E7D25BC21E0F118C00B60368 /* PVFeedParser.swift in Sources */,
+				E7D25BD41E0F23DB00B60368 /* Data+ResizeImageData.swift in Sources */,
+				E7B2A5A61E12D38200AAE036 /* String+CharacterManipulation.swift in Sources */,
+				E76C49CA1E0F950E00F81217 /* DownloadingEpisode.swift in Sources */,
+				E753028A1E072F160007B6F7 /* NSDate+FeedsDate.swift in Sources */,
+				E7D25BC61E0F141500B60368 /* Episode.swift in Sources */,
+				E78BF9311E0FA64F002194FE /* PVReachability.swift in Sources */,
+				E75302871E072F160007B6F7 /* FeedEnclosure.swift in Sources */,
+				E7D25BC01E0F096A00B60368 /* PVTimeHelpers.swift in Sources */,
+				E70E4A231E03907A003CEC64 /* SettingsTableViewController.swift in Sources */,
+				E75302891E072F160007B6F7 /* FeedParser.swift in Sources */,
+				E70E4A1A1E038F8F003CEC64 /* PodcastsTableViewController.swift in Sources */,
+				E75302881E072F160007B6F7 /* FeedItem.swift in Sources */,
+				E7D25BDC1E0F30C500B60368 /* podverse.xcdatamodeld in Sources */,
+				E7B2A5A81E16246B00AAE036 /* LoginViewController.swift in Sources */,
+				E7B2A59B1E12111500AAE036 /* URL+RemoteSize.swift in Sources */,
+				E79515DD1E03853500382BF8 /* AppDelegate.swift in Sources */,
+				E76C49C61E0F8DFE00F81217 /* PVDownloader.swift in Sources */,
+				E70E4A1D1E038FC6003CEC64 /* PlaylistsTableViewController.swift in Sources */,
+				E75302861E072F160007B6F7 /* FeedChannel.swift in Sources */,
+				E7B2A5951E1033F100AAE036 /* ParsingPodcastsList.swift in Sources */,
+				E7B2A5A11E123E9900AAE036 /* PVAuth.swift in Sources */,
+				E753028B1E072F160007B6F7 /* String+RemoveHTMLCharacters.swift in Sources */,
+				E7D25BCC1E0F176C00B60368 /* PVDeleter.swift in Sources */,
+				E76C49C81E0F94BF00F81217 /* DownloadingEpisodeList.swift in Sources */,
+				E7D25BCA1E0F16B700B60368 /* Playlist.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E79515EB1E03853500382BF8 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E79515F41E03853500382BF8 /* PodverseTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E79515F61E03853500382BF8 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E79515FF1E03853500382BF8 /* PodverseUITests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		E79515F11E03853500382BF8 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = E79515D81E03853400382BF8 /* Podverse */;
+			targetProxy = E79515F01E03853500382BF8 /* PBXContainerItemProxy */;
+		};
+		E79515FC1E03853500382BF8 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = E79515D81E03853400382BF8 /* Podverse */;
+			targetProxy = E79515FB1E03853500382BF8 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		E79515E21E03853500382BF8 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				E79515E31E03853500382BF8 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		E79515E71E03853500382BF8 /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				E79515E81E03853500382BF8 /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		E79516011E03853500382BF8 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		E79516021E03853500382BF8 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		E79516041E03853500382BF8 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 59F23C92401A9A603AAEFACC /* Pods-Podverse.debug.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEVELOPMENT_TEAM = NVBK9KF43L;
+				INFOPLIST_FILE = Podverse/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.podverse.Podverse;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
+			};
+			name = Debug;
+		};
+		E79516051E03853500382BF8 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = B16301C0BAC301B56BC1C200 /* Pods-Podverse.release.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEVELOPMENT_TEAM = NVBK9KF43L;
+				INFOPLIST_FILE = Podverse/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.podverse.Podverse;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
+			};
+			name = Release;
+		};
+		E79516071E03853500382BF8 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 352685A8C8D7339C77B0CED1 /* Pods-PodverseTests.debug.xcconfig */;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				DEVELOPMENT_TEAM = NVBK9KF43L;
+				INFOPLIST_FILE = PodverseTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.podverse.PodverseTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Podverse.app/Podverse";
+			};
+			name = Debug;
+		};
+		E79516081E03853500382BF8 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 00DC6B57B728F1969F209A15 /* Pods-PodverseTests.release.xcconfig */;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				DEVELOPMENT_TEAM = NVBK9KF43L;
+				INFOPLIST_FILE = PodverseTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.podverse.PodverseTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Podverse.app/Podverse";
+			};
+			name = Release;
+		};
+		E795160A1E03853500382BF8 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 49BE088E3142C7867041D587 /* Pods-PodverseUITests.debug.xcconfig */;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				DEVELOPMENT_TEAM = NVBK9KF43L;
+				INFOPLIST_FILE = PodverseUITests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.podverse.PodverseUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
+				TEST_TARGET_NAME = Podverse;
+			};
+			name = Debug;
+		};
+		E795160B1E03853500382BF8 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 56833ED0B0F54C775CB31272 /* Pods-PodverseUITests.release.xcconfig */;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				DEVELOPMENT_TEAM = NVBK9KF43L;
+				INFOPLIST_FILE = PodverseUITests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.podverse.PodverseUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
+				TEST_TARGET_NAME = Podverse;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		E79515D41E03853400382BF8 /* Build configuration list for PBXProject "Podverse" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E79516011E03853500382BF8 /* Debug */,
+				E79516021E03853500382BF8 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		E79516031E03853500382BF8 /* Build configuration list for PBXNativeTarget "Podverse" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E79516041E03853500382BF8 /* Debug */,
+				E79516051E03853500382BF8 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		E79516061E03853500382BF8 /* Build configuration list for PBXNativeTarget "PodverseTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E79516071E03853500382BF8 /* Debug */,
+				E79516081E03853500382BF8 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		E79516091E03853500382BF8 /* Build configuration list for PBXNativeTarget "PodverseUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E795160A1E03853500382BF8 /* Debug */,
+				E795160B1E03853500382BF8 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		E7D25BDA1E0F30C500B60368 /* podverse.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				E7D25BDB1E0F30C500B60368 /* podverse.xcdatamodel */,
+			);
+			currentVersion = E7D25BDB1E0F30C500B60368 /* podverse.xcdatamodel */;
+			path = podverse.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
+	};
+	rootObject = E79515D11E03853400382BF8 /* Project object */;
+}
