@@ -80,9 +80,7 @@ class CoreDataHelper {
     func save(_ completion:(()->())?) {
         managedObjectContext.performAndWait({
             do {
-                if self.managedObjectContext.hasChanges {
-                    try self.managedObjectContext.save()
-                }
+                try self.managedObjectContext.save()
             } catch {
                 let saveError = error as NSError
                 print("Unable to Save Changes of Managed Object Context")
@@ -92,9 +90,7 @@ class CoreDataHelper {
         
         privateManagedObjectContext.perform({
             do {
-                if self.privateManagedObjectContext.hasChanges {
-                    try self.privateManagedObjectContext.save()
-                }
+                try self.privateManagedObjectContext.save()
             } catch {
                 let saveError = error as NSError
                 print("Unable to Save Changes of Private Managed Object Context")
@@ -103,13 +99,16 @@ class CoreDataHelper {
         })
     }
     
-    static func insertManagedObject(className: String) -> NSManagedObjectID {
-        let moc = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
-        moc.parent = CoreDataHelper.shared.managedObjectContext
+    static func insertManagedObject(className: String, moc:NSManagedObjectContext? = nil) -> NSManagedObjectID {
+        var localMoc = moc
+        if localMoc == nil {
+            localMoc = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
+            localMoc?.parent = CoreDataHelper.shared.managedObjectContext
+        }
         
-        if let entityDescription = NSEntityDescription.entity(forEntityName: className, in: moc) {
+        if let entityDescription = NSEntityDescription.entity(forEntityName: className, in: localMoc!) {
             // Create Managed Object
-            return NSManagedObject(entity: entityDescription, insertInto: moc).objectID
+            return NSManagedObject(entity: entityDescription, insertInto: localMoc).objectID
         }
         
         return NSManagedObjectID()
@@ -181,7 +180,7 @@ class CoreDataHelper {
         if podcastSet.count > 0 {
             return podcastSet[0]
         } else {
-            let oid = CoreDataHelper.insertManagedObject(className: "Podcast")
+            let oid = CoreDataHelper.insertManagedObject(className: "Podcast", moc: moc)
             return  CoreDataHelper.fetchEntityWithID(objectId: oid, moc: moc) as! Podcast
         }
     }

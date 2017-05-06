@@ -21,6 +21,7 @@ extension PVFeedParserDelegate {
 }
 
 class PVFeedParser {
+    let moc = CoreDataHelper.createMOCForThread(threadType: .mainThread)
     var feedURL: String!
     var currentPodcastID: NSManagedObjectID? = nil
     
@@ -69,12 +70,11 @@ class PVFeedParser {
 }
 
 extension PVFeedParser:FeedParserDelegate {
+    
     func feedParser(_ parser: FeedParser, didParseChannel channel: FeedChannel) {
         let podcast:Podcast!
         
         if let feedURLString = channel.channelURL {
-            let moc = CoreDataHelper.createMOCForThread(threadType: .privateThread)
-            
             podcast = CoreDataHelper.retrieveExistingOrCreateNewPodcast(feedUrlString: feedURLString, moc: moc)
         }
         else {
@@ -167,9 +167,6 @@ extension PVFeedParser:FeedParserDelegate {
             return
         }
         
-        let moc = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
-        moc.parent = CoreDataHelper.shared.managedObjectContext
-        
         guard let podcastId = currentPodcastID, let podcast = CoreDataHelper.fetchEntityWithID(objectId: podcastId, moc: moc) as? Podcast else {
             // If podcast is nil, then the RSS feed was invalid for the parser, and we should return out of successfullyParsedURL
             return
@@ -230,9 +227,6 @@ extension PVFeedParser:FeedParserDelegate {
         parsingPodcasts.itemsParsing += 1
         parsingPodcasts.clearParsingPodcastsIfFinished()
         
-        let moc = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
-        moc.parent = CoreDataHelper.shared.managedObjectContext
-        
         guard let podcastId = currentPodcastID, let podcast = CoreDataHelper.fetchEntityWithID(objectId: podcastId, moc: moc) as? Podcast else {
             return
         }
@@ -256,8 +250,6 @@ extension PVFeedParser:FeedParserDelegate {
     func feedParserParsingAborted(_ parser: FeedParser) {
         parsingPodcasts.itemsParsing += 1
         parsingPodcasts.clearParsingPodcastsIfFinished()
-        let moc = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
-        moc.parent = CoreDataHelper.shared.managedObjectContext
         
         guard let podcastId = currentPodcastID, let podcast = CoreDataHelper.fetchEntityWithID(objectId: podcastId, moc: moc) as? Podcast else {
             // If podcast is nil, then the RSS feed was invalid for the parser, and we should return out of successfullyParsedURL
