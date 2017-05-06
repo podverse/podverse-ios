@@ -128,7 +128,7 @@ class PVDownloader:NSObject {
                 let downloadHasPausedOrResumedUserInfo:[String:Any] = ["mediaUrl":episode.mediaURL ?? "", "pauseOrResume": pauseOrResume]
                 
                 DispatchQueue.main.async {
-                    NotificationCenter.default.post(name: NSNotification.Name(rawValue: Constants.kDownloadHasPausedOrResumed), object: self, userInfo: downloadHasPausedOrResumedUserInfo)
+                    NotificationCenter.default.post(name: NSNotification.Name(rawValue: kDownloadHasPausedOrResumed), object: self, userInfo: downloadHasPausedOrResumedUserInfo)
                 }
             }
         }
@@ -184,7 +184,7 @@ extension PVDownloader:URLSessionDelegate, URLSessionDownloadDelegate {
                                                                   "currentBytes": Double(totalBytesSent)]
                 
                 DispatchQueue.main.async {
-                    NotificationCenter.default.post(name:NSNotification.Name(rawValue: Constants.kDownloadHasProgressed), object: self, userInfo: downloadHasProgressedUserInfo)
+                    NotificationCenter.default.post(name:NSNotification.Name(rawValue: kDownloadHasProgressed), object: self, userInfo: downloadHasProgressedUserInfo)
                 }
             }
         }
@@ -265,7 +265,7 @@ extension PVDownloader:URLSessionDelegate, URLSessionDownloadDelegate {
                                 return
                             }
                             
-                            NotificationCenter.default.post(name: NSNotification.Name(rawValue: Constants.kDownloadHasFinished), object: strongSelf, userInfo: downloadHasFinishedUserInfo)
+                            NotificationCenter.default.post(name: NSNotification.Name(rawValue: kDownloadHasFinished), object: strongSelf, userInfo: downloadHasFinishedUserInfo)
                             
                             // TODO: When a download finishes and Podverse is in the background, two localnotifications show in the UI. Why are we receiving two instead of one, when only one notification is getting scheduled below?
                             let notification = UILocalNotification()

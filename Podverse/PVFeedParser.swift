@@ -42,7 +42,7 @@ class PVFeedParser {
     
     func parsePodcastFeed(feedURLString:String) {
         if onlyParseChannel {
-            Constants.channelInfoFeedParsingQueue.async {
+            channelInfoFeedParsingQueue.async {
                 self.feedURL = feedURLString
                 let feedParser = ExtendedFeedParser(feedURL: feedURLString)
                 feedParser.delegate = self
@@ -52,7 +52,7 @@ class PVFeedParser {
                 print("feedParser did start")
             }
         } else {
-            Constants.feedParsingQueue.async {
+            feedParsingQueue.async {
                 self.feedURL = feedURLString
                 let feedParser = ExtendedFeedParser(feedURL: feedURLString)
                 feedParser.delegate = self
@@ -73,8 +73,7 @@ extension PVFeedParser:FeedParserDelegate {
         let podcast:Podcast!
         
         if let feedURLString = channel.channelURL {
-            let moc = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
-            moc.parent = CoreDataHelper.shared.managedObjectContext
+            let moc = CoreDataHelper.createMOCForThread(threadType: .privateThread)
             
             podcast = CoreDataHelper.retrieveExistingOrCreateNewPodcast(feedUrlString: feedURLString, moc: moc)
         }
