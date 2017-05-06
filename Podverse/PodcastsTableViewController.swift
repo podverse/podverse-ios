@@ -14,6 +14,7 @@ class PodcastsTableViewController: UIViewController {
 
     @IBOutlet weak var tableView: UITableView!
     
+    @IBOutlet weak var parsingActivityContainer: UIView!
     
     var subscribedPodcastsArray = [Podcast]()
     var followedPodcastsArray = [Podcast]()
@@ -50,9 +51,9 @@ class PodcastsTableViewController: UIViewController {
         refreshControl.addTarget(self, action: #selector(refreshPodcastData), for: UIControlEvents.valueChanged)
         tableView.addSubview(refreshControl)
         
-        NotificationCenter.default.addObserver(self, selector: #selector(removePlayerNavButtonAndReload), name: NSNotification.Name(rawValue: Constants.kPlayerHasNoItem), object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(loadPodcastData), name: NSNotification.Name(rawValue: Constants.kDownloadHasFinished), object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(clearParsingActivity), name: NSNotification.Name(rawValue: Constants.kInternetIsUnreachable), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(removePlayerNavButtonAndReload), name: NSNotification.Name(rawValue: kPlayerHasNoItem), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(loadPodcastData), name: NSNotification.Name(rawValue: kDownloadHasFinished), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(clearParsingActivity), name: NSNotification.Name(rawValue: kInternetIsUnreachable), object: nil)
         updateParsingActivity()
         
         if isFirstTimeAppOpened != true {
@@ -63,6 +64,7 @@ class PodcastsTableViewController: UIViewController {
     }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+//        navigationItem.rightBarButton = self.playerNavButton()
 //        showFindAPodcastIfNoneAreFollowed()
     }
 
@@ -139,7 +141,7 @@ class PodcastsTableViewController: UIViewController {
     
     func clearParsingActivity() {
         parsingPodcasts.itemsParsing = 0
-        self.parsingActivityContainer.hidden = true
+        self.parsingActivityContainer.isHidden = true
     }
     
     func removePlayerNavButtonAndReload() {

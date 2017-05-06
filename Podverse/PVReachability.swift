@@ -37,7 +37,7 @@ class PVReachability {
             }
             
             DispatchQueue.main.async {
-                NotificationCenter.default.post(name:NSNotification.Name(rawValue: Constants.kInternetIsUnreachable), object: self, userInfo: nil)
+                NotificationCenter.default.post(name:NSNotification.Name(rawValue: kInternetIsUnreachable), object: self, userInfo: nil)
             }
             
         }

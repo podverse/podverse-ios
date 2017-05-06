@@ -15,7 +15,7 @@ final class DownloadingEpisodeList {
     var downloadingEpisodes = [DownloadingEpisode]() {
         didSet {
             DispatchQueue.main.async {
-                NotificationCenter.default.post(name: NSNotification.Name(rawValue: Constants.kUpdateDownloadsTable), object: nil)
+                NotificationCenter.default.post(name: NSNotification.Name(rawValue: kUpdateDownloadsTable), object: nil)
             }
         }
     }

@@ -10,6 +10,11 @@ import Foundation
 import UIKit
 import CoreData
 
+enum ThreadType {
+    case privateThread
+    case mainThread
+}
+
 class CoreDataHelper {
     let storeName = "podverse"
     let storeFilename = "podverse.sqlite"
@@ -41,7 +46,7 @@ class CoreDataHelper {
             dict[NSLocalizedFailureReasonErrorKey] = failureReason
             
             dict[NSUnderlyingErrorKey] = error as NSError
-            let wrappedError = NSError(domain: Constants.ErrorDomain, code: Constants.CoreDataFailureCode, userInfo: dict)
+            let wrappedError = NSError(domain: ErrorDomain, code: CoreDataFailureCode, userInfo: dict)
             // Replace this with code to handle the error appropriately.
             // abort() causes the application to generate a crash log and terminate. 
             //You should not use this function in a shipping application, although it may be useful during development.
@@ -229,11 +234,19 @@ class CoreDataHelper {
         }
         
         // If an episode was playing when the app last closed, then load the episode in the media player on app launch
-        if let lastPlayingEpisodeURL = UserDefaults.standard.url(forKey: Constants.kLastPlayingEpisodeURL) {
+        if let lastPlayingEpisodeURL = UserDefaults.standard.url(forKey: kLastPlayingEpisodeURL) {
             if let lastPlayingEpisodeObjectID = CoreDataHelper.shared.persistentStoreCoordinator.managedObjectID(forURIRepresentation: lastPlayingEpisodeURL) {
                 PVMediaPlayer.shared.loadEpisodeDownloadedMediaFileOrStream(episodeID: lastPlayingEpisodeObjectID, paused: true)
             }
         }
-
+    }
+    
+    static func createMOCForThread(threadType:ThreadType) -> NSManagedObjectContext {
+        let concurrencyType:NSManagedObjectContextConcurrencyType = threadType == .privateThread ? .privateQueueConcurrencyType : .mainQueueConcurrencyType
+        
+        let moc = NSManagedObjectContext(concurrencyType: concurrencyType)
+        moc.parent = CoreDataHelper.shared.managedObjectContext
+        
+        return moc
     }
 }

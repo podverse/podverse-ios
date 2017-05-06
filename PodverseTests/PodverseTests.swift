@@ -7,7 +7,6 @@
 //
 
 import XCTest
-@testable import Podverse
 
 class PodverseTests: XCTestCase {
     
@@ -24,6 +23,9 @@ class PodverseTests: XCTestCase {
     func testExample() {
         // This is an example of a functional test case.
         // Use XCTAssert and related functions to verify your tests produce the correct results.
+        let myPodcastHasbeenPlayed = false;
+        
+        XCTAssertTrue(myPodcastHasbeenPlayed, "Podcast has not been played. Did you hit play?")
     }
     
     func testPerformanceExample() {

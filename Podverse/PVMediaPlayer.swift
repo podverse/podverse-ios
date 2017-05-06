@@ -304,7 +304,7 @@ class PVMediaPlayer {
                 avPlayer.replaceCurrentItem(with: playerItem)
                 
                 // Remember the downloaded episode loaded in media player so, if the app closes while the episode is playing or paused, it can be reloaded on app launch.
-                UserDefaults.standard.set(nowPlayingEpisode?.objectID.uriRepresentation(), forKey: Constants.kLastPlayingEpisodeURL)
+                UserDefaults.standard.set(nowPlayingEpisode?.objectID.uriRepresentation(), forKey: kLastPlayingEpisodeURL)
             }
         } else {
             if let urlString = nowPlayingEpisode?.mediaURL, let url = NSURL(string: urlString) {

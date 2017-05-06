@@ -16,7 +16,7 @@ protocol LoginModalDelegate {
 class LoginViewController: UIViewController {
     
     let reachability = PVReachability()
-    let playlistManager = PlaylistManager.sharedInstance
+//    let playlistManager = PlaylistManager.sharedInstance
     var delegate:LoginModalDelegate?
     @IBOutlet weak var loginButton: UIButton!
     
