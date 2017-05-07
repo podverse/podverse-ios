@@ -221,15 +221,14 @@ class CoreDataHelper {
     static func resetEpisodesState() {
         // Currently we are setting taskIdentifier values = nil on app launch. 
         // This wipes CoreData references to downloadingEpisodes that did not complete before the app was last closed or crashed.
-        let moc = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
-        moc.parent = CoreDataHelper.shared.managedObjectContext
+        let moc = CoreDataHelper.createMOCForThread(threadType: .privateThread)
         
         if let episodeArray = CoreDataHelper.fetchEntities(className: "Episode", predicate: nil, moc: moc) as? [Episode] {
             for episode in episodeArray {
                 episode.taskIdentifier = nil
             }
             
-            CoreDataHelper.shared.save(nil)
+            moc.saveData(nil)
         }
         
         // If an episode was playing when the app last closed, then load the episode in the media player on app launch
@@ -247,5 +246,17 @@ class CoreDataHelper {
         moc.parent = CoreDataHelper.shared.managedObjectContext
         
         return moc
+    }
+}
+
+extension NSManagedObjectContext {
+    func saveData(_ completion:(()->())?) {
+        do {
+            try self.save()
+            CoreDataHelper.shared.save(completion)
+        }
+        catch {
+           print("Could not save current context: ", error.localizedDescription) 
+        }
     }
 }

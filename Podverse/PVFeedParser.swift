@@ -21,7 +21,7 @@ extension PVFeedParserDelegate {
 }
 
 class PVFeedParser {
-    let moc = CoreDataHelper.createMOCForThread(threadType: .mainThread)
+    let moc = CoreDataHelper.createMOCForThread(threadType: .privateThread)
     var feedURL: String!
     var currentPodcastID: NSManagedObjectID? = nil
     
@@ -150,7 +150,7 @@ extension PVFeedParser:FeedParserDelegate {
         
         currentPodcastID = podcast.objectID
         
-        CoreDataHelper.shared.save { 
+        moc.saveData { 
             DispatchQueue.main.async {
                 //If only parsing for the latest episode, do not reload the PodcastTableVC after the channel is parsed.
                 //This will prevent PodcastTableVC UI from reloading and sticking unnecessarily.
@@ -198,7 +198,7 @@ extension PVFeedParser:FeedParserDelegate {
         if onlyGetMostRecentEpisode == true {
             latestEpisodePubDate = newEpisode.pubDate
             CoreDataHelper.deleteItemFromCoreData(deleteObjectID: newEpisodeID)
-            CoreDataHelper.shared.save(nil)
+            moc.saveData(nil)
             parser.abortParsing()
             return
         }
@@ -206,11 +206,11 @@ extension PVFeedParser:FeedParserDelegate {
         // If episode already exists in the database, do not insert new episode
         if podcast.episodes.contains(where: { $0.mediaURL == newEpisode.mediaURL }) {
             CoreDataHelper.deleteItemFromCoreData(deleteObjectID: newEpisodeID)
-            CoreDataHelper.shared.save(nil)
+            moc.saveData(nil)
         }
         else {
             podcast.addEpisodeObject(value: newEpisode)
-            CoreDataHelper.shared.save({ [weak self] in
+            moc.saveData({ [weak self] in
                 guard let strongSelf = self else {
                     return
                 }

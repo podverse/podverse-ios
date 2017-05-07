@@ -26,7 +26,7 @@ class PVDeleter {
         
         moc.delete(podcast)
         
-        CoreDataHelper.shared.save({
+        moc.saveData({
             completionBlock?()
         })
     }
@@ -129,7 +129,7 @@ class PVDeleter {
             CoreDataHelper.deleteItemFromCoreData(deleteObjectID: episode.objectID)
         }
         
-        CoreDataHelper.shared.save(nil)
+        moc.saveData(nil)
     }
     
     static func checkIfEpisodeShouldBeRemoved(_ episode: Episode) -> Bool {

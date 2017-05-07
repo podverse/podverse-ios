@@ -104,8 +104,7 @@ class PodcastsTableViewController: UIViewController {
     
     func loadPodcastData() {
         let subscribedPredicate = NSPredicate(format: "isSubscribed == YES")
-        let moc = NSManagedObjectContext(concurrencyType: .mainQueueConcurrencyType)
-        moc.parent = CoreDataHelper.shared.managedObjectContext
+        let moc = CoreDataHelper.createMOCForThread(threadType: .mainThread)
         self.subscribedPodcastsArray = CoreDataHelper.fetchEntities(className:"Podcast", predicate: subscribedPredicate, moc:moc) as! [Podcast]
         self.subscribedPodcastsArray.sort(by: { $0.title.removeArticles() < $1.title.removeArticles() } )
         
@@ -129,9 +128,9 @@ class PodcastsTableViewController: UIViewController {
                 podcast.lastPubDate = mostRecentEpisode.pubDate
             }
         }
-        CoreDataHelper.shared.save(nil)
-            
-        self.tableView.reloadData()
+        moc.saveData({
+            self.tableView.reloadData()
+        })
     }
     
     fileprivate func reloadAllData() {
