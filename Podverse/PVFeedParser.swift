@@ -177,7 +177,7 @@ extension PVFeedParser:FeedParserDelegate {
             return
         }
         
-        let newEpisodeID = CoreDataHelper.insertManagedObject(className: "Episode")
+        let newEpisodeID = CoreDataHelper.insertManagedObject(className: "Episode", moc: moc)
         let newEpisode = CoreDataHelper.fetchEntityWithID(objectId: newEpisodeID, moc: moc) as! Episode
         
         // Retrieve parsed values from item and add values to their respective episode properties
