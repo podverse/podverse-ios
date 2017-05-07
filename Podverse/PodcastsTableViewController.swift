@@ -321,6 +321,18 @@ extension PodcastsTableViewController:UITableViewDelegate, UITableViewDataSource
         
         return [deleteAction, subscribeOrFollowAction]
     }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        let episodesTableViewController = segue.destination as! EpisodesTableViewController
+        
+        if let index = tableView.indexPathForSelectedRow {
+            if segue.identifier == "Show Episodes" {
+                episodesTableViewController.selectedPodcast = subscribedPodcastsArray[index.row]
+                print("hello")
+            }
+        }
+        
+    }
 }
 
 extension PodcastsTableViewController:LoginModalDelegate {
