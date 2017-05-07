@@ -13,7 +13,8 @@ class EpisodesTableViewController: UIViewController, UITableViewDataSource, UITa
 //    
 //    let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
 //    
-    var selectedPodcast: Podcast!
+    var selectedPodcastID: NSManagedObjectID!
+    var podcast: Podcast!
 //
 //    var selectedPodcastId: NSManagedObjectID!
 //    
@@ -24,6 +25,7 @@ class EpisodesTableViewController: UIViewController, UITableViewDataSource, UITa
 //    var refreshControl: UIRefreshControl!
 //    
     var showAllEpisodes = false
+    let moc = CoreDataHelper.createMOCForThread(threadType: .mainThread)
 //
 //    var pvMediaPlayer = PVMediaPlayer.sharedInstance
 //    
@@ -32,6 +34,7 @@ class EpisodesTableViewController: UIViewController, UITableViewDataSource, UITa
 //    let reachability = PVReachability.manager
 //    
     func loadData() {
+        podcast = CoreDataHelper.fetchEntityWithID(objectId: self.selectedPodcastID, moc: moc) as! Podcast
 //
 //        // Clear the episodes array, then retrieve and sort the full episode or downloaded episode array
         self.episodesArray.removeAll()
@@ -49,7 +52,7 @@ class EpisodesTableViewController: UIViewController, UITableViewDataSource, UITa
 //            let downloadedEpisodesArrayPredicate = NSPredicate(format: "fileName != nil || taskIdentifier != nil", argumentArray: nil)
 //            episodesArray = selectedPodcast.episodes.filteredSetUsingPredicate(downloadedEpisodesArrayPredicate)
         } else {
-            episodesArray = selectedPodcast.episodes as NSSet
+            episodesArray = podcast.episodes as NSSet
         }
 //
 //        for singleEpisode in episodesArray {
@@ -115,12 +118,12 @@ class EpisodesTableViewController: UIViewController, UITableViewDataSource, UITa
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 //        navigationItem.rightBarButtonItem = self.playerNavButton()
-//        self.loadData()
     }
 //    
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        self.loadData()
+
         // TODO: consolidate in PodverseViewController
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
         

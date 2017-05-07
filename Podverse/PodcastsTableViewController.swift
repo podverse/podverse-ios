@@ -327,7 +327,7 @@ extension PodcastsTableViewController:UITableViewDelegate, UITableViewDataSource
         
         if let index = tableView.indexPathForSelectedRow {
             if segue.identifier == "Show Episodes" {
-                episodesTableViewController.selectedPodcast = subscribedPodcastsArray[index.row]
+                episodesTableViewController.selectedPodcastID = subscribedPodcastsArray[index.row].objectID
                 print("hello")
             }
         }
