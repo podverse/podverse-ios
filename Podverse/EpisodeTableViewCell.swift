@@ -14,5 +14,6 @@ class EpisodeTableViewCell: UITableViewCell {
     @IBOutlet weak var summary: UILabel!
     @IBOutlet weak var totalClips: UILabel!
     @IBOutlet weak var pubDate: UILabel!
+    @IBOutlet weak var button: UIButton!
     
 }

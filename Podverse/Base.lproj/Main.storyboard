@@ -463,6 +463,7 @@
                                             </constraints>
                                         </tableViewCellContentView>
                                         <connections>
+                                            <outlet property="button" destination="qXH-qS-KYk" id="38V-tS-Onr"/>
                                             <outlet property="pubDate" destination="q33-Fx-AWL" id="fSD-5F-1DS"/>
                                             <outlet property="summary" destination="f2v-X2-dYP" id="M2R-dm-dzk"/>
                                             <outlet property="title" destination="inE-9g-tFS" id="bUW-yS-PaF"/>

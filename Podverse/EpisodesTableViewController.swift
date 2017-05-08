@@ -64,30 +64,33 @@ class EpisodesTableViewController: UIViewController, UITableViewDataSource, UITa
         removeMediaPlayerButton()
         self.loadData()
     }
-//
-//    func downloadPlay(sender: UIButton) {
-//        let view = sender.superview!
-//        let cell = view.superview as! EpisodesTableCell
-//        
-//        if let indexPath = self.tableView.indexPathForCell(cell) {
-//            let selectedEpisode = episodesArray[indexPath.row]
-//            if selectedEpisode.fileName != nil {
+
+    func downloadPlay(sender: UIButton) {
+        let view = sender.superview!
+        let cell = view.superview as! EpisodeTableViewCell
+        let indexPath = self.tableView.indexPath(for: cell)
+        
+        if let indexRow = indexPath?.row  {
+            let episode = episodesArray[indexRow]
+            if episode.fileName != nil {
+//                TODO
 //                if pvMediaPlayer.avPlayer.rate == 1 {
 //                    pvMediaPlayer.saveCurrentTimeAsPlaybackPosition()
 //                }
 //                pvMediaPlayer.loadEpisodeDownloadedMediaFileOrStream(selectedEpisode.objectID, paused: false)
 //                self.segueToNowPlaying()
-//            } else {
+                print("segueToNowPlaying EpisodesTVC")
+            } else {
 //                if reachability.hasInternetConnection() == false {
 //                    showInternetNeededAlert("Connect to WiFi or cellular data to download an episode.")
 //                    return
 //                }
-//                PVDownloader.sharedInstance.startDownloadingEpisode(selectedEpisode)
-//                cell.downloadPlayButton.setTitle("DLing", forState: .Normal)
-//            }
-//        }
-//    }
-//    
+                PVDownloader.shared.startDownloadingEpisode(episode: episode)
+                cell.button.setTitle("DLing", for: .normal)
+            }
+        }
+    }
+//
 //    func refresh() {
 //        dispatch_async(Constants.feedParsingQueue) { [weak self] in
 //            guard let strongSelf = self else {
@@ -184,24 +187,17 @@ class EpisodesTableViewController: UIViewController, UITableViewDataSource, UITa
             if let pubDate = episode.pubDate {
                 cell.pubDate?.text = pubDate.toShortFormatString()
             }
-//
-//            // Set icon conditionally if is downloaded, is downloading, or has not downloaded
-//            // If filename exists, then episode is downloaded and display play button
-//            if episode.fileName != nil {
-//                cell.downloadPlayButton.setTitle("Play", forState: .Normal)
-//            }
-//                // Else if episode is downloading, then display downloading icon
-//                // TODO: why is the taskIdentifier sometimes getting turned into -1???
-//            else if (episode.taskIdentifier != nil) {
-//                cell.downloadPlayButton.setTitle("DLing", forState: .Normal)
-//            }
-//                // Else display the start download icon
-//            else {
-//                cell.downloadPlayButton.setTitle("DL", forState: .Normal)
-//            }
-//            
-//            cell.downloadPlayButton.addTarget(self, action: #selector(EpisodesTableViewController.downloadPlay(_:)), forControlEvents: .TouchUpInside)
-//            
+            
+            if episode.fileName != nil {
+                cell.button.setTitle("Play", for: .normal)
+            } else if (episode.taskIdentifier != nil) {
+                cell.button.setTitle("DLing", for: .normal)
+            } else {
+                cell.button.setTitle("DL", for: .normal)
+            }
+
+            cell.button.addTarget(self, action: #selector(downloadPlay(sender:)), for: .touchUpInside)
+
             return cell
         }
             // Return the Show All Available Episodes button
