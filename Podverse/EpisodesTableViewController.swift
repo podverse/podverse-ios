@@ -14,6 +14,8 @@ class EpisodesTableViewController: UIViewController, UITableViewDataSource, UITa
 //    let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
 //
     
+    @IBOutlet weak var tableView: UITableView!
+    
     @IBOutlet weak var headerPodcastTitle: UILabel!
     
     @IBOutlet weak var headerImageView: UIImageView!
@@ -28,47 +30,33 @@ class EpisodesTableViewController: UIViewController, UITableViewDataSource, UITa
 //    var refreshControl: UIRefreshControl!
 //    
     var showAllEpisodes = false
-    let moc = CoreDataHelper.createMOCForThread(threadType: .mainThread)
+    let moc = CoreDataHelper.createMOCForThread(threadType: .privateThread)
 //
 //    var pvMediaPlayer = PVMediaPlayer.sharedInstance
-//    
-//    var moc:NSManagedObjectContext!
-//    
+//
 //    let reachability = PVReachability.manager
 //    
     func loadData() {
         podcast = CoreDataHelper.fetchEntityWithID(objectId: self.selectedPodcastID, moc: moc) as! Podcast
 
-        self.episodesArray.removeAll()
-//        let unsortedEpisodes = NSMutableArray()
-//        
-        var episodesArray: NSSet!
-        
-        self.podcast = CoreDataHelper.fetchEntityWithID(objectId: self.selectedPodcastID, moc: moc) as! Podcast
+//        self.episodesArray.removeAll()
 
-        episodesArray = podcast.episodes as NSSet
+        episodesArray = Array(podcast.episodes)
         // If showAllEpisodes is false, then only retrieve the downloaded episodes
-        if showAllEpisodes == false {
-            let downloadedEpisodesArrayPredicate = NSPredicate(format: "fileName != nil || taskIdentifier != nil", argumentArray: nil)
-            episodesArray = episodesArray.filtered(using: downloadedEpisodesArrayPredicate) as NSSet
+//        if showAllEpisodes == false {
+//            let downloadedEpisodesArrayPredicate = NSPredicate(format: "fileName != nil || taskIdentifier != nil", argumentArray: nil)
+//            episodesArray = episodesArray.filtered(using: downloadedEpisodesArrayPredicate) as NSSet
+//        }
+//
+        
+        // TODO Is this how we should do this? Create a NSMutableArray, use NSSortDescriptor, then put it back in the episodesArray??
+        let unsortedEpisodes = NSMutableArray()
+        let sortDescriptor = NSSortDescriptor(key: "pubDate", ascending: false)
+        for singleEpisode in episodesArray {
+            unsortedEpisodes.add(singleEpisode)
         }
-//
-//        for singleEpisode in episodesArray {
-//            unsortedEpisodes.addObject(singleEpisode)
-//        }
-//        
-//        let sortDescriptor = NSSortDescriptor(key: "pubDate", ascending: false)
-//        
-//        self.episodesArray = unsortedEpisodes.sortedArrayUsingDescriptors([sortDescriptor]) as! [Episode]
-//        
-//        if let imageData = selectedPodcast.imageThumbData, image = UIImage(data: imageData)  {
-//            headerImageView.image = image
-//        }
-//
-//        headerSummaryLabel.text = PVUtility.removeHTMLFromString(selectedPodcast.summary)
-//        
-//        self.title = selectedPodcast.title
-//
+        self.episodesArray = unsortedEpisodes.sortedArray(using: [sortDescriptor]) as! [Episode]
+
 //        self.tableView.reloadData()
     }
 //
@@ -155,48 +143,48 @@ class EpisodesTableViewController: UIViewController, UITableViewDataSource, UITa
     }
 //
 //    // MARK: - Table view data source
-//    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-//        return 1
-//    }
-//    
-//    func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+        return 1
+    }
+
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
 //        if showAllEpisodes == false {
 //            return "Downloaded"
 //        } else {
-//            return "All Available Episodes"
+            return "All Available Episodes"
 //        }
-//    }
-//    
+    }
+
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return episodesArray.count + 1
     }
-//
+
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         
         // If not the last cell, then insert episode information into cell
         if indexPath.row < episodesArray.count {
             let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath as IndexPath) as! EpisodeTableViewCell
+
+            let episode = episodesArray[indexPath.row]
+
+            cell.title?.text = episode.title
+
+            if let summary = episode.summary {
+                cell.summary?.text = summary.removeHTMLFromString()
+            }
+
+            let totalClips = String(episode.clips.count)
+            cell.totalClips?.text = String(totalClips + " clips")
 //
-//            let episode = episodesArray[indexPath.row]
-//            
-//            cell.title?.text = episode.title
-//            
-//            if let summary = episode.summary {
-//                cell.summary?.text = PVUtility.removeHTMLFromString(summary)
-//            }
-//            
-//            let totalClips = String(episode.clips.count)
-//            cell.totalClips?.text = String(totalClips + " clips")
-//            
 //            if let duration = episode.duration {
 //                cell.totalTimeLeft?.text = PVUtility.convertNSNumberToHHMMSSString(duration)
 //            }
 //            
-//            if let pubDate = episode.pubDate {
-//                cell.pubDate?.text = PVUtility.formatDateToString(pubDate)
-//            }
-//            
+            if let pubDate = episode.pubDate {
+                cell.pubDate?.text = pubDate.toShortFormatString()
+            }
+//
 //            // Set icon conditionally if is downloaded, is downloading, or has not downloaded
 //            // If filename exists, then episode is downloaded and display play button
 //            if episode.fileName != nil {
@@ -231,14 +219,14 @@ class EpisodesTableViewController: UIViewController, UITableViewDataSource, UITa
         }
     }
     
-//    func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
 //        if indexPath.row < episodesArray.count {
-//            return 120
+            return 120
 //        }
 //        else {
 //            return 60
 //        }
-//    }
+    }
 //
 //    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
 //        // If not the last item in the array, then perform selected episode actions

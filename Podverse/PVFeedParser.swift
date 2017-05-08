@@ -57,13 +57,12 @@ class PVFeedParser {
                 self.feedURL = feedURLString
                 let feedParser = ExtendedFeedParser(feedURL: feedURLString)
                 feedParser.delegate = self
-                // This apparently does nothing. The 3rd party FeedParser automatically sets the parsingType to .Full...
-                feedParser.parsingType = .channelOnly
+                feedParser.parsingType = .full
                 feedParser.parse()
                 print("feedParser did start")
-                DispatchQueue.main.async {
-                    self.delegate?.feedParserStarted()
-                }
+//                DispatchQueue.main.async {
+//                    self.delegate?.feedParserStarted()
+//                }
             }
         }
     }

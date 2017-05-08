@@ -230,7 +230,7 @@ extension PodcastsTableViewController:UITableViewDelegate, UITableViewDataSource
             podcast = followedPodcastsArray[indexPath.row]
         }
         
-        cell.title?.text = podcast.title + "blah blah blah blah blah blllllaaaaaaaa"
+        cell.title?.text = podcast.title
         
         let episodes = podcast.episodes
         let episodesDownloaded = episodes.filter{ $0.fileName != nil }
