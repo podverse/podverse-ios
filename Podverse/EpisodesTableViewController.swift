@@ -12,12 +12,15 @@ class EpisodesTableViewController: UIViewController, UITableViewDataSource, UITa
 //    @IBOutlet weak var headerShadowView: UIView!
 //    
 //    let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-//    
+//
+    
+    @IBOutlet weak var headerPodcastTitle: UILabel!
+    
+    @IBOutlet weak var headerImageView: UIImageView!
+    
     var selectedPodcastID: NSManagedObjectID!
     var podcast: Podcast!
 //
-//    var selectedPodcastId: NSManagedObjectID!
-//    
 //    var selectedEpisode: Episode!
 //    
     var episodesArray = [Episode]()
@@ -35,24 +38,19 @@ class EpisodesTableViewController: UIViewController, UITableViewDataSource, UITa
 //    
     func loadData() {
         podcast = CoreDataHelper.fetchEntityWithID(objectId: self.selectedPodcastID, moc: moc) as! Podcast
-//
-//        // Clear the episodes array, then retrieve and sort the full episode or downloaded episode array
+
         self.episodesArray.removeAll()
 //        let unsortedEpisodes = NSMutableArray()
 //        
         var episodesArray: NSSet!
-//        CoreDataHelper.sharedInstance.managedObjectContext.refreshAllObjects()
-//        self.moc = CoreDataHelper.sharedInstance.managedObjectContext
-//        self.selectedPodcast = CoreDataHelper.fetchEntityWithID(self.selectedPodcastId, moc: moc) as! Podcast
-//        
+        
+        self.podcast = CoreDataHelper.fetchEntityWithID(objectId: self.selectedPodcastID, moc: moc) as! Podcast
+
+        episodesArray = podcast.episodes as NSSet
         // If showAllEpisodes is false, then only retrieve the downloaded episodes
         if showAllEpisodes == false {
-// TODO
-            let downloadedEpisodesArrayPredicate = NSPredicate()
-//            let downloadedEpisodesArrayPredicate = NSPredicate(format: "fileName != nil || taskIdentifier != nil", argumentArray: nil)
-//            episodesArray = selectedPodcast.episodes.filteredSetUsingPredicate(downloadedEpisodesArrayPredicate)
-        } else {
-            episodesArray = podcast.episodes as NSSet
+            let downloadedEpisodesArrayPredicate = NSPredicate(format: "fileName != nil || taskIdentifier != nil", argumentArray: nil)
+            episodesArray = episodesArray.filtered(using: downloadedEpisodesArrayPredicate) as NSSet
         }
 //
 //        for singleEpisode in episodesArray {
@@ -66,11 +64,11 @@ class EpisodesTableViewController: UIViewController, UITableViewDataSource, UITa
 //        if let imageData = selectedPodcast.imageThumbData, image = UIImage(data: imageData)  {
 //            headerImageView.image = image
 //        }
-//        
+//
 //        headerSummaryLabel.text = PVUtility.removeHTMLFromString(selectedPodcast.summary)
 //        
 //        self.title = selectedPodcast.title
-//        
+//
 //        self.tableView.reloadData()
     }
 //
@@ -130,6 +128,23 @@ class EpisodesTableViewController: UIViewController, UITableViewDataSource, UITa
         NotificationCenter.default.addObserver(self, selector: #selector(removePlayerNavButtonAndReload), name: NSNotification.Name(rawValue: kPlayerHasNoItem), object: nil)
         
         NotificationCenter.default.addObserver(self, selector: #selector(loadData), name: NSNotification.Name(kDownloadHasFinished), object: nil)
+        
+        headerPodcastTitle.text = podcast.title
+        
+        DispatchQueue.global().async {
+            var cellImage:UIImage?
+            
+            if let imageData = self.podcast.imageThumbData, let image = UIImage(data: imageData) {
+                cellImage = image
+            }
+            else {
+                cellImage = UIImage(named: "PodverseIcon")
+            }
+            
+            DispatchQueue.main.async {
+                self.headerImageView.image = cellImage
+            }
+        }
         
 //        self.automaticallyAdjustsScrollViewInsets = false
         

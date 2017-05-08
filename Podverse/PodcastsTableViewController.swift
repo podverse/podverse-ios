@@ -208,7 +208,7 @@ extension PodcastsTableViewController:UITableViewDelegate, UITableViewDataSource
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 100
+        return 92
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -230,7 +230,7 @@ extension PodcastsTableViewController:UITableViewDelegate, UITableViewDataSource
             podcast = followedPodcastsArray[indexPath.row]
         }
         
-        cell.title?.text = podcast.title
+        cell.title?.text = podcast.title + "blah blah blah blah blah blllllaaaaaaaa"
         
         let episodes = podcast.episodes
         let episodesDownloaded = episodes.filter{ $0.fileName != nil }
