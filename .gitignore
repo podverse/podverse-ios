@@ -28,6 +28,7 @@ xcuserdata/
 *.dSYM
 *.xcworkspace
 .build/
+Auth0.plist
 
 # CocoaPods
 Pods/
