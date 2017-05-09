@@ -1,7 +1,7 @@
 import UIKit
 import CoreData
 
-class EpisodesTableViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, PVFeedParserDelegate {
+class EpisodesTableViewController: PVViewController, UITableViewDataSource, UITableViewDelegate, PVFeedParserDelegate {
 
     
 //    @IBOutlet weak var tableView: UITableView!
@@ -66,11 +66,9 @@ class EpisodesTableViewController: UIViewController, UITableViewDataSource, UITa
     }
 
     func downloadPlay(sender: UIButton) {
-        let view = sender.superview!
-        let cell = view.superview as! EpisodeTableViewCell
-        let indexPath = self.tableView.indexPath(for: cell)
+        if let cell = sender.superview as? EpisodeTableViewCell,
+           let indexRow = self.tableView.indexPath(for: cell)?.row {
         
-        if let indexRow = indexPath?.row  {
             let episode = episodesArray[indexRow]
             if episode.fileName != nil {
 //                TODO
@@ -112,9 +110,7 @@ class EpisodesTableViewController: UIViewController, UITableViewDataSource, UITa
     override func viewDidLoad() {
         super.viewDidLoad()
         self.loadData()
-
-        // TODO: consolidate in PodverseViewController
-        navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
+        PVDownloader.shared.delegate = self
         
         NotificationCenter.default.addObserver(self, selector: #selector(removePlayerNavButtonAndReload), name: NSNotification.Name(rawValue: kPlayerHasNoItem), object: nil)
         
@@ -190,7 +186,7 @@ class EpisodesTableViewController: UIViewController, UITableViewDataSource, UITa
             
             if episode.fileName != nil {
                 cell.button.setTitle("Play", for: .normal)
-            } else if (episode.taskIdentifier != nil) {
+            } else if (DownloadingEpisodeList.shared.downloadingEpisodes.contains(where: {$0.mediaURL == episode.mediaURL})) {
                 cell.button.setTitle("DLing", for: .normal)
             } else {
                 cell.button.setTitle("DL", for: .normal)
@@ -343,5 +339,11 @@ class EpisodesTableViewController: UIViewController, UITableViewDataSource, UITa
 //        TODO
 //        self.refreshControl.endRefreshing()
 //        tableView.reloadData()
+    }
+}
+
+extension EpisodesTableViewController:PVDownloaderDelegate {
+    func episodeDownloaded(episode: DownloadingEpisode) {
+        
     }
 }

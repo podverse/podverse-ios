@@ -1,5 +1,5 @@
 //
-//  String+FeedElementIdentification.swift
+//  NSDate+FeedsDate.swift
 //
 //  Created by Nacho on 5/10/14.
 //  Copyright (c) 2014 Ignacio Nieto Carvajal. All rights reserved.
@@ -8,7 +8,7 @@
 import Foundation
 
 
-let kDateDateFormat = "yyyy-MM-dd'T'HH:mm:ssZZZ"
+let kDateDateFormat = "yyyy-MM-dd'T'HH:mm:sszzz"
 let kDateTimeIntervalStringRegex = "^([0-9]{2}):([0-9]{2}):([0-9]{2})"
 
 extension Date {
@@ -125,7 +125,7 @@ extension Date {
             
             let formatter = DateFormatter()
             formatter.locale = NSLocale(localeIdentifier: "en_US_POSIX") as Locale!
-            formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZZZ"
+            formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:sszzz"
             if let date = formatter.date(from: string as String) {
                 self.init(timeInterval:0, since:date)
             } else {
@@ -147,7 +147,7 @@ extension Date {
             
             let formatter = DateFormatter()
             formatter.locale = NSLocale(localeIdentifier: "en_US_POSIX") as Locale!
-            formatter.dateFormat = "yyyy-MM-dd HH:mm:ssZZZ"
+            formatter.dateFormat = "yyyy-MM-dd HH:mm:sszzz"
             if let date = formatter.date(from: string as String) {
                 self.init(timeInterval:0, since:date)
             } else {
@@ -166,7 +166,7 @@ extension Date {
             }
             let formatter = DateFormatter()
             formatter.locale = NSLocale(localeIdentifier: "en_US_POSIX") as Locale!
-            formatter.dateFormat = "EEE, d MMM yyyy HH:mm:ss ZZZ"
+            formatter.dateFormat = "EEE, d MMM yyyy HH:mm:ss zzz"
             if let date = formatter.date(from: string as String) {
                 self.init(timeInterval:0, since:date)
             } else {
@@ -185,7 +185,7 @@ extension Date {
             }
             let formatter = DateFormatter()
             formatter.locale = NSLocale(localeIdentifier: "en_US_POSIX") as Locale!
-            formatter.dateFormat = "d MMM yyyy HH:mm:ss ZZZ"
+            formatter.dateFormat = "d MMM yyyy HH:mm:ss zzz"
             if let date = formatter.date(from: string as String) {
                 self.init(timeInterval:0, since:date)
             } else {
@@ -259,11 +259,11 @@ extension Date {
             case .iso8601:
                 dateFormat = "yyyy-MM-dd'T'HH:mm:ssZ"
             case .rfc822:
-                dateFormat = "EEE, d MMM yyyy HH:mm:ss ZZZ"
+                dateFormat = "EEE, d MMM yyyy HH:mm:ss zzz"
             case .incompleteRFC822:
-                dateFormat = "d MMM yyyy HH:mm:ss ZZZ"
+                dateFormat = "d MMM yyyy HH:mm:ss zzz"
             case .incompleteISO8601:
-                dateFormat = "yyyy-MM-dd HH:mm:ssZZZ"
+                dateFormat = "yyyy-MM-dd HH:mm:sszzz"
             case .custom(let string):
                 dateFormat = string
         }

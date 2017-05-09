@@ -10,7 +10,7 @@ import UIKit
 import CoreData
 import Lock
 
-class PodcastsTableViewController: UIViewController {
+class PodcastsTableViewController: PVViewController {
 
     @IBOutlet weak var tableView: UITableView!
     
@@ -40,7 +40,6 @@ class PodcastsTableViewController: UIViewController {
         }
 
         navigationItem.title = "Podcasts"
-        navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
         
         tabBarController?.tabBar.isTranslucent = false
         

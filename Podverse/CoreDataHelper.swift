@@ -81,6 +81,7 @@ class CoreDataHelper {
         managedObjectContext.performAndWait({
             do {
                 try self.managedObjectContext.save()
+                completion?()
             } catch {
                 let saveError = error as NSError
                 print("Unable to Save Changes of Managed Object Context")

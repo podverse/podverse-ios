@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		302D55111EC157960032D0A0 /* PVViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 302D55101EC157960032D0A0 /* PVViewController.swift */; };
 		3095EF061EBC396F00F0E043 /* Auth0.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3095EF051EBC396F00F0E043 /* Auth0.plist */; };
 		30A575661EBECFF90088CCA6 /* EpisodesTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30A575651EBECFF90088CCA6 /* EpisodesTableViewController.swift */; };
 		30A575681EBED8360088CCA6 /* EpisodeTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30A575671EBED8360088CCA6 /* EpisodeTableViewCell.swift */; };
@@ -84,6 +85,7 @@
 /* Begin PBXFileReference section */
 		00DC6B57B728F1969F209A15 /* Pods-PodverseTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PodverseTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-PodverseTests/Pods-PodverseTests.release.xcconfig"; sourceTree = "<group>"; };
 		1F3C4343012A1C14E6A037EB /* Pods_Podverse.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Podverse.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		302D55101EC157960032D0A0 /* PVViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PVViewController.swift; sourceTree = "<group>"; };
 		3095EF051EBC396F00F0E043 /* Auth0.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Auth0.plist; sourceTree = "<group>"; };
 		30A575651EBECFF90088CCA6 /* EpisodesTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EpisodesTableViewController.swift; sourceTree = "<group>"; };
 		30A575671EBED8360088CCA6 /* EpisodeTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EpisodeTableViewCell.swift; sourceTree = "<group>"; };
@@ -212,6 +214,7 @@
 				30A575651EBECFF90088CCA6 /* EpisodesTableViewController.swift */,
 				E70E4A191E038F8F003CEC64 /* PodcastsTableViewController.swift */,
 				E70E4A221E03907A003CEC64 /* SettingsTableViewController.swift */,
+				302D55101EC157960032D0A0 /* PVViewController.swift */,
 			);
 			name = ViewControllers;
 			sourceTree = "<group>";
@@ -716,6 +719,7 @@
 				E7B2A5A11E123E9900AAE036 /* PVAuth.swift in Sources */,
 				E753028B1E072F160007B6F7 /* String+RemoveHTMLCharacters.swift in Sources */,
 				E7D25BCC1E0F176C00B60368 /* PVDeleter.swift in Sources */,
+				302D55111EC157960032D0A0 /* PVViewController.swift in Sources */,
 				E76C49C81E0F94BF00F81217 /* DownloadingEpisodeList.swift in Sources */,
 				E7D25BCA1E0F16B700B60368 /* Playlist.swift in Sources */,
 				30A575681EBED8360088CCA6 /* EpisodeTableViewCell.swift in Sources */,
