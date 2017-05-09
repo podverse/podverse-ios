@@ -164,9 +164,7 @@ class CoreDataHelper {
         return nil
     }
     
-    static func deleteItemFromCoreData(deleteObjectID:NSManagedObjectID) {
-        let moc = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
-        moc.parent = CoreDataHelper.shared.managedObjectContext
+    static func deleteItemFromCoreData(deleteObjectID:NSManagedObjectID, moc: NSManagedObjectContext) {
         let deleteObject = CoreDataHelper.fetchEntityWithID(objectId: deleteObjectID, moc: moc)
         
         if let deleteObject = deleteObject {

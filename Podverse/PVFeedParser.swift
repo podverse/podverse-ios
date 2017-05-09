@@ -57,13 +57,12 @@ class PVFeedParser {
                 self.feedURL = feedURLString
                 let feedParser = ExtendedFeedParser(feedURL: feedURLString)
                 feedParser.delegate = self
-                // This apparently does nothing. The 3rd party FeedParser automatically sets the parsingType to .Full...
-                feedParser.parsingType = .channelOnly
+                feedParser.parsingType = .full
                 feedParser.parse()
                 print("feedParser did start")
-                DispatchQueue.main.async {
-                    self.delegate?.feedParserStarted()
-                }
+//                DispatchQueue.main.async {
+//                    self.delegate?.feedParserStarted()
+//                }
             }
         }
     }
@@ -197,7 +196,7 @@ extension PVFeedParser:FeedParserDelegate {
         // If only parsing for the latest episode, stop parsing after parsing the first episode.
         if onlyGetMostRecentEpisode == true {
             latestEpisodePubDate = newEpisode.pubDate
-            CoreDataHelper.deleteItemFromCoreData(deleteObjectID: newEpisodeID)
+            CoreDataHelper.deleteItemFromCoreData(deleteObjectID: newEpisodeID, moc: moc)
             moc.saveData(nil)
             parser.abortParsing()
             return
@@ -205,7 +204,7 @@ extension PVFeedParser:FeedParserDelegate {
         
         // If episode already exists in the database, do not insert new episode
         if podcast.episodes.contains(where: { $0.mediaURL == newEpisode.mediaURL }) {
-            CoreDataHelper.deleteItemFromCoreData(deleteObjectID: newEpisodeID)
+            CoreDataHelper.deleteItemFromCoreData(deleteObjectID: newEpisodeID, moc: moc)
             moc.saveData(nil)
         }
         else {

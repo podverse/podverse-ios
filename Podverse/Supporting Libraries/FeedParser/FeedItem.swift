@@ -96,7 +96,9 @@ class FeedItem: NSObject {
     // MARK: - utility methods
     
     var isValid: Bool {
-        if (feedTitle != nil && feedLink != nil && feedContent != nil) { return true }
+        // PV EDIT: removing feedLink != nil as a requirement
+//        if (feedTitle != nil && feedLink != nil && feedContent != nil) { return true }
+        if (feedTitle != nil && feedContent != nil) { return true }
         else { return false }
     }
     
