@@ -125,7 +125,7 @@ extension Date {
             
             let formatter = DateFormatter()
             formatter.locale = NSLocale(localeIdentifier: "en_US_POSIX") as Locale!
-            formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZZZ"
+            formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:sszzz"
             if let date = formatter.date(from: string as String) {
                 self.init(timeInterval:0, since:date)
             } else {
@@ -147,7 +147,7 @@ extension Date {
             
             let formatter = DateFormatter()
             formatter.locale = NSLocale(localeIdentifier: "en_US_POSIX") as Locale!
-            formatter.dateFormat = "yyyy-MM-dd HH:mm:ssZZZ"
+            formatter.dateFormat = "yyyy-MM-dd HH:mm:sszzz"
             if let date = formatter.date(from: string as String) {
                 self.init(timeInterval:0, since:date)
             } else {
@@ -166,7 +166,7 @@ extension Date {
             }
             let formatter = DateFormatter()
             formatter.locale = NSLocale(localeIdentifier: "en_US_POSIX") as Locale!
-            formatter.dateFormat = "EEE, d MMM yyyy HH:mm:ss ZZZ"
+            formatter.dateFormat = "EEE, d MMM yyyy HH:mm:ss zzz"
             if let date = formatter.date(from: string as String) {
                 self.init(timeInterval:0, since:date)
             } else {
@@ -185,7 +185,7 @@ extension Date {
             }
             let formatter = DateFormatter()
             formatter.locale = NSLocale(localeIdentifier: "en_US_POSIX") as Locale!
-            formatter.dateFormat = "d MMM yyyy HH:mm:ss ZZZ"
+            formatter.dateFormat = "d MMM yyyy HH:mm:ss zzz"
             if let date = formatter.date(from: string as String) {
                 self.init(timeInterval:0, since:date)
             } else {
