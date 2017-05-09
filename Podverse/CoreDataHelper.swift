@@ -80,9 +80,8 @@ class CoreDataHelper {
     func save(_ completion:(()->())?) {
         managedObjectContext.performAndWait({
             do {
-                if self.managedObjectContext.hasChanges {
-                    try self.managedObjectContext.save()
-                }
+                try self.managedObjectContext.save()
+                completion?()
             } catch {
                 let saveError = error as NSError
                 print("Unable to Save Changes of Managed Object Context")
@@ -92,9 +91,7 @@ class CoreDataHelper {
         
         privateManagedObjectContext.perform({
             do {
-                if self.privateManagedObjectContext.hasChanges {
-                    try self.privateManagedObjectContext.save()
-                }
+                try self.privateManagedObjectContext.save()
             } catch {
                 let saveError = error as NSError
                 print("Unable to Save Changes of Private Managed Object Context")
@@ -103,13 +100,16 @@ class CoreDataHelper {
         })
     }
     
-    static func insertManagedObject(className: String) -> NSManagedObjectID {
-        let moc = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
-        moc.parent = CoreDataHelper.shared.managedObjectContext
+    static func insertManagedObject(className: String, moc:NSManagedObjectContext? = nil) -> NSManagedObjectID {
+        var localMoc = moc
+        if localMoc == nil {
+            localMoc = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
+            localMoc?.parent = CoreDataHelper.shared.managedObjectContext
+        }
         
-        if let entityDescription = NSEntityDescription.entity(forEntityName: className, in: moc) {
+        if let entityDescription = NSEntityDescription.entity(forEntityName: className, in: localMoc!) {
             // Create Managed Object
-            return NSManagedObject(entity: entityDescription, insertInto: moc).objectID
+            return NSManagedObject(entity: entityDescription, insertInto: localMoc).objectID
         }
         
         return NSManagedObjectID()
@@ -165,9 +165,7 @@ class CoreDataHelper {
         return nil
     }
     
-    static func deleteItemFromCoreData(deleteObjectID:NSManagedObjectID) {
-        let moc = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
-        moc.parent = CoreDataHelper.shared.managedObjectContext
+    static func deleteItemFromCoreData(deleteObjectID:NSManagedObjectID, moc: NSManagedObjectContext) {
         let deleteObject = CoreDataHelper.fetchEntityWithID(objectId: deleteObjectID, moc: moc)
         
         if let deleteObject = deleteObject {
@@ -181,7 +179,7 @@ class CoreDataHelper {
         if podcastSet.count > 0 {
             return podcastSet[0]
         } else {
-            let oid = CoreDataHelper.insertManagedObject(className: "Podcast")
+            let oid = CoreDataHelper.insertManagedObject(className: "Podcast", moc: moc)
             return  CoreDataHelper.fetchEntityWithID(objectId: oid, moc: moc) as! Podcast
         }
     }
@@ -222,15 +220,14 @@ class CoreDataHelper {
     static func resetEpisodesState() {
         // Currently we are setting taskIdentifier values = nil on app launch. 
         // This wipes CoreData references to downloadingEpisodes that did not complete before the app was last closed or crashed.
-        let moc = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
-        moc.parent = CoreDataHelper.shared.managedObjectContext
+        let moc = CoreDataHelper.createMOCForThread(threadType: .privateThread)
         
         if let episodeArray = CoreDataHelper.fetchEntities(className: "Episode", predicate: nil, moc: moc) as? [Episode] {
             for episode in episodeArray {
                 episode.taskIdentifier = nil
             }
             
-            CoreDataHelper.shared.save(nil)
+            moc.saveData(nil)
         }
         
         // If an episode was playing when the app last closed, then load the episode in the media player on app launch
@@ -248,5 +245,17 @@ class CoreDataHelper {
         moc.parent = CoreDataHelper.shared.managedObjectContext
         
         return moc
+    }
+}
+
+extension NSManagedObjectContext {
+    func saveData(_ completion:(()->())?) {
+        do {
+            try self.save()
+            CoreDataHelper.shared.save(completion)
+        }
+        catch {
+           print("Could not save current context: ", error.localizedDescription) 
+        }
     }
 }

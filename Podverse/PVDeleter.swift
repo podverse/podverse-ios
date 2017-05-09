@@ -26,7 +26,7 @@ class PVDeleter {
         
         moc.delete(podcast)
         
-        CoreDataHelper.shared.save({
+        moc.saveData({
             completionBlock?()
         })
     }
@@ -126,10 +126,10 @@ class PVDeleter {
         
         // If the episode or a clip from the episode is currently a playlistItem in a local playlist, then do not delete the episode item from Core Data
         if checkIfEpisodeShouldBeRemoved(episode) == true {
-            CoreDataHelper.deleteItemFromCoreData(deleteObjectID: episode.objectID)
+            CoreDataHelper.deleteItemFromCoreData(deleteObjectID: episode.objectID, moc: moc)
         }
         
-        CoreDataHelper.shared.save(nil)
+        moc.saveData(nil)
     }
     
     static func checkIfEpisodeShouldBeRemoved(_ episode: Episode) -> Bool {

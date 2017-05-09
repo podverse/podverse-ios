@@ -9,7 +9,7 @@
 import UIKit
 import Lock
 
-protocol LoginModalDelegate {
+protocol LoginModalDelegate:class {
     func loginTapped()
 }
 
@@ -17,7 +17,7 @@ class LoginViewController: UIViewController {
     
     let reachability = PVReachability()
 //    let playlistManager = PlaylistManager.sharedInstance
-    var delegate:LoginModalDelegate?
+    weak var delegate:LoginModalDelegate?
     @IBOutlet weak var loginButton: UIButton!
     
     override func viewDidLoad() {

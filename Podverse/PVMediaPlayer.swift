@@ -174,7 +174,7 @@ class PVMediaPlayer {
         if let playingEpisode = self.nowPlayingEpisode {
             playingEpisode.playbackPosition = NSNumber(value:CMTimeGetSeconds(avPlayer.currentTime()))
             
-            CoreDataHelper.shared.save(nil)
+            playingEpisode.managedObjectContext?.saveData(nil)
         }
     }
     

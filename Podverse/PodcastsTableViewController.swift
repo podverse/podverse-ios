@@ -10,7 +10,7 @@ import UIKit
 import CoreData
 import Lock
 
-class PodcastsTableViewController: UIViewController {
+class PodcastsTableViewController: PVViewController {
 
     @IBOutlet weak var tableView: UITableView!
     
@@ -40,7 +40,6 @@ class PodcastsTableViewController: UIViewController {
         }
 
         navigationItem.title = "Podcasts"
-        navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
         
         tabBarController?.tabBar.isTranslucent = false
         
@@ -104,8 +103,7 @@ class PodcastsTableViewController: UIViewController {
     
     func loadPodcastData() {
         let subscribedPredicate = NSPredicate(format: "isSubscribed == YES")
-        let moc = NSManagedObjectContext(concurrencyType: .mainQueueConcurrencyType)
-        moc.parent = CoreDataHelper.shared.managedObjectContext
+        let moc = CoreDataHelper.createMOCForThread(threadType: .mainThread)
         self.subscribedPodcastsArray = CoreDataHelper.fetchEntities(className:"Podcast", predicate: subscribedPredicate, moc:moc) as! [Podcast]
         self.subscribedPodcastsArray.sort(by: { $0.title.removeArticles() < $1.title.removeArticles() } )
         
@@ -129,9 +127,9 @@ class PodcastsTableViewController: UIViewController {
                 podcast.lastPubDate = mostRecentEpisode.pubDate
             }
         }
-        CoreDataHelper.shared.save(nil)
-            
-        self.tableView.reloadData()
+        moc.saveData({
+            self.tableView.reloadData()
+        })
     }
     
     fileprivate func reloadAllData() {
@@ -209,7 +207,7 @@ extension PodcastsTableViewController:UITableViewDelegate, UITableViewDataSource
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 100
+        return 92
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -321,6 +319,18 @@ extension PodcastsTableViewController:UITableViewDelegate, UITableViewDataSource
         })
         
         return [deleteAction, subscribeOrFollowAction]
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        let episodesTableViewController = segue.destination as! EpisodesTableViewController
+        
+        if let index = tableView.indexPathForSelectedRow {
+            if segue.identifier == "Show Episodes" {
+                episodesTableViewController.selectedPodcastID = subscribedPodcastsArray[index.row].objectID
+                print("hello")
+            }
+        }
+        
     }
 }
 

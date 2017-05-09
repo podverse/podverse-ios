@@ -10,7 +10,12 @@ import Foundation
 import UIKit
 import CoreData
 
+protocol PVDownloaderDelegate:class {
+    func episodeDownloaded(episode: DownloadingEpisode)
+}
+
 class PVDownloader:NSObject {
+    weak var delegate: PVDownloaderDelegate?
     static let shared = PVDownloader()
     var appDelegate = UIApplication.shared.delegate as! AppDelegate
     var docDirectoryURL: URL?
@@ -35,10 +40,10 @@ class PVDownloader:NSObject {
         episode.downloadComplete = false
         if let downloadSourceStringURL = episode.mediaURL, let downloadSourceURL = URL(string: downloadSourceStringURL) {
             let downloadTask = downloadSession.downloadTask(with: downloadSourceURL)
-            
+            episode.taskIdentifier = NSNumber(value:downloadTask.taskIdentifier)
+
             episode.managedObjectContext?.perform {
-                episode.taskIdentifier = NSNumber(value:downloadTask.taskIdentifier)
-                CoreDataHelper.shared.save(nil)
+                episode.managedObjectContext?.saveData(nil)
             }
             
             let downloadingEpisode = DownloadingEpisode(episode:episode)
@@ -193,8 +198,7 @@ extension PVDownloader:URLSessionDelegate, URLSessionDownloadDelegate {
     func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didFinishDownloadingTo location: URL) {
         let fileManager = FileManager()
         print("did finish downloading")
-        let moc = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
-        moc.parent = CoreDataHelper.shared.managedObjectContext
+        let moc = CoreDataHelper.createMOCForThread(threadType: .privateThread)
         
         // Get the corresponding episode object by its taskIdentifier value
         if let downloadingEpisode = DownloadingEpisodeList.shared.downloadingEpisodes.first(where: {$0.taskIdentifier == downloadTask.taskIdentifier}) {
@@ -257,7 +261,7 @@ extension PVDownloader:URLSessionDelegate, URLSessionDownloadDelegate {
                     
                     let podcastTitle = episode.podcast.title
                     // Save the downloadedMediaFileDestination with the object
-                    CoreDataHelper.shared.save {
+                    moc.saveData {
                         let downloadHasFinishedUserInfo = ["episode":episode]
                         
                         DispatchQueue.main.async { [weak self] in
@@ -265,8 +269,7 @@ extension PVDownloader:URLSessionDelegate, URLSessionDownloadDelegate {
                                 return
                             }
                             
-                            NotificationCenter.default.post(name: NSNotification.Name(rawValue: kDownloadHasFinished), object: strongSelf, userInfo: downloadHasFinishedUserInfo)
-                            
+                            strongSelf.delegate?.episodeDownloaded(episode: downloadingEpisode)
                             // TODO: When a download finishes and Podverse is in the background, two localnotifications show in the UI. Why are we receiving two instead of one, when only one notification is getting scheduled below?
                             let notification = UILocalNotification()
                             notification.applicationIconBadgeNumber = UIApplication.shared.applicationIconBadgeNumber + 1

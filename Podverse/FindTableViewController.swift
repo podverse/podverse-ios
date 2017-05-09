@@ -12,6 +12,8 @@ class FindTableViewController: UIViewController {
     
     @IBOutlet weak var tableView: UITableView!
     
+    let reachability = PVReachability.shared
+    
     let findSearchArray = ["Search", "Add Podcast by RSS"]
     
     var podcastVC:PodcastsTableViewController? {
@@ -77,6 +79,38 @@ extension FindTableViewController:UITableViewDelegate, UITableViewDataSource {
         let title = findSearchArray[indexPath.row]
         cell.textLabel!.text = title
         return cell
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        if indexPath.section == 0 {
+            if indexPath.row == 0 {
+// TODO
+//                self.performSegueWithIdentifier("Search for Podcasts", sender: tableView)
+            }
+            else {
+                if reachability.hasInternetConnection() == false {
+                    showInternetNeededAlertWithDesciription(message: "Connect to WiFi or cellular data to add podcast by RSS URL.")
+                    return
+                }
+                let addByRSSAlert = UIAlertController(title: "Add Podcast by RSS Feed", message: "Type the RSS feed URL below.", preferredStyle: UIAlertControllerStyle.alert)
+
+                addByRSSAlert.addTextField(configurationHandler: {(textField: UITextField!) in
+                    textField.placeholder = "https://rssfeed.example.com/"
+                })
+
+                addByRSSAlert.addAction(UIAlertAction(title: "Cancel", style: .default, handler: nil))
+
+                addByRSSAlert.addAction(UIAlertAction(title: "Add", style: .default, handler: { (action: UIAlertAction!) in
+                    if let textField = addByRSSAlert.textFields?[0], let text = textField.text {
+                        PVSubscriber.subscribeToPodcast(feedURLString: text, podcastTableDelegate: self.podcastVC)
+                    }
+                }))
+                
+                present(addByRSSAlert, animated: true, completion: nil)
+            }
+        }
+        tableView.deselectRow(at: indexPath, animated: true)
+
     }
     
     // In a storyboard-based application, you will often want to do a little preparation before navigation

@@ -21,6 +21,7 @@ extension PVFeedParserDelegate {
 }
 
 class PVFeedParser {
+    let moc = CoreDataHelper.createMOCForThread(threadType: .privateThread)
     var feedURL: String!
     var currentPodcastID: NSManagedObjectID? = nil
     
@@ -56,25 +57,23 @@ class PVFeedParser {
                 self.feedURL = feedURLString
                 let feedParser = ExtendedFeedParser(feedURL: feedURLString)
                 feedParser.delegate = self
-                // This apparently does nothing. The 3rd party FeedParser automatically sets the parsingType to .Full...
-                feedParser.parsingType = .channelOnly
+                feedParser.parsingType = .full
                 feedParser.parse()
                 print("feedParser did start")
-                DispatchQueue.main.async {
-                    self.delegate?.feedParserStarted()
-                }
+//                DispatchQueue.main.async {
+//                    self.delegate?.feedParserStarted()
+//                }
             }
         }
     }
 }
 
 extension PVFeedParser:FeedParserDelegate {
+    
     func feedParser(_ parser: FeedParser, didParseChannel channel: FeedChannel) {
         let podcast:Podcast!
         
         if let feedURLString = channel.channelURL {
-            let moc = CoreDataHelper.createMOCForThread(threadType: .privateThread)
-            
             podcast = CoreDataHelper.retrieveExistingOrCreateNewPodcast(feedUrlString: feedURLString, moc: moc)
         }
         else {
@@ -150,7 +149,7 @@ extension PVFeedParser:FeedParserDelegate {
         
         currentPodcastID = podcast.objectID
         
-        CoreDataHelper.shared.save { 
+        moc.saveData { 
             DispatchQueue.main.async {
                 //If only parsing for the latest episode, do not reload the PodcastTableVC after the channel is parsed.
                 //This will prevent PodcastTableVC UI from reloading and sticking unnecessarily.
@@ -167,9 +166,6 @@ extension PVFeedParser:FeedParserDelegate {
             return
         }
         
-        let moc = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
-        moc.parent = CoreDataHelper.shared.managedObjectContext
-        
         guard let podcastId = currentPodcastID, let podcast = CoreDataHelper.fetchEntityWithID(objectId: podcastId, moc: moc) as? Podcast else {
             // If podcast is nil, then the RSS feed was invalid for the parser, and we should return out of successfullyParsedURL
             return
@@ -180,7 +176,7 @@ extension PVFeedParser:FeedParserDelegate {
             return
         }
         
-        let newEpisodeID = CoreDataHelper.insertManagedObject(className: "Episode")
+        let newEpisodeID = CoreDataHelper.insertManagedObject(className: "Episode", moc: moc)
         let newEpisode = CoreDataHelper.fetchEntityWithID(objectId: newEpisodeID, moc: moc) as! Episode
         
         // Retrieve parsed values from item and add values to their respective episode properties
@@ -200,20 +196,20 @@ extension PVFeedParser:FeedParserDelegate {
         // If only parsing for the latest episode, stop parsing after parsing the first episode.
         if onlyGetMostRecentEpisode == true {
             latestEpisodePubDate = newEpisode.pubDate
-            CoreDataHelper.deleteItemFromCoreData(deleteObjectID: newEpisodeID)
-            CoreDataHelper.shared.save(nil)
+            CoreDataHelper.deleteItemFromCoreData(deleteObjectID: newEpisodeID, moc: moc)
+            moc.saveData(nil)
             parser.abortParsing()
             return
         }
         
         // If episode already exists in the database, do not insert new episode
         if podcast.episodes.contains(where: { $0.mediaURL == newEpisode.mediaURL }) {
-            CoreDataHelper.deleteItemFromCoreData(deleteObjectID: newEpisodeID)
-            CoreDataHelper.shared.save(nil)
+            CoreDataHelper.deleteItemFromCoreData(deleteObjectID: newEpisodeID, moc: moc)
+            moc.saveData(nil)
         }
         else {
             podcast.addEpisodeObject(value: newEpisode)
-            CoreDataHelper.shared.save({ [weak self] in
+            moc.saveData({ [weak self] in
                 guard let strongSelf = self else {
                     return
                 }
@@ -229,9 +225,6 @@ extension PVFeedParser:FeedParserDelegate {
     func feedParser(_ parser: FeedParser, successfullyParsedURL url: String) {
         parsingPodcasts.itemsParsing += 1
         parsingPodcasts.clearParsingPodcastsIfFinished()
-        
-        let moc = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
-        moc.parent = CoreDataHelper.shared.managedObjectContext
         
         guard let podcastId = currentPodcastID, let podcast = CoreDataHelper.fetchEntityWithID(objectId: podcastId, moc: moc) as? Podcast else {
             return
@@ -256,8 +249,6 @@ extension PVFeedParser:FeedParserDelegate {
     func feedParserParsingAborted(_ parser: FeedParser) {
         parsingPodcasts.itemsParsing += 1
         parsingPodcasts.clearParsingPodcastsIfFinished()
-        let moc = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
-        moc.parent = CoreDataHelper.shared.managedObjectContext
         
         guard let podcastId = currentPodcastID, let podcast = CoreDataHelper.fetchEntityWithID(objectId: podcastId, moc: moc) as? Podcast else {
             // If podcast is nil, then the RSS feed was invalid for the parser, and we should return out of successfullyParsedURL
