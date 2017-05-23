@@ -8,7 +8,7 @@
 
 import UIKit
 
-class FindTableViewController: UIViewController {
+class FindTableViewController: PVViewController {
     
     @IBOutlet weak var tableView: UITableView!
     

@@ -2,10 +2,18 @@ import UIKit
 import CoreData
 
 class EpisodesTableViewController: PVViewController, UITableViewDataSource, UITableViewDelegate, PVFeedParserDelegate {
-
     
-//    @IBOutlet weak var tableView: UITableView!
-//    
+    var showAllEpisodes = false
+    
+    let moc = CoreDataHelper.createMOCForThread(threadType: .privateThread)
+    
+    var selectedPodcastID: NSManagedObjectID!
+    var podcast: Podcast!
+    var episodesArray = [Episode]()
+    //    var refreshControl: UIRefreshControl!
+    var pvMediaPlayer = PVMediaPlayer.shared
+    //    let reachability = PVReachability.manager
+    
 //    @IBOutlet weak var headerView: UIView!
 //    @IBOutlet weak var headerImageView: UIImageView!
 //    @IBOutlet weak var headerSummaryLabel: UILabel!
@@ -20,22 +28,6 @@ class EpisodesTableViewController: PVViewController, UITableViewDataSource, UITa
     
     @IBOutlet weak var headerImageView: UIImageView!
     
-    var selectedPodcastID: NSManagedObjectID!
-    var podcast: Podcast!
-//
-//    var selectedEpisode: Episode!
-//    
-    var episodesArray = [Episode]()
-//
-//    var refreshControl: UIRefreshControl!
-//    
-    var showAllEpisodes = false
-    let moc = CoreDataHelper.createMOCForThread(threadType: .privateThread)
-//
-//    var pvMediaPlayer = PVMediaPlayer.sharedInstance
-//
-//    let reachability = PVReachability.manager
-//    
     func loadData() {
         podcast = CoreDataHelper.fetchEntityWithID(objectId: self.selectedPodcastID, moc: moc) as! Podcast
 
@@ -66,18 +58,16 @@ class EpisodesTableViewController: PVViewController, UITableViewDataSource, UITa
     }
 
     func downloadPlay(sender: UIButton) {
-        if let cell = sender.superview as? EpisodeTableViewCell,
+        if let cell = sender.superview?.superview as? EpisodeTableViewCell,
            let indexRow = self.tableView.indexPath(for: cell)?.row {
         
             let episode = episodesArray[indexRow]
             if episode.fileName != nil {
-//                TODO
-//                if pvMediaPlayer.avPlayer.rate == 1 {
-//                    pvMediaPlayer.saveCurrentTimeAsPlaybackPosition()
-//                }
-//                pvMediaPlayer.loadEpisodeDownloadedMediaFileOrStream(selectedEpisode.objectID, paused: false)
-//                self.segueToNowPlaying()
-                print("segueToNowPlaying EpisodesTVC")
+                if pvMediaPlayer.avPlayer.rate == 1 {
+                    pvMediaPlayer.saveCurrentTimeAsPlaybackPosition()
+                }
+                pvMediaPlayer.loadEpisodeDownloadedMediaFileOrStream(episodeID: episode.objectID, paused: false)
+                self.segueToNowPlaying()
             } else {
 //                if reachability.hasInternetConnection() == false {
 //                    showInternetNeededAlert("Connect to WiFi or cellular data to download an episode.")

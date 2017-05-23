@@ -299,7 +299,7 @@ extension PodcastsTableViewController:UITableViewDelegate, UITableViewDataSource
         let deleteAction = UITableViewRowAction(style: .default, title: "Delete", handler: {action, indexpath in
             
             // Remove Player button if the now playing episode was one of the podcast's episodes
-            if let nowPlayingEpisode = PVMediaPlayer.shared.nowPlayingEpisode {
+            if let nowPlayingEpisode = PVMediaPlayer.shared.currentlyPlayingItem {
                 if podcastToEdit.episodes.contains(nowPlayingEpisode) {
                     self.navigationItem.rightBarButtonItem = nil
                 }
@@ -327,7 +327,6 @@ extension PodcastsTableViewController:UITableViewDelegate, UITableViewDataSource
         if let index = tableView.indexPathForSelectedRow {
             if segue.identifier == "Show Episodes" {
                 episodesTableViewController.selectedPodcastID = subscribedPodcastsArray[index.row].objectID
-                print("hello")
             }
         }
         

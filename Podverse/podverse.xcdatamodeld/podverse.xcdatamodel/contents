@@ -20,12 +20,10 @@
         <attribute name="duration" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="fileName" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="guid" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="isDownloading" optional="YES" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="link" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="mediaBytes" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="mediaType" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="mediaURL" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="playbackPosition" optional="YES" attributeType="Float" defaultValueString="0.0" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="pubDate" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="summary" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="taskIdentifier" optional="YES" attributeType="Integer 64" valueTransformerName="unsigned long" defaultValueString="-1" usesScalarValueType="NO" syncable="YES"/>
@@ -70,7 +68,7 @@
     </entity>
     <elements>
         <element name="Clip" positionX="-56" positionY="-78" width="128" height="240"/>
-        <element name="Episode" positionX="-290" positionY="207" width="128" height="330"/>
+        <element name="Episode" positionX="-290" positionY="207" width="128" height="300"/>
         <element name="Playlist" positionX="241" positionY="27" width="128" height="225"/>
         <element name="Podcast" positionX="520" positionY="54" width="128" height="285"/>
     </elements>

@@ -18,7 +18,6 @@ class Episode: NSManagedObject {
     @NSManaged var mediaBytes: NSNumber?
     @NSManaged var mediaType: String?
     @NSManaged var mediaURL: String?
-    @NSManaged var playbackPosition: NSNumber?
     @NSManaged var pubDate: Date?
     @NSManaged var summary: String?
     @NSManaged var taskIdentifier: NSNumber?

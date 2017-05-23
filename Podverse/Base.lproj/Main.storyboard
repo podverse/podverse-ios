@@ -517,11 +517,43 @@
                         <outlet property="headerImageView" destination="W2q-RV-W1m" id="y4A-4E-KUw"/>
                         <outlet property="headerPodcastTitle" destination="4bn-tB-LUD" id="iII-EY-sLo"/>
                         <outlet property="tableView" destination="VOa-dX-ejH" id="QWe-WP-Gqg"/>
+                        <segue destination="fGh-hH-QQS" kind="show" identifier="To Now Playing" id="Eel-N3-mrg"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="6Xm-6J-YIW" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1680.8" y="-1876.0119940029986"/>
+        </scene>
+        <!--Media Player View Controller-->
+        <scene sceneID="UQ2-yh-9RT">
+            <objects>
+                <viewController id="fGh-hH-QQS" customClass="MediaPlayerViewController" customModule="Podverse" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="d5T-eo-vSh"/>
+                        <viewControllerLayoutGuide type="bottom" id="h88-c5-jiH"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="N8d-St-BhC">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Ytt-PW-XUF">
+                                <rect key="frame" x="172" y="93" width="30" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="Play"/>
+                                <connections>
+                                    <action selector="playPause:" destination="fGh-hH-QQS" eventType="touchUpInside" id="ZPa-wf-Oba"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                    <connections>
+                        <outlet property="playPauseButton" destination="Ytt-PW-XUF" id="llS-eq-UK7"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="i6M-Yi-mpb" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2788" y="-1876"/>
         </scene>
         <!--Downloads Table View Controller-->
         <scene sceneID="WnP-eH-wLR">
