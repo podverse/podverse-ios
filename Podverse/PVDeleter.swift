@@ -80,18 +80,18 @@ class PVDeleter {
         let episode = CoreDataHelper.fetchEntityWithID(objectId: episodeID, moc: moc) as! Episode
         
         // Get the downloadSession, and if there is a downloadSession with a matching taskIdentifier as episode's taskIdentifier, then cancel the downloadSession
-        let episodePodcastFeedURL = episode.podcast.feedURL
+        let episodePodcastfeedUrl = episode.podcast.feedUrl
         let downloadSession = PVDownloader.shared.downloadSession
         downloadSession?.getTasksWithCompletionHandler { dataTasks, uploadTasks, downloadTasks in
             for episodeDownloadTask in downloadTasks {
-                if  let _ = DownloadingEpisodeList.shared.downloadingEpisodes.first(where:{ $0.taskIdentifier == episodeDownloadTask.taskIdentifier && $0.podcastRSSFeedURL == episodePodcastFeedURL })  {
+                if  let _ = DownloadingEpisodeList.shared.downloadingEpisodes.first(where:{ $0.taskIdentifier == episodeDownloadTask.taskIdentifier && $0.podcastRSSfeedUrl == episodePodcastfeedUrl })  {
                     episodeDownloadTask.cancel()
                 }
             }
         }
         
         // If the episode is currently in the episodeDownloadArray, then delete the episode from the episodeDownloadArray
-        DownloadingEpisodeList.removeDownloadingEpisodeWithMediaURL(mediaURL: episode.mediaURL)
+        DownloadingEpisodeList.removeDownloadingEpisodeWithMediaURL(mediaUrl: episode.mediaUrl)
         
         DispatchQueue.main.async {
             if let tabBarCntrl = (UIApplication.shared.delegate as! AppDelegate).window?.rootViewController as? UITabBarController {

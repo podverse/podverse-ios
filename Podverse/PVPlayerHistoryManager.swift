@@ -48,4 +48,16 @@ class PlayerHistory {
     func addOrUpdateItem(item: PlayerHistoryItem) {
         print(item)
     }
+    
+    func convertEpisodeToPlayerHistoryItem(episode: Episode) -> PlayerHistoryItem {
+        
+        let playerHistoryItem = PlayerHistoryItem(podcastfeedUrl: episode.podcast.feedUrl, podcastTitle: episode.podcast.title, podcastImageUrl: episode.podcast.imageUrl, episodeMediaUrl: episode.mediaUrl!, episodeTitle: episode.title, episodeImageUrl: nil, episodeSummary: episode.summary, episodeDuration: episode.duration, episodePubDate: episode.pubDate, startTime: nil, endTime: nil, clipTitle: nil, clipDescription: nil, ownerName: nil, ownerId: nil, didFinishPlaying: false, lastPlaybackPosition: 0, lastUpdated: nil)
+        
+        return playerHistoryItem
+    }
+    
+    func convertMediaRefToPlayerHistoryItem(mediaRef: MediaRef) {
+        
+    }
+
 }

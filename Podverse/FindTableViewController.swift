@@ -102,7 +102,7 @@ extension FindTableViewController:UITableViewDelegate, UITableViewDataSource {
 
                 addByRSSAlert.addAction(UIAlertAction(title: "Add", style: .default, handler: { (action: UIAlertAction!) in
                     if let textField = addByRSSAlert.textFields?[0], let text = textField.text {
-                        PVSubscriber.subscribeToPodcast(feedURLString: text, podcastTableDelegate: self.podcastVC)
+                        PVSubscriber.subscribeToPodcast(feedUrlString: text, podcastTableDelegate: self.podcastVC)
                     }
                 }))
                 

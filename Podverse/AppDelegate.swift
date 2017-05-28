@@ -40,9 +40,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func applicationDidEnterBackground(_ application: UIApplication) {
-        if let _ = PVMediaPlayer.shared.nowPlayingEpisode {
-            PVMediaPlayer.shared.setPlayingInfo()
-        }
+//        if let _ = PVMediaPlayer.shared.nowPlayingEpisode {
+//            PVMediaPlayer.shared.setPlayingInfo()
+//        }
         
         UIApplication.shared.applicationIconBadgeNumber = 0
     }

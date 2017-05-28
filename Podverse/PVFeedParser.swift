@@ -22,7 +22,7 @@ extension PVFeedParserDelegate {
 
 class PVFeedParser {
     let moc = CoreDataHelper.createMOCForThread(threadType: .privateThread)
-    var feedURL: String!
+    var feedUrl: String!
     var currentPodcastID: NSManagedObjectID? = nil
     
     var onlyGetMostRecentEpisode: Bool
@@ -41,11 +41,11 @@ class PVFeedParser {
         self.onlyParseChannel = shouldOnlyParseChannel
     }
     
-    func parsePodcastFeed(feedURLString:String) {
+    func parsePodcastFeed(feedUrlString:String) {
         if onlyParseChannel {
             channelInfoFeedParsingQueue.async {
-                self.feedURL = feedURLString
-                let feedParser = ExtendedFeedParser(feedURL: feedURLString)
+                self.feedUrl = feedUrlString
+                let feedParser = ExtendedFeedParser(feedUrl: feedUrlString)
                 feedParser.delegate = self
                 // This apparently does nothing. The 3rd party FeedParser automatically sets the parsingType to .Full...
                 feedParser.parsingType = .channelOnly
@@ -54,8 +54,8 @@ class PVFeedParser {
             }
         } else {
             feedParsingQueue.async {
-                self.feedURL = feedURLString
-                let feedParser = ExtendedFeedParser(feedURL: feedURLString)
+                self.feedUrl = feedUrlString
+                let feedParser = ExtendedFeedParser(feedUrl: feedUrlString)
                 feedParser.delegate = self
                 feedParser.parsingType = .full
                 feedParser.parse()
@@ -73,8 +73,8 @@ extension PVFeedParser:FeedParserDelegate {
     func feedParser(_ parser: FeedParser, didParseChannel channel: FeedChannel) {
         let podcast:Podcast!
         
-        if let feedURLString = channel.channelURL {
-            podcast = CoreDataHelper.retrieveExistingOrCreateNewPodcast(feedUrlString: feedURLString, moc: moc)
+        if let feedUrlString = channel.channelURL {
+            podcast = CoreDataHelper.retrieveExistingOrCreateNewPodcast(feedUrlString: feedUrlString, moc: moc)
         }
         else {
             return
@@ -96,10 +96,10 @@ extension PVFeedParser:FeedParserDelegate {
             podcast.link = podcastLink
         }
         
-        podcast.feedURL = feedURL
+        podcast.feedUrl = feedUrl
         
         if let imageUrlString = channel.channelLogoURL, let imageURL = URL(string:imageUrlString) {
-            podcast.imageURL = imageURL.absoluteString
+            podcast.imageUrl = imageURL.absoluteString
             do {
                 podcast.imageData = try Data(contentsOf: imageURL)
             }
@@ -109,7 +109,7 @@ extension PVFeedParser:FeedParserDelegate {
         }
         
         if let iTunesImageUrlString = channel.channeliTunesLogoURL, let itunesImageURL = URL(string:iTunesImageUrlString) {
-            podcast.itunesImageURL = itunesImageURL.absoluteString
+            podcast.itunesImageUrl = itunesImageURL.absoluteString
             do {
                 podcast.itunesImage = try Data(contentsOf: itunesImageURL)
             }
@@ -186,7 +186,7 @@ extension PVFeedParser:FeedParserDelegate {
         if let link = item.feedLink { newEpisode.link = link }
         if let duration = item.duration { newEpisode.duration = duration }
         
-        newEpisode.mediaURL = item.feedEnclosures[0].url
+        newEpisode.mediaUrl = item.feedEnclosures[0].url
         newEpisode.mediaType = item.feedEnclosures[0].type
         newEpisode.mediaBytes = NSNumber(value: item.feedEnclosures[0].length)
         if let guid = item.feedIdentifier { newEpisode.guid = guid }
@@ -203,7 +203,7 @@ extension PVFeedParser:FeedParserDelegate {
         }
         
         // If episode already exists in the database, do not insert new episode
-        if podcast.episodes.contains(where: { $0.mediaURL == newEpisode.mediaURL }) {
+        if podcast.episodes.contains(where: { $0.mediaUrl == newEpisode.mediaUrl }) {
             CoreDataHelper.deleteItemFromCoreData(deleteObjectID: newEpisodeID, moc: moc)
             moc.saveData(nil)
         }
@@ -241,7 +241,7 @@ extension PVFeedParser:FeedParserDelegate {
         }
         
         DispatchQueue.main.async {
-            self.delegate?.feedParsingComplete(feedUrl: podcast.feedURL)
+            self.delegate?.feedParsingComplete(feedUrl: podcast.feedUrl)
         }
         print("Feed parser has finished!")
     }
@@ -269,11 +269,11 @@ extension PVFeedParser:FeedParserDelegate {
                let mostRecentPubDate = mostRecentEpisode.pubDate, latestEpisodePubDateInRSSFeed != mostRecentPubDate {
                 self.onlyGetMostRecentEpisode = false
                 self.downloadMostRecentEpisode = true
-                self.parsePodcastFeed(feedURLString: podcast.feedURL)
+                self.parsePodcastFeed(feedUrlString: podcast.feedUrl)
             }
             else {
                 DispatchQueue.main.async {
-                    self.delegate?.feedParsingComplete(feedUrl: podcast.feedURL)
+                    self.delegate?.feedParsingComplete(feedUrl: podcast.feedUrl)
                 }
             }
         } else {

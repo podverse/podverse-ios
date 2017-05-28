@@ -11,7 +11,7 @@ import Foundation
 class SearchResultPodcast {
     var artistName: String?
     var episodesTotal: Int?
-    var feedURL: String?
+    var feedUrl: String?
     var imageURL: String?
     var itunesImageURL: String?
     var isSubscribed: Bool?

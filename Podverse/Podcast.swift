@@ -10,14 +10,14 @@ import Foundation
 import CoreData
 
 class Podcast: NSManagedObject {
-    @NSManaged public var feedURL: String
+    @NSManaged public var feedUrl: String
     @NSManaged public var imageData: Data?
     @NSManaged public var imageThumbData: Data?
-    @NSManaged public var imageURL: String?
+    @NSManaged public var imageUrl: String?
     @NSManaged public var author: String?
     @NSManaged public var link: String? // generally the home page
     @NSManaged public var itunesImage: Data?
-    @NSManaged public var itunesImageURL: String?
+    @NSManaged public var itunesImageUrl: String?
     @NSManaged public var lastBuildDate: Date?
     @NSManaged public var lastPubDate: Date?
     @NSManaged public var summary: String?

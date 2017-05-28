@@ -22,21 +22,18 @@ class MediaPlayerViewController: PVViewController {
 
         if isNowPlaying == true {
             // Change Play/Pause button to Play icon
-            playPauseButton.setTitle("\u{f04c}", for: .normal)
+            playPauseButton.setImage(UIImage(named:"Play"), for: .normal)
         } else {
             // Change Play/Pause button to Pause icon
-            playPauseButton.setTitle("\u{f04b}", for: .normal)
+            playPauseButton.setImage(UIImage(named:"Pause"), for: .normal)
         }
     }
     
     func setPlayPauseIcon() {
-        // Check if a clip or episode is loaded. If it is, then display either Play or Pause icon.
         if pvMediaPlayer.avPlayer.rate == 1 {
-            // If playing, then display Play icon.
-            playPauseButton.setTitle("\u{f04c}", for: .normal)
+            playPauseButton.setImage(UIImage(named:"Play"), for: .normal)
         } else {
-            // If paused, then display Pause icon.
-            playPauseButton.setTitle("\u{f04b}", for: .normal)
+            playPauseButton.setImage(UIImage(named:"Pause"), for: .normal)
         }
     }
     
@@ -235,16 +232,16 @@ class MediaPlayerViewController: PVViewController {
 //    }
 //    
 //    func correctEpisodeDuration () {
-//        guard let mediaURLstring = pvMediaPlayer.nowPlayingEpisode.mediaURL else {
+//        guard let mediaUrlstring = pvMediaPlayer.nowPlayingEpisode.mediaUrl else {
 //            return
 //        }
 //        
-//        guard let mediaURL = NSURL(string: mediaURLstring) else {
+//        guard let mediaUrl = NSURL(string: mediaUrlstring) else {
 //            return
 //        }
 //        
 //        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), {
-//            let calculateDurationAsset = AVURLAsset(URL: mediaURL, options: nil)
+//            let calculateDurationAsset = AVURLAsset(URL: mediaUrl, options: nil)
 //            
 //            var calculatedDuration = CMTimeGetSeconds(calculateDurationAsset.duration)
 //            calculatedDuration = floor(calculatedDuration)

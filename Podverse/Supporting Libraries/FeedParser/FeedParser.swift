@@ -56,7 +56,7 @@ class FeedParser: NSObject, XMLParserDelegate {
     var feedType: FeedType! = .Unknown
     var parsingType: ParsingType
     var parsingStatus: ParsingStatus
-    var feedURL: String
+    var feedUrl: String
     var feedRawContents: Data?
     var feedEncoding = String.Encoding.utf8
     var feedParser: XMLParser?
@@ -71,14 +71,14 @@ class FeedParser: NSObject, XMLParserDelegate {
     var currentFeedChannel: FeedChannel!
     var currentFeedItem: FeedItem!
     
-    init(feedURL: String) {
-        self.feedURL = feedURL
+    init(feedUrl: String) {
+        self.feedUrl = feedUrl
         self.parsingType = .full
         self.parsingStatus = .stopped
     }
     
-    convenience init(feedURL: String, feedRawContents: Data) {
-        self.init(feedURL: feedURL)
+    convenience init(feedUrl: String, feedRawContents: Data) {
+        self.init(feedUrl: feedUrl)
         self.feedRawContents = feedRawContents
     }
     
@@ -115,7 +115,7 @@ class FeedParser: NSObject, XMLParserDelegate {
         if (feedRawContents != nil) { // already downloaded content?
             feedParser = XMLParser(data: feedRawContents!)
         } else { // retrieve content and start parsing.
-            feedParser = XMLParser(contentsOf: URL(string: feedURL)!)
+            feedParser = XMLParser(contentsOf: URL(string: feedUrl)!)
         }
         if (feedParser != nil) { // content successfully retrieved
             self.parsingStatus = .parsing
@@ -125,7 +125,7 @@ class FeedParser: NSObject, XMLParserDelegate {
             self.feedParser!.parse()
         } else { // unable to retrieve content
             self.parsingStatus = .failed
-            self.delegate?.feedParser?(self, parsingFailedReason: NSString(format: "%@: %@", NSLocalizedString("unable_retrieve_feed_contents",comment: ""), self.feedURL) as String)
+            self.delegate?.feedParser?(self, parsingFailedReason: NSString(format: "%@: %@", NSLocalizedString("unable_retrieve_feed_contents",comment: ""), self.feedUrl) as String)
         }
         
     }
@@ -203,7 +203,7 @@ class FeedParser: NSObject, XMLParserDelegate {
     
     func initializeNewFeedChannel(_ attributeDict: [String: Any]!) {
         self.currentFeedChannel = FeedChannel()
-        self.currentFeedChannel.channelURL = self.feedURL
+        self.currentFeedChannel.channelURL = self.feedUrl
         if (self.feedType == .Atom) { // language of the channel is included in attribute xml:lang for Atom.
             for (name, value) in attributeDict {
                 if name == "xml:lang" {
@@ -233,7 +233,7 @@ class FeedParser: NSObject, XMLParserDelegate {
             }
             // set current feed item
             self.currentFeedItem = FeedItem()
-            self.currentFeedItem.feedSource = self.currentFeedChannel?.channelTitle ?? self.feedURL
+            self.currentFeedItem.feedSource = self.currentFeedChannel?.channelTitle ?? self.feedUrl
             return
         }
     }
@@ -538,7 +538,7 @@ class FeedParser: NSObject, XMLParserDelegate {
     }
 
     func parserDidEndDocument(_ parser: XMLParser) {
-        self.delegate?.feedParser?(self, successfullyParsedURL: feedURL)
+        self.delegate?.feedParser?(self, successfullyParsedURL: feedUrl)
     }
     
     // MARK: - Utility methods
@@ -589,13 +589,13 @@ class FeedParser: NSObject, XMLParserDelegate {
         feedParser?.abortParsing()
         delegate?.feedParser?(self, didParseChannel: feedChannel)
         parsingStatus = .succeed
-        delegate?.feedParser?(self, successfullyParsedURL: feedURL)
+        delegate?.feedParser?(self, successfullyParsedURL: feedUrl)
     }
     
     func successfullyCloseParsingAfterMaxItemsFound() -> Void {
         feedParser?.abortParsing()
         parsingStatus = .succeed
-        delegate?.feedParser?(self, successfullyParsedURL: feedURL)
+        delegate?.feedParser?(self, successfullyParsedURL: feedUrl)
     }
     
     func abortParsingAndReportFailure(_ reason: String) {

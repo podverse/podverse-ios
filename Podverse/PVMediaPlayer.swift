@@ -154,46 +154,46 @@ class PVMediaPlayer {
     }
     
     @objc func playerDidFinishPlaying() {
-        if nowPlayingClip == nil {
-            self.delegate?.episodeFinishedPlaying(nowPlayingEpisode)
-        } else {
-            self.delegate?.clipFinishedPlaying(nowPlayingClip)
-        }
+//        if nowPlayingClip == nil {
+//            self.delegate?.episodeFinishedPlaying(nowPlayingEpisode)
+//        } else {
+//            self.delegate?.clipFinishedPlaying(nowPlayingClip)
+//        }
     }
 
     func saveCurrentTimeAsPlaybackPosition() {
-        if let playingEpisode = self.nowPlayingEpisode {
-            let currentTime = NSNumber(value:CMTimeGetSeconds(avPlayer.currentTime()))
-            let didFinishPlaying = false // TODO
-//            let playerHistoryItem = PlayerHistoryItem(itemId: playingEpisode.objectID, lastPlaybackPosition: currentTime, didFinishPlaying: didFinishPlaying, lastUpdated: Date())
-//            playerHistoryManager.addOrUpdateItem(item: playerHistoryItem)
-            
-// TODO:playbackPosition
-//            playingEpisode.playbackPosition = NSNumber(value: 100.5)
-//            playingEpisode.managedObjectContext?.saveData(nil)
-        }
+//        if let playingEpisode = self.nowPlayingEpisode {
+//            let currentTime = NSNumber(value:CMTimeGetSeconds(avPlayer.currentTime()))
+//            let didFinishPlaying = false // TODO
+////            let playerHistoryItem = PlayerHistoryItem(itemId: playingEpisode.objectID, lastPlaybackPosition: currentTime, didFinishPlaying: didFinishPlaying, lastUpdated: Date())
+////            playerHistoryManager.addOrUpdateItem(item: playerHistoryItem)
+//            
+//// TODO:playbackPosition
+////            playingEpisode.playbackPosition = NSNumber(value: 100.5)
+////            playingEpisode.managedObjectContext?.saveData(nil)
+//        }
     }
     
     func remoteControlReceivedWithEvent(event: UIEvent) {
         if event.type == UIEventType.remoteControl {
-            if nowPlayingEpisode != nil || nowPlayingClip != nil {
-                switch event.subtype {
-                case UIEventSubtype.remoteControlPlay:
-                    self.playOrPause()
-                    delegate?.setMediaPlayerVCPlayPauseIcon()
-                    break
-                case UIEventSubtype.remoteControlPause:
-                    self.playOrPause()
-                    delegate?.setMediaPlayerVCPlayPauseIcon()
-                    break
-                case UIEventSubtype.remoteControlTogglePlayPause:
-                    self.playOrPause()
-                    delegate?.setMediaPlayerVCPlayPauseIcon()
-                    break
-                default:
-                    break
-                }
-            }
+//            if nowPlayingEpisode != nil || nowPlayingClip != nil {
+//                switch event.subtype {
+//                case UIEventSubtype.remoteControlPlay:
+//                    self.playOrPause()
+//                    delegate?.setMediaPlayerVCPlayPauseIcon()
+//                    break
+//                case UIEventSubtype.remoteControlPause:
+//                    self.playOrPause()
+//                    delegate?.setMediaPlayerVCPlayPauseIcon()
+//                    break
+//                case UIEventSubtype.remoteControlTogglePlayPause:
+//                    self.playOrPause()
+//                    delegate?.setMediaPlayerVCPlayPauseIcon()
+//                    break
+//                default:
+//                    break
+//                }
+//            }
         }
     }
     
@@ -287,84 +287,47 @@ class PVMediaPlayer {
         let moc = NSManagedObjectContext(concurrencyType: .mainQueueConcurrencyType)
         moc.parent = CoreDataHelper.shared.managedObjectContext
         
-        let episodesPredicate = NSPredicate(format: "episodeMediaUrl == YES")
-        let podcastArray = CoreDataHelper.fetchEntities(className:"Podcast", predicate: podcastsPredicate, moc:moc) as! [Podcast]
-        
-        for podcast in podcastArray {
-            parsingPodcasts.urls.append(podcast.feedURL)
-            let feedURL = NSURL(string:podcast.feedURL)
-            
-            let feedParser = PVFeedParser(shouldOnlyGetMostRecentEpisode: true, shouldSubscribe:false, shouldFollowPodcast: false, shouldOnlyParseChannel: false)
-            feedParser.delegate = self
-            if let feedURLString = feedURL?.absoluteString {
-                feedParser.parsePodcastFeed(feedURLString: feedURLString)
-                self.updateParsingActivity()
-            }
-        }
-        
-        
-        
-        
-        if playerHistoryItem.fileName != nil {
-            var Urls = FileManager().urls(for: FileManager.SearchPathDirectory.documentDirectory, in: FileManager.SearchPathDomainMask.userDomainMask)
-        }
-        
-        if nowPlayingEpisode?.fileName != nil {
-            var URLs = FileManager().urls(for: FileManager.SearchPathDirectory.documentDirectory, in: FileManager.SearchPathDomainMask.userDomainMask)
-            self.docDirectoryURL = URLs[0]
-            
-            if let fileName = nowPlayingEpisode?.fileName, let destinationURL = self.docDirectoryURL?.appendingPathComponent(fileName) {
-                let playerItem = AVPlayerItem(url: destinationURL)
-                avPlayer.replaceCurrentItem(with: playerItem)
+        let episodesPredicate = NSPredicate(format: "mediaUrl == %@", playerHistoryItem.episodeMediaUrl)
+        if let episodes = CoreDataHelper.fetchEntities(className: "Episode", predicate: episodesPredicate, moc: moc) as? [Episode] {
+            if let episode = episodes.first {
+                var URLs = FileManager().urls(for: FileManager.SearchPathDirectory.documentDirectory, in: FileManager.SearchPathDomainMask.userDomainMask)
+                self.docDirectoryURL = URLs[0]
                 
-                // Remember the downloaded episode loaded in media player so, if the app closes while the episode is playing or paused, it can be reloaded on app launch.
-                UserDefaults.standard.set(nowPlayingEpisode?.objectID.uriRepresentation(), forKey: kLastPlayingEpisodeURL)
+                if let fileName = episode.fileName, let destinationUrl = self.docDirectoryURL?.appendingPathComponent(fileName) {
+                    let playerItem = AVPlayerItem(url: destinationUrl)
+                    avPlayer.replaceCurrentItem(with: playerItem)
+
+                    // Remember the downloaded episode loaded in media player so if the app closes while the episode is playing or paused, it can be reloaded on app launch.
+                    UserDefaults.standard.set(episode.objectID.uriRepresentation(), forKey: kLastPlayingEpisodeURL)
+                    
+                } else {
+                    if let urlString = currentlyPlayingItem?.episodeMediaUrl, let url = NSURL(string: urlString) {
+                        let playerItem = AVPlayerItem(url: url as URL)
+                        avPlayer.replaceCurrentItem(with: playerItem)
+                    }
+                }
             }
         } else {
-            if let urlString = nowPlayingEpisode?.mediaURL, let url = NSURL(string: urlString) {
+            if let urlString = currentlyPlayingItem?.episodeMediaUrl, let url = NSURL(string: urlString) {
                 let playerItem = AVPlayerItem(url: url as URL)
                 avPlayer.replaceCurrentItem(with: playerItem)
             }
         }
         
     }
-
-    func loadEpisodeDownloadedMediaFileOrStream(episodeID: NSManagedObjectID, paused: Bool) {
         
-
-        
-        if paused == false {
-            // If the episode has a playback position, then continue from that point, else play from the beginning
-            // TODO:playbackPosition
-//            if let playbackPosition = nowPlayingEpisode?.playbackPosition {
-//                goToTime(seconds: Double(playbackPosition))
-//            } else {
-//                playOrPause()
-//            }
-        } else {
-            // If the episode should be loaded and paused, then seek to the playbackPosition without playing
-// TODO:playbackPosition
-//            if let playbackPosition = nowPlayingEpisode?.playbackPosition {
-//                let resultTime = CMTimeMakeWithSeconds(Double(playbackPosition), 1)
-//                avPlayer.seek(to: resultTime)
-//            }
-        }
-        
-//        self.setPlayingInfo()
-    }
-    
     func loadClipToPlay(clipID: NSManagedObjectID) {
         let moc = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
         moc.parent = CoreDataHelper.shared.managedObjectContext
         
         moc.refreshAllObjects()
         
-        nowPlayingClip = CoreDataHelper.fetchEntityWithID(objectId: clipID, moc: moc) as? Clip
-        guard let nowPlayingClip = self.nowPlayingClip else{
-            return
-        }
-        
-        nowPlayingEpisode = CoreDataHelper.fetchEntityWithID(objectId: nowPlayingClip.episode.objectID, moc: moc) as? Episode
+//        nowPlayingClip = CoreDataHelper.fetchEntityWithID(objectId: clipID, moc: moc) as? Clip
+//        guard let nowPlayingClip = self.nowPlayingClip else{
+//            return
+//        }
+//        
+//        nowPlayingEpisode = CoreDataHelper.fetchEntityWithID(objectId: nowPlayingClip.episode.objectID, moc: moc) as? Episode
         // TODO:
         avPlayer.replaceCurrentItem(with: nil)
         //        if nowPlayingEpisode.fileName != nil {
@@ -388,7 +351,7 @@ class PVMediaPlayer {
         //            }
         //        } else {
         
-        PVClipStreamer.shared.streamClip(clip: nowPlayingClip)
+//        PVClipStreamer.shared.streamClip(clip: nowPlayingClip)
         playOrPause()
         //        }
 

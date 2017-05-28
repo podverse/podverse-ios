@@ -14,6 +14,8 @@ class EpisodesTableViewController: PVViewController, UITableViewDataSource, UITa
     var pvMediaPlayer = PVMediaPlayer.shared
     //    let reachability = PVReachability.manager
     
+    var playerHistoryManager = PlayerHistory.manager
+    
 //    @IBOutlet weak var headerView: UIView!
 //    @IBOutlet weak var headerImageView: UIImageView!
 //    @IBOutlet weak var headerSummaryLabel: UILabel!
@@ -66,7 +68,11 @@ class EpisodesTableViewController: PVViewController, UITableViewDataSource, UITa
                 if pvMediaPlayer.avPlayer.rate == 1 {
                     pvMediaPlayer.saveCurrentTimeAsPlaybackPosition()
                 }
-                pvMediaPlayer.loadEpisodeDownloadedMediaFileOrStream(episodeID: episode.objectID, paused: false)
+                
+                let playerHistoryItem = playerHistoryManager.convertEpisodeToPlayerHistoryItem(episode: episode)
+                pvMediaPlayer.loadPlayerHistoryItem(playerHistoryItem: playerHistoryItem)
+                
+//                pvMediaPlayer.loadEpisodeDownloadedMediaFileOrStream(episodeID: episode.objectID, paused: false)
                 self.segueToNowPlaying()
             } else {
 //                if reachability.hasInternetConnection() == false {
@@ -87,8 +93,8 @@ class EpisodesTableViewController: PVViewController, UITableViewDataSource, UITa
 //            
 //            let feedParser = PVFeedParser(onlyGetMostRecentEpisode: false, shouldSubscribe: false, shouldFollow: false, shouldParseChannelOnly: false)
 //            feedParser.delegate = strongSelf
-//            ParsingPodcastsList.shared.urls.append(strongSelf.selectedPodcast.feedURL)
-//            feedParser.parsePodcastFeed(strongSelf.selectedPodcast.feedURL)
+//            ParsingPodcastsList.shared.urls.append(strongSelf.selectedPodcast.feedUrl)
+//            feedParser.parsePodcastFeed(strongSelf.selectedPodcast.feedUrl)
 //        }
 //    }
 //    
@@ -176,7 +182,7 @@ class EpisodesTableViewController: PVViewController, UITableViewDataSource, UITa
             
             if episode.fileName != nil {
                 cell.button.setTitle("Play", for: .normal)
-            } else if (DownloadingEpisodeList.shared.downloadingEpisodes.contains(where: {$0.mediaURL == episode.mediaURL})) {
+            } else if (DownloadingEpisodeList.shared.downloadingEpisodes.contains(where: {$0.mediaUrl == episode.mediaUrl})) {
                 cell.button.setTitle("DLing", for: .normal)
             } else {
                 cell.button.setTitle("DL", for: .normal)
@@ -324,8 +330,8 @@ class EpisodesTableViewController: PVViewController, UITableViewDataSource, UITa
 //        }
 //    }
 //    
-// TODO Why does this need feedURL twice?
-    func feedParsingComplete(feedUrl feedURL:String?) {
+// TODO Why does this need feedUrl twice?
+    func feedParsingComplete(feedUrl feedUrl:String?) {
 //        TODO
 //        self.refreshControl.endRefreshing()
 //        tableView.reloadData()

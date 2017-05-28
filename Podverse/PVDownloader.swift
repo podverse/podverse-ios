@@ -38,7 +38,7 @@ class PVDownloader:NSObject {
     
     func startDownloadingEpisode (episode: Episode) {
         episode.downloadComplete = false
-        if let downloadSourceStringURL = episode.mediaURL, let downloadSourceURL = URL(string: downloadSourceStringURL) {
+        if let downloadSourceStringURL = episode.mediaUrl, let downloadSourceURL = URL(string: downloadSourceStringURL) {
             let downloadTask = downloadSession.downloadTask(with: downloadSourceURL)
             episode.taskIdentifier = NSNumber(value:downloadTask.taskIdentifier)
 
@@ -130,7 +130,7 @@ class PVDownloader:NSObject {
             if episodeDownloadIndex < DownloadingEpisodeList.shared.downloadingEpisodes.count {
                 let episode = DownloadingEpisodeList.shared.downloadingEpisodes[episodeDownloadIndex]
                 
-                let downloadHasPausedOrResumedUserInfo:[String:Any] = ["mediaUrl":episode.mediaURL ?? "", "pauseOrResume": pauseOrResume]
+                let downloadHasPausedOrResumedUserInfo:[String:Any] = ["mediaUrl":episode.mediaUrl ?? "", "pauseOrResume": pauseOrResume]
                 
                 DispatchQueue.main.async {
                     NotificationCenter.default.post(name: NSNotification.Name(rawValue: kDownloadHasPausedOrResumed), object: self, userInfo: downloadHasPausedOrResumedUserInfo)
@@ -184,7 +184,7 @@ extension PVDownloader:URLSessionDelegate, URLSessionDownloadDelegate {
                 episode.totalBytesWritten = Float(totalBytesSent)
                 episode.totalBytesExpectedToWrite = Float(totalBytesExpectedToSend)
                 
-                let downloadHasProgressedUserInfo:[String:Any] = ["mediaUrl":episode.mediaURL ?? "",
+                let downloadHasProgressedUserInfo:[String:Any] = ["mediaUrl":episode.mediaUrl ?? "",
                                                                   "totalBytes": Double(totalBytesExpectedToSend),
                                                                   "currentBytes": Double(totalBytesSent)]
                 
@@ -203,18 +203,18 @@ extension PVDownloader:URLSessionDelegate, URLSessionDownloadDelegate {
         // Get the corresponding episode object by its taskIdentifier value
         if let downloadingEpisode = DownloadingEpisodeList.shared.downloadingEpisodes.first(where: {$0.taskIdentifier == downloadTask.taskIdentifier}) {
             
-            guard let mediaUrl =  downloadingEpisode.mediaURL else {
+            guard let mediaUrl =  downloadingEpisode.mediaUrl else {
                 return
             }
             
-            let predicate = NSPredicate(format: "mediaURL == %@", mediaUrl)
+            let predicate = NSPredicate(format: "mediaUrl == %@", mediaUrl)
             guard let episode = CoreDataHelper.fetchEntities(className:"Episode", predicate: predicate, moc: moc).first as? Episode else {
                 return
             }
             
             var mp3OrOggFileExtension = ".mp3"
             
-            if episode.mediaURL?.hasSuffix(".ogg") == true {
+            if episode.mediaUrl?.hasSuffix(".ogg") == true {
                 mp3OrOggFileExtension = ".ogg"
             }
             
@@ -249,7 +249,7 @@ extension PVDownloader:URLSessionDelegate, URLSessionDownloadDelegate {
                     // Reset the episode.downloadTask to nil before saving, or the app will crash
                     episode.taskIdentifier = nil
                     
-                    for downloadingEpisode in DownloadingEpisodeList.shared.downloadingEpisodes where episode.mediaURL == downloadingEpisode.mediaURL {
+                    for downloadingEpisode in DownloadingEpisodeList.shared.downloadingEpisodes where episode.mediaUrl == downloadingEpisode.mediaUrl {
                         downloadingEpisode.downloadComplete = true
                         downloadingEpisode.taskIdentifier = nil
                     }
