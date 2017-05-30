@@ -45,8 +45,7 @@ class PlayerHistory {
     func documentsDirectory()->String {
         let paths = NSSearchPathForDirectoriesInDomains(.documentDirectory,
                                                         .userDomainMask, true)
-        let documentsDirectory = paths.first!
-        return documentsDirectory
+        return paths.first ?? ""
     }
     
     func dataFilePath ()->String{
