@@ -255,32 +255,36 @@ class PVMediaPlayer {
         let moc = NSManagedObjectContext(concurrencyType: .mainQueueConcurrencyType)
         moc.parent = CoreDataHelper.shared.managedObjectContext
         
-        let episodesPredicate = NSPredicate(format: "mediaUrl == %@", playerHistoryItem.episodeMediaUrl)
-        if let episodes = CoreDataHelper.fetchEntities(className: "Episode", predicate: episodesPredicate, moc: moc) as? [Episode] {
-            if let episode = episodes.first {
-                var URLs = FileManager().urls(for: FileManager.SearchPathDirectory.documentDirectory, in: FileManager.SearchPathDomainMask.userDomainMask)
-                self.docDirectoryURL = URLs[0]
-                
-                if let fileName = episode.fileName, let destinationUrl = self.docDirectoryURL?.appendingPathComponent(fileName) {
-                    let playerItem = AVPlayerItem(url: destinationUrl)
-                    avPlayer.replaceCurrentItem(with: playerItem)
-
-                    // Remember the downloaded episode loaded in media player so if the app closes while the episode is playing or paused, it can be reloaded on app launch.
-                    UserDefaults.standard.set(episode.objectID.uriRepresentation(), forKey: kLastPlayingEpisodeURL)
+        if let episodeMediaUrl = playerHistoryItem.episodeMediaUrl {
+            let episodesPredicate = NSPredicate(format: "mediaUrl == %@", episodeMediaUrl)
+            if let episodes = CoreDataHelper.fetchEntities(className: "Episode", predicate: episodesPredicate, moc: moc) as? [Episode] {
+                if let episode = episodes.first {
+                    var URLs = FileManager().urls(for: FileManager.SearchPathDirectory.documentDirectory, in: FileManager.SearchPathDomainMask.userDomainMask)
+                    self.docDirectoryURL = URLs[0]
                     
-                } else {
-                    if let urlString = currentlyPlayingItem?.episodeMediaUrl, let url = NSURL(string: urlString) {
-                        let playerItem = AVPlayerItem(url: url as URL)
+                    if let fileName = episode.fileName, let destinationUrl = self.docDirectoryURL?.appendingPathComponent(fileName) {
+                        let playerItem = AVPlayerItem(url: destinationUrl)
                         avPlayer.replaceCurrentItem(with: playerItem)
+                        
+                        // Remember the downloaded episode loaded in media player so if the app closes while the episode is playing or paused, it can be reloaded on app launch.
+                        UserDefaults.standard.set(episode.objectID.uriRepresentation(), forKey: kLastPlayingEpisodeURL)
+                        
+                    } else {
+                        if let urlString = currentlyPlayingItem?.episodeMediaUrl, let url = NSURL(string: urlString) {
+                            let playerItem = AVPlayerItem(url: url as URL)
+                            avPlayer.replaceCurrentItem(with: playerItem)
+                        }
                     }
                 }
-            }
-        } else {
-            if let urlString = currentlyPlayingItem?.episodeMediaUrl, let url = NSURL(string: urlString) {
-                let playerItem = AVPlayerItem(url: url as URL)
-                avPlayer.replaceCurrentItem(with: playerItem)
+            } else {
+                if let urlString = currentlyPlayingItem?.episodeMediaUrl, let url = NSURL(string: urlString) {
+                    let playerItem = AVPlayerItem(url: url as URL)
+                    avPlayer.replaceCurrentItem(with: playerItem)
+                }
             }
         }
+        
+
         
     }
         

@@ -122,7 +122,7 @@ class MediaPlayerViewController: PVViewController {
             episodeTitle.text = item.episodeTitle
             
             var cellImage:UIImage?
-            if let imageData = retrievePodcastImageData(feedUrl: item.podcastFeedUrl, imageUrl: item.podcastImageUrl) {
+            if let podcastFeedUrl = item.podcastFeedUrl, let imageData = retrievePodcastImageData(feedUrl: podcastFeedUrl, imageUrl: item.podcastImageUrl) {
                 DispatchQueue.global().async {
                     if let image = UIImage(data: imageData) {
                         cellImage = image
