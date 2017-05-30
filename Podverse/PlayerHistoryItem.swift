@@ -29,7 +29,7 @@ class PlayerHistoryItem: NSObject, NSCoding {
     let lastPlaybackPosition: NSNumber?
     let lastUpdated: Date?
     
-    required init(podcastFeedUrl:String?, podcastTitle:String?, podcastImageUrl:String?, episodeMediaUrl:String?, episodeTitle:String?, episodeImageUrl:String?, episodeSummary:String?, episodeDuration:NSNumber?, episodePubDate:Date?, startTime:NSNumber?, endTime:NSNumber?, clipTitle:String?, clipDescription:String?, ownerName:String?, ownerId:String?, didFinishPlaying:Bool, lastPlaybackPosition:NSNumber, lastUpdated:Date?) {
+    required init(podcastFeedUrl:String? = nil, podcastTitle:String? = nil, podcastImageUrl:String? = nil, episodeMediaUrl:String? = nil, episodeTitle:String? = nil, episodeImageUrl:String? = nil, episodeSummary:String? = nil, episodeDuration:NSNumber? = nil, episodePubDate:Date? = nil, startTime:NSNumber? = nil, endTime:NSNumber? = nil, clipTitle:String? = nil, clipDescription:String? = nil, ownerName:String? = nil, ownerId:String? = nil, didFinishPlaying:Bool, lastPlaybackPosition:NSNumber? = 0, lastUpdated:Date? = nil) {
         self.podcastFeedUrl = podcastFeedUrl
         self.podcastTitle = podcastTitle
         self.podcastImageUrl = podcastImageUrl
