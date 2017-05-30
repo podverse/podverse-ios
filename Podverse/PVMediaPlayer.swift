@@ -19,21 +19,21 @@ enum PlayingSpeed {
         get {
             switch self {
             case .Quarter:
-                return "X .25"
+                return ".25x"
             case .Half:
-                return "X .5"
+                return ".5x"
             case .ThreeQuarts:
-                return "X .75"
+                return ".75x"
             case .Regular:
-                return ""
+                return "1x"
             case .TimeAndQuarter:
-                return "X 1.25"
+                return "1.25x"
             case .TimeAndHalf:
-                return "X 1.5"
+                return "1.5x"
             case .Double:
-                return "X 2"
+                return "2x"
             case .DoubleAndHalf:
-                return "X 2.5"
+                return "2.5x"
             }
         }
     }
@@ -131,23 +131,23 @@ class PVMediaPlayer {
     }
     
     @discardableResult func playOrPause() -> Bool {
-        if avPlayer.currentItem != nil {
-            self.setPlayingInfo()
+
+        self.setPlayingInfo()
+        
+        if avPlayer.rate == 0 {
+            avPlayer.play()
+            mediaPlayerIsPlaying = true
+            self.delegate?.setMediaPlayerVCPlayPauseIcon()
+            return true
             
-            if avPlayer.rate == 0 {
-                avPlayer.play()
-                mediaPlayerIsPlaying = true
-                self.delegate?.setMediaPlayerVCPlayPauseIcon()
-                return true
-                
-            } else {
-                saveCurrentTimeAsPlaybackPosition()
-                avPlayer.pause()
-                mediaPlayerIsPlaying = false
-                self.delegate?.setMediaPlayerVCPlayPauseIcon()
-                return false
-            }
+        } else {
+            saveCurrentTimeAsPlaybackPosition()
+            avPlayer.pause()
+            mediaPlayerIsPlaying = false
+            self.delegate?.setMediaPlayerVCPlayPauseIcon()
+            return false
         }
+
         self.delegate?.setMediaPlayerVCPlayPauseIcon()
         mediaPlayerIsPlaying = false
         return false
@@ -244,44 +244,12 @@ class PVMediaPlayer {
     }
     
     func goToTime(seconds: Double) {
-        let resultTime = CMTimeMakeWithSeconds(seconds, 1)
-        let currentRate = avPlayer.rate
-        avPlayer.pause()
-        avPlayer.seek(to: resultTime)
-        saveCurrentTimeAsPlaybackPosition()
-        avPlayer.rate = currentRate
-        avPlayer.play()
-        mediaPlayerIsPlaying = true
-        self.delegate?.setMediaPlayerVCPlayPauseIcon()
+        avPlayer.seek(to: CMTimeMakeWithSeconds(seconds, 1))
     }
-    
-    func skipTime(seconds: Double) {
-        let currentTime = avPlayer.currentTime()
-        let timeAdjust = CMTimeMakeWithSeconds(seconds, 1)
-        let resultTime = CMTimeAdd(currentTime, timeAdjust)
-        let currentRate = avPlayer.rate
-        avPlayer.pause()
-        avPlayer.seek(to: resultTime)
-        saveCurrentTimeAsPlaybackPosition()
-        avPlayer.play()
-        avPlayer.rate = currentRate
-        mediaPlayerIsPlaying = true
-    }
-    
-    func previousTime(seconds: Double) {
-        let currentTime = avPlayer.currentTime()
-        let timeAdjust = CMTimeMakeWithSeconds(seconds, 1)
-        let resultTime = CMTimeSubtract(currentTime, timeAdjust)
-        let currentRate = avPlayer.rate
-        avPlayer.pause()
-        avPlayer.seek(to: resultTime)
-        saveCurrentTimeAsPlaybackPosition()
-        avPlayer.play()
-        avPlayer.rate = currentRate
-        mediaPlayerIsPlaying = true
-    }
-    
+        
     func loadPlayerHistoryItem(playerHistoryItem: PlayerHistoryItem) {
+        currentlyPlayingItem = playerHistoryItem
+        
         avPlayer.replaceCurrentItem(with: nil)
         
         let moc = NSManagedObjectContext(concurrencyType: .mainQueueConcurrencyType)

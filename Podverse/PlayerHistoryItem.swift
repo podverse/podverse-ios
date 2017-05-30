@@ -9,7 +9,7 @@
 import UIKit
 
 class PlayerHistoryItem: NSObject, NSCoding {
-    let podcastfeedUrl: String!
+    let podcastFeedUrl: String!
     let podcastTitle: String?
     let podcastImageUrl: String?
     let episodeMediaUrl: String!
@@ -28,8 +28,8 @@ class PlayerHistoryItem: NSObject, NSCoding {
     let lastPlaybackPosition: NSNumber?
     let lastUpdated: Date?
     
-    required init(podcastfeedUrl:String, podcastTitle:String?, podcastImageUrl:String?, episodeMediaUrl:String, episodeTitle:String?, episodeImageUrl:String?, episodeSummary:String?, episodeDuration:NSNumber?, episodePubDate:Date?, startTime:NSNumber?, endTime:NSNumber?, clipTitle:String?, clipDescription:String?, ownerName:String?, ownerId:String?, didFinishPlaying:Bool, lastPlaybackPosition:NSNumber, lastUpdated:Date?) {
-        self.podcastfeedUrl = podcastfeedUrl
+    required init(podcastFeedUrl:String, podcastTitle:String?, podcastImageUrl:String?, episodeMediaUrl:String, episodeTitle:String?, episodeImageUrl:String?, episodeSummary:String?, episodeDuration:NSNumber?, episodePubDate:Date?, startTime:NSNumber?, endTime:NSNumber?, clipTitle:String?, clipDescription:String?, ownerName:String?, ownerId:String?, didFinishPlaying:Bool, lastPlaybackPosition:NSNumber, lastUpdated:Date?) {
+        self.podcastFeedUrl = podcastFeedUrl
         self.podcastTitle = podcastTitle
         self.podcastImageUrl = podcastImageUrl
         self.episodeMediaUrl = episodeMediaUrl
@@ -50,7 +50,7 @@ class PlayerHistoryItem: NSObject, NSCoding {
     }
     
     required init(coder decoder: NSCoder) {
-        self.podcastfeedUrl = decoder.decodeObject(forKey: "podcastfeedUrl") as! String
+        self.podcastFeedUrl = decoder.decodeObject(forKey: "podcastFeedUrl") as! String
         self.podcastTitle = decoder.decodeObject(forKey: "podcastTitle") as? String ?? ""
         self.podcastImageUrl = decoder.decodeObject(forKey: "podcastImageUrl") as? String ?? ""
         self.episodeMediaUrl = decoder.decodeObject(forKey: "episodeMediaUrl") as! String
@@ -71,7 +71,7 @@ class PlayerHistoryItem: NSObject, NSCoding {
     }
     
     func encode(with coder: NSCoder) {
-        coder.encode(podcastfeedUrl, forKey:"podcastfeedUrl")
+        coder.encode(podcastFeedUrl, forKey:"podcastFeedUrl")
         coder.encode(podcastTitle, forKey:"podcastTitle")
         coder.encode(podcastImageUrl, forKey:"podcastImageUrl")
         coder.encode(episodeMediaUrl, forKey:"episodeMediaUrl")

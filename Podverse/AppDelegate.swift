@@ -16,8 +16,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
     var backgroundTransferCompletionHandler: (() -> Void)?
-    var avPlayer: AVPlayer?
     var timer: DispatchSource!
+    let pvMediaPlayer = PVMediaPlayer.shared
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
@@ -101,13 +101,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func skipBackwardEvent() {
-        PVMediaPlayer.shared.previousTime(seconds: 15)
-        PVMediaPlayer.shared.setPlayingInfo()
+        if let currentItem = pvMediaPlayer.avPlayer.currentItem {
+            pvMediaPlayer.goToTime(seconds: CMTimeGetSeconds(currentItem.currentTime()) - 15)
+        }
+        pvMediaPlayer.setPlayingInfo()
     }
     
     func skipForwardEvent() {
-        PVMediaPlayer.shared.skipTime(seconds: 15)
-        PVMediaPlayer.shared.setPlayingInfo()
+        if let currentItem = pvMediaPlayer.avPlayer.currentItem {
+            pvMediaPlayer.goToTime(seconds: CMTimeGetSeconds(currentItem.currentTime()) + 15)
+        }
+        pvMediaPlayer.setPlayingInfo()
     }
     
     func playOrPauseEvent() {

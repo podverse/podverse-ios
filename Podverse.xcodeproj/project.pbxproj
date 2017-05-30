@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		302D55111EC157960032D0A0 /* PVViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 302D55101EC157960032D0A0 /* PVViewController.swift */; };
 		3048E8881EDA7124001AADCE /* MediaRef.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3048E8871EDA7124001AADCE /* MediaRef.swift */; };
+		3048E88A1EDD1B1A001AADCE /* Int+MediaPlayerString.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3048E8891EDD1B1A001AADCE /* Int+MediaPlayerString.swift */; };
 		3051488B1ED27251009BC839 /* PlayerHistoryItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3051488A1ED27251009BC839 /* PlayerHistoryItem.swift */; };
 		3051488D1ED27534009BC839 /* PVPlayerHistoryManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3051488C1ED27534009BC839 /* PVPlayerHistoryManager.swift */; };
 		3095EF061EBC396F00F0E043 /* Auth0.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3095EF051EBC396F00F0E043 /* Auth0.plist */; };
@@ -91,6 +92,7 @@
 		1F3C4343012A1C14E6A037EB /* Pods_Podverse.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Podverse.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		302D55101EC157960032D0A0 /* PVViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PVViewController.swift; sourceTree = "<group>"; };
 		3048E8871EDA7124001AADCE /* MediaRef.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MediaRef.swift; sourceTree = "<group>"; };
+		3048E8891EDD1B1A001AADCE /* Int+MediaPlayerString.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Int+MediaPlayerString.swift"; sourceTree = "<group>"; };
 		3051488A1ED27251009BC839 /* PlayerHistoryItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerHistoryItem.swift; sourceTree = "<group>"; };
 		3051488C1ED27534009BC839 /* PVPlayerHistoryManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PVPlayerHistoryManager.swift; sourceTree = "<group>"; };
 		3095EF051EBC396F00F0E043 /* Auth0.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Auth0.plist; sourceTree = "<group>"; };
@@ -399,6 +401,7 @@
 				E7B2A59E1E123C7F00AAE036 /* UIViewController+MediaPlayerUI.swift */,
 				E7B2A5A91E162AE400AAE036 /* Date+Formatters.swift */,
 				E7B2A5AB1E162B8500AAE036 /* String+Formatters.swift */,
+				3048E8891EDD1B1A001AADCE /* Int+MediaPlayerString.swift */,
 			);
 			name = Extensions;
 			sourceTree = "<group>";
@@ -712,6 +715,7 @@
 				E76C49CA1E0F950E00F81217 /* DownloadingEpisode.swift in Sources */,
 				30EB67781ECCAB2800C5AB80 /* MediaPlayerViewController.swift in Sources */,
 				E753028A1E072F160007B6F7 /* NSDate+FeedsDate.swift in Sources */,
+				3048E88A1EDD1B1A001AADCE /* Int+MediaPlayerString.swift in Sources */,
 				E7D25BC61E0F141500B60368 /* Episode.swift in Sources */,
 				E78BF9311E0FA64F002194FE /* PVReachability.swift in Sources */,
 				E75302871E072F160007B6F7 /* FeedEnclosure.swift in Sources */,

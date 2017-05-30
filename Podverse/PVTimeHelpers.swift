@@ -9,15 +9,7 @@
 import Foundation
 
 class PVTimeHelper {
-    
-    static func convertSecondsToHMS(seconds:Int) -> (Int, Int, Int) {
-        let hr = seconds / 3600
-        let min = (seconds % 3600) / 60
-        let sec = (seconds % 3600) % 60
-        
-        return (hr, min, sec)
-    }
-    
+
     static func convertHMSToSeconds(hms:(Int,Int,Int)) -> Int {
         let hoursInSeconds = hms.0 * 3600
         let minutesInSeconds = hms.2 * 60
