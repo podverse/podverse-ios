@@ -174,7 +174,7 @@ class CoreDataHelper {
     }
 
     static func retrieveExistingOrCreateNewPodcast(feedUrlString: String, moc:NSManagedObjectContext) -> Podcast {
-        let predicate = NSPredicate(format: "feedURL == %@", feedUrlString)
+        let predicate = NSPredicate(format: "feedUrl == %@", feedUrlString)
         let podcastSet = CoreDataHelper.fetchEntities(className: "Podcast", predicate: predicate, moc:moc) as! [Podcast]
         if podcastSet.count > 0 {
             return podcastSet[0]
@@ -185,7 +185,7 @@ class CoreDataHelper {
     }
     
     static func retrieveExistingOrCreateNewEpisode(mediaUrlString: String, moc:NSManagedObjectContext) -> Episode {
-        let predicate = NSPredicate(format: "mediaURL == %@", mediaUrlString)
+        let predicate = NSPredicate(format: "mediaUrl == %@", mediaUrlString)
         let episodeSet = CoreDataHelper.fetchEntities(className: "Episode", predicate: predicate, moc:moc) as! [Episode]
         if episodeSet.count > 0 {
             return episodeSet[0]
@@ -231,11 +231,11 @@ class CoreDataHelper {
         }
         
         // If an episode was playing when the app last closed, then load the episode in the media player on app launch
-        if let lastPlayingEpisodeURL = UserDefaults.standard.url(forKey: kLastPlayingEpisodeURL) {
-            if let lastPlayingEpisodeObjectID = CoreDataHelper.shared.persistentStoreCoordinator.managedObjectID(forURIRepresentation: lastPlayingEpisodeURL) {
-                PVMediaPlayer.shared.loadEpisodeDownloadedMediaFileOrStream(episodeID: lastPlayingEpisodeObjectID, paused: true)
-            }
-        }
+//        if let lastPlayingEpisodeURL = UserDefaults.standard.url(forKey: kLastPlayingEpisodeURL) {
+//            if let lastPlayingEpisodeObjectID = CoreDataHelper.shared.persistentStoreCoordinator.managedObjectID(forURIRepresentation: lastPlayingEpisodeURL) {
+//                PVMediaPlayer.shared.loadEpisodeDownloadedMediaFileOrStream(episodeID: lastPlayingEpisodeObjectID, paused: true)
+//            }
+//        }
     }
     
     static func createMOCForThread(threadType:ThreadType) -> NSManagedObjectContext {

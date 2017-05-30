@@ -8,7 +8,7 @@
 
 import UIKit
 
-class DownloadsTableViewController: UIViewController {
+class DownloadsTableViewController: PVViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()

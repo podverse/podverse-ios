@@ -13,12 +13,12 @@ final class DownloadingEpisode:Equatable {
     var title:String?
     var taskIdentifier:Int?
     var downloadComplete:Bool?
-    var mediaURL: String?
+    var mediaUrl: String?
     var imageThumbData:Data?
     var taskResumeData:Data?
     var totalBytesWritten:Float?
     var totalBytesExpectedToWrite:Float?
-    var podcastRSSFeedURL:String?
+    var podcastRSSfeedUrl:String?
     var wasPausedByUser:Bool?
     var pausedWithoutResumeData:Bool?
     var managedEpisodeObjectID:NSManagedObjectID?
@@ -57,9 +57,9 @@ final class DownloadingEpisode:Equatable {
         title = episode.title
         taskIdentifier = episode.taskIdentifier?.intValue
         downloadComplete = episode.downloadComplete
-        mediaURL = episode.mediaURL
+        mediaUrl = episode.mediaUrl
         imageThumbData = episode.podcast.imageThumbData
-        podcastRSSFeedURL = episode.podcast.feedURL
+        podcastRSSfeedUrl = episode.podcast.feedUrl
         wasPausedByUser = false
         pausedWithoutResumeData = false
         managedEpisodeObjectID = episode.objectID
@@ -67,5 +67,5 @@ final class DownloadingEpisode:Equatable {
 }
 
 func == (lhs: DownloadingEpisode, rhs: DownloadingEpisode) -> Bool {
-    return lhs.mediaURL == rhs.mediaURL
+    return lhs.mediaUrl == rhs.mediaUrl
 }

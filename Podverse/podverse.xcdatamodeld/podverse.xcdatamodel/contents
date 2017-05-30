@@ -20,12 +20,11 @@
         <attribute name="duration" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="fileName" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="guid" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="isDownloading" optional="YES" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="imageUrl" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="link" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="mediaBytes" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="mediaType" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="mediaURL" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="playbackPosition" optional="YES" attributeType="Float" defaultValueString="0.0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="mediaUrl" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="pubDate" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="summary" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="taskIdentifier" optional="YES" attributeType="Integer 64" valueTransformerName="unsigned long" defaultValueString="-1" usesScalarValueType="NO" syncable="YES"/>
@@ -53,14 +52,14 @@
     <entity name="Podcast" representedClassName=".Podcast" syncable="YES">
         <attribute name="author" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="categories" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="feedURL" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="feedUrl" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="imageData" optional="YES" attributeType="Binary" syncable="YES"/>
         <attribute name="imageThumbData" optional="YES" attributeType="Binary" syncable="YES"/>
-        <attribute name="imageURL" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="imageUrl" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="isFollowed" optional="YES" attributeType="Boolean" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="isSubscribed" optional="YES" attributeType="Boolean" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="itunesImage" optional="YES" attributeType="Binary" syncable="YES"/>
-        <attribute name="itunesImageURL" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="itunesImageUrl" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="lastBuildDate" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="lastPubDate" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="link" optional="YES" attributeType="String" syncable="YES"/>
@@ -70,7 +69,7 @@
     </entity>
     <elements>
         <element name="Clip" positionX="-56" positionY="-78" width="128" height="240"/>
-        <element name="Episode" positionX="-290" positionY="207" width="128" height="330"/>
+        <element name="Episode" positionX="-290" positionY="207" width="128" height="315"/>
         <element name="Playlist" positionX="241" positionY="27" width="128" height="225"/>
         <element name="Podcast" positionX="520" positionY="54" width="128" height="285"/>
     </elements>

@@ -31,16 +31,16 @@ class PVClipStreamer:NSObject, AVAssetResourceLoaderDelegate {
         // Reset the session to nil before streaming a new clip
         self.urlSession.invalidateAndCancel()
         
-        guard let mediaURLString = clip.episode.mediaURL else {
+        guard let mediaUrlString = clip.episode.mediaUrl else {
             return
         }
         
         // Get remote file total bytes
-        guard let remoteFileSize = URL(string: mediaURLString)?.remoteSize else {
+        guard let remoteFileSize = URL(string: mediaUrlString)?.remoteSize else {
             return
         }
         
-        guard let calcCustomMediaURL = self.mediaURLWithCustomScheme(URLString: mediaURLString, scheme: "http") else {
+        guard let calcCustomMediaURL = self.mediaUrlWithCustomScheme(URLString: mediaUrlString, scheme: "http") else {
             return
         }
         
@@ -112,7 +112,7 @@ class PVClipStreamer:NSObject, AVAssetResourceLoaderDelegate {
             endBytesRange = Int(remoteFileSize)
         }
         
-        guard let customSchemeMediaURL = self.mediaURLWithCustomScheme(URLString: mediaURLString, scheme: "streaming") else {
+        guard let customSchemeMediaURL = self.mediaUrlWithCustomScheme(URLString: mediaUrlString, scheme: "streaming") else {
             return
         }
         
@@ -126,7 +126,7 @@ class PVClipStreamer:NSObject, AVAssetResourceLoaderDelegate {
     }
     
     // In order to override the Request header, we need to set a custom scheme
-    func mediaURLWithCustomScheme(URLString: String, scheme: String) -> URL? {
+    func mediaUrlWithCustomScheme(URLString: String, scheme: String) -> URL? {
         guard let url = URL(string: URLString), var components = URLComponents(url: url, resolvingAgainstBaseURL: false) else {
             return nil
         }

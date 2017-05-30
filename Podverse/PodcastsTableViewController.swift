@@ -85,13 +85,13 @@ class PodcastsTableViewController: PVViewController {
         let podcastArray = CoreDataHelper.fetchEntities(className:"Podcast", predicate: podcastsPredicate, moc:moc) as! [Podcast]
         
         for podcast in podcastArray {
-            parsingPodcasts.urls.append(podcast.feedURL)
-            let feedURL = NSURL(string:podcast.feedURL)
+            parsingPodcasts.urls.append(podcast.feedUrl)
+            let feedUrl = NSURL(string:podcast.feedUrl)
             
             let feedParser = PVFeedParser(shouldOnlyGetMostRecentEpisode: true, shouldSubscribe:false, shouldFollowPodcast: false, shouldOnlyParseChannel: false)
             feedParser.delegate = self
-            if let feedURLString = feedURL?.absoluteString {
-                feedParser.parsePodcastFeed(feedURLString: feedURLString)
+            if let feedUrlString = feedUrl?.absoluteString {
+                feedParser.parsePodcastFeed(feedUrlString: feedUrlString)
                 self.updateParsingActivity()
             }
         }
@@ -163,15 +163,15 @@ class PodcastsTableViewController: PVViewController {
 }
 
 extension PodcastsTableViewController:PVFeedParserDelegate {
-    func feedParsingComplete(feedUrl feedURL:String?) {
+    func feedParsingComplete(feedUrl feedUrl:String?) {
         let moc = NSManagedObjectContext(concurrencyType: .mainQueueConcurrencyType)
         moc.parent = CoreDataHelper.shared.managedObjectContext
         
-        if let url = feedURL, let index = self.subscribedPodcastsArray.index(where: { url == $0.feedURL }) {
+        if let url = feedUrl, let index = self.subscribedPodcastsArray.index(where: { url == $0.feedUrl }) {
             let podcast = CoreDataHelper.fetchEntityWithID(objectId: self.subscribedPodcastsArray[index].objectID, moc: moc) as! Podcast
             self.subscribedPodcastsArray[index] = podcast
             self.tableView.reloadRows(at: [IndexPath(row: index, section: 0)], with: .none)
-        } else if let url = feedURL, let index = self.followedPodcastsArray.index(where: { url == $0.feedURL }) {
+        } else if let url = feedUrl, let index = self.followedPodcastsArray.index(where: { url == $0.feedUrl }) {
             let podcast = CoreDataHelper.fetchEntityWithID(objectId: self.followedPodcastsArray[index].objectID, moc: moc) as! Podcast
             self.followedPodcastsArray[index] = podcast
             self.tableView.reloadRows(at: [IndexPath(row: index, section: 1)], with: .none)
@@ -288,9 +288,9 @@ extension PodcastsTableViewController:UITableViewDelegate, UITableViewDataSource
         
         let subscribeOrFollowAction = UITableViewRowAction(style: .default, title: subscribeOrFollow, handler: {action, indexpath in
             if subscribeOrFollow == "Subscribe" {
-                //PVSubscriber.subscribeToPodcast(podcastToEdit.feedURL, podcastTableDelegate: self)
+                //PVSubscriber.subscribeToPodcast(podcastToEdit.feedUrl, podcastTableDelegate: self)
             } else {
-                //PVFollower.followPodcast(podcastToEdit.feedURL, podcastTableDelegate: self)
+                //PVFollower.followPodcast(podcastToEdit.feedUrl, podcastTableDelegate: self)
             }
         })
         
@@ -299,11 +299,11 @@ extension PodcastsTableViewController:UITableViewDelegate, UITableViewDataSource
         let deleteAction = UITableViewRowAction(style: .default, title: "Delete", handler: {action, indexpath in
             
             // Remove Player button if the now playing episode was one of the podcast's episodes
-            if let nowPlayingEpisode = PVMediaPlayer.shared.nowPlayingEpisode {
-                if podcastToEdit.episodes.contains(nowPlayingEpisode) {
-                    self.navigationItem.rightBarButtonItem = nil
-                }
-            }
+//            if let nowPlayingEpisode = PVMediaPlayer.shared.currentlyPlayingItem {
+////                if podcastToEdit.episodes.contains(nowPlayingEpisode) {
+////                    self.navigationItem.rightBarButtonItem = nil
+////                }
+//            }
             
             if indexPath.section == 0 {
                 self.subscribedPodcastsArray.remove(at: indexPath.row)
@@ -327,7 +327,6 @@ extension PodcastsTableViewController:UITableViewDelegate, UITableViewDataSource
         if let index = tableView.indexPathForSelectedRow {
             if segue.identifier == "Show Episodes" {
                 episodesTableViewController.selectedPodcastID = subscribedPodcastsArray[index.row].objectID
-                print("hello")
             }
         }
         
