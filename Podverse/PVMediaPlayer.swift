@@ -13,26 +13,26 @@ import CoreData
 import UIKit
 
 enum PlayingSpeed {
-    case Quarter, Half, ThreeQuarts, Regular, TimeAndQuarter, TimeAndHalf, Double, DoubleAndHalf
+    case quarter, half, threeQuarts, regular, timeAndQuarter, timeAndHalf, double, doubleAndHalf
     
     var speedText:String {
         get {
             switch self {
-            case .Quarter:
+            case .quarter:
                 return ".25x"
-            case .Half:
+            case .half:
                 return ".5x"
-            case .ThreeQuarts:
+            case .threeQuarts:
                 return ".75x"
-            case .Regular:
+            case .regular:
                 return "1x"
-            case .TimeAndQuarter:
+            case .timeAndQuarter:
                 return "1.25x"
-            case .TimeAndHalf:
+            case .timeAndHalf:
                 return "1.5x"
-            case .Double:
+            case .double:
                 return "2x"
-            case .DoubleAndHalf:
+            case .doubleAndHalf:
                 return "2.5x"
             }
         }
@@ -41,21 +41,21 @@ enum PlayingSpeed {
     var speedVaue:Float {
         get {
             switch self {
-            case .Quarter:
+            case .quarter:
                 return 0.25
-            case .Half:
+            case .half:
                 return 0.5
-            case .ThreeQuarts:
+            case .threeQuarts:
                 return 0.75
-            case .Regular:
+            case .regular:
                 return 1
-            case .TimeAndQuarter:
+            case .timeAndQuarter:
                 return 1.25
-            case .TimeAndHalf:
+            case .timeAndHalf:
                 return 1.5
-            case .Double:
+            case .double:
                 return 2
-            case .DoubleAndHalf:
+            case .doubleAndHalf:
                 return 2.5
             }
         }

@@ -13,7 +13,7 @@ import AVFoundation
 class MediaPlayerViewController: PVViewController {
     
     let pvMediaPlayer = PVMediaPlayer.shared
-    var playerSpeedRate:PlayingSpeed = .Regular
+    var playerSpeedRate:PlayingSpeed = .regular
     
     @IBOutlet weak var progress: UISlider!
     @IBOutlet weak var currentTime: UILabel!
@@ -77,29 +77,29 @@ class MediaPlayerViewController: PVViewController {
     
     @IBAction func changeSpeed(_ sender: Any) {
         switch playerSpeedRate {
-        case .Regular:
-            playerSpeedRate = .TimeAndQuarter
+        case .regular:
+            playerSpeedRate = .timeAndQuarter
             break
-        case .TimeAndQuarter:
-            playerSpeedRate = .TimeAndHalf
+        case .timeAndQuarter:
+            playerSpeedRate = .timeAndHalf
             break
-        case .TimeAndHalf:
-            playerSpeedRate = .Double
+        case .timeAndHalf:
+            playerSpeedRate = .double
             break
-        case .Double:
-            playerSpeedRate = .DoubleAndHalf
+        case .double:
+            playerSpeedRate = .doubleAndHalf
             break
-        case .DoubleAndHalf:
-            playerSpeedRate = .Quarter
+        case .doubleAndHalf:
+            playerSpeedRate = .quarter
             break
-        case .Quarter:
-            playerSpeedRate = .Half
+        case .quarter:
+            playerSpeedRate = .half
             break
-        case .Half:
-            playerSpeedRate = .ThreeQuarts
+        case .half:
+            playerSpeedRate = .threeQuarts
             break
-        case .ThreeQuarts:
-            playerSpeedRate = .Regular
+        case .threeQuarts:
+            playerSpeedRate = .regular
             break
         }
         

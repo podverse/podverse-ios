@@ -104,14 +104,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         if let currentItem = pvMediaPlayer.avPlayer.currentItem {
             pvMediaPlayer.goToTime(seconds: CMTimeGetSeconds(currentItem.currentTime()) - 15)
         }
-        pvMediaPlayer.setPlayingInfo()
     }
     
     func skipForwardEvent() {
         if let currentItem = pvMediaPlayer.avPlayer.currentItem {
             pvMediaPlayer.goToTime(seconds: CMTimeGetSeconds(currentItem.currentTime()) + 15)
         }
-        pvMediaPlayer.setPlayingInfo()
     }
     
     func playOrPauseEvent() {
