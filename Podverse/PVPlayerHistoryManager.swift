@@ -27,10 +27,18 @@ class PlayerHistory {
         let defaultManager = FileManager()
         if defaultManager.fileExists(atPath: path) {
             let url = URL(fileURLWithPath: path)
-            let data = try! Data(contentsOf: url)
-            let unarchiver = NSKeyedUnarchiver(forReadingWith: data)
-            historyItems = unarchiver.decodeObject(forKey: "userHistory") as! Array
-            unarchiver.finishDecoding()
+            do {
+                let data = try Data(contentsOf: url)
+                let unarchiver = NSKeyedUnarchiver(forReadingWith: data)
+                if let hItems = unarchiver.decodeObject(forKey: "userHistory") as? Array<PlayerHistoryItem> {
+                    historyItems = hItems
+                }
+                unarchiver.finishDecoding()
+            } catch {
+                print("Decoding failed: \(error.localizedDescription)")
+            }
+            
+
         }
     }
     
@@ -51,7 +59,7 @@ class PlayerHistory {
     
     func convertEpisodeToPlayerHistoryItem(episode: Episode) -> PlayerHistoryItem {
         
-        let playerHistoryItem = PlayerHistoryItem(podcastfeedUrl: episode.podcast.feedUrl, podcastTitle: episode.podcast.title, podcastImageUrl: episode.podcast.imageUrl, episodeMediaUrl: episode.mediaUrl!, episodeTitle: episode.title, episodeImageUrl: nil, episodeSummary: episode.summary, episodeDuration: episode.duration, episodePubDate: episode.pubDate, startTime: nil, endTime: nil, clipTitle: nil, clipDescription: nil, ownerName: nil, ownerId: nil, didFinishPlaying: false, lastPlaybackPosition: 0, lastUpdated: nil)
+        let playerHistoryItem = PlayerHistoryItem(podcastfeedUrl: episode.podcast.feedUrl, podcastTitle: episode.podcast.title, podcastImageUrl: episode.podcast.imageUrl, episodeMediaUrl: episode.mediaUrl, episodeTitle: episode.title, episodeImageUrl: nil, episodeSummary: episode.summary, episodeDuration: episode.duration, episodePubDate: episode.pubDate, startTime: nil, endTime: nil, clipTitle: nil, clipDescription: nil, ownerName: nil, ownerId: nil, didFinishPlaying: false, lastPlaybackPosition: 0, lastUpdated: nil)
         
         return playerHistoryItem
     }

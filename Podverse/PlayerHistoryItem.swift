@@ -9,10 +9,10 @@
 import UIKit
 
 class PlayerHistoryItem: NSObject, NSCoding {
-    let podcastfeedUrl: String!
+    let podcastfeedUrl: String?
     let podcastTitle: String?
     let podcastImageUrl: String?
-    let episodeMediaUrl: String!
+    let episodeMediaUrl: String?
     let episodeTitle: String?
     let episodeImageUrl: String?
     let episodeSummary: String?
@@ -28,7 +28,7 @@ class PlayerHistoryItem: NSObject, NSCoding {
     let lastPlaybackPosition: NSNumber?
     let lastUpdated: Date?
     
-    required init(podcastfeedUrl:String, podcastTitle:String?, podcastImageUrl:String?, episodeMediaUrl:String, episodeTitle:String?, episodeImageUrl:String?, episodeSummary:String?, episodeDuration:NSNumber?, episodePubDate:Date?, startTime:NSNumber?, endTime:NSNumber?, clipTitle:String?, clipDescription:String?, ownerName:String?, ownerId:String?, didFinishPlaying:Bool, lastPlaybackPosition:NSNumber, lastUpdated:Date?) {
+    required init(podcastfeedUrl:String?, podcastTitle:String?, podcastImageUrl:String?, episodeMediaUrl:String?, episodeTitle:String?, episodeImageUrl:String?, episodeSummary:String?, episodeDuration:NSNumber?, episodePubDate:Date?, startTime:NSNumber?, endTime:NSNumber?, clipTitle:String?, clipDescription:String?, ownerName:String?, ownerId:String?, didFinishPlaying:Bool, lastPlaybackPosition:NSNumber, lastUpdated:Date?) {
         self.podcastfeedUrl = podcastfeedUrl
         self.podcastTitle = podcastTitle
         self.podcastImageUrl = podcastImageUrl
@@ -50,10 +50,10 @@ class PlayerHistoryItem: NSObject, NSCoding {
     }
     
     required init(coder decoder: NSCoder) {
-        self.podcastfeedUrl = decoder.decodeObject(forKey: "podcastfeedUrl") as! String
+        self.podcastfeedUrl = decoder.decodeObject(forKey: "podcastfeedUrl") as? String ?? ""
         self.podcastTitle = decoder.decodeObject(forKey: "podcastTitle") as? String ?? ""
         self.podcastImageUrl = decoder.decodeObject(forKey: "podcastImageUrl") as? String ?? ""
-        self.episodeMediaUrl = decoder.decodeObject(forKey: "episodeMediaUrl") as! String
+        self.episodeMediaUrl = decoder.decodeObject(forKey: "episodeMediaUrl") as? String ?? ""
         self.episodeTitle = decoder.decodeObject(forKey: "episodeTitle") as? String ?? ""
         self.episodeImageUrl = decoder.decodeObject(forKey: "episodeImageUrl") as? String ?? ""
         self.episodeSummary = decoder.decodeObject(forKey: "episodeSummary") as? String ?? ""
