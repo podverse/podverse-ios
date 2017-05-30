@@ -547,7 +547,7 @@
                                         </constraints>
                                         <state key="normal" image="Play"/>
                                         <connections>
-                                            <action selector="playPause:" destination="fGh-hH-QQS" eventType="touchUpInside" id="ZPa-wf-Oba"/>
+                                            <action selector="play:" destination="fGh-hH-QQS" eventType="touchUpInside" id="L4I-Ay-bWb"/>
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="AAk-nK-md6">
@@ -557,9 +557,6 @@
                                             <constraint firstAttribute="width" constant="40" id="jM5-Vs-Iro"/>
                                         </constraints>
                                         <state key="normal" image="Skip"/>
-                                        <connections>
-                                            <action selector="playPause:" destination="fGh-hH-QQS" eventType="touchUpInside" id="Q9S-0A-grR"/>
-                                        </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mId-2b-yiM">
                                         <rect key="frame" x="233" y="10" width="40" height="40"/>
@@ -568,9 +565,6 @@
                                             <constraint firstAttribute="height" constant="40" id="fEt-qc-XC9"/>
                                         </constraints>
                                         <state key="normal" image="Skip"/>
-                                        <connections>
-                                            <action selector="playPause:" destination="fGh-hH-QQS" eventType="touchUpInside" id="E0B-uS-5Jq"/>
-                                        </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="xBK-no-JRj">
                                         <rect key="frame" x="101" y="10" width="40" height="40"/>
@@ -579,9 +573,6 @@
                                             <constraint firstAttribute="width" constant="40" id="v8c-gx-u5K"/>
                                         </constraints>
                                         <state key="normal" image="Previous"/>
-                                        <connections>
-                                            <action selector="playPause:" destination="fGh-hH-QQS" eventType="touchUpInside" id="T8A-P9-VQl"/>
-                                        </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="b1n-yz-gVu">
                                         <rect key="frame" x="8" y="10" width="40" height="40"/>
@@ -590,9 +581,6 @@
                                             <constraint firstAttribute="height" constant="40" id="vWS-DW-0nA"/>
                                         </constraints>
                                         <state key="normal" image="Previous"/>
-                                        <connections>
-                                            <action selector="playPause:" destination="fGh-hH-QQS" eventType="touchUpInside" id="zC9-5T-klD"/>
-                                        </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7Cr-KC-kdT">
                                         <rect key="frame" x="8" y="62" width="44" height="30"/>
@@ -690,26 +678,25 @@
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="DPi-UY-ShT">
                                 <rect key="frame" x="0.0" y="224" width="375" height="50"/>
                                 <subviews>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Sorting" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="pNu-A0-ntg">
-                                        <rect key="frame" x="317" y="16" width="50" height="18"/>
-                                        <fontDescription key="fontDescription" type="system" pointSize="15"/>
-                                        <nil key="textColor"/>
-                                        <nil key="highlightedColor"/>
-                                    </label>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="View Selector" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ZWZ-mP-qGT">
-                                        <rect key="frame" x="8" y="16" width="95" height="18"/>
-                                        <fontDescription key="fontDescription" type="system" pointSize="15"/>
-                                        <nil key="textColor"/>
-                                        <nil key="highlightedColor"/>
-                                    </label>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="KeZ-oH-1Ay">
+                                        <rect key="frame" x="8" y="10" width="95" height="30"/>
+                                        <state key="normal" title="View Selector"/>
+                                        <connections>
+                                            <action selector="showViewSelector:" destination="fGh-hH-QQS" eventType="touchUpInside" id="eup-sB-UNN"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Ak7-Um-34C">
+                                        <rect key="frame" x="317" y="10" width="50" height="30"/>
+                                        <state key="normal" title="Sorting"/>
+                                    </button>
                                 </subviews>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
-                                    <constraint firstItem="ZWZ-mP-qGT" firstAttribute="leading" secondItem="DPi-UY-ShT" secondAttribute="leading" constant="8" id="Per-FK-YUU"/>
-                                    <constraint firstAttribute="trailing" secondItem="pNu-A0-ntg" secondAttribute="trailing" constant="8" id="SO5-mF-Rud"/>
-                                    <constraint firstItem="ZWZ-mP-qGT" firstAttribute="top" secondItem="DPi-UY-ShT" secondAttribute="top" constant="16" id="XeY-WE-IcH"/>
+                                    <constraint firstItem="KeZ-oH-1Ay" firstAttribute="leading" secondItem="DPi-UY-ShT" secondAttribute="leading" constant="8" id="XHj-J3-4JD"/>
+                                    <constraint firstItem="Ak7-Um-34C" firstAttribute="top" secondItem="DPi-UY-ShT" secondAttribute="top" constant="10" id="bNt-9A-RQb"/>
+                                    <constraint firstItem="KeZ-oH-1Ay" firstAttribute="top" secondItem="DPi-UY-ShT" secondAttribute="top" constant="10" id="cKG-2V-0XU"/>
                                     <constraint firstAttribute="height" constant="50" id="gcK-lv-yt2"/>
-                                    <constraint firstItem="pNu-A0-ntg" firstAttribute="top" secondItem="DPi-UY-ShT" secondAttribute="top" constant="16" id="zdw-Nu-7RX"/>
+                                    <constraint firstAttribute="trailing" secondItem="Ak7-Um-34C" secondAttribute="trailing" constant="8" id="xJU-6K-rke"/>
                                 </constraints>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="V87-ZI-m4e">
@@ -752,7 +739,18 @@
                         </constraints>
                     </view>
                     <connections>
-                        <outlet property="playPauseButton" destination="Ytt-PW-XUF" id="llS-eq-UK7"/>
+                        <outlet property="contentView" destination="V87-ZI-m4e" id="ahx-k7-0ex"/>
+                        <outlet property="currentTime" destination="uTA-rm-Ib9" id="uA4-fk-q0a"/>
+                        <outlet property="device" destination="qsu-6Y-Pz9" id="gA0-o7-2Iy"/>
+                        <outlet property="duration" destination="Gf5-u2-hI0" id="UKG-7H-Q60"/>
+                        <outlet property="episodeTitle" destination="9El-7Y-kCh" id="MW8-Ge-P8Q"/>
+                        <outlet property="image" destination="dKh-qP-chs" id="hov-Zq-24X"/>
+                        <outlet property="play" destination="Ytt-PW-XUF" id="eQ9-1d-llh"/>
+                        <outlet property="podcastTitle" destination="fJD-IK-w03" id="r6m-ue-wLk"/>
+                        <outlet property="progress" destination="Yv3-Oc-a1n" id="6An-JE-nQb"/>
+                        <outlet property="sorting" destination="Ak7-Um-34C" id="nn1-Tl-mBn"/>
+                        <outlet property="speed" destination="7Cr-KC-kdT" id="cbh-bz-Vwn"/>
+                        <outlet property="viewSelector" destination="KeZ-oH-1Ay" id="OwL-Nc-QDl"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="i6M-Yi-mpb" userLabel="First Responder" sceneMemberID="firstResponder"/>

@@ -14,29 +14,57 @@ class MediaPlayerViewController: PVViewController {
     
     let pvMediaPlayer = PVMediaPlayer.shared
     
-    @IBOutlet weak var playPauseButton: UIButton!
+    @IBOutlet weak var progress: UISlider!
+    @IBOutlet weak var currentTime: UILabel!
+    @IBOutlet weak var duration: UILabel!
+    @IBOutlet weak var image: UIImageView!
+    @IBOutlet weak var podcastTitle: UILabel!
+    @IBOutlet weak var episodeTitle: UILabel!
+    @IBOutlet weak var viewSelector: UIButton!
+    @IBOutlet weak var sorting: UIButton!
+    @IBOutlet weak var contentView: UIView!
+    @IBOutlet weak var play: UIButton!
+    @IBOutlet weak var speed: UIButton!
+    @IBOutlet weak var device: UIButton!
     
-    @IBAction func playPause(_ sender: Any) {
+    @IBAction func play(_ sender: Any) {
         // Call playOrPause function, which returns a boolean for isNowPlaying status
         let isNowPlaying = pvMediaPlayer.playOrPause()
 
         if isNowPlaying == true {
             // Change Play/Pause button to Play icon
-            playPauseButton.setImage(UIImage(named:"Play"), for: .normal)
+            play.setImage(UIImage(named:"Play"), for: .normal)
         } else {
             // Change Play/Pause button to Pause icon
-            playPauseButton.setImage(UIImage(named:"Pause"), for: .normal)
+            play.setImage(UIImage(named:"Pause"), for: .normal)
         }
+    }
+    
+    @IBAction func showViewSelector(_ sender: Any) {
+        let alert = UIAlertController(title: "View Selector", message: nil, preferredStyle: .actionSheet)
+        alert.addAction(UIAlertAction(title: "About", style: .default, handler: { (action) in
+            print("Show About")
+        }))
+        alert.addAction(UIAlertAction(title: "Podcast Clips", style: .default, handler: { (action) in
+            print("Show Podcast Clips")
+        }))
+        alert.addAction(UIAlertAction(title: "Episode Clips", style: .default, handler: { (action) in
+            print("Show Episode Clips")
+        }))
+        alert.addAction(UIAlertAction(title: "Subscribed Clips", style: .default, handler: { (action) in
+            print("Subscribed Clips")
+        }))
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        self.present(alert, animated: true, completion: nil)
     }
     
     func setPlayPauseIcon() {
         if pvMediaPlayer.avPlayer.rate == 1 {
-            playPauseButton.setImage(UIImage(named:"Play"), for: .normal)
+            play.setImage(UIImage(named:"Play"), for: .normal)
         } else {
-            playPauseButton.setImage(UIImage(named:"Pause"), for: .normal)
+            play.setImage(UIImage(named:"Pause"), for: .normal)
         }
     }
-    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -45,8 +73,9 @@ class MediaPlayerViewController: PVViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(MediaPlayerViewController.setPlayPauseIcon), name: NSNotification.Name.UIApplicationWillEnterForeground, object: nil)
         
         setPlayPauseIcon()
-        
     }
+    
+    
 
     
 // class MediaPlayerViewController: PVViewController, PVMediaPlayerDelegate {
@@ -89,9 +118,7 @@ class MediaPlayerViewController: PVViewController {
 //    
 //    override func viewDidLoad() {
 //        super.viewDidLoad()
-//
-//        navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .Plain, target: nil, action: nil)
-//        
+////
 //        // If no nowPlaying episode or clip exists, then nav back out of MediaPlayerVC
 //        if pvMediaPlayer.nowPlayingEpisode == nil && pvMediaPlayer.nowPlayingClip == nil {
 //            self.navigationController?.popViewControllerAnimated(true)
