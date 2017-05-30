@@ -15,6 +15,7 @@ class MediaPlayerViewController: PVViewController {
     let pvMediaPlayer = PVMediaPlayer.shared
     var playerSpeedRate:PlayingSpeed = .regular
     
+    @IBOutlet weak var clipsContainerView: UIView!
     @IBOutlet weak var progress: UISlider!
     @IBOutlet weak var currentTime: UILabel!
     @IBOutlet weak var duration: UILabel!
@@ -22,11 +23,39 @@ class MediaPlayerViewController: PVViewController {
     @IBOutlet weak var podcastTitle: UILabel!
     @IBOutlet weak var episodeTitle: UILabel!
     @IBOutlet weak var viewSelector: UIButton!
-    @IBOutlet weak var sorting: UIButton!
     @IBOutlet weak var contentView: UIView!
     @IBOutlet weak var play: UIButton!
     @IBOutlet weak var speed: UIButton!
     @IBOutlet weak var device: UIButton!
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        pvMediaPlayer.avPlayer.rate = 1
+        speed.setTitle(playerSpeedRate.speedText, for: .normal)
+        
+        let share = UIBarButtonItem(title: "Share", style: .plain, target: self, action: #selector(showShareMenu))
+        let makeClip = UIBarButtonItem(title: "Make Clip", style: .plain, target: self, action: #selector(showMakeClip))
+        let addToPlaylist = UIBarButtonItem(title: "Add to Playlist", style: .plain, target: self, action: #selector(showAddToPlaylist))
+        navigationItem.rightBarButtonItems = [share, makeClip, addToPlaylist]
+        
+        // Make sure the Play/Pause button displays properly after returning from background
+        //        NotificationCenter.default.addObserver(self, selector: #selector(MediaPlayerViewController.setPlayIcon), name: NSNotification.Name.UIApplicationWillEnterForeground, object: nil)
+        
+        progress.isContinuous = false
+        
+        viewSelector.setTitle("Show Clips", for: .normal)
+        clipsContainerView.isHidden = true
+        
+        setPlayIcon()
+        
+        setPlayerInfo()
+        
+        // TODO: does this need an unowned self or something?
+        pvMediaPlayer.avPlayer.addPeriodicTimeObserver(forInterval: CMTimeMake(1, 1), queue: DispatchQueue.main) { time in
+            self.updateCurrentTime(currentTime: CMTimeGetSeconds(time))
+        }
+    }
     
     @IBAction func sliderAction(_ sender: UISlider) {
         if let currentItem = pvMediaPlayer.avPlayer.currentItem {
@@ -36,22 +65,15 @@ class MediaPlayerViewController: PVViewController {
         }
     }
     
-    @IBAction func showViewSelector(_ sender: Any) {
-        let alert = UIAlertController(title: "View Selector", message: nil, preferredStyle: .actionSheet)
-        alert.addAction(UIAlertAction(title: "About", style: .default, handler: { (action) in
-            self.showAbout()
-        }))
-        alert.addAction(UIAlertAction(title: "Podcast Clips", style: .default, handler: { (action) in
-            self.showPodcastClips()
-        }))
-        alert.addAction(UIAlertAction(title: "Episode Clips", style: .default, handler: { (action) in
-            self.showEpisodeClips()
-        }))
-        alert.addAction(UIAlertAction(title: "Subscribed Clips", style: .default, handler: { (action) in
-            self.showSubscribedClips()
-        }))
-        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
-        self.present(alert, animated: true, completion: nil)
+    @IBAction func toggleClipsView(_ sender: Any) {
+        if clipsContainerView.isHidden {
+            viewSelector.setTitle("About", for: .normal)
+            clipsContainerView.isHidden = false
+        }
+        else {
+            viewSelector.setTitle("Show Clips", for: .normal)
+            clipsContainerView.isHidden = true
+        }
     }
     
     @IBAction func play(_ sender: Any) {
@@ -107,6 +129,13 @@ class MediaPlayerViewController: PVViewController {
         updateSpeedLabel()
     }
     
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "showClipsList" {
+            if let clipListVC = segue.destination as? ClipsListContainerViewController {
+                clipListVC.delegate = self
+            }
+        }
+    }
     
     func setPlayIcon() {
         if pvMediaPlayer.avPlayer.rate == 0 {
@@ -222,33 +251,10 @@ class MediaPlayerViewController: PVViewController {
     func showAddToPlaylist() {
         return
     }
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
-        pvMediaPlayer.avPlayer.rate = 1
-        speed.setTitle(playerSpeedRate.speedText, for: .normal)
-        
-        let share = UIBarButtonItem(title: "Share", style: .plain, target: self, action: #selector(showShareMenu))
-        let makeClip = UIBarButtonItem(title: "Make Clip", style: .plain, target: self, action: #selector(showMakeClip))
-        let addToPlaylist = UIBarButtonItem(title: "Add to Playlist", style: .plain, target: self, action: #selector(showAddToPlaylist))
-        navigationItem.rightBarButtonItems = [share, makeClip, addToPlaylist]
-        
-        // Make sure the Play/Pause button displays properly after returning from background
-//        NotificationCenter.default.addObserver(self, selector: #selector(MediaPlayerViewController.setPlayIcon), name: NSNotification.Name.UIApplicationWillEnterForeground, object: nil)
-        
-        progress.isContinuous = false
-        
-        viewSelector.setTitle("About", for: .normal)
-        
-        setPlayIcon()
-        
-        setPlayerInfo()
-        
-        // TODO: does this need an unowned self or something?
-        pvMediaPlayer.avPlayer.addPeriodicTimeObserver(forInterval: CMTimeMake(1, 1), queue: DispatchQueue.main) { time in
-            self.updateCurrentTime(currentTime: CMTimeGetSeconds(time))
-        }
+}
+
+extension MediaPlayerViewController:ClipsListDelegate {
+    func didSelectClip(clip: Clip) {
+        //Change the player data and info to the passed in clip
     }
-    
 }
