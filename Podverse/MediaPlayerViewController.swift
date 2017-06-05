@@ -34,7 +34,7 @@ class MediaPlayerViewController: PVViewController {
         pvMediaPlayer.avPlayer.rate = 1
         speed.setTitle(playerSpeedRate.speedText, for: .normal)
         
-        let share = UIBarButtonItem(title: "Share", style: .plain, target: self, action: #selector(showShareMenu))
+        let share = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.action, target: self, action: #selector(showShareMenu))
         let makeClip = UIBarButtonItem(title: "Make Clip", style: .plain, target: self, action: #selector(showMakeClip))
         let addToPlaylist = UIBarButtonItem(title: "Add to Playlist", style: .plain, target: self, action: #selector(showAddToPlaylist))
         navigationItem.rightBarButtonItems = [share, makeClip, addToPlaylist]
