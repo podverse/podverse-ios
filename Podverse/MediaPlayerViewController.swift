@@ -55,6 +55,7 @@ class MediaPlayerViewController: PVViewController {
         pvMediaPlayer.avPlayer.addPeriodicTimeObserver(forInterval: CMTimeMake(1, 1), queue: DispatchQueue.main) { time in
             self.updateCurrentTime(currentTime: CMTimeGetSeconds(time))
         }
+        
     }
     
     @IBAction func sliderAction(_ sender: UISlider) {
@@ -254,7 +255,7 @@ class MediaPlayerViewController: PVViewController {
 }
 
 extension MediaPlayerViewController:ClipsListDelegate {
-    func didSelectClip(clip: Clip) {
+    func didSelectClip(clip: MediaRef) {
         //Change the player data and info to the passed in clip
     }
 }

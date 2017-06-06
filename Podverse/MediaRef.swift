@@ -9,14 +9,11 @@
 import Foundation
 
 class MediaRef {
-//    var artistName: String?
-//    var episodesTotal: Int?
-//    var feedUrl: String?
-//    var imageURL: String?
-//    var itunesImageURL: String?
-//    var isSubscribed: Bool?
-//    var lastPubDate: Date?
-//    var categories: String?
-//    var summary: String?
-//    var title: String?
+    var title:String?
+    var startTime:Int?
+    var endTime:Int?
+    var episodeTitle:String?
+    var episodeMediaUrl:String?
+    var podcastTitle:String?
+    var podcastFeedUrl:String?
 }

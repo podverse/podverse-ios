@@ -13,6 +13,7 @@
 		3051488B1ED27251009BC839 /* PlayerHistoryItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3051488A1ED27251009BC839 /* PlayerHistoryItem.swift */; };
 		3051488D1ED27534009BC839 /* PVPlayerHistoryManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3051488C1ED27534009BC839 /* PVPlayerHistoryManager.swift */; };
 		3095EF061EBC396F00F0E043 /* Auth0.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3095EF051EBC396F00F0E043 /* Auth0.plist */; };
+		3097AA8B1EE5F0B600AD0ED0 /* PVMediaRefRetriever.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3097AA8A1EE5F0B600AD0ED0 /* PVMediaRefRetriever.swift */; };
 		30A575661EBECFF90088CCA6 /* EpisodesTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30A575651EBECFF90088CCA6 /* EpisodesTableViewController.swift */; };
 		30A575681EBED8360088CCA6 /* EpisodeTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30A575671EBED8360088CCA6 /* EpisodeTableViewCell.swift */; };
 		30B427F21EBE4CB100BAD942 /* PVSubscriber.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30B427F11EBE4CB100BAD942 /* PVSubscriber.swift */; };
@@ -54,7 +55,6 @@
 		E7B2A5A81E16246B00AAE036 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7B2A5A71E16246B00AAE036 /* LoginViewController.swift */; };
 		E7B2A5AA1E162AE400AAE036 /* Date+Formatters.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7B2A5A91E162AE400AAE036 /* Date+Formatters.swift */; };
 		E7B2A5AC1E162B8500AAE036 /* String+Formatters.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7B2A5AB1E162B8500AAE036 /* String+Formatters.swift */; };
-		E7CB0EED1E3E61AA00A013AC /* PVPlaylistManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7CB0EEC1E3E61AA00A013AC /* PVPlaylistManager.swift */; };
 		E7D25BBD1E0F056600B60368 /* ExtendedFeedParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7D25BBC1E0F056600B60368 /* ExtendedFeedParser.swift */; };
 		E7D25BC01E0F096A00B60368 /* PVTimeHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7D25BBF1E0F096A00B60368 /* PVTimeHelpers.swift */; };
 		E7D25BC21E0F118C00B60368 /* PVFeedParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7D25BC11E0F118C00B60368 /* PVFeedParser.swift */; };
@@ -98,6 +98,7 @@
 		3051488A1ED27251009BC839 /* PlayerHistoryItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerHistoryItem.swift; sourceTree = "<group>"; };
 		3051488C1ED27534009BC839 /* PVPlayerHistoryManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PVPlayerHistoryManager.swift; sourceTree = "<group>"; };
 		3095EF051EBC396F00F0E043 /* Auth0.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Auth0.plist; sourceTree = "<group>"; };
+		3097AA8A1EE5F0B600AD0ED0 /* PVMediaRefRetriever.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PVMediaRefRetriever.swift; sourceTree = "<group>"; };
 		30A575651EBECFF90088CCA6 /* EpisodesTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EpisodesTableViewController.swift; sourceTree = "<group>"; };
 		30A575671EBED8360088CCA6 /* EpisodeTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EpisodeTableViewCell.swift; sourceTree = "<group>"; };
 		30B427F11EBE4CB100BAD942 /* PVSubscriber.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PVSubscriber.swift; sourceTree = "<group>"; };
@@ -151,7 +152,6 @@
 		E7B2A5A71E16246B00AAE036 /* LoginViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		E7B2A5A91E162AE400AAE036 /* Date+Formatters.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Date+Formatters.swift"; sourceTree = "<group>"; };
 		E7B2A5AB1E162B8500AAE036 /* String+Formatters.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "String+Formatters.swift"; sourceTree = "<group>"; };
-		E7CB0EEC1E3E61AA00A013AC /* PVPlaylistManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PVPlaylistManager.swift; sourceTree = "<group>"; };
 		E7D25BBC1E0F056600B60368 /* ExtendedFeedParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExtendedFeedParser.swift; sourceTree = "<group>"; };
 		E7D25BBF1E0F096A00B60368 /* PVTimeHelpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PVTimeHelpers.swift; sourceTree = "<group>"; };
 		E7D25BC11E0F118C00B60368 /* PVFeedParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PVFeedParser.swift; sourceTree = "<group>"; };
@@ -372,17 +372,17 @@
 		E7D25BBE1E0F092200B60368 /* PVHelpers */ = {
 			isa = PBXGroup;
 			children = (
-				E7D25BBF1E0F096A00B60368 /* PVTimeHelpers.swift */,
-				3051488C1ED27534009BC839 /* PVPlayerHistoryManager.swift */,
-				E7CB0EEC1E3E61AA00A013AC /* PVPlaylistManager.swift */,
 				E7B2A5A01E123E9900AAE036 /* PVAuth.swift */,
 				E7B2A5981E12103D00AAE036 /* PVClipStreamer.swift */,
-				E7B2A5961E11F95C00AAE036 /* PVMediaPlayer.swift */,
-				E78BF9301E0FA64F002194FE /* PVReachability.swift */,
-				E7D25BC11E0F118C00B60368 /* PVFeedParser.swift */,
 				E7D25BCB1E0F176C00B60368 /* PVDeleter.swift */,
 				E76C49C51E0F8DFE00F81217 /* PVDownloader.swift */,
+				E7D25BC11E0F118C00B60368 /* PVFeedParser.swift */,
+				E7B2A5961E11F95C00AAE036 /* PVMediaPlayer.swift */,
+				3097AA8A1EE5F0B600AD0ED0 /* PVMediaRefRetriever.swift */,
+				3051488C1ED27534009BC839 /* PVPlayerHistoryManager.swift */,
+				E78BF9301E0FA64F002194FE /* PVReachability.swift */,
 				30B427F11EBE4CB100BAD942 /* PVSubscriber.swift */,
+				E7D25BBF1E0F096A00B60368 /* PVTimeHelpers.swift */,
 			);
 			name = PVHelpers;
 			sourceTree = "<group>";
@@ -706,7 +706,6 @@
 				E7B2A5971E11F95C00AAE036 /* PVMediaPlayer.swift in Sources */,
 				E7D25BD91E0F2DF800B60368 /* PodcastSearchResult.swift in Sources */,
 				E7D25BD11E0F1CB000B60368 /* CoreDataHelper.swift in Sources */,
-				E7CB0EED1E3E61AA00A013AC /* PVPlaylistManager.swift in Sources */,
 				E7D25BCE1E0F184800B60368 /* Constants.swift in Sources */,
 				E7D25BC81E0F144900B60368 /* Clip.swift in Sources */,
 				E7D25BC41E0F13D300B60368 /* Podcast.swift in Sources */,
@@ -723,6 +722,7 @@
 				30EB67781ECCAB2800C5AB80 /* MediaPlayerViewController.swift in Sources */,
 				E753028A1E072F160007B6F7 /* NSDate+FeedsDate.swift in Sources */,
 				3048E88A1EDD1B1A001AADCE /* Int+MediaPlayerString.swift in Sources */,
+				3097AA8B1EE5F0B600AD0ED0 /* PVMediaRefRetriever.swift in Sources */,
 				E7D25BC61E0F141500B60368 /* Episode.swift in Sources */,
 				E78BF9311E0FA64F002194FE /* PVReachability.swift in Sources */,
 				E75302871E072F160007B6F7 /* FeedEnclosure.swift in Sources */,

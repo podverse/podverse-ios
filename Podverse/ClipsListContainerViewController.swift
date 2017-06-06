@@ -9,7 +9,7 @@
 import UIKit
 
 protocol ClipsListDelegate:class {
-    func didSelectClip(clip:Clip)
+    func didSelectClip(clip:MediaRef)
 }
 
 class ClipsListContainerViewController: UIViewController {
@@ -17,12 +17,53 @@ class ClipsListContainerViewController: UIViewController {
     @IBOutlet weak var segmentControl: UISegmentedControl!
     @IBOutlet weak var tableView: UITableView!
     
-    var clipsArray = [Clip]()
+    let pvMediaPlayer = PVMediaPlayer.shared
+    var clipsArray = [MediaRef]()
     weak var delegate:ClipsListDelegate?
+
+    @IBAction func segmentSelect(_ sender: UISegmentedControl) {
+        clipsArray.removeAll()
+        self.reloadClipData(mediaRefs: nil)
+        if let item = pvMediaPlayer.currentlyPlayingItem {
+            switch sender.selectedSegmentIndex {
+            case 0:
+                PVMediaRefRetriever.retrieveMediaRefsFromServer(episodeMediaUrl: item.episodeMediaUrl, podcastFeedUrl: nil) { (mediaRefs) -> Void in
+                    self.reloadClipData(mediaRefs: mediaRefs)
+                }
+            case 1:
+                PVMediaRefRetriever.retrieveMediaRefsFromServer(episodeMediaUrl: nil, podcastFeedUrl: item.podcastFeedUrl) { (mediaRefs) -> Void in
+                    self.reloadClipData(mediaRefs: mediaRefs)
+                }
+            case 2:
+                PVMediaRefRetriever.retrieveMediaRefsFromServer(episodeMediaUrl: nil, podcastFeedUrl: nil) { (mediaRefs) -> Void in
+                    self.reloadClipData(mediaRefs: mediaRefs)
+                }
+            default:
+                break
+            }
+        }
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         self.tableView.separatorColor = .clear
+        
+        if let item = pvMediaPlayer.currentlyPlayingItem {
+            PVMediaRefRetriever.retrieveMediaRefsFromServer(episodeMediaUrl: item.episodeMediaUrl, podcastFeedUrl: nil) { (mediaRefs) -> Void in
+                DispatchQueue.main.async {
+                    self.reloadClipData(mediaRefs: mediaRefs)
+                }
+            }
+        }
+    }
+    
+    func reloadClipData(mediaRefs: [MediaRef]?) {
+        if let mediaRefs = mediaRefs {
+            for mediaRef in mediaRefs {
+                self.clipsArray.append(mediaRef)
+            }
+        }
+        self.tableView.reloadData()
     }
 }
 
@@ -32,13 +73,25 @@ extension ClipsListContainerViewController:UITableViewDelegate, UITableViewDataS
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "mediaPlayerClipCell", for:indexPath)        
+        // TODO: how do we avoid this force unwrap??
+        let cell = tableView.dequeueReusableCell(withIdentifier: "mediaPlayerClipCell", for:indexPath) as! MediaPlayerClipTableViewCell
         let clip = clipsArray[indexPath.row]
         
-        cell.textLabel?.text = clip.title
-        cell.detailTextLabel?.text = clip.ownerName
+        if let title = clip.title {
+            cell.clipTitle.text = title
+        }
+        
+        if let startTime = clip.startTime {
+            cell.startTime.text = startTime.toMediaPlayerString()
+        }
+        
+        if let endTime = clip.endTime {
+            cell.endTime.text = endTime.toMediaPlayerString()
+        }
         
         return cell
+
+
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
