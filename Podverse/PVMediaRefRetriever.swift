@@ -15,7 +15,6 @@ class PVMediaRefRetriever {
         if let url = URL(string: "https://podverse.fm/api/clips") {
             var request = URLRequest(url: url, cachePolicy: NSURLRequest.CachePolicy.reloadIgnoringLocalAndRemoteCacheData, timeoutInterval: 60)
             request.httpMethod = "POST"
-
             
             var postString:String?
             
@@ -55,7 +54,9 @@ class PVMediaRefRetriever {
                             }
                         }
                         
-                        completion(mediaRefs)
+                        DispatchQueue.main.async {
+                            completion(mediaRefs)
+                        }
                     } catch {
                         print("Error")
                     }
