@@ -17,7 +17,6 @@ class PodcastsTableViewController: PVViewController {
     @IBOutlet weak var parsingActivityContainer: UIView!
     
     var subscribedPodcastsArray = [Podcast]()
-    var followedPodcastsArray = [Podcast]()
     let coreDataHelper = CoreDataHelper.shared
     //var playlistManager = PlaylistManager.shared
     let parsingPodcasts = ParsingPodcastsList.shared
@@ -78,8 +77,7 @@ class PodcastsTableViewController: PVViewController {
     }
     
     fileprivate func refreshPodcastFeeds() {
-        let moc = NSManagedObjectContext(concurrencyType: .mainQueueConcurrencyType)
-        moc.parent = CoreDataHelper.shared.managedObjectContext
+        let moc = CoreDataHelper.createMOCForThread(threadType: .mainThread)
         
         let podcastsPredicate = NSPredicate(format: "isSubscribed == YES")
         let podcastArray = CoreDataHelper.fetchEntities(className:"Podcast", predicate: podcastsPredicate, moc:moc) as! [Podcast]
@@ -114,22 +112,8 @@ class PodcastsTableViewController: PVViewController {
             }
         }
         
-        let notSubscribedPredicate = NSPredicate(format: "isSubscribed == NO")
-        let followedPredicate = NSPredicate(format: "isFollowed == YES")
-        let compoundPredicate = NSCompoundPredicate(andPredicateWithSubpredicates: [notSubscribedPredicate, followedPredicate])
-        self.followedPodcastsArray = CoreDataHelper.fetchEntities(className:"Podcast", predicate: compoundPredicate, moc:moc) as! [Podcast]
-        
-        self.followedPodcastsArray.sort(by: { $0.title.removeArticles() < $1.title.removeArticles() } )
-        
-        for podcast in self.followedPodcastsArray {
-            let podcastPredicate = NSPredicate(format: "podcast == %@", podcast)
-            if let mostRecentEpisode = CoreDataHelper.fetchEntityWithMostRecentPubDate(className:"Episode", predicate: podcastPredicate, moc:moc) as? Episode {
-                podcast.lastPubDate = mostRecentEpisode.pubDate
-            }
-        }
-        moc.saveData({
-            self.tableView.reloadData()
-        })
+        self.tableView.reloadData()
+        moc.saveData(nil)
     }
     
     fileprivate func reloadAllData() {
@@ -163,18 +147,13 @@ class PodcastsTableViewController: PVViewController {
 }
 
 extension PodcastsTableViewController:PVFeedParserDelegate {
-    func feedParsingComplete(feedUrl feedUrl:String?) {
-        let moc = NSManagedObjectContext(concurrencyType: .mainQueueConcurrencyType)
-        moc.parent = CoreDataHelper.shared.managedObjectContext
+    func feedParsingComplete(feedUrl:String?) {
+        let moc = CoreDataHelper.createMOCForThread(threadType: .mainThread)
         
         if let url = feedUrl, let index = self.subscribedPodcastsArray.index(where: { url == $0.feedUrl }) {
             let podcast = CoreDataHelper.fetchEntityWithID(objectId: self.subscribedPodcastsArray[index].objectID, moc: moc) as! Podcast
             self.subscribedPodcastsArray[index] = podcast
             self.tableView.reloadRows(at: [IndexPath(row: index, section: 0)], with: .none)
-        } else if let url = feedUrl, let index = self.followedPodcastsArray.index(where: { url == $0.feedUrl }) {
-            let podcast = CoreDataHelper.fetchEntityWithID(objectId: self.followedPodcastsArray[index].objectID, moc: moc) as! Podcast
-            self.followedPodcastsArray[index] = podcast
-            self.tableView.reloadRows(at: [IndexPath(row: index, section: 1)], with: .none)
         }
         else {
             self.loadPodcastData()
@@ -211,23 +190,13 @@ extension PodcastsTableViewController:UITableViewDelegate, UITableViewDataSource
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if section == 0 {
-            return subscribedPodcastsArray.count
-        } else {
-            return followedPodcastsArray.count
-        }
+        return subscribedPodcastsArray.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "podcastCell", for: indexPath) as! PodcastTableViewCell
         
-        let podcast: Podcast!
-        
-        if indexPath.section == 0 {
-            podcast = subscribedPodcastsArray[indexPath.row]
-        } else {
-            podcast = followedPodcastsArray[indexPath.row]
-        }
+        let podcast = subscribedPodcastsArray[indexPath.row]
         
         cell.title?.text = podcast.title
         
@@ -273,18 +242,8 @@ extension PodcastsTableViewController:UITableViewDelegate, UITableViewDataSource
     }
     
     func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
-        let podcastToEdit: Podcast!
-        
-        if indexPath.section == 0 {
-            podcastToEdit = subscribedPodcastsArray[indexPath.row]
-        } else {
-            podcastToEdit = followedPodcastsArray[indexPath.row]
-        }
-        
+        let podcastToEdit = subscribedPodcastsArray[indexPath.row]
         var subscribeOrFollow = "Subscribe"
-        if podcastToEdit.isSubscribed == true {
-            subscribeOrFollow = "Follow"
-        }
         
         let subscribeOrFollowAction = UITableViewRowAction(style: .default, title: subscribeOrFollow, handler: {action, indexpath in
             if subscribeOrFollow == "Subscribe" {
@@ -304,13 +263,7 @@ extension PodcastsTableViewController:UITableViewDelegate, UITableViewDataSource
 ////                    self.navigationItem.rightBarButtonItem = nil
 ////                }
 //            }
-            
-            if indexPath.section == 0 {
-                self.subscribedPodcastsArray.remove(at: indexPath.row)
-            } else {
-                self.followedPodcastsArray.remove(at: indexPath.row)
-            }
-            
+            self.subscribedPodcastsArray.remove(at: indexPath.row)
             self.tableView.deleteRows(at: [indexPath], with: .fade)
             
             //PVFollower.unfollowPodcast(podcastToEdit.objectID, completionBlock: nil)
