@@ -34,7 +34,7 @@ class MediaPlayerViewController: PVViewController {
         pvMediaPlayer.avPlayer.rate = 1
         speed.setTitle(playerSpeedRate.speedText, for: .normal)
         
-        let share = UIBarButtonItem(title: "Share", style: .plain, target: self, action: #selector(showShareMenu))
+        let share = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.action, target: self, action: #selector(showShareMenu))
         let makeClip = UIBarButtonItem(title: "Make Clip", style: .plain, target: self, action: #selector(showMakeClip))
         let addToPlaylist = UIBarButtonItem(title: "Add to Playlist", style: .plain, target: self, action: #selector(showAddToPlaylist))
         navigationItem.rightBarButtonItems = [share, makeClip, addToPlaylist]
@@ -55,6 +55,7 @@ class MediaPlayerViewController: PVViewController {
         pvMediaPlayer.avPlayer.addPeriodicTimeObserver(forInterval: CMTimeMake(1, 1), queue: DispatchQueue.main) { time in
             self.updateCurrentTime(currentTime: CMTimeGetSeconds(time))
         }
+        
     }
     
     @IBAction func sliderAction(_ sender: UISlider) {
@@ -254,7 +255,7 @@ class MediaPlayerViewController: PVViewController {
 }
 
 extension MediaPlayerViewController:ClipsListDelegate {
-    func didSelectClip(clip: Clip) {
+    func didSelectClip(clip: MediaRef) {
         //Change the player data and info to the passed in clip
     }
 }
