@@ -23,19 +23,19 @@ class ClipsListContainerViewController: UIViewController {
 
     @IBAction func segmentSelect(_ sender: UISegmentedControl) {
         clipsArray.removeAll()
-        self.reloadClipData(mediaRefs: nil)
+        self.reloadClipData()
         if let item = pvMediaPlayer.currentlyPlayingItem {
             switch sender.selectedSegmentIndex {
             case 0:
-                PVMediaRefRetriever.retrieveMediaRefsFromServer(episodeMediaUrl: item.episodeMediaUrl, podcastFeedUrl: nil) { (mediaRefs) -> Void in
+                MediaRef.retrieveMediaRefsFromServer(episodeMediaUrl: item.episodeMediaUrl, podcastFeedUrl: nil) { (mediaRefs) -> Void in
                     self.reloadClipData(mediaRefs: mediaRefs)
                 }
             case 1:
-                PVMediaRefRetriever.retrieveMediaRefsFromServer(episodeMediaUrl: nil, podcastFeedUrl: item.podcastFeedUrl) { (mediaRefs) -> Void in
+                MediaRef.retrieveMediaRefsFromServer(episodeMediaUrl: nil, podcastFeedUrl: item.podcastFeedUrl) { (mediaRefs) -> Void in
                     self.reloadClipData(mediaRefs: mediaRefs)
                 }
             case 2:
-                PVMediaRefRetriever.retrieveMediaRefsFromServer(episodeMediaUrl: nil, podcastFeedUrl: nil) { (mediaRefs) -> Void in
+                MediaRef.retrieveMediaRefsFromServer(episodeMediaUrl: nil, podcastFeedUrl: nil) { (mediaRefs) -> Void in
                     self.reloadClipData(mediaRefs: mediaRefs)
                 }
             default:
@@ -49,7 +49,7 @@ class ClipsListContainerViewController: UIViewController {
         self.tableView.separatorColor = .clear
         
         if let item = pvMediaPlayer.currentlyPlayingItem {
-            PVMediaRefRetriever.retrieveMediaRefsFromServer(episodeMediaUrl: item.episodeMediaUrl, podcastFeedUrl: nil) { (mediaRefs) -> Void in
+            MediaRef.retrieveMediaRefsFromServer(episodeMediaUrl: item.episodeMediaUrl, podcastFeedUrl: nil) { (mediaRefs) -> Void in
                 DispatchQueue.main.async {
                     self.reloadClipData(mediaRefs: mediaRefs)
                 }
@@ -57,7 +57,7 @@ class ClipsListContainerViewController: UIViewController {
         }
     }
     
-    func reloadClipData(mediaRefs: [MediaRef]?) {
+    func reloadClipData(mediaRefs: [MediaRef]? = nil) {
         if let mediaRefs = mediaRefs {
             for mediaRef in mediaRefs {
                 self.clipsArray.append(mediaRef)
@@ -73,7 +73,7 @@ extension ClipsListContainerViewController:UITableViewDelegate, UITableViewDataS
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        // TODO: how do we avoid this force unwrap??
+
         let cell = tableView.dequeueReusableCell(withIdentifier: "mediaPlayerClipCell", for:indexPath) as! MediaPlayerClipTableViewCell
         let clip = clipsArray[indexPath.row]
         
@@ -90,7 +90,6 @@ extension ClipsListContainerViewController:UITableViewDelegate, UITableViewDataS
         }
         
         return cell
-
 
     }
     
