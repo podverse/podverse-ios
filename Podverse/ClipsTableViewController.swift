@@ -24,10 +24,8 @@ class ClipsTableViewController: UIViewController {
     }
     
     func reloadClipData(mediaRefs: [MediaRef]? = nil) {
-        if let mediaRefs = mediaRefs {
-            for mediaRef in mediaRefs {
-                self.clipsArray.append(mediaRef)
-            }
+        for mediaRef in mediaRefs ?? [] {
+            self.clipsArray.append(mediaRef)
         }
         self.tableView.reloadData()
     }
