@@ -13,6 +13,9 @@
 		3051488B1ED27251009BC839 /* PlayerHistoryItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3051488A1ED27251009BC839 /* PlayerHistoryItem.swift */; };
 		3051488D1ED27534009BC839 /* PVPlayerHistoryManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3051488C1ED27534009BC839 /* PVPlayerHistoryManager.swift */; };
 		3095EF061EBC396F00F0E043 /* Auth0.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3095EF051EBC396F00F0E043 /* Auth0.plist */; };
+		3097AA8D1EE7BEC900AD0ED0 /* ClipsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3097AA8C1EE7BEC900AD0ED0 /* ClipsTableViewController.swift */; };
+		3097AA8F1EE7C1D500AD0ED0 /* ClipTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3097AA8E1EE7C1D500AD0ED0 /* ClipTableViewCell.swift */; };
+		3097AA911EE7C7D200AD0ED0 /* DownloadsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3097AA901EE7C7D200AD0ED0 /* DownloadsTableViewController.swift */; };
 		30A575661EBECFF90088CCA6 /* EpisodesTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30A575651EBECFF90088CCA6 /* EpisodesTableViewController.swift */; };
 		30A575681EBED8360088CCA6 /* EpisodeTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30A575671EBED8360088CCA6 /* EpisodeTableViewCell.swift */; };
 		30B427F21EBE4CB100BAD942 /* PVSubscriber.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30B427F11EBE4CB100BAD942 /* PVSubscriber.swift */; };
@@ -21,7 +24,6 @@
 		E70E4A1A1E038F8F003CEC64 /* PodcastsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E70E4A191E038F8F003CEC64 /* PodcastsTableViewController.swift */; };
 		E70E4A1D1E038FC6003CEC64 /* PlaylistsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E70E4A1C1E038FC6003CEC64 /* PlaylistsTableViewController.swift */; };
 		E70E4A1F1E039047003CEC64 /* FindTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E70E4A1E1E039047003CEC64 /* FindTableViewController.swift */; };
-		E70E4A211E03905B003CEC64 /* DownloadsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E70E4A201E03905B003CEC64 /* DownloadsTableViewController.swift */; };
 		E70E4A231E03907A003CEC64 /* SettingsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E70E4A221E03907A003CEC64 /* SettingsTableViewController.swift */; };
 		E75302861E072F160007B6F7 /* FeedChannel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E753027F1E072F160007B6F7 /* FeedChannel.swift */; };
 		E75302871E072F160007B6F7 /* FeedEnclosure.swift in Sources */ = {isa = PBXBuildFile; fileRef = E75302801E072F160007B6F7 /* FeedEnclosure.swift */; };
@@ -97,6 +99,9 @@
 		3051488A1ED27251009BC839 /* PlayerHistoryItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerHistoryItem.swift; sourceTree = "<group>"; };
 		3051488C1ED27534009BC839 /* PVPlayerHistoryManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PVPlayerHistoryManager.swift; sourceTree = "<group>"; };
 		3095EF051EBC396F00F0E043 /* Auth0.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Auth0.plist; sourceTree = "<group>"; };
+		3097AA8C1EE7BEC900AD0ED0 /* ClipsTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClipsTableViewController.swift; sourceTree = "<group>"; };
+		3097AA8E1EE7C1D500AD0ED0 /* ClipTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClipTableViewCell.swift; sourceTree = "<group>"; };
+		3097AA901EE7C7D200AD0ED0 /* DownloadsTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DownloadsTableViewController.swift; sourceTree = "<group>"; };
 		30A575651EBECFF90088CCA6 /* EpisodesTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EpisodesTableViewController.swift; sourceTree = "<group>"; };
 		30A575671EBED8360088CCA6 /* EpisodeTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EpisodeTableViewCell.swift; sourceTree = "<group>"; };
 		30B427F11EBE4CB100BAD942 /* PVSubscriber.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PVSubscriber.swift; sourceTree = "<group>"; };
@@ -111,7 +116,6 @@
 		E70E4A191E038F8F003CEC64 /* PodcastsTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PodcastsTableViewController.swift; sourceTree = "<group>"; };
 		E70E4A1C1E038FC6003CEC64 /* PlaylistsTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlaylistsTableViewController.swift; sourceTree = "<group>"; };
 		E70E4A1E1E039047003CEC64 /* FindTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FindTableViewController.swift; sourceTree = "<group>"; };
-		E70E4A201E03905B003CEC64 /* DownloadsTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DownloadsTableViewController.swift; sourceTree = "<group>"; };
 		E70E4A221E03907A003CEC64 /* SettingsTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsTableViewController.swift; sourceTree = "<group>"; };
 		E753027F1E072F160007B6F7 /* FeedChannel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedChannel.swift; sourceTree = "<group>"; };
 		E75302801E072F160007B6F7 /* FeedEnclosure.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedEnclosure.swift; sourceTree = "<group>"; };
@@ -220,7 +224,9 @@
 			isa = PBXGroup;
 			children = (
 				302D55101EC157960032D0A0 /* PVViewController.swift */,
-				E70E4A201E03905B003CEC64 /* DownloadsTableViewController.swift */,
+				E7AD9A971EDDF7160093F051 /* ClipsListContainerViewController.swift */,
+				3097AA8C1EE7BEC900AD0ED0 /* ClipsTableViewController.swift */,
+				3097AA901EE7C7D200AD0ED0 /* DownloadsTableViewController.swift */,
 				30A575651EBECFF90088CCA6 /* EpisodesTableViewController.swift */,
 				E70E4A1E1E039047003CEC64 /* FindTableViewController.swift */,
 				E7B2A5A71E16246B00AAE036 /* LoginViewController.swift */,
@@ -228,7 +234,6 @@
 				E70E4A1C1E038FC6003CEC64 /* PlaylistsTableViewController.swift */,
 				E70E4A191E038F8F003CEC64 /* PodcastsTableViewController.swift */,
 				E70E4A221E03907A003CEC64 /* SettingsTableViewController.swift */,
-				E7AD9A971EDDF7160093F051 /* ClipsListContainerViewController.swift */,
 			);
 			name = ViewControllers;
 			sourceTree = "<group>";
@@ -354,6 +359,7 @@
 			children = (
 				E7B2A5A31E12CC5A00AAE036 /* PodcastTableViewCell.swift */,
 				30A575671EBED8360088CCA6 /* EpisodeTableViewCell.swift */,
+				3097AA8E1EE7C1D500AD0ED0 /* ClipTableViewCell.swift */,
 				E7AD9A9B1EDDFEAD0093F051 /* MediaPlayerClipTableViewCell.swift */,
 			);
 			name = "Custom UI Classes";
@@ -697,6 +703,8 @@
 				E7B2A5A41E12CC5A00AAE036 /* PodcastTableViewCell.swift in Sources */,
 				E7B2A59D1E123A4400AAE036 /* UIViewController+InternetRequiredAlert.swift in Sources */,
 				E7D25BBD1E0F056600B60368 /* ExtendedFeedParser.swift in Sources */,
+				3097AA911EE7C7D200AD0ED0 /* DownloadsTableViewController.swift in Sources */,
+				3097AA8F1EE7C1D500AD0ED0 /* ClipTableViewCell.swift in Sources */,
 				E7B2A5AA1E162AE400AAE036 /* Date+Formatters.swift in Sources */,
 				E7B2A59F1E123C7F00AAE036 /* UIViewController+MediaPlayerUI.swift in Sources */,
 				E7B2A5AC1E162B8500AAE036 /* String+Formatters.swift in Sources */,
@@ -707,7 +715,6 @@
 				E7D25BC81E0F144900B60368 /* Clip.swift in Sources */,
 				E7D25BC41E0F13D300B60368 /* Podcast.swift in Sources */,
 				E753028C1E072F160007B6F7 /* String+Utilities.swift in Sources */,
-				E70E4A211E03905B003CEC64 /* DownloadsTableViewController.swift in Sources */,
 				E7AD9A9C1EDDFEAD0093F051 /* MediaPlayerClipTableViewCell.swift in Sources */,
 				E70E4A1F1E039047003CEC64 /* FindTableViewController.swift in Sources */,
 				E7B2A5991E12103D00AAE036 /* PVClipStreamer.swift in Sources */,
@@ -725,6 +732,7 @@
 				3048E8881EDA7124001AADCE /* MediaRef.swift in Sources */,
 				E7D25BC01E0F096A00B60368 /* PVTimeHelpers.swift in Sources */,
 				E70E4A231E03907A003CEC64 /* SettingsTableViewController.swift in Sources */,
+				3097AA8D1EE7BEC900AD0ED0 /* ClipsTableViewController.swift in Sources */,
 				3051488D1ED27534009BC839 /* PVPlayerHistoryManager.swift in Sources */,
 				E75302891E072F160007B6F7 /* FeedParser.swift in Sources */,
 				E70E4A1A1E038F8F003CEC64 /* PodcastsTableViewController.swift in Sources */,
