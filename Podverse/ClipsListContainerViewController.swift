@@ -27,15 +27,15 @@ class ClipsListContainerViewController: UIViewController {
         if let item = pvMediaPlayer.currentlyPlayingItem {
             switch sender.selectedSegmentIndex {
             case 0:
-                MediaRef.shared.retrieveMediaRefsFromServer(episodeMediaUrl: item.episodeMediaUrl, podcastFeedUrl: nil) { (mediaRefs) -> Void in
+                MediaRef.retrieveMediaRefsFromServer(episodeMediaUrl: item.episodeMediaUrl, podcastFeedUrl: nil) { (mediaRefs) -> Void in
                     self.reloadClipData(mediaRefs: mediaRefs)
                 }
             case 1:
-                MediaRef.shared.retrieveMediaRefsFromServer(episodeMediaUrl: nil, podcastFeedUrl: item.podcastFeedUrl) { (mediaRefs) -> Void in
+                MediaRef.retrieveMediaRefsFromServer(episodeMediaUrl: nil, podcastFeedUrl: item.podcastFeedUrl) { (mediaRefs) -> Void in
                     self.reloadClipData(mediaRefs: mediaRefs)
                 }
             case 2:
-                MediaRef.shared.retrieveMediaRefsFromServer(episodeMediaUrl: nil, podcastFeedUrl: nil) { (mediaRefs) -> Void in
+                MediaRef.retrieveMediaRefsFromServer(episodeMediaUrl: nil, podcastFeedUrl: nil) { (mediaRefs) -> Void in
                     self.reloadClipData(mediaRefs: mediaRefs)
                 }
             default:
@@ -49,7 +49,7 @@ class ClipsListContainerViewController: UIViewController {
         self.tableView.separatorColor = .clear
         
         if let item = pvMediaPlayer.currentlyPlayingItem {
-            MediaRef.shared.retrieveMediaRefsFromServer(episodeMediaUrl: item.episodeMediaUrl, podcastFeedUrl: nil) { (mediaRefs) -> Void in
+            MediaRef.retrieveMediaRefsFromServer(episodeMediaUrl: item.episodeMediaUrl, podcastFeedUrl: nil) { (mediaRefs) -> Void in
                 DispatchQueue.main.async {
                     self.reloadClipData(mediaRefs: mediaRefs)
                 }

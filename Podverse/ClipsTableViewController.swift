@@ -17,7 +17,7 @@ class ClipsTableViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        MediaRef.shared.retrieveMediaRefsFromServer() { (mediaRefs) -> Void in
+        MediaRef.retrieveMediaRefsFromServer() { (mediaRefs) -> Void in
             self.reloadClipData(mediaRefs: mediaRefs)
         }
 
