@@ -259,3 +259,9 @@ extension MediaPlayerViewController:ClipsListDelegate {
         //Change the player data and info to the passed in clip
     }
 }
+
+extension MediaPlayerViewController:MediaRefDelegate {
+    func mediaRefsRetrievedFromServer() {
+        print("Retrieved that shit")
+    }
+}
