@@ -331,6 +331,20 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ma7-f8-mOk">
+                                <rect key="frame" x="0.0" y="64" width="375" height="554"/>
+                                <subviews>
+                                    <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="7LK-Aw-ucR">
+                                        <rect key="frame" x="169" y="259" width="37" height="37"/>
+                                        <color key="color" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                                    </activityIndicatorView>
+                                </subviews>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstItem="7LK-Aw-ucR" firstAttribute="centerX" secondItem="ma7-f8-mOk" secondAttribute="centerX" id="ME6-TD-D5U"/>
+                                    <constraint firstItem="7LK-Aw-ucR" firstAttribute="centerY" secondItem="ma7-f8-mOk" secondAttribute="centerY" id="bCg-Tn-ZHh"/>
+                                </constraints>
+                            </view>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="130" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="vEq-k2-ABP">
                                 <rect key="frame" x="0.0" y="64" width="375" height="554"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -417,13 +431,19 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstAttribute="trailing" secondItem="vEq-k2-ABP" secondAttribute="trailing" id="7VU-Km-VTs"/>
+                            <constraint firstItem="teL-qA-mOZ" firstAttribute="top" secondItem="ma7-f8-mOk" secondAttribute="bottom" id="BAc-TL-DDr"/>
+                            <constraint firstAttribute="trailing" secondItem="ma7-f8-mOk" secondAttribute="trailing" id="MON-sX-PEM"/>
                             <constraint firstItem="vEq-k2-ABP" firstAttribute="top" secondItem="vOH-XF-B6x" secondAttribute="bottom" id="OhC-18-aoU"/>
                             <constraint firstItem="vEq-k2-ABP" firstAttribute="leading" secondItem="gIq-dg-S0t" secondAttribute="leading" id="hTn-hA-Eb1"/>
                             <constraint firstItem="teL-qA-mOZ" firstAttribute="top" secondItem="vEq-k2-ABP" secondAttribute="bottom" id="iDV-SF-Z5y"/>
+                            <constraint firstItem="ma7-f8-mOk" firstAttribute="leading" secondItem="gIq-dg-S0t" secondAttribute="leading" id="kzy-ZN-r2i"/>
+                            <constraint firstItem="ma7-f8-mOk" firstAttribute="top" secondItem="vOH-XF-B6x" secondAttribute="bottom" id="qHR-y8-fsL"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="RfP-ff-YV2"/>
                     <connections>
+                        <outlet property="activityIndicator" destination="7LK-Aw-ucR" id="ANo-oe-Fym"/>
+                        <outlet property="loadingView" destination="ma7-f8-mOk" id="2bc-lv-p3D"/>
                         <outlet property="tableView" destination="vEq-k2-ABP" id="q9Z-J2-fbJ"/>
                     </connections>
                 </viewController>
@@ -980,18 +1000,37 @@
                                     <action selector="segmentSelect:" destination="PTS-x4-uBx" eventType="valueChanged" id="qeC-nP-ALQ"/>
                                 </connections>
                             </segmentedControl>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="EiM-6C-YCB">
+                                <rect key="frame" x="15" y="48" width="345" height="275"/>
+                                <subviews>
+                                    <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="j2A-52-Vjl">
+                                        <rect key="frame" x="154" y="119" width="37" height="37"/>
+                                    </activityIndicatorView>
+                                </subviews>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstItem="j2A-52-Vjl" firstAttribute="centerY" secondItem="EiM-6C-YCB" secondAttribute="centerY" id="6kd-f6-V3a"/>
+                                    <constraint firstItem="j2A-52-Vjl" firstAttribute="centerX" secondItem="EiM-6C-YCB" secondAttribute="centerX" id="Spk-dV-4zb"/>
+                                </constraints>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
+                            <constraint firstItem="3dk-BJ-97w" firstAttribute="top" secondItem="EiM-6C-YCB" secondAttribute="bottom" id="Hf4-bc-4UJ"/>
                             <constraint firstItem="AtU-cy-hVq" firstAttribute="top" secondItem="RPi-Wk-7Ex" secondAttribute="bottom" constant="10" id="K6e-7n-nMd"/>
                             <constraint firstItem="RPi-Wk-7Ex" firstAttribute="top" secondItem="MBd-jM-R1p" secondAttribute="topMargin" constant="10" id="OkS-fw-XoZ"/>
                             <constraint firstAttribute="bottom" secondItem="AtU-cy-hVq" secondAttribute="bottom" id="QHQ-CT-bEC"/>
                             <constraint firstItem="RPi-Wk-7Ex" firstAttribute="centerX" secondItem="MBd-jM-R1p" secondAttribute="centerX" id="RB8-tX-CJr"/>
+                            <constraint firstAttribute="trailing" secondItem="EiM-6C-YCB" secondAttribute="trailing" constant="15" id="Scw-TD-D7Y"/>
+                            <constraint firstItem="EiM-6C-YCB" firstAttribute="top" secondItem="RPi-Wk-7Ex" secondAttribute="bottom" constant="10" id="aGz-tp-tzE"/>
                             <constraint firstAttribute="trailing" secondItem="AtU-cy-hVq" secondAttribute="trailing" constant="15" id="dNi-4K-CAR"/>
                             <constraint firstItem="AtU-cy-hVq" firstAttribute="leading" secondItem="MBd-jM-R1p" secondAttribute="leading" constant="15" id="hQ3-rP-ndn"/>
+                            <constraint firstItem="EiM-6C-YCB" firstAttribute="leading" secondItem="MBd-jM-R1p" secondAttribute="leading" constant="15" id="q7s-tR-2Uc"/>
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="activityIndicator" destination="j2A-52-Vjl" id="7S8-kE-0Lh"/>
+                        <outlet property="loadingView" destination="EiM-6C-YCB" id="bjH-uW-hqA"/>
                         <outlet property="segmentControl" destination="RPi-Wk-7Ex" id="r4O-l9-r6k"/>
                         <outlet property="tableView" destination="AtU-cy-hVq" id="y9k-YP-i6g"/>
                     </connections>
