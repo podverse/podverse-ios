@@ -76,7 +76,7 @@ class PlayerHistoryItem: NSObject, NSCoding {
         coder.encode(podcastTitle, forKey:"podcastTitle")
         coder.encode(podcastImageUrl, forKey:"podcastImageUrl")
         coder.encode(episodeMediaUrl, forKey:"episodeMediaUrl")
-        coder.encode(episodeTitle, forKey:"episodeTitleepisodeTitle")
+        coder.encode(episodeTitle, forKey:"episodeTitle")
         coder.encode(episodeImageUrl, forKey:"episodeImageUrl")
         coder.encode(episodeSummary, forKey:"episodeSummary")
         coder.encode(episodeDuration, forKey:"episodeDuration")

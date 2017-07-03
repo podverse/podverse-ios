@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ClipsTableViewController: UIViewController {
+class ClipsTableViewController: PVViewController {
 
     var clipsArray = [MediaRef]()
     
@@ -20,7 +20,6 @@ class ClipsTableViewController: UIViewController {
         MediaRef.retrieveMediaRefsFromServer() { (mediaRefs) -> Void in
             self.reloadClipData(mediaRefs: mediaRefs)
         }
-
     }
     
     func reloadClipData(mediaRefs: [MediaRef]? = nil) {

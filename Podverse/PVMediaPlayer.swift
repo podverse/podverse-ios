@@ -256,6 +256,8 @@ class PVMediaPlayer {
         moc.parent = CoreDataHelper.shared.managedObjectContext
         
         if let episodeMediaUrl = playerHistoryItem.episodeMediaUrl {
+            playerHistoryManager.addOrUpdateItem(item: playerHistoryItem)
+            
             let episodesPredicate = NSPredicate(format: "mediaUrl == %@", episodeMediaUrl)
             if let episodes = CoreDataHelper.fetchEntities(className: "Episode", predicate: episodesPredicate, moc: moc) as? [Episode] {
                 if let episode = episodes.first {
@@ -283,8 +285,6 @@ class PVMediaPlayer {
                 }
             }
         }
-        
-
         
     }
         

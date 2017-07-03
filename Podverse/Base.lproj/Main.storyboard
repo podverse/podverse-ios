@@ -266,12 +266,11 @@
                                 </connections>
                             </tableView>
                         </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstAttribute="trailing" secondItem="TnJ-Ls-LeL" secondAttribute="trailing" id="N0p-Yk-Th9"/>
-                            <constraint firstItem="TnJ-Ls-LeL" firstAttribute="top" secondItem="h69-WW-9xE" secondAttribute="bottom" id="nBL-G3-0KU"/>
-                            <constraint firstItem="TnJ-Ls-LeL" firstAttribute="leading" secondItem="0oh-KP-s3v" secondAttribute="leading" id="w1g-D8-9gc"/>
-                            <constraint firstItem="vf6-Da-ONA" firstAttribute="top" secondItem="TnJ-Ls-LeL" secondAttribute="bottom" id="wv1-u1-4qq"/>
+                            <constraint firstItem="TnJ-Ls-LeL" firstAttribute="leading" secondItem="0oh-KP-s3v" secondAttribute="leading" id="Dk8-tw-TaS"/>
+                            <constraint firstAttribute="trailing" secondItem="TnJ-Ls-LeL" secondAttribute="trailing" id="Obm-kh-QpG"/>
+                            <constraint firstItem="TnJ-Ls-LeL" firstAttribute="top" secondItem="h69-WW-9xE" secondAttribute="bottom" id="TxS-Fl-g9x"/>
+                            <constraint firstItem="vf6-Da-ONA" firstAttribute="top" secondItem="TnJ-Ls-LeL" secondAttribute="bottom" id="scY-do-ADS"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="p8g-EL-sVX"/>
@@ -279,6 +278,7 @@
                         <outlet property="parsingActivityContainer" destination="5T6-DS-Lmx" id="ZbX-Uz-ej2"/>
                         <outlet property="tableView" destination="TnJ-Ls-LeL" id="GWb-4j-YZr"/>
                         <segue destination="DYF-Bg-yz8" kind="show" identifier="Show Episodes" id="5cx-iX-KAU"/>
+                        <segue destination="fGh-hH-QQS" kind="show" identifier="To Now Playing" id="WJJ-II-E2z"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="qiC-S7-vKn" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -425,6 +425,7 @@
                     <navigationItem key="navigationItem" id="RfP-ff-YV2"/>
                     <connections>
                         <outlet property="tableView" destination="vEq-k2-ABP" id="q9Z-J2-fbJ"/>
+                        <segue destination="fGh-hH-QQS" kind="show" identifier="To Now Playing" id="psA-3k-dMZ"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="IHf-aw-3og" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -473,6 +474,7 @@
                     <navigationItem key="navigationItem" id="Zaw-tO-SET"/>
                     <connections>
                         <outlet property="tableView" destination="rZ5-gI-Z44" id="H80-rd-y9W"/>
+                        <segue destination="fGh-hH-QQS" kind="show" identifier="To Now Playing" id="2eH-AV-x7o"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="gxH-qg-89B" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -597,13 +599,13 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="VlY-V6-PlY" firstAttribute="top" secondItem="VOa-dX-ejH" secondAttribute="bottom" id="0XD-jM-l8r"/>
-                            <constraint firstAttribute="trailing" secondItem="VOa-dX-ejH" secondAttribute="trailing" id="Ols-fg-DiJ"/>
+                            <constraint firstItem="VOa-dX-ejH" firstAttribute="leading" secondItem="yDx-lL-sZ5" secondAttribute="leading" id="9Bm-rh-jJr"/>
+                            <constraint firstItem="VOa-dX-ejH" firstAttribute="top" secondItem="lmW-yQ-hym" secondAttribute="bottom" constant="92" id="Q65-gm-3J3"/>
                             <constraint firstAttribute="trailing" secondItem="yDP-ef-HEq" secondAttribute="trailing" id="RZo-gL-fD2"/>
+                            <constraint firstItem="VlY-V6-PlY" firstAttribute="top" secondItem="VOa-dX-ejH" secondAttribute="bottom" id="YCb-uU-WyV"/>
                             <constraint firstItem="yDP-ef-HEq" firstAttribute="top" secondItem="lmW-yQ-hym" secondAttribute="bottom" id="bDA-Mf-pfp"/>
                             <constraint firstItem="yDP-ef-HEq" firstAttribute="leading" secondItem="yDx-lL-sZ5" secondAttribute="leading" id="cr2-27-0yp"/>
-                            <constraint firstItem="VOa-dX-ejH" firstAttribute="leading" secondItem="yDx-lL-sZ5" secondAttribute="leading" id="dwp-Wg-d4m"/>
-                            <constraint firstItem="VOa-dX-ejH" firstAttribute="top" secondItem="yDP-ef-HEq" secondAttribute="bottom" id="gY2-UX-mTw"/>
+                            <constraint firstAttribute="trailing" secondItem="VOa-dX-ejH" secondAttribute="trailing" id="yAw-ZG-imb"/>
                         </constraints>
                     </view>
                     <connections>
@@ -611,6 +613,7 @@
                         <outlet property="headerPodcastTitle" destination="4bn-tB-LUD" id="iII-EY-sLo"/>
                         <outlet property="tableView" destination="VOa-dX-ejH" id="QWe-WP-Gqg"/>
                         <segue destination="fGh-hH-QQS" kind="show" identifier="To Now Playing" id="Eel-N3-mrg"/>
+                        <segue destination="fGh-hH-QQS" kind="show" identifier="To Now Playing" id="NYK-ro-0Fx"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="6Xm-6J-YIW" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -861,7 +864,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="i6M-Yi-mpb" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2788" y="-1876.0119940029986"/>
+            <point key="canvasLocation" x="2690" y="-1879"/>
         </scene>
         <!--Playlists-->
         <scene sceneID="WnP-eH-wLR">
@@ -877,6 +880,9 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
                     <navigationItem key="navigationItem" id="gll-NB-RZL"/>
+                    <connections>
+                        <segue destination="fGh-hH-QQS" kind="show" identifier="To Now Playing" id="o0J-1z-tUF"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="I2t-g2-vF9" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -896,6 +902,9 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
                     <navigationItem key="navigationItem" id="ElV-7R-KCw"/>
+                    <connections>
+                        <segue destination="fGh-hH-QQS" kind="show" identifier="To Now Playing" id="6SD-5p-VhR"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="7sa-os-Xff" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -1007,4 +1016,7 @@
         <image name="Skip" width="40" height="40"/>
         <image name="banner" width="337" height="61"/>
     </resources>
+    <inferredMetricsTieBreakers>
+        <segue reference="WJJ-II-E2z"/>
+    </inferredMetricsTieBreakers>
 </document>

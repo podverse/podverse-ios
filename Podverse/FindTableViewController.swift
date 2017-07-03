@@ -27,16 +27,8 @@ class FindTableViewController: PVViewController {
         
     }
     
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-// TODO
-//        navigationItem.rightBarButtonItem = self.playerNavButton()
-    }
-    
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
         
         self.navigationItem.title = "Find"
         

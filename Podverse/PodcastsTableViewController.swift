@@ -23,7 +23,6 @@ class PodcastsTableViewController: PVViewController {
     let reachability = PVReachability.shared
     var refreshControl: UIRefreshControl!
     
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         var isFirstTimeAppOpened: Bool = false
@@ -60,12 +59,6 @@ class PodcastsTableViewController: PVViewController {
         
 //        startCheckSubscriptionsForNewEpisodesTimer()
     }
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-//        navigationItem.rightBarButton = self.playerNavButton()
-//        showFindAPodcastIfNoneAreFollowed()
-    }
-
     
     func refreshPodcastData() {
         if reachability.hasInternetConnection() == false && refreshControl.isRefreshing == true {
@@ -275,10 +268,10 @@ extension PodcastsTableViewController:UITableViewDelegate, UITableViewDataSource
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        let episodesTableViewController = segue.destination as! EpisodesTableViewController
         
         if let index = tableView.indexPathForSelectedRow {
             if segue.identifier == "Show Episodes" {
+                let episodesTableViewController = segue.destination as! EpisodesTableViewController
                 episodesTableViewController.selectedPodcastID = subscribedPodcastsArray[index.row].objectID
             }
         }

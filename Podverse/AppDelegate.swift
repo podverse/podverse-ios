@@ -18,6 +18,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var backgroundTransferCompletionHandler: (() -> Void)?
     var timer: DispatchSource!
     let pvMediaPlayer = PVMediaPlayer.shared
+    let playerHistoryManager = PlayerHistory.manager
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
@@ -31,6 +32,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         application.beginBackgroundTask(withName: "showNotification", expirationHandler: nil)
         
         CoreDataHelper.resetEpisodesState()
+        
+        playerHistoryManager.loadData()
+        if let previousItem = playerHistoryManager.historyItems.first {
+            pvMediaPlayer.loadPlayerHistoryItem(playerHistoryItem: previousItem)
+        }
+        
         return true
     }
 

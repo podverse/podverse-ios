@@ -53,7 +53,18 @@ class PlayerHistory {
     }
     
     func addOrUpdateItem(item: PlayerHistoryItem) {
-        print(item)
+
+        let previousIndex = historyItems.index(where: { (previousItem) -> Bool in // thanks sschuth https://stackoverflow.com/a/24069331/2608858
+            previousItem.episodeMediaUrl == item.episodeMediaUrl
+        })
+        
+        if let index = previousIndex {
+            historyItems.rearrange(from: index, to: 0)
+        } else {
+            historyItems.insert(item, at: 0)
+        }
+        
+        saveData()
     }
     
     func convertEpisodeToPlayerHistoryItem(episode: Episode) -> PlayerHistoryItem {

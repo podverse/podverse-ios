@@ -14,8 +14,6 @@ class EpisodesTableViewController: PVViewController, UITableViewDataSource, UITa
     var pvMediaPlayer = PVMediaPlayer.shared
     //    let reachability = PVReachability.manager
     
-    var playerHistoryManager = PlayerHistory.manager
-    
 //    @IBOutlet weak var headerView: UIView!
 //    @IBOutlet weak var headerImageView: UIImageView!
 //    @IBOutlet weak var headerSummaryLabel: UILabel!
@@ -98,14 +96,12 @@ class EpisodesTableViewController: PVViewController, UITableViewDataSource, UITa
 //        }
 //    }
 //    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-//        navigationItem.rightBarButtonItem = self.playerNavButton()
-    }
-//    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.loadData()
+        
+        self.designNowPlayingBar()
+        
         PVDownloader.shared.delegate = self
         
         NotificationCenter.default.addObserver(self, selector: #selector(removePlayerNavButtonAndReload), name: NSNotification.Name(rawValue: kPlayerHasNoItem), object: nil)
