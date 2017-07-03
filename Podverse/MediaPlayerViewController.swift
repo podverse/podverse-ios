@@ -68,7 +68,7 @@ class MediaPlayerViewController: PVViewController {
     
     @IBAction func toggleClipsView(_ sender: Any) {
         if clipsContainerView.isHidden {
-            viewSelector.setTitle("About", for: .normal)
+            viewSelector.setTitle("Show About", for: .normal)
             clipsContainerView.isHidden = false
         }
         else {

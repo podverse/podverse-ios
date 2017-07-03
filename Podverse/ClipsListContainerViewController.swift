@@ -18,17 +18,20 @@ class ClipsListContainerViewController: UIViewController {
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var loadingView: UIView!
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
+    @IBOutlet weak var statusMessage: UILabel!
+    @IBOutlet weak var retryButton: UIButton!
     
     let pvMediaPlayer = PVMediaPlayer.shared
     var clipsArray = [MediaRef]()
     weak var delegate:ClipsListDelegate?
-
+    let reachability = PVReachability.shared
+    
     @IBAction func segmentSelect(_ sender: UISegmentedControl) {
-        tableView.isHidden = true
-        loadingView.isHidden = false
+        showIndicator()
         
         clipsArray.removeAll()
-        self.reloadClipData()
+        self.tableView.reloadData()
+        
         if let item = pvMediaPlayer.currentlyPlayingItem {
             switch sender.selectedSegmentIndex {
             case 0:
@@ -49,31 +52,75 @@ class ClipsListContainerViewController: UIViewController {
         }
     }
     
+    @IBAction func retryButtonTouched(_ sender: Any) {
+        segmentControl.sendActions(for: .valueChanged)
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        MediaRef.shared.delegate = self
-        tableView.isHidden = true
         self.tableView.separatorColor = .clear
-        
         activityIndicator.startAnimating()
+        showIndicator()
         
         if let item = pvMediaPlayer.currentlyPlayingItem {
             MediaRef.retrieveMediaRefsFromServer(episodeMediaUrl: item.episodeMediaUrl, podcastFeedUrl: nil) { (mediaRefs) -> Void in
-                DispatchQueue.main.async {
-                    self.reloadClipData(mediaRefs: mediaRefs)
-                }
+                self.reloadClipData(mediaRefs: mediaRefs)
             }
         }
     }
     
     func reloadClipData(mediaRefs: [MediaRef]? = nil) {
-        if let mediaRefs = mediaRefs {
-            for mediaRef in mediaRefs {
-                self.clipsArray.append(mediaRef)
+        let when = DispatchTime.now() + 0.3
+        DispatchQueue.main.asyncAfter(deadline: when) {
+            if mediaRefs?.count == 0 && self.reachability.hasInternetConnection() == false {
+                self.showStatusMessage(message: "You must connect to the internet to load clips.")
+                return
             }
+            
+            if mediaRefs?.count == 0 {
+                self.showStatusMessage(message: "No clips available")
+                return
+            }
+            
+            if let mediaRefs = mediaRefs {
+                for mediaRef in mediaRefs {
+                    self.clipsArray.append(mediaRef)
+                }
+            }
+            
+            self.showClipsView()
+            
+            self.tableView.reloadData()
         }
-        self.tableView.reloadData()
+    }
+    
+    func showStatusMessage(message: String) {
+        statusMessage.text = message
+        tableView.isHidden = true
+        loadingView.isHidden = false
+        activityIndicator.isHidden = true
+        statusMessage.isHidden = false
+        
+        if message == "You must connect to the internet to load clips." {
+            retryButton.isHidden = false
+        }
+    }
+    
+    func showIndicator() {
+        tableView.isHidden = true
+        loadingView.isHidden = false
+        activityIndicator.isHidden = false
+        statusMessage.isHidden = true
+        retryButton.isHidden = true
+    }
+    
+    func showClipsView() {
+        tableView.isHidden = false
+        loadingView.isHidden = true
+        activityIndicator.isHidden = true
+        statusMessage.isHidden = true
+        retryButton.isHidden = true
     }
 }
 
@@ -108,12 +155,3 @@ extension ClipsListContainerViewController:UITableViewDelegate, UITableViewDataS
     }
 }
 
-extension ClipsListContainerViewController:MediaRefDelegate {
-    func mediaRefsRetrievedFromServer() {
-        let when = DispatchTime.now() + 0.3
-        DispatchQueue.main.asyncAfter(deadline: when) {
-            self.loadingView.isHidden = true
-            self.tableView.isHidden = false
-        }
-    }
-}
