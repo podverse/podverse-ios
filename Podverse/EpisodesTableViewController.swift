@@ -51,11 +51,6 @@ class EpisodesTableViewController: PVViewController, UITableViewDataSource, UITa
 
 //        self.tableView.reloadData()
     }
-//
-    func removePlayerNavButtonAndReload() {
-        removeMediaPlayerButton()
-        self.loadData()
-    }
 
     func downloadPlay(sender: UIButton) {
         if let cell = sender.superview?.superview as? EpisodeTableViewCell,
@@ -98,13 +93,9 @@ class EpisodesTableViewController: PVViewController, UITableViewDataSource, UITa
 //    
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.loadData()
-        
-        self.designNowPlayingBar()
+        loadData()
         
         PVDownloader.shared.delegate = self
-        
-        NotificationCenter.default.addObserver(self, selector: #selector(removePlayerNavButtonAndReload), name: NSNotification.Name(rawValue: kPlayerHasNoItem), object: nil)
         
         NotificationCenter.default.addObserver(self, selector: #selector(loadData), name: NSNotification.Name(kDownloadHasFinished), object: nil)
         

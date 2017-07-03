@@ -48,9 +48,8 @@ class PodcastsTableViewController: PVViewController {
         refreshControl.addTarget(self, action: #selector(refreshPodcastData), for: UIControlEvents.valueChanged)
         tableView.addSubview(refreshControl)
         
-        NotificationCenter.default.addObserver(self, selector: #selector(removePlayerNavButtonAndReload), name: NSNotification.Name(rawValue: kPlayerHasNoItem), object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(loadPodcastData), name: NSNotification.Name(rawValue: kDownloadHasFinished), object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(clearParsingActivity), name: NSNotification.Name(rawValue: kInternetIsUnreachable), object: nil)
+//        NotificationCenter.default.addObserver(self, selector: #selector(loadPodcastData), name: NSNotification.Name(rawValue: kDownloadHasFinished), object: nil)
+//        NotificationCenter.default.addObserver(self, selector: #selector(clearParsingActivity), name: NSNotification.Name(rawValue: kInternetIsUnreachable), object: nil)
         updateParsingActivity()
         
         if isFirstTimeAppOpened != true {
@@ -59,7 +58,7 @@ class PodcastsTableViewController: PVViewController {
         
 //        startCheckSubscriptionsForNewEpisodesTimer()
     }
-    
+        
     func refreshPodcastData() {
         if reachability.hasInternetConnection() == false && refreshControl.isRefreshing == true {
             showInternetNeededAlertWithDesciription(message:"Connect to WiFi or cellular data to parse podcast feeds.")
@@ -117,11 +116,6 @@ class PodcastsTableViewController: PVViewController {
     func clearParsingActivity() {
         parsingPodcasts.itemsParsing = 0
         self.parsingActivityContainer.isHidden = true
-    }
-    
-    func removePlayerNavButtonAndReload() {
-        self.removeMediaPlayerButton()
-        self.loadPodcastData()
     }
     
     func updateParsingActivity() {
@@ -268,6 +262,8 @@ extension PodcastsTableViewController:UITableViewDelegate, UITableViewDataSource
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        
+        
         
         if let index = tableView.indexPathForSelectedRow {
             if segue.identifier == "Show Episodes" {

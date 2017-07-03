@@ -31,8 +31,6 @@ class FindTableViewController: PVViewController {
         super.viewDidLoad()
         
         self.navigationItem.title = "Find"
-        
-        NotificationCenter.default.addObserver(self, selector: #selector(removeMediaPlayerButton), name: NSNotification.Name(rawValue: kPlayerHasNoItem), object: nil)
     }
 
     override func didReceiveMemoryWarning() {

@@ -10,7 +10,7 @@ import UIKit
 import CoreData
 import AVFoundation
 
-class MediaPlayerViewController: PVViewController {
+class MediaPlayerViewController: UIViewController {
     
     let pvMediaPlayer = PVMediaPlayer.shared
     var playerSpeedRate:PlayingSpeed = .regular
