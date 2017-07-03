@@ -16,12 +16,17 @@ class ClipsListContainerViewController: UIViewController {
 
     @IBOutlet weak var segmentControl: UISegmentedControl!
     @IBOutlet weak var tableView: UITableView!
+    @IBOutlet weak var loadingView: UIView!
+    @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     
     let pvMediaPlayer = PVMediaPlayer.shared
     var clipsArray = [MediaRef]()
     weak var delegate:ClipsListDelegate?
 
     @IBAction func segmentSelect(_ sender: UISegmentedControl) {
+        tableView.isHidden = true
+        loadingView.isHidden = false
+        
         clipsArray.removeAll()
         self.reloadClipData()
         if let item = pvMediaPlayer.currentlyPlayingItem {
@@ -46,7 +51,12 @@ class ClipsListContainerViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        MediaRef.shared.delegate = self
+        tableView.isHidden = true
         self.tableView.separatorColor = .clear
+        
+        activityIndicator.startAnimating()
         
         if let item = pvMediaPlayer.currentlyPlayingItem {
             MediaRef.retrieveMediaRefsFromServer(episodeMediaUrl: item.episodeMediaUrl, podcastFeedUrl: nil) { (mediaRefs) -> Void in
@@ -95,5 +105,15 @@ extension ClipsListContainerViewController:UITableViewDelegate, UITableViewDataS
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         self.delegate?.didSelectClip(clip: self.clipsArray[indexPath.row])
+    }
+}
+
+extension ClipsListContainerViewController:MediaRefDelegate {
+    func mediaRefsRetrievedFromServer() {
+        let when = DispatchTime.now() + 0.3
+        DispatchQueue.main.asyncAfter(deadline: when) {
+            self.loadingView.isHidden = true
+            self.tableView.isHidden = false
+        }
     }
 }

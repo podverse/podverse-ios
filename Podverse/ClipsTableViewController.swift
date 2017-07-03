@@ -13,9 +13,15 @@ class ClipsTableViewController: UIViewController {
     var clipsArray = [MediaRef]()
     
     @IBOutlet weak var tableView: UITableView!
+    @IBOutlet weak var loadingView: UIView!
+    @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        tableView.isHidden = true
+        activityIndicator.startAnimating()
+        MediaRef.shared.delegate = self
         
         MediaRef.retrieveMediaRefsFromServer() { (mediaRefs) -> Void in
             self.reloadClipData(mediaRefs: mediaRefs)
@@ -89,61 +95,12 @@ extension ClipsTableViewController:UITableViewDelegate, UITableViewDataSource {
     
 }
 
-//extension PodcastsTableViewController:UITableViewDelegate, UITableViewDataSource {
-//    // MARK: - Table view data source
-
-
-//    
-//    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-//        self.performSegue(withIdentifier: "Show Episodes", sender: nil)
-//        tableView.deselectRow(at: indexPath, animated: true)
-//    }
-//    
-//    func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-//        return true
-//    }
-//    
-//    func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
-//        let podcastToEdit = subscribedPodcastsArray[indexPath.row]
-//        var subscribeOrFollow = "Subscribe"
-//        
-//        let subscribeOrFollowAction = UITableViewRowAction(style: .default, title: subscribeOrFollow, handler: {action, indexpath in
-//            if subscribeOrFollow == "Subscribe" {
-//                //PVSubscriber.subscribeToPodcast(podcastToEdit.feedUrl, podcastTableDelegate: self)
-//            } else {
-//                //PVFollower.followPodcast(podcastToEdit.feedUrl, podcastTableDelegate: self)
-//            }
-//        })
-//        
-//        subscribeOrFollowAction.backgroundColor = UIColor(red: 0.5, green: 0.5, blue: 0.5, alpha: 1.0);
-//        
-//        let deleteAction = UITableViewRowAction(style: .default, title: "Delete", handler: {action, indexpath in
-//            
-//            // Remove Player button if the now playing episode was one of the podcast's episodes
-//            //            if let nowPlayingEpisode = PVMediaPlayer.shared.currentlyPlayingItem {
-//            ////                if podcastToEdit.episodes.contains(nowPlayingEpisode) {
-//            ////                    self.navigationItem.rightBarButtonItem = nil
-//            ////                }
-//            //            }
-//            self.subscribedPodcastsArray.remove(at: indexPath.row)
-//            self.tableView.deleteRows(at: [indexPath], with: .fade)
-//            
-//            //PVFollower.unfollowPodcast(podcastToEdit.objectID, completionBlock: nil)
-//            
-//            //self.showFindAPodcastIfNoneAreFollowed()
-//        })
-//        
-//        return [deleteAction, subscribeOrFollowAction]
-//    }
-//    
-//    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-//        let episodesTableViewController = segue.destination as! EpisodesTableViewController
-//        
-//        if let index = tableView.indexPathForSelectedRow {
-//            if segue.identifier == "Show Episodes" {
-//                episodesTableViewController.selectedPodcastID = subscribedPodcastsArray[index.row].objectID
-//            }
-//        }
-//        
-//    }
-//}
+extension ClipsTableViewController:MediaRefDelegate {
+    func mediaRefsRetrievedFromServer() {
+        let when = DispatchTime.now() + 0.3
+        DispatchQueue.main.asyncAfter(deadline: when) {
+            self.loadingView.isHidden = true
+            self.tableView.isHidden = false
+        }
+    }
+}

@@ -8,6 +8,10 @@
 
 import Foundation
 
+protocol MediaRefDelegate:class {
+    func mediaRefsRetrievedFromServer()
+}
+
 class MediaRef {
     var title:String?
     var startTime:Int?
@@ -17,6 +21,9 @@ class MediaRef {
     var episodePubDate: Date?
     var podcastTitle:String?
     var podcastFeedUrl:String?
+    
+    static let shared = MediaRef()
+    var delegate: MediaRefDelegate?
     
     static func retrieveMediaRefsFromServer(episodeMediaUrl: String? = nil, podcastFeedUrl: String? = nil, onlySubscribed: Bool? = nil, completion: @escaping (_ mediaRefs:[MediaRef]?) -> Void) {
         if let url = URL(string: "https://podverse.fm/api/clips") {
@@ -72,6 +79,7 @@ class MediaRef {
                         }
                         
                         DispatchQueue.main.async {
+                            self.shared.delegate?.mediaRefsRetrievedFromServer()
                             completion(mediaRefs)
                         }
                     } catch {
