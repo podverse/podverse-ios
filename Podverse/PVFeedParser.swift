@@ -191,8 +191,6 @@ extension PVFeedParser:FeedParserDelegate {
         newEpisode.mediaBytes = NSNumber(value: item.feedEnclosures[0].length)
         if let guid = item.feedIdentifier { newEpisode.guid = guid }
         
-        newEpisode.taskIdentifier = nil
-        
         // If only parsing for the latest episode, stop parsing after parsing the first episode.
         if onlyGetMostRecentEpisode == true {
             latestEpisodePubDate = newEpisode.pubDate
@@ -234,7 +232,7 @@ extension PVFeedParser:FeedParserDelegate {
         if subscribeToPodcast == true {
             let podcastPredicate = NSPredicate(format: "podcast == %@", podcast)
             if let latestEpisode = CoreDataHelper.fetchEntityWithMostRecentPubDate(className:"Episode", predicate: podcastPredicate, moc:moc) as? Episode {
-                if latestEpisode.downloadComplete != true {
+                if latestEpisode.fileName == nil {
                     PVDownloader.shared.startDownloadingEpisode(episode: latestEpisode)
                 }
             }

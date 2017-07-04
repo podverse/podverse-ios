@@ -17,9 +17,9 @@ class PVReachability {
         reachability.whenReachable = { reachability in
             if !reachability.isReachableViaWiFi
             {
-                self.pauseDownloadingEpisodesUntilWiFi()
+//                self.pauseDownloadingEpisodesUntilWiFi()
             } else {
-                self.resumeDownloadingEpisodes()
+//                self.resumeDownloadingEpisodes()
             }
             
             if UserDefaults.standard.object(forKey: "ONE_TIME_LOGIN") != nil && UserDefaults.standard.bool(forKey: "DefaultPlaylistsCreated") == false {
@@ -33,7 +33,7 @@ class PVReachability {
         
         reachability.whenUnreachable = { reachability in
             if !reachability.isReachableViaWiFi {
-                self.pauseDownloadingEpisodesUntilWiFi()
+//                self.pauseDownloadingEpisodesUntilWiFi()
             }
             
             DispatchQueue.main.async {
@@ -58,32 +58,32 @@ class PVReachability {
     }
     
     // TODO: move to PVDownloader without causing splash screen to hang indefinitely
-    func pauseDownloadingEpisodesUntilWiFi() {
-        let downloader = PVDownloader.shared
-        downloader.downloadSession.getTasksWithCompletionHandler { dataTasks, uploadTasks, downloadTasks in
-            for downloadingEpisode in DownloadingEpisodeList.shared.downloadingEpisodes {
-                if let taskIdentifier = downloadingEpisode.taskIdentifier {
-                    for episodeDownloadTask in downloadTasks {
-                        if episodeDownloadTask.taskIdentifier == taskIdentifier {
-                            downloader.pauseOrResumeDownloadingEpisode(episode: downloadingEpisode)
-                        }
-                    }
-                }
-            }
-        }
-    }
+//    func pauseDownloadingEpisodesUntilWiFi() {
+//        let downloader = PVDownloader.shared
+//        downloader.downloadSession.getTasksWithCompletionHandler { dataTasks, uploadTasks, downloadTasks in
+//            for downloadingEpisode in DownloadingEpisodeList.shared.downloadingEpisodes {
+//                if let taskIdentifier = downloadingEpisode.taskIdentifier {
+//                    for episodeDownloadTask in downloadTasks {
+//                        if episodeDownloadTask.taskIdentifier == taskIdentifier {
+//                            downloader.pauseOrResumeDownloadingEpisode(episode: downloadingEpisode)
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//    }
     
     // TODO: move to PVDownloader without causing splash screen to hang indefinitely
-    func resumeDownloadingEpisodes() {
-        let downloader = PVDownloader.shared
-        downloader.downloadSession.getTasksWithCompletionHandler { dataTasks, uploadTasks, downloadTasks in
-            for downloadingEpisode in DownloadingEpisodeList.shared.downloadingEpisodes {
-                if (downloadingEpisode.taskResumeData != nil || downloadingEpisode.pausedWithoutResumeData == true) && downloadingEpisode.wasPausedByUser == false {
-                    downloader.pauseOrResumeDownloadingEpisode(episode: downloadingEpisode)
-                }
-            }
-        }
-    }
+//    func resumeDownloadingEpisodes() {
+//        let downloader = PVDownloader.shared
+//        downloader.downloadSession.getTasksWithCompletionHandler { dataTasks, uploadTasks, downloadTasks in
+//            for downloadingEpisode in DownloadingEpisodeList.shared.downloadingEpisodes {
+//                if (downloadingEpisode.taskResumeData != nil || downloadingEpisode.pausedWithoutResumeData == true) && downloadingEpisode.wasPausedByUser == false {
+//                    downloader.pauseOrResumeDownloadingEpisode(episode: downloadingEpisode)
+//                }
+//            }
+//        }
+//    }
     
     func createInternetConnectionNeededAlertWithDescription(_ message: String) -> UIAlertController {
         let connectionNeededAlert = UIAlertController(title: "Internet Connection Needed", message: message, preferredStyle: UIAlertControllerStyle.alert)

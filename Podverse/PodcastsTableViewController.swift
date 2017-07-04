@@ -191,7 +191,7 @@ extension PodcastsTableViewController:UITableViewDelegate, UITableViewDataSource
         let episodesDownloaded = episodes.filter{ $0.fileName != nil }
         cell.episodesDownloadedOrStarted?.text = "\(episodesDownloaded.count) downloaded"
         
-        cell.totalClips?.text = "\(podcast.totalClips) clips"
+        cell.totalClips?.text = "123 clips"
         
         cell.lastPublishedDate?.text = ""
         if let lastPubDate = podcast.lastPubDate {
@@ -199,19 +199,12 @@ extension PodcastsTableViewController:UITableViewDelegate, UITableViewDataSource
         }
         
         DispatchQueue.global().async {
-            var cellImage:UIImage?
-            
-            if let imageData = podcast.imageThumbData, let image = UIImage(data: imageData) {
-                cellImage = image
-            }
-            else {
-                cellImage = UIImage(named: "PodverseIcon")
-            }
-            
-            DispatchQueue.main.async {
-                if let visibleRows = self.tableView.indexPathsForVisibleRows, visibleRows.contains(indexPath) {
-                    let existingCell = self.tableView.cellForRow(at: indexPath) as! PodcastTableViewCell
-                    existingCell.pvImage.image = cellImage
+            Podcast.retrievePodcastUIImage(podcast: podcast) { (podcastImage) -> Void in
+                DispatchQueue.main.async {
+                    if let visibleRows = self.tableView.indexPathsForVisibleRows, visibleRows.contains(indexPath) {
+                        let existingCell = self.tableView.cellForRow(at: indexPath) as! PodcastTableViewCell
+                        existingCell.pvImage.image = podcastImage
+                    }
                 }
             }
         }

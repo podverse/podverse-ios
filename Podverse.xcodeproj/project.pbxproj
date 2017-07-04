@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		30026D8B1F0B322000043D79 /* AboutViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30026D8A1F0B322000043D79 /* AboutViewController.swift */; };
 		30026D8D1F0B328000043D79 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30026D8C1F0B328000043D79 /* SettingsViewController.swift */; };
+		30026D8F1F0C2A6000043D79 /* DownloadTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30026D8E1F0C2A6000043D79 /* DownloadTableViewCell.swift */; };
 		302D55111EC157960032D0A0 /* PVViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 302D55101EC157960032D0A0 /* PVViewController.swift */; };
 		3048E8881EDA7124001AADCE /* MediaRef.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3048E8871EDA7124001AADCE /* MediaRef.swift */; };
 		3048E88A1EDD1B1A001AADCE /* Int+MediaPlayerString.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3048E8891EDD1B1A001AADCE /* Int+MediaPlayerString.swift */; };
@@ -97,6 +98,7 @@
 		1F3C4343012A1C14E6A037EB /* Pods_Podverse.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Podverse.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		30026D8A1F0B322000043D79 /* AboutViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AboutViewController.swift; sourceTree = "<group>"; };
 		30026D8C1F0B328000043D79 /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
+		30026D8E1F0C2A6000043D79 /* DownloadTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DownloadTableViewCell.swift; sourceTree = "<group>"; };
 		302D55101EC157960032D0A0 /* PVViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PVViewController.swift; sourceTree = "<group>"; };
 		3048E8871EDA7124001AADCE /* MediaRef.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MediaRef.swift; sourceTree = "<group>"; };
 		3048E8891EDD1B1A001AADCE /* Int+MediaPlayerString.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Int+MediaPlayerString.swift"; sourceTree = "<group>"; };
@@ -363,10 +365,11 @@
 		E7B2A5A21E12CBFF00AAE036 /* Custom UI Classes */ = {
 			isa = PBXGroup;
 			children = (
-				E7B2A5A31E12CC5A00AAE036 /* PodcastTableViewCell.swift */,
-				30A575671EBED8360088CCA6 /* EpisodeTableViewCell.swift */,
 				3097AA8E1EE7C1D500AD0ED0 /* ClipTableViewCell.swift */,
+				30026D8E1F0C2A6000043D79 /* DownloadTableViewCell.swift */,
+				30A575671EBED8360088CCA6 /* EpisodeTableViewCell.swift */,
 				E7AD9A9B1EDDFEAD0093F051 /* MediaPlayerClipTableViewCell.swift */,
+				E7B2A5A31E12CC5A00AAE036 /* PodcastTableViewCell.swift */,
 			);
 			name = "Custom UI Classes";
 			sourceTree = "<group>";
@@ -719,6 +722,7 @@
 				E7D25BD91E0F2DF800B60368 /* PodcastSearchResult.swift in Sources */,
 				E7D25BD11E0F1CB000B60368 /* CoreDataHelper.swift in Sources */,
 				E7D25BCE1E0F184800B60368 /* Constants.swift in Sources */,
+				30026D8F1F0C2A6000043D79 /* DownloadTableViewCell.swift in Sources */,
 				E7D25BC81E0F144900B60368 /* Clip.swift in Sources */,
 				E7D25BC41E0F13D300B60368 /* Podcast.swift in Sources */,
 				E753028C1E072F160007B6F7 /* String+Utilities.swift in Sources */,

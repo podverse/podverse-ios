@@ -14,11 +14,12 @@ final class DownloadingEpisode:Equatable {
     var taskIdentifier:Int?
     var downloadComplete:Bool?
     var mediaUrl: String?
-    var imageThumbData:Data?
     var taskResumeData:Data?
     var totalBytesWritten:Float?
     var totalBytesExpectedToWrite:Float?
-    var podcastRSSfeedUrl:String?
+    var podcastTitle:String?
+    var podcastFeedUrl:String?
+    var podcastImageUrl: String?
     var wasPausedByUser:Bool?
     var pausedWithoutResumeData:Bool?
     var managedEpisodeObjectID:NSManagedObjectID?
@@ -55,11 +56,10 @@ final class DownloadingEpisode:Equatable {
     
     init(episode:Episode) {
         title = episode.title
-        taskIdentifier = episode.taskIdentifier?.intValue
-        downloadComplete = episode.downloadComplete
         mediaUrl = episode.mediaUrl
-        imageThumbData = episode.podcast.imageThumbData
-        podcastRSSfeedUrl = episode.podcast.feedUrl
+        podcastTitle = episode.podcast.title
+        podcastFeedUrl = episode.podcast.feedUrl
+        podcastImageUrl = episode.podcast.imageUrl
         wasPausedByUser = false
         pausedWithoutResumeData = false
         managedEpisodeObjectID = episode.objectID

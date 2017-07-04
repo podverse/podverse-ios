@@ -58,12 +58,12 @@ class PVDeleter {
                     }
                     else if let clip = item as? Clip {
                         for podcastEpisode in podcast.episodes {
-                            for podcastClip in podcastEpisode.clips {
-                                if clip.objectID == podcastClip.objectID {
-                                    alsoDelete = false
-                                    break outerLoop
-                                }
-                            }
+//                            for podcastClip in podcastEpisode.clips {
+//                                if clip.objectID == podcastClip.objectID {
+//                                    alsoDelete = false
+//                                    break outerLoop
+//                                }
+//                            }
                         }
                     }
                 }
@@ -84,7 +84,7 @@ class PVDeleter {
             let downloadSession = PVDownloader.shared.downloadSession
             downloadSession?.getTasksWithCompletionHandler { dataTasks, uploadTasks, downloadTasks in
                 for episodeDownloadTask in downloadTasks {
-                    if  let _ = DownloadingEpisodeList.shared.downloadingEpisodes.first(where:{ $0.taskIdentifier == episodeDownloadTask.taskIdentifier && $0.podcastRSSfeedUrl == episodePodcastfeedUrl })  {
+                    if  let _ = DownloadingEpisodeList.shared.downloadingEpisodes.first(where:{ $0.taskIdentifier == episodeDownloadTask.taskIdentifier && $0.podcastFeedUrl == episodePodcastfeedUrl })  {
                         episodeDownloadTask.cancel()
                     }
                 }
@@ -157,12 +157,12 @@ class PVDeleter {
                     }
                     else if let clip = item as? Clip {
                         for ep in episode.podcast.episodes {
-                            for cl in ep.clips {
-                                if clip.objectID == cl.objectID {
-                                    alsoDelete = false
-                                    break outerLoop
-                                }
-                            }
+//                            for cl in ep.clips {
+//                                if clip.objectID == cl.objectID {
+//                                    alsoDelete = false
+//                                    break outerLoop
+//                                }
+//                            }
                         }
                     }
                 }

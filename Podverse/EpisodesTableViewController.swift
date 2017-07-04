@@ -117,7 +117,7 @@ class EpisodesTableViewController: PVViewController, UITableViewDataSource, UITa
                 cell.summary?.text = summary.removeHTMLFromString()
             }
 
-            let totalClips = String(episode.clips.count)
+            let totalClips = String(123)
             cell.totalClips?.text = String(totalClips + " clips")
      
             if let pubDate = episode.pubDate {
@@ -180,9 +180,10 @@ class EpisodesTableViewController: PVViewController, UITableViewDataSource, UITa
                     self.segueToNowPlaying()
                 }))
             } else {
-                if episode.taskIdentifier != nil {
-                    episodeActions.addAction(UIAlertAction(title: "Downloading Episode", style: .default, handler: nil))
-                } else {
+//                // TODO: check if episode is in downloading array
+//                if episode.taskIdentifier != nil {
+//                    episodeActions.addAction(UIAlertAction(title: "Downloading Episode", style: .default, handler: nil))
+//                } else {
                     episodeActions.addAction(UIAlertAction(title: "Download Episode", style: .default, handler: { action in
                         if self.reachability.hasInternetConnection() == true {
                             PVDownloader.shared.startDownloadingEpisode(episode: episode)
@@ -193,7 +194,7 @@ class EpisodesTableViewController: PVViewController, UITableViewDataSource, UITa
                             //                            self.showInternetNeededAlert("Connect to WiFi or cellular data to download an episode.")
                         }
                     }))
-                }
+//                }
             }
             
             let totalClips = String(000)
@@ -292,7 +293,13 @@ class EpisodesTableViewController: PVViewController, UITableViewDataSource, UITa
 }
 
 extension EpisodesTableViewController:PVDownloaderDelegate {
-    func episodeDownloaded(episode: DownloadingEpisode) {
-        
+    func downloadFinished(episode: DownloadingEpisode) {
+        print("oh hai")
+    }
+    func downloadProgressed(episode: DownloadingEpisode) {
+        print("y tho")
+    }
+    func downloadStarted() {
+        print("no wai")
     }
 }

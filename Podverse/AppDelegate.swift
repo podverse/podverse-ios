@@ -31,8 +31,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         application.registerUserNotificationSettings(UIUserNotificationSettings(types: [.alert, .badge, .sound], categories: nil))  // types are UIUserNotificationType members
         application.beginBackgroundTask(withName: "showNotification", expirationHandler: nil)
         
-        CoreDataHelper.resetEpisodesState()
-        
         playerHistoryManager.loadData()
         if let previousItem = playerHistoryManager.historyItems.first {
             pvMediaPlayer.loadPlayerHistoryItem(playerHistoryItem: previousItem)

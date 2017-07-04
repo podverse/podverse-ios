@@ -28,17 +28,6 @@ class Podcast: NSManagedObject {
     @NSManaged public var categories: String?
     @NSManaged public var episodes: Set<Episode>
     
-    var totalClips:Int {
-        get {
-            var totalClips = 0
-            for episode in episodes {
-                totalClips += episode.clips.count
-            }
-            
-            return totalClips
-        }
-    }
-    
     func addEpisodeObject(value: Episode) {
         self.mutableSetValue(forKey: "episodes").add(value)
     }
@@ -49,20 +38,28 @@ class Podcast: NSManagedObject {
     
     static func retrieveMediaRefsFromServer(episodeMediaUrl: String? = nil, podcastFeedUrl: String? = nil, onlySubscribed: Bool? = nil, completion: @escaping (_ mediaRefs:[MediaRef]?) -> Void) {
     }
-
     
-    static func retrievePodcastUIImage(item: PlayerHistoryItem, completion: @escaping (_ podcastImage: UIImage?) -> Void) {
+    static func retrievePodcastUIImage(item: PlayerHistoryItem? = nil, podcast: Podcast? = nil, downloadingEpisode: DownloadingEpisode? = nil, completion: @escaping (_ podcastImage: UIImage?) -> Void) {
         var cellImage:UIImage?
-        if let podcastFeedUrl = item.podcastFeedUrl, let imageData = retrievePodcastImageData(feedUrl: podcastFeedUrl, imageUrl: item.podcastImageUrl) {
-            if let image = UIImage(data: imageData) {
-                cellImage = image
-            } else {
-                cellImage = UIImage(named: "PodverseIcon")
-            }
-            completion(cellImage)
+        
+        if let podcastFeedUrl = item?.podcastFeedUrl, let imageData = retrievePodcastImageData(feedUrl: podcastFeedUrl, imageUrl: item?.podcastImageUrl) {
+            cellImage = podcastImageOrDefault(imageData: imageData)
+        } else if let podcastFeedUrl = podcast?.feedUrl, let imageData = retrievePodcastImageData(feedUrl: podcastFeedUrl, imageUrl: podcast?.imageUrl) {
+            cellImage = podcastImageOrDefault(imageData: imageData)
+        } else if let podcastFeedUrl = downloadingEpisode?.podcastFeedUrl, let imageData = retrievePodcastImageData(feedUrl: podcastFeedUrl, imageUrl: downloadingEpisode?.podcastImageUrl) {
+            cellImage = podcastImageOrDefault(imageData: imageData)
         } else {
             cellImage = UIImage(named: "PodverseIcon")
-            completion(cellImage)
+        }
+        
+        completion(cellImage)
+    }
+    
+    static func podcastImageOrDefault (imageData: Data) -> UIImage? {
+        if let image = UIImage(data: imageData) {
+            return image
+        } else {
+            return UIImage(named: "PodverseIcon")
         }
     }
     

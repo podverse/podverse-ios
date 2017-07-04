@@ -11,7 +11,9 @@ import UIKit
 import CoreData
 
 protocol PVDownloaderDelegate:class {
-    func episodeDownloaded(episode: DownloadingEpisode)
+    func downloadFinished(episode: DownloadingEpisode)
+    func downloadProgressed(episode: DownloadingEpisode)
+    func downloadStarted()
 }
 
 class PVDownloader:NSObject {
@@ -37,107 +39,101 @@ class PVDownloader:NSObject {
     }
     
     func startDownloadingEpisode (episode: Episode) {
-        episode.downloadComplete = false
+        
         if let downloadSourceStringURL = episode.mediaUrl, let downloadSourceURL = URL(string: downloadSourceStringURL) {
             let downloadTask = downloadSession.downloadTask(with: downloadSourceURL)
-            episode.taskIdentifier = NSNumber(value:downloadTask.taskIdentifier)
-
-            episode.managedObjectContext?.perform {
-                episode.managedObjectContext?.saveData(nil)
-            }
             
             let downloadingEpisode = DownloadingEpisode(episode:episode)
-            if !DownloadingEpisodeList.shared.downloadingEpisodes.contains(downloadingEpisode) {
+            
+            downloadingEpisode.taskIdentifier = downloadTask.taskIdentifier
+            
+            if !DownloadingEpisodeList.shared.downloadingEpisodes.contains(where: { downloadingEpisode in downloadingEpisode.mediaUrl == episode.mediaUrl }) {
                 DownloadingEpisodeList.shared.downloadingEpisodes.append(downloadingEpisode)
                 incrementBadge()
-            }
-            // If downloadingEpisode already exists then update it with the new taskIdentifier
-            else {
-                if let matchingDLEpisode = DownloadingEpisodeList.shared.downloadingEpisodes.first(where: { $0 == downloadingEpisode })  {
-                    matchingDLEpisode.taskIdentifier = episode.taskIdentifier?.intValue
-                }
+            } else {
+                print("that's already downloading / downloaded")
             }
             
-            let taskID = self.beginBackgroundTask()
+            let taskID = beginBackgroundTask()
             downloadTask.resume()
-            self.endBackgroundTask(taskID)
+            endBackgroundTask(taskID)
             
-            self.postPauseOrResumeNotification(taskIdentifier: downloadTask.taskIdentifier, pauseOrResume: "Downloading")
+            self.delegate?.downloadStarted()
         }
     }
     
-    func pauseOrResumeDownloadingEpisode(episode: DownloadingEpisode) {
-        // If the episode has already downloaded, then do nothing
-        if (episode.downloadComplete == true) {
-            episode.taskIdentifier = nil
-        }
-        // Else if the episode download is paused, then resume the download
-        else if let downloadTaskResumeData = episode.taskResumeData {
-            let downloadTask = downloadSession.downloadTask(withResumeData: downloadTaskResumeData)
-            episode.taskIdentifier = downloadTask.taskIdentifier
-            episode.taskResumeData = nil
-            episode.wasPausedByUser = false
-            downloadTask.resume()
-            self.postPauseOrResumeNotification(taskIdentifier: downloadTask.taskIdentifier, pauseOrResume: "Downloading")
-        }
-        else if episode.pausedWithoutResumeData == true {
-            episode.pausedWithoutResumeData = false
-            let moc = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
-            moc.parent = CoreDataHelper.shared.managedObjectContext
-            
-            if let episodeObjectID = episode.managedEpisodeObjectID {
-                if let nsManagedEpisode = CoreDataHelper.fetchEntityWithID(objectId: episodeObjectID, moc: moc) as? Episode {
-                    startDownloadingEpisode(episode: nsManagedEpisode)
-                }
-            }
-        }
-        // Else if the episode has a taskIdentifier, then pause the download if it has already begun
-        else if let taskIdentifier = episode.taskIdentifier {
-            downloadSession.getTasksWithCompletionHandler { dataTasks, uploadTasks, downloadTasks in
-                for episodeDownloadTask in downloadTasks {
-                    if episodeDownloadTask.taskIdentifier == taskIdentifier {
-                        episodeDownloadTask.cancel(byProducingResumeData: { (resumeData) in
-                            if (resumeData != nil) {
-                                episode.taskResumeData = resumeData
-                                if self.reachability.hasWiFiConnection() == true {
-                                    episode.wasPausedByUser = true
-                                    self.postPauseOrResumeNotification(taskIdentifier: taskIdentifier, pauseOrResume: "Paused")
-                                }
-                                else {
-                                    self.postPauseOrResumeNotification(taskIdentifier: taskIdentifier, pauseOrResume: "Connect to WiFi")
-                                }
-                                episode.taskIdentifier = nil
-                            } else {
-                                episode.pausedWithoutResumeData = true
-                                if self.reachability.hasWiFiConnection() == true {
-                                    episode.wasPausedByUser = true
-                                    self.postPauseOrResumeNotification(taskIdentifier: taskIdentifier, pauseOrResume: "Paused")
-                                }
-                                else {
-                                    self.postPauseOrResumeNotification(taskIdentifier: taskIdentifier, pauseOrResume: "Connect to WiFi")
-                                }
-                            }
-                        })
-                    }
-                }
-            }
-        }
-    }
-    
-    func postPauseOrResumeNotification(taskIdentifier: Int, pauseOrResume: String) {
-        // Get the corresponding episode object by its taskIdentifier value
-        if let episodeDownloadIndex = DownloadingEpisodeList.shared.downloadingEpisodes.index(where: {$0.taskIdentifier == taskIdentifier}) {
-            if episodeDownloadIndex < DownloadingEpisodeList.shared.downloadingEpisodes.count {
-                let episode = DownloadingEpisodeList.shared.downloadingEpisodes[episodeDownloadIndex]
-                
-                let downloadHasPausedOrResumedUserInfo:[String:Any] = ["mediaUrl":episode.mediaUrl ?? "", "pauseOrResume": pauseOrResume]
-                
-                DispatchQueue.main.async {
-                    NotificationCenter.default.post(name: NSNotification.Name(rawValue: kDownloadHasPausedOrResumed), object: self, userInfo: downloadHasPausedOrResumedUserInfo)
-                }
-            }
-        }
-    }
+//    func pauseOrResumeDownloadingEpisode(episode: DownloadingEpisode) {
+//        // If the episode has already downloaded, then do nothing
+//        if (episode.downloadComplete == true) {
+//            episode.taskIdentifier = nil
+//        }
+//        // Else if the episode download is paused, then resume the download
+//        else if let downloadTaskResumeData = episode.taskResumeData {
+//            let downloadTask = downloadSession.downloadTask(withResumeData: downloadTaskResumeData)
+//            episode.taskIdentifier = downloadTask.taskIdentifier
+//            episode.taskResumeData = nil
+//            episode.wasPausedByUser = false
+//            downloadTask.resume()
+//            self.postPauseOrResumeNotification(taskIdentifier: downloadTask.taskIdentifier, pauseOrResume: "Downloading")
+//        }
+//        else if episode.pausedWithoutResumeData == true {
+//            episode.pausedWithoutResumeData = false
+//            let moc = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
+//            moc.parent = CoreDataHelper.shared.managedObjectContext
+//            
+//            if let episodeObjectID = episode.managedEpisodeObjectID {
+//                if let nsManagedEpisode = CoreDataHelper.fetchEntityWithID(objectId: episodeObjectID, moc: moc) as? Episode {
+//                    startDownloadingEpisode(episode: nsManagedEpisode)
+//                }
+//            }
+//        }
+//        // Else if the episode has a taskIdentifier, then pause the download if it has already begun
+//        else if let taskIdentifier = episode.taskIdentifier {
+//            downloadSession.getTasksWithCompletionHandler { dataTasks, uploadTasks, downloadTasks in
+//                for episodeDownloadTask in downloadTasks {
+//                    if episodeDownloadTask.taskIdentifier == taskIdentifier {
+//                        episodeDownloadTask.cancel(byProducingResumeData: { (resumeData) in
+//                            if (resumeData != nil) {
+//                                episode.taskResumeData = resumeData
+//                                if self.reachability.hasWiFiConnection() == true {
+//                                    episode.wasPausedByUser = true
+//                                    self.postPauseOrResumeNotification(taskIdentifier: taskIdentifier, pauseOrResume: "Paused")
+//                                }
+//                                else {
+//                                    self.postPauseOrResumeNotification(taskIdentifier: taskIdentifier, pauseOrResume: "Connect to WiFi")
+//                                }
+//                                episode.taskIdentifier = nil
+//                            } else {
+//                                episode.pausedWithoutResumeData = true
+//                                if self.reachability.hasWiFiConnection() == true {
+//                                    episode.wasPausedByUser = true
+//                                    self.postPauseOrResumeNotification(taskIdentifier: taskIdentifier, pauseOrResume: "Paused")
+//                                }
+//                                else {
+//                                    self.postPauseOrResumeNotification(taskIdentifier: taskIdentifier, pauseOrResume: "Connect to WiFi")
+//                                }
+//                            }
+//                        })
+//                    }
+//                }
+//            }
+//        }
+//    }
+//    
+//    func postPauseOrResumeNotification(taskIdentifier: Int, pauseOrResume: String) {
+//        // Get the corresponding episode object by its taskIdentifier value
+//        if let episodeDownloadIndex = DownloadingEpisodeList.shared.downloadingEpisodes.index(where: {$0.taskIdentifier == taskIdentifier}) {
+//            if episodeDownloadIndex < DownloadingEpisodeList.shared.downloadingEpisodes.count {
+//                let episode = DownloadingEpisodeList.shared.downloadingEpisodes[episodeDownloadIndex]
+//                
+//                let downloadHasPausedOrResumedUserInfo:[String:Any] = ["mediaUrl":episode.mediaUrl ?? "", "pauseOrResume": pauseOrResume]
+//                
+//                DispatchQueue.main.async {
+//                    NotificationCenter.default.post(name: NSNotification.Name(rawValue: kDownloadHasPausedOrResumed), object: self, userInfo: downloadHasPausedOrResumedUserInfo)
+//                }
+//            }
+//        }
+//    }
     
     fileprivate func decrementBadge() {
         if let tabBarCntrl = self.appDelegate.window?.rootViewController as? UITabBarController {
@@ -173,24 +169,17 @@ class PVDownloader:NSObject {
 }
 
 extension PVDownloader:URLSessionDelegate, URLSessionDownloadDelegate {
-    func urlSession(_ session: URLSession, task: URLSessionTask, didSendBodyData bytesSent: Int64, totalBytesSent: Int64, totalBytesExpectedToSend: Int64) {
-        if (totalBytesExpectedToSend == NSURLSessionTransferSizeUnknown) {
+    
+    func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didWriteData bytesWritten: Int64, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) {
+        if (totalBytesExpectedToWrite == NSURLSessionTransferSizeUnknown) {
             print("Unknown transfer size")
         }
         else {
-            // Get the corresponding episode object by its taskIdentifier value
-            if let episodeDownloadIndex = DownloadingEpisodeList.shared.downloadingEpisodes.index(where: {$0.taskIdentifier == task.taskIdentifier}) {
+            if let episodeDownloadIndex = DownloadingEpisodeList.shared.downloadingEpisodes.index(where: {$0.taskIdentifier == downloadTask.taskIdentifier}) {
                 let episode = DownloadingEpisodeList.shared.downloadingEpisodes[episodeDownloadIndex]
-                episode.totalBytesWritten = Float(totalBytesSent)
-                episode.totalBytesExpectedToWrite = Float(totalBytesExpectedToSend)
-                
-                let downloadHasProgressedUserInfo:[String:Any] = ["mediaUrl":episode.mediaUrl ?? "",
-                                                                  "totalBytes": Double(totalBytesExpectedToSend),
-                                                                  "currentBytes": Double(totalBytesSent)]
-                
-                DispatchQueue.main.async {
-                    NotificationCenter.default.post(name:NSNotification.Name(rawValue: kDownloadHasProgressed), object: self, userInfo: downloadHasProgressedUserInfo)
-                }
+                episode.totalBytesWritten = Float(totalBytesWritten)
+                episode.totalBytesExpectedToWrite = Float(totalBytesExpectedToWrite)
+                self.delegate?.downloadProgressed(episode: episode)
             }
         }
     }
@@ -239,15 +228,10 @@ extension PVDownloader:URLSessionDelegate, URLSessionDownloadDelegate {
                 if let destination = destinationURL {
                     try fileManager.copyItem(at: location, to: destination)
                     
-                    episode.downloadComplete = true
-                    
                     episode.taskResumeData = nil
                     
                     // Add the file destination to the episode object for playback and retrieval
                     episode.fileName = destinationFilename
-                    
-                    // Reset the episode.downloadTask to nil before saving, or the app will crash
-                    episode.taskIdentifier = nil
                     
                     for downloadingEpisode in DownloadingEpisodeList.shared.downloadingEpisodes where episode.mediaUrl == downloadingEpisode.mediaUrl {
                         downloadingEpisode.downloadComplete = true
@@ -269,7 +253,7 @@ extension PVDownloader:URLSessionDelegate, URLSessionDownloadDelegate {
                                 return
                             }
                             
-                            strongSelf.delegate?.episodeDownloaded(episode: downloadingEpisode)
+                            strongSelf.delegate?.downloadFinished(episode: downloadingEpisode)
                             // TODO: When a download finishes and Podverse is in the background, two localnotifications show in the UI. Why are we receiving two instead of one, when only one notification is getting scheduled below?
                             let notification = UILocalNotification()
                             notification.applicationIconBadgeNumber = UIApplication.shared.applicationIconBadgeNumber + 1
