@@ -10,16 +10,8 @@ class EpisodesTableViewController: PVViewController, UITableViewDataSource, UITa
     var selectedPodcastID: NSManagedObjectID!
     var podcast: Podcast!
     var episodesArray = [Episode]()
-    //    var refreshControl: UIRefreshControl!
-    //    let reachability = PVReachability.manager
     
-//    @IBOutlet weak var headerView: UIView!
-//    @IBOutlet weak var headerImageView: UIImageView!
-//    @IBOutlet weak var headerSummaryLabel: UILabel!
-//    @IBOutlet weak var headerShadowView: UIView!
-//    
-//    let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-//
+    let reachability = PVReachability.shared
     
     @IBOutlet weak var tableView: UITableView!
     
@@ -30,25 +22,16 @@ class EpisodesTableViewController: PVViewController, UITableViewDataSource, UITa
     func loadData() {
         podcast = CoreDataHelper.fetchEntityWithID(objectId: self.selectedPodcastID, moc: moc) as! Podcast
 
-//        self.episodesArray.removeAll()
-
         episodesArray = Array(podcast.episodes)
-        // If showAllEpisodes is false, then only retrieve the downloaded episodes
-//        if showAllEpisodes == false {
-//            let downloadedEpisodesArrayPredicate = NSPredicate(format: "fileName != nil || taskIdentifier != nil", argumentArray: nil)
-//            episodesArray = episodesArray.filtered(using: downloadedEpisodesArrayPredicate) as NSSet
-//        }
-//
         
-        // TODO Is this how we should do this? Create a NSMutableArray, use NSSortDescriptor, then put it back in the episodesArray??
         let unsortedEpisodes = NSMutableArray()
         let sortDescriptor = NSSortDescriptor(key: "pubDate", ascending: false)
         for singleEpisode in episodesArray {
             unsortedEpisodes.add(singleEpisode)
         }
-        self.episodesArray = unsortedEpisodes.sortedArray(using: [sortDescriptor]) as! [Episode]
+        episodesArray = unsortedEpisodes.sortedArray(using: [sortDescriptor]) as! [Episode]
 
-//        self.tableView.reloadData()
+        tableView.reloadData()
     }
 
     func downloadPlay(sender: UIButton) {
@@ -76,20 +59,7 @@ class EpisodesTableViewController: PVViewController, UITableViewDataSource, UITa
             }
         }
     }
-//
-//    func refresh() {
-//        dispatch_async(Constants.feedParsingQueue) { [weak self] in
-//            guard let strongSelf = self else {
-//                return
-//            }
-//            
-//            let feedParser = PVFeedParser(onlyGetMostRecentEpisode: false, shouldSubscribe: false, shouldFollow: false, shouldParseChannelOnly: false)
-//            feedParser.delegate = strongSelf
-//            ParsingPodcastsList.shared.urls.append(strongSelf.selectedPodcast.feedUrl)
-//            feedParser.parsePodcastFeed(strongSelf.selectedPodcast.feedUrl)
-//        }
-//    }
-//    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         loadData()
@@ -115,14 +85,8 @@ class EpisodesTableViewController: PVViewController, UITableViewDataSource, UITa
             }
         }
         
-//        self.automaticallyAdjustsScrollViewInsets = false
-        
-//        self.refreshControl = UIRefreshControl()
-//        self.refreshControl.attributedTitle = NSAttributedString(string: "Pull to refresh episodes")
-//        self.refreshControl.addTarget(self, action: #selector(EpisodesTableViewController.refresh), forControlEvents: UIControlEvents.ValueChanged)
-//        self.tableView.addSubview(refreshControl)
     }
-//
+
 //    // MARK: - Table view data source
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         return 1
@@ -201,66 +165,69 @@ class EpisodesTableViewController: PVViewController, UITableViewDataSource, UITa
         }
     }
     
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        // If not the last item in the array, then perform selected episode actions
+        if indexPath.row < episodesArray.count {
+            
+            let episode = episodesArray[indexPath.row]
+            
+            let episodeActions = UIAlertController(title: "", message: "", preferredStyle: UIAlertControllerStyle.actionSheet)
+            
+            if episode.fileName != nil {
+                episodeActions.addAction(UIAlertAction(title: "Play Episode", style: .default, handler: { action in
+                    let playerHistoryItem = self.playerHistoryManager.convertEpisodeToPlayerHistoryItem(episode: episode)
+                    self.pvMediaPlayer.loadPlayerHistoryItem(playerHistoryItem: playerHistoryItem)
+                    self.segueToNowPlaying()
+                }))
+            } else {
+                if episode.taskIdentifier != nil {
+                    episodeActions.addAction(UIAlertAction(title: "Downloading Episode", style: .default, handler: nil))
+                } else {
+                    episodeActions.addAction(UIAlertAction(title: "Download Episode", style: .default, handler: { action in
+                        if self.reachability.hasInternetConnection() == true {
+                            PVDownloader.shared.startDownloadingEpisode(episode: episode)
+                            let cell = tableView.cellForRow(at: indexPath as IndexPath) as! EpisodeTableViewCell
+                            //                            cell.downloadPlayButton.setTitle("DLing", forState: .Normal)
+                        }
+                        else {
+                            //                            self.showInternetNeededAlert("Connect to WiFi or cellular data to download an episode.")
+                        }
+                    }))
+                }
+            }
+            
+            let totalClips = String(000)
+            episodeActions.addAction(UIAlertAction(title: "Show Clips (\(totalClips))", style: .default, handler: { action in
+                self.performSegue(withIdentifier: "Show Clips", sender: self)
+            }))
+            
+            episodeActions.addAction(UIAlertAction (title: "Episode Info", style: .default, handler: nil))
+            
+            episodeActions.addAction(UIAlertAction (title: "Stream Episode", style: .default, handler: { action in
+                if self.reachability.hasInternetConnection() == false {
+                    //                    self.showInternetNeededAlert("Connect to WiFi or cellular data to stream an episode.")
+                    return
+                }
+                let playerHistoryItem = self.playerHistoryManager.convertEpisodeToPlayerHistoryItem(episode: episode)
+                self.pvMediaPlayer.loadPlayerHistoryItem(playerHistoryItem: playerHistoryItem)
+                self.segueToNowPlaying()
+            }))
+            
+            episodeActions.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+            
+            self.present(episodeActions, animated: true, completion: nil)
+        }
+            // Else Show All Episodes or Show Downloaded Episodes
+        else {
+            //            toggleShowAllEpisodes()
+        }
+        
+        tableView.deselectRow(at: indexPath as IndexPath, animated: true)
+
+    }
+
+
 //
-//    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-//        // If not the last item in the array, then perform selected episode actions
-//        if indexPath.row < episodesArray.count {
-//            
-//            let selectedEp = episodesArray[indexPath.row]
-//            
-//            let episodeActions = UIAlertController(title: "", message: "", preferredStyle: UIAlertControllerStyle.ActionSheet)
-//            
-//            if selectedEp.fileName != nil {
-//                episodeActions.addAction(UIAlertAction(title: "Play Episode", style: .Default, handler: { action in
-//                    self.pvMediaPlayer.loadEpisodeDownloadedMediaFileOrStream(selectedEp.objectID, paused: false)
-//                    self.segueToNowPlaying()
-//                }))
-//            } else {
-//                if selectedEp.taskIdentifier != nil {
-//                    episodeActions.addAction(UIAlertAction(title: "Downloading Episode", style: .Default, handler: nil))
-//                } else {
-//                    episodeActions.addAction(UIAlertAction(title: "Download Episode", style: .Default, handler: { action in
-//                        if self.reachability.hasInternetConnection() == true {
-//                            PVDownloader.sharedInstance.startDownloadingEpisode(selectedEp)
-//                            let cell = tableView.cellForRowAtIndexPath(indexPath) as! EpisodesTableCell
-//                            cell.downloadPlayButton.setTitle("DLing", forState: .Normal)
-//                        }
-//                        else {
-//                            self.showInternetNeededAlert("Connect to WiFi or cellular data to download an episode.")
-//                        }
-//                    }))
-//                }
-//            }
-//            
-//            let totalClips = String(selectedEp.clips.count)
-//            episodeActions.addAction(UIAlertAction(title: "Show Clips (\(totalClips))", style: .Default, handler: { action in
-//                self.selectedEpisode = selectedEp
-//                self.performSegueWithIdentifier("Show Clips", sender: self)
-//            }))
-//            
-//            episodeActions.addAction(UIAlertAction (title: "Episode Info", style: .Default, handler: nil))
-//            
-//            episodeActions.addAction(UIAlertAction (title: "Stream Episode", style: .Default, handler: { action in
-//                if self.reachability.hasInternetConnection() == false {
-//                    self.showInternetNeededAlert("Connect to WiFi or cellular data to stream an episode.")
-//                    return
-//                }
-//                self.pvMediaPlayer.loadEpisodeDownloadedMediaFileOrStream(selectedEp.objectID, paused: false)
-//                self.segueToNowPlaying()
-//            }))
-//            
-//            episodeActions.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: nil))
-//            
-//            self.presentViewController(episodeActions, animated: true, completion: nil)
-//        }
-//            // Else Show All Episodes or Show Downloaded Episodes
-//        else {
-//            toggleShowAllEpisodes()
-//        }
-//        
-//        tableView.deselectRowAtIndexPath(indexPath, animated: true)
-//    }
-//    
 //    func toggleShowAllEpisodes() {
 //        let vc = self.storyboard?.instantiateViewControllerWithIdentifier("episodesTableViewController") as! EpisodesTableViewController
 //        vc.selectedPodcastId = selectedPodcast.objectID

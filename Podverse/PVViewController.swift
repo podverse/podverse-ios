@@ -51,13 +51,13 @@ class PVViewController: UIViewController {
                 }
                 podcastView.addSubview(podcastImageView)
 
-                let podcastTitle = UILabel(frame: CGRect(x:53, y:3, width: self.view.bounds.size.width - 106, height: 24))
+                let podcastTitle = UILabel(frame: CGRect(x:54, y:3, width: self.view.bounds.size.width - 108, height: 24))
                 podcastTitle.textAlignment = .center
                 podcastTitle.font = podcastTitle.font.withSize(14)
                 podcastTitle.text = currentItem.podcastTitle
                 podcastView.addSubview(podcastTitle)
                 
-                let episodeTitle = UILabel(frame: CGRect(x:53, y:24, width: self.view.bounds.size.width - 106, height: 24))
+                let episodeTitle = UILabel(frame: CGRect(x:54, y:24, width: self.view.bounds.size.width - 108, height: 24))
                 episodeTitle.textAlignment = .center
                 episodeTitle.font = episodeTitle.font.withSize(14)
                 episodeTitle.textColor = UIColor.darkGray
