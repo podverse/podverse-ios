@@ -1,17 +1,19 @@
 //
-//  SettingsTableViewController.swift
+//  AboutViewController.swift
 //  Podverse
 //
-//  Created by Creon on 12/15/16.
-//  Copyright © 2016 Podverse LLC. All rights reserved.
+//  Created by Mitchell Downey on 7/3/17.
+//  Copyright © 2017 Podverse LLC. All rights reserved.
 //
 
 import UIKit
 
-class SettingsTableViewController: PVViewController { 
-    
+class AboutViewController: PVViewController {
+
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        // Do any additional setup after loading the view.
     }
 
     override func didReceiveMemoryWarning() {

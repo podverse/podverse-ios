@@ -22,8 +22,8 @@
                     <connections>
                         <segue destination="aOf-u0-lhX" kind="relationship" relationship="viewControllers" id="IBO-qj-sZI"/>
                         <segue destination="r94-B9-OeX" kind="relationship" relationship="viewControllers" id="RO6-qG-Ccy"/>
-                        <segue destination="gI0-nG-hkm" kind="relationship" relationship="viewControllers" id="RC6-0s-Y15"/>
                         <segue destination="Dex-oJ-M11" kind="relationship" relationship="viewControllers" id="5m2-Ix-Q4z"/>
+                        <segue destination="gI0-nG-hkm" kind="relationship" relationship="viewControllers" id="RC6-0s-Y15"/>
                         <segue destination="XF3-ix-Atu" kind="relationship" relationship="viewControllers" id="FUk-NT-QHP"/>
                     </connections>
                 </tabBarController>
@@ -31,10 +31,10 @@
             </objects>
             <point key="canvasLocation" x="-2026" y="-313"/>
         </scene>
-        <!--Login View Controller-->
+        <!--View Controller-->
         <scene sceneID="aYd-bb-StG">
             <objects>
-                <viewController storyboardIdentifier="LoginVC" id="Ghk-Rw-jJ6" customClass="LoginViewController" customModule="Podverse" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="LoginVC" id="Ghk-Rw-jJ6" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="oey-SX-fuF"/>
                         <viewControllerLayoutGuide type="bottom" id="8b5-4S-7XS"/>
@@ -123,13 +123,13 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="GUo-RZ-m04" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-2015.2" y="577.9610194902549"/>
+            <point key="canvasLocation" x="-1578" y="536"/>
         </scene>
         <!--Find-->
         <scene sceneID="bfs-bD-UFX">
             <objects>
                 <navigationController id="gI0-nG-hkm" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Find" id="bkk-Aa-xNZ"/>
+                    <tabBarItem key="tabBarItem" title="Find" image="Tab-Find" selectedImage="Tab-Find" id="bkk-Aa-xNZ"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="acn-ou-b24">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -140,13 +140,13 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="T1F-M9-j4k" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-76" y="-313"/>
+            <point key="canvasLocation" x="-76" y="518"/>
         </scene>
         <!--Clips-->
         <scene sceneID="Isy-tw-IOn">
             <objects>
                 <navigationController title="Clips" id="r94-B9-OeX" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Clips" id="doR-Cw-vdU"/>
+                    <tabBarItem key="tabBarItem" title="Clips" image="Blank52" selectedImage="Blank52" id="doR-Cw-vdU"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="bgf-v8-WVl">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -163,7 +163,7 @@
         <scene sceneID="Ubf-NS-NvC">
             <objects>
                 <navigationController id="aOf-u0-lhX" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Podcasts" id="jNT-FU-adW"/>
+                    <tabBarItem key="tabBarItem" title="Podcasts" image="Tab-Podcasts" selectedImage="Tab-Podcasts" id="jNT-FU-adW"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="5dy-89-fAa">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -289,7 +289,7 @@
         <scene sceneID="91r-Y0-K0g">
             <objects>
                 <navigationController title="Playlists" id="Dex-oJ-M11" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Playlists" id="yBH-qH-ASW"/>
+                    <tabBarItem key="tabBarItem" title="Playlists" selectedImage="Blank52" id="yBH-qH-ASW"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="dgx-oC-B0s">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -300,24 +300,170 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="n54-as-aEY" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-76" y="518"/>
+            <point key="canvasLocation" x="-76" y="-313"/>
         </scene>
-        <!--Settings-->
+        <!--Navigation Controller-->
         <scene sceneID="6Ht-Ba-X1r">
             <objects>
                 <navigationController id="XF3-ix-Atu" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Settings" id="4S9-ez-Tds"/>
+                    <tabBarItem key="tabBarItem" systemItem="more" id="4S9-ez-Tds"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="Y7H-gU-7mD">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <connections>
-                        <segue destination="DNU-i6-BUn" kind="relationship" relationship="rootViewController" id="HDo-RQ-5YR"/>
+                        <segue destination="5Z1-qy-NA0" kind="relationship" relationship="rootViewController" id="wNA-4f-sJR"/>
                     </connections>
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="bTB-jX-dP4" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-76" y="1311"/>
+        </scene>
+        <!--More Table View Controller-->
+        <scene sceneID="dP5-G0-ZIZ">
+            <objects>
+                <viewController automaticallyAdjustsScrollViewInsets="NO" id="5Z1-qy-NA0" customClass="MoreTableViewController" customModule="Podverse" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="cWp-lE-K8u"/>
+                        <viewControllerLayoutGuide type="bottom" id="ecu-wZ-vbR"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="SQ6-At-LxW">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="96g-Cx-VYa">
+                                <rect key="frame" x="0.0" y="64" width="375" height="554"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <prototypes>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="cell" textLabel="QSa-fk-c2S" style="IBUITableViewCellStyleDefault" id="B7z-2H-lHL">
+                                        <rect key="frame" x="0.0" y="28" width="375" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="B7z-2H-lHL" id="QCn-vT-ePo">
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Title" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="QSa-fk-c2S">
+                                                    <rect key="frame" x="15" y="0.0" width="345" height="43.5"/>
+                                                    <autoresizingMask key="autoresizingMask"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                </prototypes>
+                                <connections>
+                                    <outlet property="dataSource" destination="5Z1-qy-NA0" id="XZT-X6-bm5"/>
+                                    <outlet property="delegate" destination="5Z1-qy-NA0" id="cQz-pd-lqH"/>
+                                </connections>
+                            </tableView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="96g-Cx-VYa" firstAttribute="leading" secondItem="SQ6-At-LxW" secondAttribute="leading" id="2Zb-2W-adz"/>
+                            <constraint firstItem="96g-Cx-VYa" firstAttribute="top" secondItem="cWp-lE-K8u" secondAttribute="bottom" id="2hd-XH-d1T"/>
+                            <constraint firstAttribute="trailing" secondItem="96g-Cx-VYa" secondAttribute="trailing" id="QOf-Oh-Aw4"/>
+                            <constraint firstItem="ecu-wZ-vbR" firstAttribute="top" secondItem="96g-Cx-VYa" secondAttribute="bottom" id="g8b-cP-pfg"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" id="Pmd-nK-6wh"/>
+                    <connections>
+                        <outlet property="tableView" destination="96g-Cx-VYa" id="qcj-2X-yYW"/>
+                        <segue destination="8kx-gE-Jo4" kind="show" identifier="Show Downloads" id="4EX-oW-kyk"/>
+                        <segue destination="wkJ-fx-uxS" kind="show" identifier="Show Login" id="8Mm-fy-dza"/>
+                        <segue destination="Y7Q-Cf-MT3" kind="show" identifier="Show About" id="woU-xR-wIP"/>
+                        <segue destination="Ak4-gJ-3iH" kind="show" identifier="Show Settings" id="FJm-2F-lTy"/>
+                        <segue destination="fGh-hH-QQS" kind="show" identifier="To Now Playing" id="D7m-nE-mId"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="iVi-4r-gHu" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="789.60000000000002" y="1309.2953523238382"/>
+        </scene>
+        <!--About View Controller-->
+        <scene sceneID="iAv-my-dMA">
+            <objects>
+                <viewController id="Y7Q-Cf-MT3" customClass="AboutViewController" customModule="Podverse" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="6uJ-y3-QAm"/>
+                        <viewControllerLayoutGuide type="bottom" id="iLQ-eb-dPF"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="e2p-EI-jCl">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                    <connections>
+                        <segue destination="fGh-hH-QQS" kind="show" identifier="To Now Playing" id="RU4-pG-EQ1"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="483-Gd-Qc8" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1254" y="2432"/>
+        </scene>
+        <!--Settings View Controller-->
+        <scene sceneID="LRp-FW-QR8">
+            <objects>
+                <viewController id="Ak4-gJ-3iH" customClass="SettingsViewController" customModule="Podverse" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="8vp-Rz-j1g"/>
+                        <viewControllerLayoutGuide type="bottom" id="4lx-4k-KAH"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="hQj-7l-eHv">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                    <connections>
+                        <segue destination="fGh-hH-QQS" kind="show" identifier="To Now Playing" id="bv4-7n-YPC"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="9fF-RV-dYc" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2132" y="2432"/>
+        </scene>
+        <!--Login View Controller-->
+        <scene sceneID="06x-7d-5rk">
+            <objects>
+                <viewController id="wkJ-fx-uxS" customClass="LoginViewController" customModule="Podverse" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="DEo-M4-j3L"/>
+                        <viewControllerLayoutGuide type="bottom" id="zCL-lI-wll"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="3d6-Ut-dUt">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                    <connections>
+                        <segue destination="fGh-hH-QQS" kind="show" identifier="To Now Playing" id="k7W-qa-ewg"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="0XZ-aq-hYW" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="375" y="2432"/>
+        </scene>
+        <!--Downloads Table View Controller-->
+        <scene sceneID="Fu0-gG-hTD">
+            <objects>
+                <viewController id="8kx-gE-Jo4" customClass="DownloadsTableViewController" customModule="Podverse" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="r0T-lm-T2U"/>
+                        <viewControllerLayoutGuide type="bottom" id="qVv-A7-JyA"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="JoU-pa-Nb6">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                    <connections>
+                        <segue destination="fGh-hH-QQS" kind="show" identifier="To Now Playing" id="E6q-Hn-bK4"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="o20-Ni-e6h" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-542" y="2432"/>
         </scene>
         <!--Clips-->
         <scene sceneID="Shd-at-6ID">
@@ -430,7 +576,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="IHf-aw-3og" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="832.79999999999995" y="-1096.1019490254873"/>
+            <point key="canvasLocation" x="790" y="-1096"/>
         </scene>
         <!--Find Table View Controller-->
         <scene sceneID="YIE-qS-rRt">
@@ -479,7 +625,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="gxH-qg-89B" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="832.79999999999995" y="-313.49325337331339"/>
+            <point key="canvasLocation" x="790" y="518"/>
         </scene>
         <!--Episodes Table View Controller-->
         <scene sceneID="VYj-C9-p5k">
@@ -864,7 +1010,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="i6M-Yi-mpb" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2561" y="-1879"/>
+            <point key="canvasLocation" x="2604" y="-1876"/>
         </scene>
         <!--Playlists-->
         <scene sceneID="WnP-eH-wLR">
@@ -886,29 +1032,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="I2t-g2-vF9" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="833" y="518"/>
-        </scene>
-        <!--Settings Table View Controller-->
-        <scene sceneID="qli-OF-FXa">
-            <objects>
-                <viewController id="DNU-i6-BUn" customClass="SettingsTableViewController" customModule="Podverse" customModuleProvider="target" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="ayZ-l2-R0J"/>
-                        <viewControllerLayoutGuide type="bottom" id="ave-40-ogg"/>
-                    </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="e8d-cA-MLg">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                    </view>
-                    <navigationItem key="navigationItem" id="ElV-7R-KCw"/>
-                    <connections>
-                        <segue destination="fGh-hH-QQS" kind="show" identifier="To Now Playing" id="6SD-5p-VhR"/>
-                    </connections>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="7sa-os-Xff" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="833" y="1310"/>
+            <point key="canvasLocation" x="790" y="-313"/>
         </scene>
         <!--Clips List Container View Controller-->
         <scene sceneID="RCj-Wg-8mW">
@@ -1007,16 +1131,19 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="q9j-4Z-vhy" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3652" y="-1876.9115442278862"/>
+            <point key="canvasLocation" x="3460" y="-1876"/>
         </scene>
     </scenes>
     <resources>
+        <image name="Blank52" width="47" height="47"/>
         <image name="Play" width="40" height="40"/>
         <image name="Previous" width="40" height="40"/>
         <image name="Skip" width="40" height="40"/>
+        <image name="Tab-Find" width="25" height="25"/>
+        <image name="Tab-Podcasts" width="25" height="25"/>
         <image name="banner" width="337" height="61"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="WJJ-II-E2z"/>
+        <segue reference="E6q-Hn-bK4"/>
     </inferredMetricsTieBreakers>
 </document>

@@ -27,7 +27,6 @@ enum TabItems:Int {
     }
 }
 
-
 enum SharePermission:String {
     case isPrivate = "isPrivate", isSharableWithLink = "isSharableWithLink", isPublic = "isPublic"
 }
