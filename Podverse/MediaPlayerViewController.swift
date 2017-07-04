@@ -155,23 +155,10 @@ class MediaPlayerViewController: UIViewController {
             podcastTitle.text = item.podcastTitle
             episodeTitle.text = item.episodeTitle
             
-            var cellImage:UIImage?
-            if let podcastFeedUrl = item.podcastFeedUrl, let imageData = retrievePodcastImageData(feedUrl: podcastFeedUrl, imageUrl: item.podcastImageUrl) {
-                DispatchQueue.global().async {
-                    if let image = UIImage(data: imageData) {
-                        cellImage = image
-                    } else {
-                        cellImage = UIImage(named: "PodverseIcon")
-                    }
+            DispatchQueue.global().async {
+                Podcast.retrievePodcastUIImage(item: item) { (podcastImage) -> Void in
                     DispatchQueue.main.async {
-                        self.image.image = cellImage
-                    }
-                }
-            } else {
-                DispatchQueue.global().async {
-                    cellImage = UIImage(named: "PodverseIcon")
-                    DispatchQueue.main.async {
-                        self.image.image = cellImage
+                        self.image.image = podcastImage
                     }
                 }
             }
@@ -187,30 +174,6 @@ class MediaPlayerViewController: UIViewController {
         }
         
         
-    }
-    
-    func retrievePodcastImageData(feedUrl: String, imageUrl: String?) -> Data? {
-        let moc = CoreDataHelper.createMOCForThread(threadType: .mainThread)
-        
-        let predicate = NSPredicate(format: "feedUrl == %@", feedUrl)
-        if let podcastSet = CoreDataHelper.fetchEntities(className: "Podcast", predicate: predicate, moc:moc) as? [Podcast] {
-            if podcastSet.count > 0 {
-                let podcast = podcastSet[0]
-                
-                if let imageData = podcast.imageData {
-                    return imageData
-                }
-            }
-        } else if let podcastImageUrl = imageUrl, let url = URL(string: podcastImageUrl) {
-            do {
-                return try Data(contentsOf: url)
-            }
-            catch {
-                print("No Image Data at give URL")
-            }
-        }
-        
-        return nil
     }
     
     func updateCurrentTime(currentTime: Double) {

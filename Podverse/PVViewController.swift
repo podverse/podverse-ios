@@ -11,6 +11,7 @@ import UIKit
 class PVViewController: UIViewController {
     
     let playerHistoryManager = PlayerHistory.manager
+    let pvMediaPlayer = PVMediaPlayer.shared
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -37,25 +38,52 @@ class PVViewController: UIViewController {
                 topDivider.backgroundColor = UIColor.lightGray
                 nowPlayingBar.addSubview(topDivider)
                 
-                let podcastTitle = UILabel(frame: CGRect(x:0, y:4, width: self.view.bounds.size.width, height: 24))
-                podcastTitle.textAlignment = .center
-                podcastTitle.font = podcastTitle.font.withSize(16)
-                podcastTitle.text = currentItem.podcastTitle
-                nowPlayingBar.addSubview(podcastTitle)
+                let podcastView:UIView = UIView(frame: CGRect(x: 0, y: 1, width: self.view.bounds.size.width - 43, height: 49))
+                nowPlayingBar.addSubview(podcastView)
                 
-                let episodeTitle = UILabel(frame: CGRect(x:0, y:24, width: self.view.bounds.size.width, height: 24))
+                let podcastImageView:UIImageView = UIImageView(frame: CGRect(x: 0, y:0, width: 49, height: 49))
+                DispatchQueue.global().async {
+                    Podcast.retrievePodcastUIImage(item: currentItem) { (podcastImage) -> Void in
+                        DispatchQueue.main.async {
+                            podcastImageView.image = podcastImage
+                        }
+                    }
+                }
+                podcastView.addSubview(podcastImageView)
+
+                let podcastTitle = UILabel(frame: CGRect(x:53, y:3, width: self.view.bounds.size.width - 106, height: 24))
+                podcastTitle.textAlignment = .center
+                podcastTitle.font = podcastTitle.font.withSize(14)
+                podcastTitle.text = currentItem.podcastTitle
+                podcastView.addSubview(podcastTitle)
+                
+                let episodeTitle = UILabel(frame: CGRect(x:53, y:24, width: self.view.bounds.size.width - 106, height: 24))
                 episodeTitle.textAlignment = .center
-                episodeTitle.font = episodeTitle.font.withSize(16)
+                episodeTitle.font = episodeTitle.font.withSize(14)
                 episodeTitle.textColor = UIColor.darkGray
                 episodeTitle.text = currentItem.episodeTitle
-                nowPlayingBar.addSubview(episodeTitle)
+                podcastView.addSubview(episodeTitle)
+
+                let podcastViewGesture = UITapGestureRecognizer(target: self, action: #selector (segueToNowPlaying))
+                podcastView.addGestureRecognizer(podcastViewGesture)
+                
+                let playPause = UIButton(frame: CGRect(x: self.view.bounds.width - 46, y:4, width: 43, height: 43))
+                playPause.setTitleColor(UIColor.gray, for: .normal)
+                
+                if (pvMediaPlayer.avPlayer.rate > 0) {
+                    playPause.setImage(UIImage(named: "Pause"), for: .normal)
+                } else {
+                    playPause.setImage(UIImage(named: "Play"), for: .normal)
+                }
+                
+                // TODO: why does this playOrPause selector fail? how do we fix it?
+                let playPauseGesture = UITapGestureRecognizer(target: self, action: #selector (pvMediaPlayer.playOrPause))
+                playPause.addGestureRecognizer(playPauseGesture)
+                nowPlayingBar.addSubview(playPause)
                 
                 let bottomDivider:UIView = UIView(frame: CGRect(x: 0, y: 50, width: self.view.bounds.size.width, height: 1))
                 bottomDivider.backgroundColor = UIColor.lightGray
                 nowPlayingBar.addSubview(bottomDivider)
-                
-                let gesture = UITapGestureRecognizer(target: self, action: #selector (segueToNowPlaying))
-                nowPlayingBar.addGestureRecognizer(gesture)
                 
                 self.view!.addSubview(nowPlayingBar)
                 
@@ -67,7 +95,7 @@ class PVViewController: UIViewController {
     }
     
     func segueToNowPlaying() {
-        self.performSegue(withIdentifier: TO_PLAYER_SEGUE_ID, sender: nil)
+        performSegue(withIdentifier: TO_PLAYER_SEGUE_ID, sender: nil)
     }
     
 }

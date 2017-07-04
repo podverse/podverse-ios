@@ -11,7 +11,6 @@ class EpisodesTableViewController: PVViewController, UITableViewDataSource, UITa
     var podcast: Podcast!
     var episodesArray = [Episode]()
     //    var refreshControl: UIRefreshControl!
-    var pvMediaPlayer = PVMediaPlayer.shared
     //    let reachability = PVReachability.manager
     
 //    @IBOutlet weak var headerView: UIView!
