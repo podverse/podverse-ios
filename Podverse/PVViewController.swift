@@ -69,5 +69,5 @@ class PVViewController: UIViewController {
     func segueToNowPlaying() {
         self.performSegue(withIdentifier: TO_PLAYER_SEGUE_ID, sender: nil)
     }
-
+    
 }

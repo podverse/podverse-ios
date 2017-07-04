@@ -66,7 +66,7 @@ class EpisodesTableViewController: PVViewController, UITableViewDataSource, UITa
                 pvMediaPlayer.loadPlayerHistoryItem(playerHistoryItem: playerHistoryItem)
                 
 //                pvMediaPlayer.loadEpisodeDownloadedMediaFileOrStream(episodeID: episode.objectID, paused: false)
-                self.segueToNowPlaying()
+                segueToNowPlaying()
             } else {
 //                if reachability.hasInternetConnection() == false {
 //                    showInternetNeededAlert("Connect to WiFi or cellular data to download an episode.")
@@ -143,8 +143,6 @@ class EpisodesTableViewController: PVViewController, UITableViewDataSource, UITa
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        
-        // If not the last cell, then insert episode information into cell
         if indexPath.row < episodesArray.count {
             let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath as IndexPath) as! EpisodeTableViewCell
 
@@ -158,11 +156,7 @@ class EpisodesTableViewController: PVViewController, UITableViewDataSource, UITa
 
             let totalClips = String(episode.clips.count)
             cell.totalClips?.text = String(totalClips + " clips")
-//
-//            if let duration = episode.duration {
-//                cell.totalTimeLeft?.text = PVUtility.convertNSNumberToHHMMSSString(duration)
-//            }
-//            
+     
             if let pubDate = episode.pubDate {
                 cell.pubDate?.text = pubDate.toShortFormatString()
             }
@@ -178,9 +172,7 @@ class EpisodesTableViewController: PVViewController, UITableViewDataSource, UITa
             cell.button.addTarget(self, action: #selector(downloadPlay(sender:)), for: .touchUpInside)
 
             return cell
-        }
-            // Return the Show All Available Episodes button
-        else {
+        } else {
             let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath as IndexPath)
 //
 //            if showAllEpisodes == false {
@@ -202,6 +194,14 @@ class EpisodesTableViewController: PVViewController, UITableViewDataSource, UITa
 //            return 60
 //        }
     }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "To Now Playing" {
+            let mediaPlayerViewController = segue.destination as! MediaPlayerViewController
+            mediaPlayerViewController.shouldAutoplay = true
+        }
+    }
+    
 //
 //    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
 //        // If not the last item in the array, then perform selected episode actions

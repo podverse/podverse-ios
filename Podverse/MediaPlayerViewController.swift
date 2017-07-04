@@ -14,6 +14,7 @@ class MediaPlayerViewController: UIViewController {
     
     let pvMediaPlayer = PVMediaPlayer.shared
     var playerSpeedRate:PlayingSpeed = .regular
+    var shouldAutoplay = false
     
     @IBOutlet weak var clipsContainerView: UIView!
     @IBOutlet weak var progress: UISlider!
@@ -31,9 +32,6 @@ class MediaPlayerViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        pvMediaPlayer.avPlayer.rate = 1
-        speed.setTitle(playerSpeedRate.speedText, for: .normal)
-        
         let share = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.action, target: self, action: #selector(showShareMenu))
         let makeClip = UIBarButtonItem(title: "Make Clip", style: .plain, target: self, action: #selector(showMakeClip))
         let addToPlaylist = UIBarButtonItem(title: "Add to Playlist", style: .plain, target: self, action: #selector(showAddToPlaylist))
@@ -47,8 +45,6 @@ class MediaPlayerViewController: UIViewController {
         viewSelector.setTitle("Show Clips", for: .normal)
         clipsContainerView.isHidden = true
         
-        setPlayIcon()
-        
         setPlayerInfo()
         
         // TODO: does this need an unowned self or something?
@@ -56,6 +52,14 @@ class MediaPlayerViewController: UIViewController {
             self.updateCurrentTime(currentTime: CMTimeGetSeconds(time))
         }
         
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        if (shouldAutoplay) {
+            pvMediaPlayer.avPlayer.rate = 0
+            pvMediaPlayer.playOrPause()
+        }
+        setPlayIcon()
     }
     
     @IBAction func sliderAction(_ sender: UISlider) {
