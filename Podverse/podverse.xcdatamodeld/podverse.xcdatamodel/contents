@@ -11,7 +11,6 @@
         <attribute name="mediaUrl" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="pubDate" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="summary" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="taskResumeData" optional="YES" attributeType="Binary" syncable="YES"/>
         <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="uuid" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="podcast" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Podcast" inverseName="episodes" inverseEntity="Podcast" syncable="YES"/>
@@ -47,7 +46,7 @@
         <relationship name="episodes" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Episode" inverseName="podcast" inverseEntity="Episode" syncable="YES"/>
     </entity>
     <elements>
-        <element name="Episode" positionX="-290" positionY="207" width="128" height="255"/>
+        <element name="Episode" positionX="-290" positionY="207" width="128" height="240"/>
         <element name="Playlist" positionX="241" positionY="27" width="128" height="195"/>
         <element name="Podcast" positionX="520" positionY="54" width="128" height="285"/>
     </elements>

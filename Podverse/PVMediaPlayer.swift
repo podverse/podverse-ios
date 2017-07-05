@@ -249,6 +249,10 @@ class PVMediaPlayer {
     }
         
     func loadPlayerHistoryItem(playerHistoryItem: PlayerHistoryItem) {
+        if avPlayer.rate == 1 {
+            saveCurrentTimeAsPlaybackPosition()
+        }
+        
         currentlyPlayingItem = playerHistoryItem
         
         avPlayer.replaceCurrentItem(with: nil)

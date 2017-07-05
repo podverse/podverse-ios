@@ -19,7 +19,6 @@ class Episode: NSManagedObject {
     @NSManaged var mediaUrl: String?
     @NSManaged var pubDate: Date?
     @NSManaged var summary: String?
-    @NSManaged var taskResumeData: Data?
     @NSManaged var title: String?
     @NSManaged var uuid: String?
     @NSManaged var podcast: Podcast

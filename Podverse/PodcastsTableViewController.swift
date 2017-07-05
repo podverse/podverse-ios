@@ -256,8 +256,6 @@ extension PodcastsTableViewController:UITableViewDelegate, UITableViewDataSource
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         
-        
-        
         if let index = tableView.indexPathForSelectedRow {
             if segue.identifier == "Show Episodes" {
                 let episodesTableViewController = segue.destination as! EpisodesTableViewController

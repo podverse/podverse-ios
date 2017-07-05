@@ -277,8 +277,8 @@
                     <connections>
                         <outlet property="parsingActivityContainer" destination="5T6-DS-Lmx" id="ZbX-Uz-ej2"/>
                         <outlet property="tableView" destination="TnJ-Ls-LeL" id="GWb-4j-YZr"/>
-                        <segue destination="DYF-Bg-yz8" kind="show" identifier="Show Episodes" id="5cx-iX-KAU"/>
                         <segue destination="fGh-hH-QQS" kind="show" identifier="To Now Playing" id="WJJ-II-E2z"/>
+                        <segue destination="DYF-Bg-yz8" kind="show" identifier="Show Episodes" id="7Y1-Qv-nBb"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="qiC-S7-vKn" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -498,7 +498,7 @@
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" progress="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="m3q-8T-7rQ">
+                                                <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="m3q-8T-7rQ">
                                                     <rect key="frame" x="92" y="58" width="275" height="2"/>
                                                 </progressView>
                                             </subviews>
@@ -1232,6 +1232,6 @@
         <image name="banner" width="337" height="61"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="E6q-Hn-bK4"/>
+        <segue reference="WJJ-II-E2z"/>
     </inferredMetricsTieBreakers>
 </document>

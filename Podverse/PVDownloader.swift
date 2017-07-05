@@ -12,7 +12,9 @@ import CoreData
 
 protocol PVDownloaderDelegate:class {
     func downloadFinished(episode: DownloadingEpisode)
+    func downloadPaused(episode: DownloadingEpisode)
     func downloadProgressed(episode: DownloadingEpisode)
+    func downloadResumed(episode: DownloadingEpisode)
     func downloadStarted()
 }
 
@@ -37,9 +39,37 @@ class PVDownloader:NSObject {
         
         downloadSession = URLSession(configuration: sessionConfiguration, delegate: self, delegateQueue: nil)
     }
+
+    func pauseDownloadingEpisode(downloadingEpisode: DownloadingEpisode) {
+        downloadSession.getTasksWithCompletionHandler( { dataTasks, uploadTasks, downloadTasks in
+            for episodeDownloadTask in downloadTasks {
+                if episodeDownloadTask.taskIdentifier == downloadingEpisode.taskIdentifier {
+                    episodeDownloadTask.cancel(byProducingResumeData: { (resumeData) in
+                        if resumeData != nil {
+                            downloadingEpisode.taskResumeData = resumeData
+                            self.delegate?.downloadPaused(episode: downloadingEpisode)
+                        }
+                    })
+                }
+            }
+        })
+    }
     
-    func startDownloadingEpisode (episode: Episode) {
-        
+    func resumeDownloadingEpisode(downloadingEpisode: DownloadingEpisode) {
+        if let downloadTaskResumeData = downloadingEpisode.taskResumeData {
+            let downloadTask = downloadSession.downloadTask(withResumeData: downloadTaskResumeData)
+            downloadingEpisode.taskIdentifier = downloadTask.taskIdentifier
+            downloadingEpisode.taskResumeData = nil
+            
+            let taskID = beginBackgroundTask()
+            downloadTask.resume()
+            endBackgroundTask(taskID)
+            
+            self.delegate?.downloadResumed(episode: downloadingEpisode)
+        }
+    }
+    
+    func startDownloadingEpisode(episode: Episode) {
         if let downloadSourceStringURL = episode.mediaUrl, let downloadSourceURL = URL(string: downloadSourceStringURL) {
             let downloadTask = downloadSession.downloadTask(with: downloadSourceURL)
             
@@ -61,79 +91,6 @@ class PVDownloader:NSObject {
             self.delegate?.downloadStarted()
         }
     }
-    
-//    func pauseOrResumeDownloadingEpisode(episode: DownloadingEpisode) {
-//        // If the episode has already downloaded, then do nothing
-//        if (episode.downloadComplete == true) {
-//            episode.taskIdentifier = nil
-//        }
-//        // Else if the episode download is paused, then resume the download
-//        else if let downloadTaskResumeData = episode.taskResumeData {
-//            let downloadTask = downloadSession.downloadTask(withResumeData: downloadTaskResumeData)
-//            episode.taskIdentifier = downloadTask.taskIdentifier
-//            episode.taskResumeData = nil
-//            episode.pausedByUser = false
-//            downloadTask.resume()
-//            self.postPauseOrResumeNotification(taskIdentifier: downloadTask.taskIdentifier, pauseOrResume: "Downloading")
-//        }
-//        else if episode.pausedWithoutResumeData == true {
-//            episode.pausedWithoutResumeData = false
-//            let moc = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
-//            moc.parent = CoreDataHelper.shared.managedObjectContext
-//            
-//            if let episodeObjectID = episode.managedEpisodeObjectID {
-//                if let nsManagedEpisode = CoreDataHelper.fetchEntityWithID(objectId: episodeObjectID, moc: moc) as? Episode {
-//                    startDownloadingEpisode(episode: nsManagedEpisode)
-//                }
-//            }
-//        }
-//        // Else if the episode has a taskIdentifier, then pause the download if it has already begun
-//        else if let taskIdentifier = episode.taskIdentifier {
-//            downloadSession.getTasksWithCompletionHandler { dataTasks, uploadTasks, downloadTasks in
-//                for episodeDownloadTask in downloadTasks {
-//                    if episodeDownloadTask.taskIdentifier == taskIdentifier {
-//                        episodeDownloadTask.cancel(byProducingResumeData: { (resumeData) in
-//                            if (resumeData != nil) {
-//                                episode.taskResumeData = resumeData
-//                                if self.reachability.hasWiFiConnection() == true {
-//                                    episode.pausedByUser = true
-//                                    self.postPauseOrResumeNotification(taskIdentifier: taskIdentifier, pauseOrResume: "Paused")
-//                                }
-//                                else {
-//                                    self.postPauseOrResumeNotification(taskIdentifier: taskIdentifier, pauseOrResume: "Connect to WiFi")
-//                                }
-//                                episode.taskIdentifier = nil
-//                            } else {
-//                                episode.pausedWithoutResumeData = true
-//                                if self.reachability.hasWiFiConnection() == true {
-//                                    episode.pausedByUser = true
-//                                    self.postPauseOrResumeNotification(taskIdentifier: taskIdentifier, pauseOrResume: "Paused")
-//                                }
-//                                else {
-//                                    self.postPauseOrResumeNotification(taskIdentifier: taskIdentifier, pauseOrResume: "Connect to WiFi")
-//                                }
-//                            }
-//                        })
-//                    }
-//                }
-//            }
-//        }
-//    }
-//    
-//    func postPauseOrResumeNotification(taskIdentifier: Int, pauseOrResume: String) {
-//        // Get the corresponding episode object by its taskIdentifier value
-//        if let episodeDownloadIndex = DownloadingEpisodeList.shared.downloadingEpisodes.index(where: {$0.taskIdentifier == taskIdentifier}) {
-//            if episodeDownloadIndex < DownloadingEpisodeList.shared.downloadingEpisodes.count {
-//                let episode = DownloadingEpisodeList.shared.downloadingEpisodes[episodeDownloadIndex]
-//                
-//                let downloadHasPausedOrResumedUserInfo:[String:Any] = ["mediaUrl":episode.mediaUrl ?? "", "pauseOrResume": pauseOrResume]
-//                
-//                DispatchQueue.main.async {
-//                    NotificationCenter.default.post(name: NSNotification.Name(rawValue: kDownloadHasPausedOrResumed), object: self, userInfo: downloadHasPausedOrResumedUserInfo)
-//                }
-//            }
-//        }
-//    }
     
     fileprivate func decrementBadge() {
         if let tabBarCntrl = self.appDelegate.window?.rootViewController as? UITabBarController {
@@ -228,7 +185,7 @@ extension PVDownloader:URLSessionDelegate, URLSessionDownloadDelegate {
                 if let destination = destinationURL {
                     try fileManager.copyItem(at: location, to: destination)
                     
-                    episode.taskResumeData = nil
+//                    episode.taskResumeData = nil
                     
                     // Add the file destination to the episode object for playback and retrieval
                     episode.fileName = destinationFilename

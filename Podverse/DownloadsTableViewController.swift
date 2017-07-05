@@ -9,7 +9,7 @@
 import UIKit
 
 class DownloadsTableViewController: PVViewController {
-    var episodes = [DownloadingEpisode]()
+    let pvDownloader = PVDownloader.shared
     
     @IBOutlet weak var tableView: UITableView!
     
@@ -19,12 +19,11 @@ class DownloadsTableViewController: PVViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         PVDownloader.shared.delegate = self
-        episodes = DownloadingEpisodeList.shared.downloadingEpisodes
         tableView.reloadData()
     }
     
     func indexPathOfDownload(episode: DownloadingEpisode) -> IndexPath? {
-        if let row = episodes.index(where: {$0 === episode}) {
+        if let row = DownloadingEpisodeList.shared.downloadingEpisodes.index(where: {$0.mediaUrl == episode.mediaUrl}) {
             return IndexPath(row: row, section: 0)
         }
         return nil
@@ -39,13 +38,13 @@ extension DownloadsTableViewController:UITableViewDelegate, UITableViewDataSourc
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return episodes.count
+        return DownloadingEpisodeList.shared.downloadingEpisodes.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! DownloadTableViewCell
         
-        let episode = episodes[indexPath.row]
+        let episode = DownloadingEpisodeList.shared.downloadingEpisodes[indexPath.row]
         
         DispatchQueue.global().async {
             Podcast.retrievePodcastUIImage(downloadingEpisode: episode) { (podcastImage) -> Void in
@@ -62,6 +61,7 @@ extension DownloadsTableViewController:UITableViewDelegate, UITableViewDataSourc
         
         if episode.downloadComplete == true {
             cell.status.text = "Finished"
+            cell.progress.setProgress(1.0, animated: false)
         } else if episode.taskResumeData != nil {
             cell.status.text = "Paused"
         } else {
@@ -69,10 +69,38 @@ extension DownloadsTableViewController:UITableViewDelegate, UITableViewDataSourc
         }
         
         cell.progressStats.text = ""
-        cell.progress.setProgress(0, animated: false)
         
         return cell
         
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        
+        let downloadingEpisode = DownloadingEpisodeList.shared.downloadingEpisodes[indexPath.row]
+        
+        if downloadingEpisode.taskResumeData != nil {
+            pvDownloader.resumeDownloadingEpisode(downloadingEpisode: downloadingEpisode)
+        } else if downloadingEpisode.downloadComplete == true {
+            let moc = CoreDataHelper.createMOCForThread(threadType: .mainThread)
+            if let mediaUrl = downloadingEpisode.mediaUrl {
+                let episode = CoreDataHelper.retrieveExistingOrCreateNewEpisode(mediaUrlString: mediaUrl, moc: moc)
+                let playerHistoryItem = playerHistoryManager.convertEpisodeToPlayerHistoryItem(episode: episode)
+                pvMediaPlayer.loadPlayerHistoryItem(playerHistoryItem: playerHistoryItem)
+                segueToNowPlaying()
+            }
+        } else {
+            pvDownloader.pauseDownloadingEpisode(downloadingEpisode: downloadingEpisode)
+        }
+        
+        tableView.deselectRow(at: indexPath, animated: false)
+
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "To Now Playing" {
+            let mediaPlayerViewController = segue.destination as! MediaPlayerViewController
+            mediaPlayerViewController.shouldAutoplay = true
+        }
     }
     
 }
@@ -89,6 +117,17 @@ extension DownloadsTableViewController:PVDownloaderDelegate {
             }
         }
     }
+    func downloadPaused(episode: DownloadingEpisode) {
+        if let indexPath = indexPathOfDownload(episode: episode) {
+            DispatchQueue.main.async {
+                if let cell = self.tableView.cellForRow(at: indexPath) as? DownloadTableViewCell {
+                    cell.progress.setProgress(episode.progress, animated: false)
+                    cell.progressStats.text = ""
+                    cell.status.text = "Paused"
+                }
+            }
+        }
+    }
     func downloadProgressed(episode: DownloadingEpisode) {
         if let indexPath = indexPathOfDownload(episode: episode) {
             DispatchQueue.main.async {
@@ -100,8 +139,20 @@ extension DownloadsTableViewController:PVDownloaderDelegate {
             }
         }
     }
+    func downloadResumed(episode: DownloadingEpisode) {
+        if let indexPath = indexPathOfDownload(episode: episode) {
+            DispatchQueue.main.async {
+                if let cell = self.tableView.cellForRow(at: indexPath) as? DownloadTableViewCell {
+                    cell.progress.setProgress(episode.progress, animated: false)
+                    cell.progressStats.text = episode.formattedTotalBytesDownloaded
+                    cell.status.text = "Downloading"
+                }
+            }
+        }
+    }
     func downloadStarted() {
-        episodes = DownloadingEpisodeList.shared.downloadingEpisodes
-        tableView.reloadData()
+        DispatchQueue.main.async {
+            self.tableView.reloadData()
+        }
     }
 }

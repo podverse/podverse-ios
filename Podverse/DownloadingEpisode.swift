@@ -12,8 +12,6 @@ import CoreData
 final class DownloadingEpisode:Equatable {
     var downloadComplete:Bool?
     var mediaUrl: String?
-    var pausedByUser:Bool?
-    var pausedWithoutResumeData:Bool?
     var podcastFeedUrl:String?
     var podcastImageUrl: String?
     var podcastTitle:String?
@@ -56,8 +54,6 @@ final class DownloadingEpisode:Equatable {
     init(episode:Episode) {
         downloadComplete = false
         mediaUrl = episode.mediaUrl
-        pausedByUser = false
-        pausedWithoutResumeData = false
         podcastFeedUrl = episode.podcast.feedUrl
         podcastImageUrl = episode.podcast.imageUrl
         podcastTitle = episode.podcast.title

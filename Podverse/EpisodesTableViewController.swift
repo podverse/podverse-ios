@@ -8,7 +8,7 @@ class EpisodesTableViewController: PVViewController, UITableViewDataSource, UITa
     let moc = CoreDataHelper.createMOCForThread(threadType: .privateThread)
     
     var selectedPodcastID: NSManagedObjectID!
-    var podcast: Podcast!
+    
     var episodesArray = [Episode]()
     
     let reachability = PVReachability.shared
@@ -20,18 +20,36 @@ class EpisodesTableViewController: PVViewController, UITableViewDataSource, UITa
     @IBOutlet weak var headerImageView: UIImageView!
     
     func loadData() {
-        podcast = CoreDataHelper.fetchEntityWithID(objectId: self.selectedPodcastID, moc: moc) as! Podcast
-
-        episodesArray = Array(podcast.episodes)
-        
-        let unsortedEpisodes = NSMutableArray()
-        let sortDescriptor = NSSortDescriptor(key: "pubDate", ascending: false)
-        for singleEpisode in episodesArray {
-            unsortedEpisodes.add(singleEpisode)
+        if let podcast = CoreDataHelper.fetchEntityWithID(objectId: self.selectedPodcastID, moc: moc) as? Podcast {
+            
+            headerPodcastTitle.text = podcast.title
+            
+            DispatchQueue.global().async {
+                var cellImage:UIImage?
+                
+                if let imageData = podcast.imageThumbData, let image = UIImage(data: imageData) {
+                    cellImage = image
+                }
+                else {
+                    cellImage = UIImage(named: "PodverseIcon")
+                }
+                
+                DispatchQueue.main.async {
+                    self.headerImageView.image = cellImage
+                }
+            }
+            
+            episodesArray = Array(podcast.episodes)
+            
+            let unsortedEpisodes = NSMutableArray()
+            let sortDescriptor = NSSortDescriptor(key: "pubDate", ascending: false)
+            for singleEpisode in episodesArray {
+                unsortedEpisodes.add(singleEpisode)
+            }
+            episodesArray = unsortedEpisodes.sortedArray(using: [sortDescriptor]) as! [Episode]
+            
+            self.tableView.reloadData()
         }
-        episodesArray = unsortedEpisodes.sortedArray(using: [sortDescriptor]) as! [Episode]
-
-        tableView.reloadData()
     }
 
     func downloadPlay(sender: UIButton) {
@@ -39,15 +57,9 @@ class EpisodesTableViewController: PVViewController, UITableViewDataSource, UITa
            let indexRow = self.tableView.indexPath(for: cell)?.row {
         
             let episode = episodesArray[indexRow]
-            if episode.fileName != nil {
-                if pvMediaPlayer.avPlayer.rate == 1 {
-                    pvMediaPlayer.saveCurrentTimeAsPlaybackPosition()
-                }
-                
+            if episode.fileName != nil {                
                 let playerHistoryItem = playerHistoryManager.convertEpisodeToPlayerHistoryItem(episode: episode)
                 pvMediaPlayer.loadPlayerHistoryItem(playerHistoryItem: playerHistoryItem)
-                
-//                pvMediaPlayer.loadEpisodeDownloadedMediaFileOrStream(episodeID: episode.objectID, paused: false)
                 segueToNowPlaying()
             } else {
 //                if reachability.hasInternetConnection() == false {
@@ -63,26 +75,6 @@ class EpisodesTableViewController: PVViewController, UITableViewDataSource, UITa
     override func viewDidLoad() {
         super.viewDidLoad()
         loadData()
-        
-        NotificationCenter.default.addObserver(self, selector: #selector(loadData), name: NSNotification.Name(kDownloadHasFinished), object: nil)
-        
-        headerPodcastTitle.text = podcast.title
-        
-        DispatchQueue.global().async {
-            var cellImage:UIImage?
-            
-            if let imageData = self.podcast.imageThumbData, let image = UIImage(data: imageData) {
-                cellImage = image
-            }
-            else {
-                cellImage = UIImage(named: "PodverseIcon")
-            }
-            
-            DispatchQueue.main.async {
-                self.headerImageView.image = cellImage
-            }
-        }
-        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -296,12 +288,17 @@ class EpisodesTableViewController: PVViewController, UITableViewDataSource, UITa
 
 extension EpisodesTableViewController:PVDownloaderDelegate {
     func downloadFinished(episode: DownloadingEpisode) {
-        print("oh hai")
+        print("no wai")
+    }
+    func downloadPaused(episode: DownloadingEpisode) {
+        print("pause plz")
     }
     func downloadProgressed(episode: DownloadingEpisode) {
-        print("y tho")
+    }
+    func downloadResumed(episode: DownloadingEpisode) {
+        print("ok carry on")
     }
     func downloadStarted() {
-        print("no wai")
+        print("oh hai")
     }
 }
