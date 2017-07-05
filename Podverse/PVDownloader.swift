@@ -72,7 +72,7 @@ class PVDownloader:NSObject {
 //            let downloadTask = downloadSession.downloadTask(withResumeData: downloadTaskResumeData)
 //            episode.taskIdentifier = downloadTask.taskIdentifier
 //            episode.taskResumeData = nil
-//            episode.wasPausedByUser = false
+//            episode.pausedByUser = false
 //            downloadTask.resume()
 //            self.postPauseOrResumeNotification(taskIdentifier: downloadTask.taskIdentifier, pauseOrResume: "Downloading")
 //        }
@@ -96,7 +96,7 @@ class PVDownloader:NSObject {
 //                            if (resumeData != nil) {
 //                                episode.taskResumeData = resumeData
 //                                if self.reachability.hasWiFiConnection() == true {
-//                                    episode.wasPausedByUser = true
+//                                    episode.pausedByUser = true
 //                                    self.postPauseOrResumeNotification(taskIdentifier: taskIdentifier, pauseOrResume: "Paused")
 //                                }
 //                                else {
@@ -106,7 +106,7 @@ class PVDownloader:NSObject {
 //                            } else {
 //                                episode.pausedWithoutResumeData = true
 //                                if self.reachability.hasWiFiConnection() == true {
-//                                    episode.wasPausedByUser = true
+//                                    episode.pausedByUser = true
 //                                    self.postPauseOrResumeNotification(taskIdentifier: taskIdentifier, pauseOrResume: "Paused")
 //                                }
 //                                else {

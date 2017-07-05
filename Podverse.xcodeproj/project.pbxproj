@@ -64,7 +64,6 @@
 		E7D25BC21E0F118C00B60368 /* PVFeedParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7D25BC11E0F118C00B60368 /* PVFeedParser.swift */; };
 		E7D25BC41E0F13D300B60368 /* Podcast.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7D25BC31E0F13D300B60368 /* Podcast.swift */; };
 		E7D25BC61E0F141500B60368 /* Episode.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7D25BC51E0F141500B60368 /* Episode.swift */; };
-		E7D25BC81E0F144900B60368 /* Clip.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7D25BC71E0F144900B60368 /* Clip.swift */; };
 		E7D25BCA1E0F16B700B60368 /* Playlist.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7D25BC91E0F16B700B60368 /* Playlist.swift */; };
 		E7D25BCC1E0F176C00B60368 /* PVDeleter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7D25BCB1E0F176C00B60368 /* PVDeleter.swift */; };
 		E7D25BCE1E0F184800B60368 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7D25BCD1E0F184800B60368 /* Constants.swift */; };
@@ -165,7 +164,6 @@
 		E7D25BC11E0F118C00B60368 /* PVFeedParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PVFeedParser.swift; sourceTree = "<group>"; };
 		E7D25BC31E0F13D300B60368 /* Podcast.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Podcast.swift; sourceTree = "<group>"; };
 		E7D25BC51E0F141500B60368 /* Episode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Episode.swift; sourceTree = "<group>"; };
-		E7D25BC71E0F144900B60368 /* Clip.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Clip.swift; sourceTree = "<group>"; };
 		E7D25BC91E0F16B700B60368 /* Playlist.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Playlist.swift; sourceTree = "<group>"; };
 		E7D25BCB1E0F176C00B60368 /* PVDeleter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PVDeleter.swift; sourceTree = "<group>"; };
 		E7D25BCD1E0F184800B60368 /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
@@ -293,14 +291,13 @@
 		E776A0151E04CB430062FDEB /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				E7D25BC31E0F13D300B60368 /* Podcast.swift */,
-				E7D25BC51E0F141500B60368 /* Episode.swift */,
-				E7D25BC71E0F144900B60368 /* Clip.swift */,
-				E7D25BC91E0F16B700B60368 /* Playlist.swift */,
-				E7D25BD81E0F2DF800B60368 /* PodcastSearchResult.swift */,
 				E76C49C91E0F950E00F81217 /* DownloadingEpisode.swift */,
-				3051488A1ED27251009BC839 /* PlayerHistoryItem.swift */,
+				E7D25BC51E0F141500B60368 /* Episode.swift */,
 				3048E8871EDA7124001AADCE /* MediaRef.swift */,
+				E7D25BC91E0F16B700B60368 /* Playlist.swift */,
+				3051488A1ED27251009BC839 /* PlayerHistoryItem.swift */,
+				E7D25BC31E0F13D300B60368 /* Podcast.swift */,
+				E7D25BD81E0F2DF800B60368 /* PodcastSearchResult.swift */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -412,14 +409,14 @@
 		E7D25BD21E0F23C800B60368 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
-				E7D25BD31E0F23DB00B60368 /* Data+ResizeImageData.swift */,
-				E7B2A59A1E12111500AAE036 /* URL+RemoteSize.swift */,
-				E7B2A5A51E12D38200AAE036 /* String+CharacterManipulation.swift */,
-				E7B2A59C1E123A4400AAE036 /* UIViewController+InternetRequiredAlert.swift */,
-				E7B2A5A91E162AE400AAE036 /* Date+Formatters.swift */,
-				E7B2A5AB1E162B8500AAE036 /* String+Formatters.swift */,
 				309BFE151F0A04F8008D101B /* Array+rearrange.swift */,
+				E7D25BD31E0F23DB00B60368 /* Data+ResizeImageData.swift */,
+				E7B2A5A91E162AE400AAE036 /* Date+Formatters.swift */,
 				3048E8891EDD1B1A001AADCE /* Int+MediaPlayerString.swift */,
+				E7B2A5A51E12D38200AAE036 /* String+CharacterManipulation.swift */,
+				E7B2A5AB1E162B8500AAE036 /* String+Formatters.swift */,
+				E7B2A59C1E123A4400AAE036 /* UIViewController+InternetRequiredAlert.swift */,
+				E7B2A59A1E12111500AAE036 /* URL+RemoteSize.swift */,
 			);
 			name = Extensions;
 			sourceTree = "<group>";
@@ -723,7 +720,6 @@
 				E7D25BD11E0F1CB000B60368 /* CoreDataHelper.swift in Sources */,
 				E7D25BCE1E0F184800B60368 /* Constants.swift in Sources */,
 				30026D8F1F0C2A6000043D79 /* DownloadTableViewCell.swift in Sources */,
-				E7D25BC81E0F144900B60368 /* Clip.swift in Sources */,
 				E7D25BC41E0F13D300B60368 /* Podcast.swift in Sources */,
 				E753028C1E072F160007B6F7 /* String+Utilities.swift in Sources */,
 				E7AD9A9C1EDDFEAD0093F051 /* MediaPlayerClipTableViewCell.swift in Sources */,

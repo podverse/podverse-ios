@@ -27,103 +27,103 @@ class PVClipStreamer:NSObject, AVAssetResourceLoaderDelegate {
     var endBytesRange: Int?
     var metadataBytesOffset = 0
     
-    func streamClip(clip: Clip) {
-        // Reset the session to nil before streaming a new clip
-        self.urlSession.invalidateAndCancel()
-        
-        guard let mediaUrlString = clip.episode.mediaUrl else {
-            return
-        }
-        
-        // Get remote file total bytes
-        guard let remoteFileSize = URL(string: mediaUrlString)?.remoteSize else {
-            return
-        }
-        
-        guard let calcCustomMediaURL = self.mediaUrlWithCustomScheme(URLString: mediaUrlString, scheme: "http") else {
-            return
-        }
-        
-        let calculateDurationAsset = AVURLAsset(url: calcCustomMediaURL, options: nil)
-        
-        // If an episode.duration is availabe then use it. Else, calculate the episode duration.
-        //        if clip.episode.duration != nil {
-        //            episodeDuration = Double(clip.episode.duration!)
-        //        } else {
-        episodeDuration = CMTimeGetSeconds(calculateDurationAsset.duration)
-        episodeDuration = floor(episodeDuration!)
-        //        }
-        
-        // Since the calculated episodeDuration is sometimes different than the duration of the episode according to its RSS feed (see NPR TED Radio Hour; NPR Fresh Air; NPR etc.), override the episode.duration with the calculated episodeDuration and save
-        //            clip.episode.duration = episodeDuration
-        //            CoreDataHelper.saveCoreData(nil)
-        
-        // NOTE: if a media file has metadata in the beginning, the clip start/end times will be off. The following functions determine the mediadataBytesOffset based on the metadata, and adjusts the start/endByteRanges to include this offset.
-        let metadataList = calculateDurationAsset.metadata
-        var totalMetaDataBytes = 0
-        for item in metadataList {
-            //                print("start over")
-            //                print(item.key)
-            //                print(item.keySpace)
-            //                print(item.commonKey)
-            //                print(item.value)
-            //                print(item.dataValue)
-            //                print(item.extraAttributes)
-            if let dataValue = item.dataValue {
-                totalMetaDataBytes += dataValue.count
-            }
-            if item.commonKey != nil && item.value != nil {
-                //                    if item.commonKey  == "title" {
-                //                        if let dataValue = item.dataValue {
-                //                            totalMetaDataBytes += dataValue.length
-                //                        }
-                //                    }
-                //                    if item.commonKey   == "type" {
-                //                        if let dataValue = item.dataValue {
-                //                            totalMetaDataBytes += dataValue.length
-                //                        }
-                //                    }
-                //                    if item.commonKey  == "albumName" {
-                //                        if let dataValue = item.dataValue {
-                //                            totalMetaDataBytes += dataValue.length
-                //                        }
-                //                    }
-                //                    if item.commonKey   == "artist" {
-                //                        if let dataValue = item.dataValue {
-                //                            totalMetaDataBytes += dataValue.length
-                //                        }
-                //                    }
-                //                    if item.commonKey  == "artwork" {
-                //                        if let dataValue = item.dataValue {
-                //                            totalMetaDataBytes += dataValue.length
-                //                        }
-                //                    }
-            }
-        }
-        metadataBytesOffset = totalMetaDataBytes
-        
-        // TODO: can we refine the startBytesRange and endBytesRange?
-        startBytesRange = metadataBytesOffset + Int((Double(clip.startTime) / episodeDuration) * Double(remoteFileSize - metadataBytesOffset))
-        
-        // If clip has a valid end time, then use it to determine the End Byte Range Request value. Else use the full episode file size as the End Byte Range Request value.
-        if let endTime = clip.endTime {
-            endBytesRange = metadataBytesOffset + Int((Double(endTime) / episodeDuration) * Double(remoteFileSize - metadataBytesOffset))
-        } else {
-            endBytesRange = Int(remoteFileSize)
-        }
-        
-        guard let customSchemeMediaURL = self.mediaUrlWithCustomScheme(URLString: mediaUrlString, scheme: "streaming") else {
-            return
-        }
-        
-        let asset = AVURLAsset(url: customSchemeMediaURL, options: nil)
-        
-        asset.resourceLoader.setDelegate(self, queue: DispatchQueue.main)
-        self.pendingRequests = []
-        
-        let playerItem = AVPlayerItem(asset: asset)
-        PVMediaPlayer.shared.avPlayer = AVPlayer(playerItem: playerItem)
-    }
+//    func streamClip(clip: Clip) {
+//        // Reset the session to nil before streaming a new clip
+//        self.urlSession.invalidateAndCancel()
+//        
+//        guard let mediaUrlString = clip.episode.mediaUrl else {
+//            return
+//        }
+//        
+//        // Get remote file total bytes
+//        guard let remoteFileSize = URL(string: mediaUrlString)?.remoteSize else {
+//            return
+//        }
+//        
+//        guard let calcCustomMediaURL = self.mediaUrlWithCustomScheme(URLString: mediaUrlString, scheme: "http") else {
+//            return
+//        }
+//        
+//        let calculateDurationAsset = AVURLAsset(url: calcCustomMediaURL, options: nil)
+//        
+//        // If an episode.duration is availabe then use it. Else, calculate the episode duration.
+//        //        if clip.episode.duration != nil {
+//        //            episodeDuration = Double(clip.episode.duration!)
+//        //        } else {
+//        episodeDuration = CMTimeGetSeconds(calculateDurationAsset.duration)
+//        episodeDuration = floor(episodeDuration!)
+//        //        }
+//        
+//        // Since the calculated episodeDuration is sometimes different than the duration of the episode according to its RSS feed (see NPR TED Radio Hour; NPR Fresh Air; NPR etc.), override the episode.duration with the calculated episodeDuration and save
+//        //            clip.episode.duration = episodeDuration
+//        //            CoreDataHelper.saveCoreData(nil)
+//        
+//        // NOTE: if a media file has metadata in the beginning, the clip start/end times will be off. The following functions determine the mediadataBytesOffset based on the metadata, and adjusts the start/endByteRanges to include this offset.
+//        let metadataList = calculateDurationAsset.metadata
+//        var totalMetaDataBytes = 0
+//        for item in metadataList {
+//            //                print("start over")
+//            //                print(item.key)
+//            //                print(item.keySpace)
+//            //                print(item.commonKey)
+//            //                print(item.value)
+//            //                print(item.dataValue)
+//            //                print(item.extraAttributes)
+//            if let dataValue = item.dataValue {
+//                totalMetaDataBytes += dataValue.count
+//            }
+//            if item.commonKey != nil && item.value != nil {
+//                //                    if item.commonKey  == "title" {
+//                //                        if let dataValue = item.dataValue {
+//                //                            totalMetaDataBytes += dataValue.length
+//                //                        }
+//                //                    }
+//                //                    if item.commonKey   == "type" {
+//                //                        if let dataValue = item.dataValue {
+//                //                            totalMetaDataBytes += dataValue.length
+//                //                        }
+//                //                    }
+//                //                    if item.commonKey  == "albumName" {
+//                //                        if let dataValue = item.dataValue {
+//                //                            totalMetaDataBytes += dataValue.length
+//                //                        }
+//                //                    }
+//                //                    if item.commonKey   == "artist" {
+//                //                        if let dataValue = item.dataValue {
+//                //                            totalMetaDataBytes += dataValue.length
+//                //                        }
+//                //                    }
+//                //                    if item.commonKey  == "artwork" {
+//                //                        if let dataValue = item.dataValue {
+//                //                            totalMetaDataBytes += dataValue.length
+//                //                        }
+//                //                    }
+//            }
+//        }
+//        metadataBytesOffset = totalMetaDataBytes
+//        
+//        // TODO: can we refine the startBytesRange and endBytesRange?
+//        startBytesRange = metadataBytesOffset + Int((Double(clip.startTime) / episodeDuration) * Double(remoteFileSize - metadataBytesOffset))
+//        
+//        // If clip has a valid end time, then use it to determine the End Byte Range Request value. Else use the full episode file size as the End Byte Range Request value.
+//        if let endTime = clip.endTime {
+//            endBytesRange = metadataBytesOffset + Int((Double(endTime) / episodeDuration) * Double(remoteFileSize - metadataBytesOffset))
+//        } else {
+//            endBytesRange = Int(remoteFileSize)
+//        }
+//        
+//        guard let customSchemeMediaURL = self.mediaUrlWithCustomScheme(URLString: mediaUrlString, scheme: "streaming") else {
+//            return
+//        }
+//        
+//        let asset = AVURLAsset(url: customSchemeMediaURL, options: nil)
+//        
+//        asset.resourceLoader.setDelegate(self, queue: DispatchQueue.main)
+//        self.pendingRequests = []
+//        
+//        let playerItem = AVPlayerItem(asset: asset)
+//        PVMediaPlayer.shared.avPlayer = AVPlayer(playerItem: playerItem)
+//    }
     
     // In order to override the Request header, we need to set a custom scheme
     func mediaUrlWithCustomScheme(URLString: String, scheme: String) -> URL? {

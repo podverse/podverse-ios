@@ -78,7 +78,7 @@ class PVReachability {
 //        let downloader = PVDownloader.shared
 //        downloader.downloadSession.getTasksWithCompletionHandler { dataTasks, uploadTasks, downloadTasks in
 //            for downloadingEpisode in DownloadingEpisodeList.shared.downloadingEpisodes {
-//                if (downloadingEpisode.taskResumeData != nil || downloadingEpisode.pausedWithoutResumeData == true) && downloadingEpisode.wasPausedByUser == false {
+//                if (downloadingEpisode.taskResumeData != nil || downloadingEpisode.pausedWithoutResumeData == true) && downloadingEpisode.pausedByUser == false {
 //                    downloader.pauseOrResumeDownloadingEpisode(episode: downloadingEpisode)
 //                }
 //            }

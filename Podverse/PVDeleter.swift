@@ -56,16 +56,16 @@ class PVDeleter {
                             }
                         }
                     }
-                    else if let clip = item as? Clip {
-                        for podcastEpisode in podcast.episodes {
-//                            for podcastClip in podcastEpisode.clips {
-//                                if clip.objectID == podcastClip.objectID {
-//                                    alsoDelete = false
-//                                    break outerLoop
-//                                }
-//                            }
-                        }
-                    }
+//                    else if let clip = item as? Clip {
+//                        for podcastEpisode in podcast.episodes {
+////                            for podcastClip in podcastEpisode.clips {
+////                                if clip.objectID == podcastClip.objectID {
+////                                    alsoDelete = false
+////                                    break outerLoop
+////                                }
+////                            }
+//                        }
+//                    }
                 }
             }
         }
@@ -155,16 +155,16 @@ class PVDeleter {
                             }
                         }
                     }
-                    else if let clip = item as? Clip {
-                        for ep in episode.podcast.episodes {
-//                            for cl in ep.clips {
-//                                if clip.objectID == cl.objectID {
-//                                    alsoDelete = false
-//                                    break outerLoop
-//                                }
-//                            }
-                        }
-                    }
+//                    else if let clip = item as? Clip {
+//                        for ep in episode.podcast.episodes {
+////                            for cl in ep.clips {
+////                                if clip.objectID == cl.objectID {
+////                                    alsoDelete = false
+////                                    break outerLoop
+////                                }
+////                            }
+//                        }
+//                    }
                 }
             }
         }

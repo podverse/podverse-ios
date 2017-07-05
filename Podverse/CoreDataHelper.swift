@@ -195,27 +195,27 @@ class CoreDataHelper {
         }
     }
     
-    static func retrieveExistingOrCreateNewClip(mediaRefId: String, moc:NSManagedObjectContext) -> Clip {
-        let predicate = NSPredicate(format: "mediaRefId == %@", mediaRefId)
-        let clipSet = CoreDataHelper.fetchEntities(className: "Clip", predicate: predicate, moc:moc) as! [Clip]
-        if clipSet.count > 0 {
-            return clipSet[0]
-        } else {
-            let oid = CoreDataHelper.insertManagedObject(className: "Clip")
-            return  CoreDataHelper.fetchEntityWithID(objectId: oid, moc: moc) as! Clip
-        }
-    }
-    
-    static func retrieveExistingOrCreateNewPlaylist(playlistId: String, moc:NSManagedObjectContext) -> Playlist {
-        let predicate = NSPredicate(format: "id == %@", playlistId)
-        let playlistSet = CoreDataHelper.fetchEntities(className: "Playlist", predicate: predicate, moc:moc) as! [Playlist]
-        if playlistSet.count > 0 {
-            return playlistSet[0]
-        } else {
-            let oid = CoreDataHelper.insertManagedObject(className: "Playlist")
-            return  CoreDataHelper.fetchEntityWithID(objectId: oid, moc: moc) as! Playlist
-        }
-    }
+//    static func retrieveExistingOrCreateNewClip(mediaRefId: String, moc:NSManagedObjectContext) -> Clip {
+//        let predicate = NSPredicate(format: "mediaRefId == %@", mediaRefId)
+//        let clipSet = CoreDataHelper.fetchEntities(className: "Clip", predicate: predicate, moc:moc) as! [Clip]
+//        if clipSet.count > 0 {
+//            return clipSet[0]
+//        } else {
+//            let oid = CoreDataHelper.insertManagedObject(className: "Clip")
+//            return  CoreDataHelper.fetchEntityWithID(objectId: oid, moc: moc) as! Clip
+//        }
+//    }
+//    
+//    static func retrieveExistingOrCreateNewPlaylist(playlistId: String, moc:NSManagedObjectContext) -> Playlist {
+//        let predicate = NSPredicate(format: "id == %@", playlistId)
+//        let playlistSet = CoreDataHelper.fetchEntities(className: "Playlist", predicate: predicate, moc:moc) as! [Playlist]
+//        if playlistSet.count > 0 {
+//            return playlistSet[0]
+//        } else {
+//            let oid = CoreDataHelper.insertManagedObject(className: "Playlist")
+//            return  CoreDataHelper.fetchEntityWithID(objectId: oid, moc: moc) as! Playlist
+//        }
+//    }
     
     static func createMOCForThread(threadType:ThreadType) -> NSManagedObjectContext {
         let concurrencyType:NSManagedObjectContextConcurrencyType = threadType == .privateThread ? .privateQueueConcurrencyType : .mainQueueConcurrencyType

@@ -63,9 +63,9 @@ enum PlayingSpeed {
 }
 
 protocol PVMediaPlayerDelegate {
-    func setMediaPlayerVCPlayPauseIcon()
-    func episodeFinishedPlaying(_ currentEpisode:Episode?)
-    func clipFinishedPlaying(_ currentClip:Clip?)
+//    func setMediaPlayerVCPlayPauseIcon()
+//    func episodeFinishedPlaying(_ currentEpisode:Episode?)
+//    func clipFinishedPlaying(_ currentClip:Clip?)
     
 }
 
@@ -123,7 +123,7 @@ class PVMediaPlayer {
                 if reason == AVAudioSessionRouteChangeReason.oldDeviceUnavailable {
                     // Headphones were unplugged and AVPlayer has paused, so set the Play/Pause icon to Pause
                     DispatchQueue.main.async {
-                        self.delegate?.setMediaPlayerVCPlayPauseIcon()
+//                        self.delegate?.setMediaPlayerVCPlayPauseIcon()
                     }
                 }
             }
@@ -138,18 +138,18 @@ class PVMediaPlayer {
         if avPlayer.rate == 0 {
             avPlayer.play()
             mediaPlayerIsPlaying = true
-            self.delegate?.setMediaPlayerVCPlayPauseIcon()
+//            self.delegate?.setMediaPlayerVCPlayPauseIcon()
             return true
             
         } else {
             saveCurrentTimeAsPlaybackPosition()
             avPlayer.pause()
             mediaPlayerIsPlaying = false
-            self.delegate?.setMediaPlayerVCPlayPauseIcon()
+//            self.delegate?.setMediaPlayerVCPlayPauseIcon()
             return false
         }
 
-        self.delegate?.setMediaPlayerVCPlayPauseIcon()
+//        self.delegate?.setMediaPlayerVCPlayPauseIcon()
         mediaPlayerIsPlaying = false
         return false
     }

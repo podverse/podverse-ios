@@ -64,8 +64,6 @@ class EpisodesTableViewController: PVViewController, UITableViewDataSource, UITa
         super.viewDidLoad()
         loadData()
         
-        PVDownloader.shared.delegate = self
-        
         NotificationCenter.default.addObserver(self, selector: #selector(loadData), name: NSNotification.Name(kDownloadHasFinished), object: nil)
         
         headerPodcastTitle.text = podcast.title
@@ -85,6 +83,10 @@ class EpisodesTableViewController: PVViewController, UITableViewDataSource, UITa
             }
         }
         
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        PVDownloader.shared.delegate = self
     }
 
 //    // MARK: - Table view data source

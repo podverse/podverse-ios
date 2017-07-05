@@ -9,14 +9,18 @@
 import UIKit
 
 class DownloadsTableViewController: PVViewController {
-    
-    var episodes = DownloadingEpisodeList.shared.downloadingEpisodes
+    var episodes = [DownloadingEpisode]()
     
     @IBOutlet weak var tableView: UITableView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
         PVDownloader.shared.delegate = self
+        episodes = DownloadingEpisodeList.shared.downloadingEpisodes
+        tableView.reloadData()
     }
     
     func indexPathOfDownload(episode: DownloadingEpisode) -> IndexPath? {
@@ -55,7 +59,17 @@ extension DownloadsTableViewController:UITableViewDelegate, UITableViewDataSourc
         
         cell.episodeTitle.text = episode.title
         cell.podcastTitle.text = episode.podcastTitle
-        cell.status.text = "Downloading"
+        
+        if episode.downloadComplete == true {
+            cell.status.text = "Finished"
+        } else if episode.taskResumeData != nil {
+            cell.status.text = "Paused"
+        } else {
+            cell.status.text = "Downloading"
+        }
+        
+        cell.progressStats.text = ""
+        cell.progress.setProgress(0, animated: false)
         
         return cell
         
@@ -81,6 +95,7 @@ extension DownloadsTableViewController:PVDownloaderDelegate {
                 if let cell = self.tableView.cellForRow(at: indexPath) as? DownloadTableViewCell {
                     cell.progress.setProgress(episode.progress, animated: false)
                     cell.progressStats.text = episode.formattedTotalBytesDownloaded
+                    cell.status.text = "Downloading"
                 }
             }
         }
