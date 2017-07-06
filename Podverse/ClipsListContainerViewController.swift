@@ -16,14 +16,22 @@ class ClipsListContainerViewController: UIViewController {
 
     @IBOutlet weak var segmentControl: UISegmentedControl!
     @IBOutlet weak var tableView: UITableView!
+    @IBOutlet weak var loadingView: UIView!
+    @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
+    @IBOutlet weak var statusMessage: UILabel!
+    @IBOutlet weak var retryButton: UIButton!
     
     let pvMediaPlayer = PVMediaPlayer.shared
     var clipsArray = [MediaRef]()
     weak var delegate:ClipsListDelegate?
-
+    let reachability = PVReachability.shared
+    
     @IBAction func segmentSelect(_ sender: UISegmentedControl) {
+        showIndicator()
+        
         clipsArray.removeAll()
-        self.reloadClipData()
+        self.tableView.reloadData()
+        
         if let item = pvMediaPlayer.currentlyPlayingItem {
             switch sender.selectedSegmentIndex {
             case 0:
@@ -44,27 +52,72 @@ class ClipsListContainerViewController: UIViewController {
         }
     }
     
+    @IBAction func retryButtonTouched(_ sender: Any) {
+        segmentControl.sendActions(for: .valueChanged)
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         self.tableView.separatorColor = .clear
+        activityIndicator.hidesWhenStopped = true
+        showIndicator()
         
         if let item = pvMediaPlayer.currentlyPlayingItem {
             MediaRef.retrieveMediaRefsFromServer(episodeMediaUrl: item.episodeMediaUrl, podcastFeedUrl: nil) { (mediaRefs) -> Void in
-                DispatchQueue.main.async {
-                    self.reloadClipData(mediaRefs: mediaRefs)
-                }
+                self.reloadClipData(mediaRefs: mediaRefs)
             }
         }
     }
     
     func reloadClipData(mediaRefs: [MediaRef]? = nil) {
-        if let mediaRefs = mediaRefs {
-            for mediaRef in mediaRefs {
-                self.clipsArray.append(mediaRef)
-            }
+        if self.reachability.hasInternetConnection() == false {
+            self.showStatusMessage(message: "You must connect to the internet to load clips.")
+            return
         }
+        
+        guard let mediaRefArray = mediaRefs, mediaRefArray.count > 0 else {
+            self.showStatusMessage(message: "No clips available")
+            return
+        }
+        
+        for mediaRef in mediaRefArray {
+            self.clipsArray.append(mediaRef)
+        }
+        
+        self.showClipsView()
         self.tableView.reloadData()
     }
+    
+    func showStatusMessage(message: String) {
+        activityIndicator.stopAnimating()
+        statusMessage.text = message
+        tableView.isHidden = true
+        loadingView.isHidden = false
+        statusMessage.isHidden = false
+        
+        if message == "You must connect to the internet to load clips." {
+            retryButton.isHidden = false
+        }
+    }
+    
+    func showIndicator() {
+        activityIndicator.startAnimating()
+        tableView.isHidden = true
+        loadingView.isHidden = false
+        activityIndicator.isHidden = false
+        statusMessage.isHidden = true
+        retryButton.isHidden = true
+    }
+    
+    func showClipsView() {
+        activityIndicator.stopAnimating()
+        tableView.isHidden = false
+        loadingView.isHidden = true
+        statusMessage.isHidden = true
+        retryButton.isHidden = true
+    }
+    
 }
 
 extension ClipsListContainerViewController:UITableViewDelegate, UITableViewDataSource {
@@ -97,3 +150,4 @@ extension ClipsListContainerViewController:UITableViewDelegate, UITableViewDataS
         self.delegate?.didSelectClip(clip: self.clipsArray[indexPath.row])
     }
 }
+
