@@ -29,7 +29,7 @@ class ClipsTableViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        activityIndicator.startAnimating()
+        activityIndicator.hidesWhenStopped = true
         showIndicator()
         
         MediaRef.retrieveMediaRefsFromServer() { (mediaRefs) -> Void in
@@ -38,35 +38,29 @@ class ClipsTableViewController: UIViewController {
     }
     
     func reloadClipData(mediaRefs: [MediaRef]? = nil) {
-        let when = DispatchTime.now() + 0.3
-        DispatchQueue.main.asyncAfter(deadline: when) {
-            if mediaRefs?.count == 0 && self.reachability.hasInternetConnection() == false {
-                self.showStatusMessage(message: "You must connect to the internet to load clips.")
-                return
-            }
-            
-            if mediaRefs?.count == 0 {
-                self.showStatusMessage(message: "No clips available")
-                return
-            }
-            
-            if let mediaRefs = mediaRefs {
-                for mediaRef in mediaRefs {
-                    self.clipsArray.append(mediaRef)
-                }
-            }
-            
-            self.showClipsView()
-            
-            self.tableView.reloadData()
+        if self.reachability.hasInternetConnection() == false {
+            self.showStatusMessage(message: "You must connect to the internet to load clips.")
+            return
         }
+        
+        guard let mediaRefArray = mediaRefs, mediaRefArray.count > 0 else {
+            self.showStatusMessage(message: "No clips available")
+            return
+        }
+        
+        for mediaRef in mediaRefArray {
+            self.clipsArray.append(mediaRef)
+        }
+        
+        self.showClipsView()
+        self.tableView.reloadData()
     }
     
     func showStatusMessage(message: String) {
+        activityIndicator.stopAnimating()
         statusMessage.text = message
         tableView.isHidden = true
         loadingView.isHidden = false
-        activityIndicator.isHidden = true
         statusMessage.isHidden = false
         
         if message == "You must connect to the internet to load clips." {
@@ -75,6 +69,7 @@ class ClipsTableViewController: UIViewController {
     }
     
     func showIndicator() {
+        activityIndicator.startAnimating()
         tableView.isHidden = true
         loadingView.isHidden = false
         activityIndicator.isHidden = false
@@ -83,9 +78,9 @@ class ClipsTableViewController: UIViewController {
     }
     
     func showClipsView() {
+        activityIndicator.stopAnimating()
         tableView.isHidden = false
         loadingView.isHidden = true
-        activityIndicator.isHidden = true
         statusMessage.isHidden = true
         retryButton.isHidden = true
     }
