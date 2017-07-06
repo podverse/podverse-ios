@@ -50,9 +50,7 @@ extension DownloadsTableViewController:UITableViewDelegate, UITableViewDataSourc
         DispatchQueue.global().async {
             Podcast.retrievePodcastUIImage(downloadingEpisode: episode) { (podcastImage) -> Void in
                 DispatchQueue.main.async {
-                    DispatchQueue.main.async {
-                        cell.podcastImage.image = podcastImage
-                    }
+                    cell.podcastImage.image = podcastImage
                 }
             }
         }
@@ -108,13 +106,11 @@ extension DownloadsTableViewController:UITableViewDelegate, UITableViewDataSourc
 
 extension DownloadsTableViewController:PVDownloaderDelegate {
     func downloadFinished(episode: DownloadingEpisode) {
-        if let indexPath = indexPathOfDownload(episode: episode) {
-            if let cell = tableView.cellForRow(at: indexPath) as? DownloadTableViewCell {
-                DispatchQueue.main.async {
-                    cell.progress.setProgress(1, animated: false)
-                    cell.progressStats.text = ""
-                    cell.status.text = "Finished"
-                }
+        if let indexPath = indexPathOfDownload(episode: episode), let cell = tableView.cellForRow(at: indexPath) as? DownloadTableViewCell {
+            DispatchQueue.main.async {
+                cell.progress.setProgress(1, animated: false)
+                cell.progressStats.text = ""
+                cell.status.text = "Finished"
             }
         }
     }
