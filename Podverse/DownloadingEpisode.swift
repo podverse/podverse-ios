@@ -10,28 +10,16 @@ import Foundation
 import CoreData
 
 final class DownloadingEpisode:Equatable {
-    var title:String?
-    var taskIdentifier:Int?
     var downloadComplete:Bool?
     var mediaUrl: String?
-    var imageThumbData:Data?
+    var podcastFeedUrl:String?
+    var podcastImageUrl: String?
+    var podcastTitle:String?
+    var taskIdentifier:Int?
     var taskResumeData:Data?
+    var title:String?
     var totalBytesWritten:Float?
     var totalBytesExpectedToWrite:Float?
-    var podcastRSSfeedUrl:String?
-    var wasPausedByUser:Bool?
-    var pausedWithoutResumeData:Bool?
-    var managedEpisodeObjectID:NSManagedObjectID?
-    
-    var progress: Float {
-        get {
-            if let currentBytes = totalBytesWritten, let totalBytes = totalBytesExpectedToWrite {
-                return currentBytes / totalBytes
-            } else {
-                return Float(0)
-            }
-        }
-    }
     
     var formattedTotalBytesDownloaded: String {
         get {
@@ -53,16 +41,27 @@ final class DownloadingEpisode:Equatable {
         }
     }
     
+    var progress: Float {
+        get {
+            if let currentBytes = totalBytesWritten, let totalBytes = totalBytesExpectedToWrite {
+                return currentBytes / totalBytes
+            } else {
+                return Float(0)
+            }
+        }
+    }
+    
     init(episode:Episode) {
-        title = episode.title
-        taskIdentifier = episode.taskIdentifier?.intValue
-        downloadComplete = episode.downloadComplete
+        downloadComplete = false
         mediaUrl = episode.mediaUrl
-        imageThumbData = episode.podcast.imageThumbData
-        podcastRSSfeedUrl = episode.podcast.feedUrl
-        wasPausedByUser = false
-        pausedWithoutResumeData = false
-        managedEpisodeObjectID = episode.objectID
+        podcastFeedUrl = episode.podcast.feedUrl
+        podcastImageUrl = episode.podcast.imageUrl
+        podcastTitle = episode.podcast.title
+        taskIdentifier = nil
+        taskResumeData = nil
+        title = episode.title
+        totalBytesWritten = nil
+        totalBytesExpectedToWrite = nil
     }
 }
 

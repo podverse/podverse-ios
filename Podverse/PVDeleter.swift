@@ -56,16 +56,16 @@ class PVDeleter {
                             }
                         }
                     }
-                    else if let clip = item as? Clip {
-                        for podcastEpisode in podcast.episodes {
-                            for podcastClip in podcastEpisode.clips {
-                                if clip.objectID == podcastClip.objectID {
-                                    alsoDelete = false
-                                    break outerLoop
-                                }
-                            }
-                        }
-                    }
+//                    else if let clip = item as? Clip {
+//                        for podcastEpisode in podcast.episodes {
+////                            for podcastClip in podcastEpisode.clips {
+////                                if clip.objectID == podcastClip.objectID {
+////                                    alsoDelete = false
+////                                    break outerLoop
+////                                }
+////                            }
+//                        }
+//                    }
                 }
             }
         }
@@ -84,7 +84,7 @@ class PVDeleter {
             let downloadSession = PVDownloader.shared.downloadSession
             downloadSession?.getTasksWithCompletionHandler { dataTasks, uploadTasks, downloadTasks in
                 for episodeDownloadTask in downloadTasks {
-                    if  let _ = DownloadingEpisodeList.shared.downloadingEpisodes.first(where:{ $0.taskIdentifier == episodeDownloadTask.taskIdentifier && $0.podcastRSSfeedUrl == episodePodcastfeedUrl })  {
+                    if  let _ = DownloadingEpisodeList.shared.downloadingEpisodes.first(where:{ $0.taskIdentifier == episodeDownloadTask.taskIdentifier && $0.podcastFeedUrl == episodePodcastfeedUrl })  {
                         episodeDownloadTask.cancel()
                     }
                 }
@@ -95,10 +95,10 @@ class PVDeleter {
             
             DispatchQueue.main.async {
                 if let tabBarCntrl = (UIApplication.shared.delegate as? AppDelegate)?.window?.rootViewController as? UITabBarController {
-                    if let badgeValue = tabBarCntrl.tabBar.items?[TabItems.Downloads.index].badgeValue, let badgeInt = Int(badgeValue) {
-                        tabBarCntrl.tabBar.items?[TabItems.Downloads.index].badgeValue = "\(badgeInt - 1)"
-                        if tabBarCntrl.tabBar.items?[TabItems.Downloads.index].badgeValue == "0" {
-                            tabBarCntrl.tabBar.items?[TabItems.Downloads.index].badgeValue = nil
+                    if let badgeValue = tabBarCntrl.tabBar.items?[TabItems.More.index].badgeValue, let badgeInt = Int(badgeValue) {
+                        tabBarCntrl.tabBar.items?[TabItems.More.index].badgeValue = "\(badgeInt - 1)"
+                        if tabBarCntrl.tabBar.items?[TabItems.More.index].badgeValue == "0" {
+                            tabBarCntrl.tabBar.items?[TabItems.More.index].badgeValue = nil
                         }
                     }
                 }
@@ -155,16 +155,16 @@ class PVDeleter {
                             }
                         }
                     }
-                    else if let clip = item as? Clip {
-                        for ep in episode.podcast.episodes {
-                            for cl in ep.clips {
-                                if clip.objectID == cl.objectID {
-                                    alsoDelete = false
-                                    break outerLoop
-                                }
-                            }
-                        }
-                    }
+//                    else if let clip = item as? Clip {
+//                        for ep in episode.podcast.episodes {
+////                            for cl in ep.clips {
+////                                if clip.objectID == cl.objectID {
+////                                    alsoDelete = false
+////                                    break outerLoop
+////                                }
+////                            }
+//                        }
+//                    }
                 }
             }
         }

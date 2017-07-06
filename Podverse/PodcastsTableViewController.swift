@@ -23,7 +23,6 @@ class PodcastsTableViewController: PVViewController {
     let reachability = PVReachability.shared
     var refreshControl: UIRefreshControl!
     
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         var isFirstTimeAppOpened: Bool = false
@@ -49,9 +48,8 @@ class PodcastsTableViewController: PVViewController {
         refreshControl.addTarget(self, action: #selector(refreshPodcastData), for: UIControlEvents.valueChanged)
         tableView.addSubview(refreshControl)
         
-        NotificationCenter.default.addObserver(self, selector: #selector(removePlayerNavButtonAndReload), name: NSNotification.Name(rawValue: kPlayerHasNoItem), object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(loadPodcastData), name: NSNotification.Name(rawValue: kDownloadHasFinished), object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(clearParsingActivity), name: NSNotification.Name(rawValue: kInternetIsUnreachable), object: nil)
+//        NotificationCenter.default.addObserver(self, selector: #selector(loadPodcastData), name: NSNotification.Name(rawValue: kDownloadHasFinished), object: nil)
+//        NotificationCenter.default.addObserver(self, selector: #selector(clearParsingActivity), name: NSNotification.Name(rawValue: kInternetIsUnreachable), object: nil)
         updateParsingActivity()
         
         if isFirstTimeAppOpened != true {
@@ -60,13 +58,7 @@ class PodcastsTableViewController: PVViewController {
         
 //        startCheckSubscriptionsForNewEpisodesTimer()
     }
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-//        navigationItem.rightBarButton = self.playerNavButton()
-//        showFindAPodcastIfNoneAreFollowed()
-    }
-
-    
+        
     func refreshPodcastData() {
         if reachability.hasInternetConnection() == false && refreshControl.isRefreshing == true {
             showInternetNeededAlertWithDesciription(message:"Connect to WiFi or cellular data to parse podcast feeds.")
@@ -124,11 +116,6 @@ class PodcastsTableViewController: PVViewController {
     func clearParsingActivity() {
         parsingPodcasts.itemsParsing = 0
         self.parsingActivityContainer.isHidden = true
-    }
-    
-    func removePlayerNavButtonAndReload() {
-        self.removeMediaPlayerButton()
-        self.loadPodcastData()
     }
     
     func updateParsingActivity() {
@@ -204,7 +191,7 @@ extension PodcastsTableViewController:UITableViewDelegate, UITableViewDataSource
         let episodesDownloaded = episodes.filter{ $0.fileName != nil }
         cell.episodesDownloadedOrStarted?.text = "\(episodesDownloaded.count) downloaded"
         
-        cell.totalClips?.text = "\(podcast.totalClips) clips"
+        cell.totalClips?.text = "123 clips"
         
         cell.lastPublishedDate?.text = ""
         if let lastPubDate = podcast.lastPubDate {
@@ -212,19 +199,12 @@ extension PodcastsTableViewController:UITableViewDelegate, UITableViewDataSource
         }
         
         DispatchQueue.global().async {
-            var cellImage:UIImage?
-            
-            if let imageData = podcast.imageThumbData, let image = UIImage(data: imageData) {
-                cellImage = image
-            }
-            else {
-                cellImage = UIImage(named: "PodverseIcon")
-            }
-            
-            DispatchQueue.main.async {
-                if let visibleRows = self.tableView.indexPathsForVisibleRows, visibleRows.contains(indexPath) {
-                    let existingCell = self.tableView.cellForRow(at: indexPath) as! PodcastTableViewCell
-                    existingCell.pvImage.image = cellImage
+            Podcast.retrievePodcastUIImage(podcast: podcast) { (podcastImage) -> Void in
+                DispatchQueue.main.async {
+                    if let visibleRows = self.tableView.indexPathsForVisibleRows, visibleRows.contains(indexPath) {
+                        let existingCell = self.tableView.cellForRow(at: indexPath) as! PodcastTableViewCell
+                        existingCell.pvImage.image = podcastImage
+                    }
                 }
             }
         }
@@ -275,10 +255,10 @@ extension PodcastsTableViewController:UITableViewDelegate, UITableViewDataSource
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        let episodesTableViewController = segue.destination as! EpisodesTableViewController
         
         if let index = tableView.indexPathForSelectedRow {
             if segue.identifier == "Show Episodes" {
+                let episodesTableViewController = segue.destination as! EpisodesTableViewController
                 episodesTableViewController.selectedPodcastID = subscribedPodcastsArray[index.row].objectID
             }
         }

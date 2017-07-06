@@ -87,101 +87,101 @@ class PVAuth: NSObject {
         let moc = NSManagedObjectContext(concurrencyType: .mainQueueConcurrencyType)
         moc.parent = CoreDataHelper.shared.managedObjectContext
         
-        let ownedPlaylistsArray = CoreDataHelper.fetchEntities(className: "Playlist", predicate: ownedItemsPred, moc:moc) as! [Playlist]
-        let ownedClipsArray = CoreDataHelper.fetchEntities(className: "Clip", predicate: ownedItemsPred, moc:moc) as! [Clip]
+//        let ownedPlaylistsArray = CoreDataHelper.fetchEntities(className: "Playlist", predicate: ownedItemsPred, moc:moc) as! [Playlist]
+//        let ownedClipsArray = CoreDataHelper.fetchEntities(className: "Clip", predicate: ownedItemsPred, moc:moc) as! [Clip]
         
         let dispatchGroup = DispatchGroup()
         
         // TODO: We should create a batch update endpoint in the web app so we don't have to send a request for each individual playlist and clip
-        for var playlist in ownedPlaylistsArray {
-            dispatchGroup.enter()
-            
-            playlist.ownerId = userId
-            
-//            SavePlaylistToServer(playlist: playlist, newPlaylist:(playlist.id == nil), addMediaRefId: nil, completionBlock: { (response) -> Void in
-//                
-//                guard let dictResponse = response as? Dictionary<String,AnyObject> else {
-//                    return
-//                }
-//                
-//                playlist = PlaylistManager.sharedInstance.syncLocalPlaylistFieldsWithResponse(playlist, dictResponse: dictResponse)
-//                
-//                CoreDataHelper.saveCoreData(moc, completionBlock: { (saved) in
-//                    dispatch_group_leave(dispatchGroup)
-//                })
-//            }) { (error) -> Void in
-//                print("Not saved to server. Error: ", error?.localizedDescription)
-//                CoreDataHelper.saveCoreData(moc, completionBlock: nil)
-//                }.call()
-        }
-        
-        for clip in ownedClipsArray {
-            dispatchGroup.enter()
-            
-            clip.ownerId = userId
-            
-//            SaveClipToServer(clip: clip, completionBlock: { (response) -> Void in
-//                
-//                guard let dictResponse = response as? Dictionary<String,AnyObject> else {
-//                    return
-//                }
-//                
-//                // TODO: this has a lot repeated code shared in PVClipperAddInfoController.swift
-//                // Should be cleaned up!
-//                if let mediaRefId = dictResponse["id"] as? String {
-//                    clip.mediaRefId = mediaRefId
-//                }
-//                
-//                if let podverseURL = dictResponse["podverseURL"] as? String {
-//                    clip.podverseURL = podverseURL
-//                }
-//                
-//                if let ownerId = dictResponse["ownerId"] as? String {
-//                    clip.ownerId = ownerId
-//                }
-//                
-//                if let ownerName = dictResponse["ownerName"] as? String {
-//                    clip.ownerName = ownerName
-//                }
-//                
-//                if let title = dictResponse["title"] as? String {
-//                    clip.title = title
-//                }
-//                
-//                if let startTime = dictResponse["startTime"] as? NSNumber {
-//                    clip.startTime = startTime
-//                }
-//                
-//                if let endTime = dictResponse["endTime"] as? NSNumber {
-//                    clip.endTime = endTime
-//                }
-//                
-//                if let dateCreated = dictResponse["dateCreated"] as? String {
-//                    clip.dateCreated = PVUtility.formatStringToDate(dateCreated)
-//                }
-//                
-//                if let lastUpdated = dictResponse["lastUpdated"] as? String {
-//                    clip.lastUpdated = PVUtility.formatStringToDate(lastUpdated)
-//                }
-//                
-//                if let serverEpisodeId = dictResponse["episodeId"] as? NSNumber {
-//                    clip.serverEpisodeId = serverEpisodeId
-//                }
-//                
-//                CoreDataHelper.saveCoreData(moc, completionBlock: { (saved) in
-//                    dispatch_group_leave(dispatchGroup)
-//                })
-//            }) { (error) -> Void in
-//                print("Not saved to server. Error: ", error?.localizedDescription)
-//                CoreDataHelper.saveCoreData(moc, completionBlock: nil)
-//                }.call()
-            
-        }
-        
-        if ownedPlaylistsArray.count < 1 && ownedClipsArray.count < 1 {
-            dispatchGroup.enter()
-            dispatchGroup.leave()
-        }
+//        for var playlist in ownedPlaylistsArray {
+//            dispatchGroup.enter()
+//            
+//            playlist.ownerId = userId
+//            
+////            SavePlaylistToServer(playlist: playlist, newPlaylist:(playlist.id == nil), addMediaRefId: nil, completionBlock: { (response) -> Void in
+////                
+////                guard let dictResponse = response as? Dictionary<String,AnyObject> else {
+////                    return
+////                }
+////                
+////                playlist = PlaylistManager.sharedInstance.syncLocalPlaylistFieldsWithResponse(playlist, dictResponse: dictResponse)
+////                
+////                CoreDataHelper.saveCoreData(moc, completionBlock: { (saved) in
+////                    dispatch_group_leave(dispatchGroup)
+////                })
+////            }) { (error) -> Void in
+////                print("Not saved to server. Error: ", error?.localizedDescription)
+////                CoreDataHelper.saveCoreData(moc, completionBlock: nil)
+////                }.call()
+//        }
+//        
+//        for clip in ownedClipsArray {
+//            dispatchGroup.enter()
+//            
+//            clip.ownerId = userId
+//            
+////            SaveClipToServer(clip: clip, completionBlock: { (response) -> Void in
+////                
+////                guard let dictResponse = response as? Dictionary<String,AnyObject> else {
+////                    return
+////                }
+////                
+////                // TODO: this has a lot repeated code shared in PVClipperAddInfoController.swift
+////                // Should be cleaned up!
+////                if let mediaRefId = dictResponse["id"] as? String {
+////                    clip.mediaRefId = mediaRefId
+////                }
+////                
+////                if let podverseURL = dictResponse["podverseURL"] as? String {
+////                    clip.podverseURL = podverseURL
+////                }
+////                
+////                if let ownerId = dictResponse["ownerId"] as? String {
+////                    clip.ownerId = ownerId
+////                }
+////                
+////                if let ownerName = dictResponse["ownerName"] as? String {
+////                    clip.ownerName = ownerName
+////                }
+////                
+////                if let title = dictResponse["title"] as? String {
+////                    clip.title = title
+////                }
+////                
+////                if let startTime = dictResponse["startTime"] as? NSNumber {
+////                    clip.startTime = startTime
+////                }
+////                
+////                if let endTime = dictResponse["endTime"] as? NSNumber {
+////                    clip.endTime = endTime
+////                }
+////                
+////                if let dateCreated = dictResponse["dateCreated"] as? String {
+////                    clip.dateCreated = PVUtility.formatStringToDate(dateCreated)
+////                }
+////                
+////                if let lastUpdated = dictResponse["lastUpdated"] as? String {
+////                    clip.lastUpdated = PVUtility.formatStringToDate(lastUpdated)
+////                }
+////                
+////                if let serverEpisodeId = dictResponse["episodeId"] as? NSNumber {
+////                    clip.serverEpisodeId = serverEpisodeId
+////                }
+////                
+////                CoreDataHelper.saveCoreData(moc, completionBlock: { (saved) in
+////                    dispatch_group_leave(dispatchGroup)
+////                })
+////            }) { (error) -> Void in
+////                print("Not saved to server. Error: ", error?.localizedDescription)
+////                CoreDataHelper.saveCoreData(moc, completionBlock: nil)
+////                }.call()
+//            
+//        }
+//        
+//        if ownedPlaylistsArray.count < 1 && ownedClipsArray.count < 1 {
+//            dispatchGroup.enter()
+//            dispatchGroup.leave()
+//        }
         
         dispatchGroup.notify(queue: DispatchQueue.main) {
             UserDefaults.standard.set(idToken, forKey: "idToken")

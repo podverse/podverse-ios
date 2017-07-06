@@ -1,22 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="12141" systemVersion="16E195" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
-    <entity name="Clip" representedClassName=".Clip" syncable="YES">
-        <attribute name="dateCreated" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
-        <attribute name="duration" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="NO" syncable="YES"/>
-        <attribute name="endTime" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="NO" syncable="YES"/>
-        <attribute name="lastUpdated" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
-        <attribute name="mediaRefId" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="ownerId" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="ownerName" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="podverseURL" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="serverEpisodeId" optional="YES" attributeType="Double" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
-        <attribute name="startTime" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="NO" syncable="YES"/>
-        <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
-        <relationship name="episode" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Episode" inverseName="clips" inverseEntity="Episode" syncable="YES"/>
-        <relationship name="playlist" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Playlist" inverseName="clips" inverseEntity="Playlist" syncable="YES"/>
-    </entity>
     <entity name="Episode" representedClassName=".Episode" syncable="YES">
-        <attribute name="downloadComplete" optional="YES" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="duration" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="fileName" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="guid" optional="YES" attributeType="String" syncable="YES"/>
@@ -27,12 +11,8 @@
         <attribute name="mediaUrl" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="pubDate" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="summary" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="taskIdentifier" optional="YES" attributeType="Integer 64" valueTransformerName="unsigned long" defaultValueString="-1" usesScalarValueType="NO" syncable="YES"/>
-        <attribute name="taskResumeData" optional="YES" attributeType="Binary" syncable="YES"/>
         <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="uuid" optional="YES" attributeType="String" syncable="YES"/>
-        <relationship name="clips" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Clip" inverseName="episode" inverseEntity="Clip" syncable="YES"/>
-        <relationship name="playlist" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Playlist" inverseName="episodes" inverseEntity="Playlist" syncable="YES"/>
         <relationship name="podcast" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Podcast" inverseName="episodes" inverseEntity="Podcast" syncable="YES"/>
     </entity>
     <entity name="Playlist" representedClassName=".Playlist" syncable="YES">
@@ -46,8 +26,6 @@
         <attribute name="podverseURL" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="sharePermission" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
-        <relationship name="clips" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Clip" inverseName="playlist" inverseEntity="Clip" syncable="YES"/>
-        <relationship name="episodes" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Episode" inverseName="playlist" inverseEntity="Episode" syncable="YES"/>
     </entity>
     <entity name="Podcast" representedClassName=".Podcast" syncable="YES">
         <attribute name="author" optional="YES" attributeType="String" syncable="YES"/>
@@ -68,9 +46,8 @@
         <relationship name="episodes" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Episode" inverseName="podcast" inverseEntity="Episode" syncable="YES"/>
     </entity>
     <elements>
-        <element name="Clip" positionX="-56" positionY="-78" width="128" height="240"/>
-        <element name="Episode" positionX="-290" positionY="207" width="128" height="315"/>
-        <element name="Playlist" positionX="241" positionY="27" width="128" height="225"/>
+        <element name="Episode" positionX="-290" positionY="207" width="128" height="240"/>
+        <element name="Playlist" positionX="241" positionY="27" width="128" height="195"/>
         <element name="Podcast" positionX="520" positionY="54" width="128" height="285"/>
     </elements>
 </model>

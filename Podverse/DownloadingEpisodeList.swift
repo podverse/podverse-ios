@@ -12,13 +12,7 @@ import Foundation
 final class DownloadingEpisodeList {
     static var shared = DownloadingEpisodeList()
     
-    var downloadingEpisodes = [DownloadingEpisode]() {
-        didSet {
-            DispatchQueue.main.async {
-                NotificationCenter.default.post(name: NSNotification.Name(rawValue: kUpdateDownloadsTable), object: nil)
-            }
-        }
-    }
+    var downloadingEpisodes = [DownloadingEpisode]()
     
     static func removeDownloadingEpisodeWithMediaURL(mediaUrl:String?) {
         // If the episode is currently in the episodeDownloadArray, then delete the episode from the episodeDownloadArray

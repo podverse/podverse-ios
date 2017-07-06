@@ -195,48 +195,27 @@ class CoreDataHelper {
         }
     }
     
-    static func retrieveExistingOrCreateNewClip(mediaRefId: String, moc:NSManagedObjectContext) -> Clip {
-        let predicate = NSPredicate(format: "mediaRefId == %@", mediaRefId)
-        let clipSet = CoreDataHelper.fetchEntities(className: "Clip", predicate: predicate, moc:moc) as! [Clip]
-        if clipSet.count > 0 {
-            return clipSet[0]
-        } else {
-            let oid = CoreDataHelper.insertManagedObject(className: "Clip")
-            return  CoreDataHelper.fetchEntityWithID(objectId: oid, moc: moc) as! Clip
-        }
-    }
-    
-    static func retrieveExistingOrCreateNewPlaylist(playlistId: String, moc:NSManagedObjectContext) -> Playlist {
-        let predicate = NSPredicate(format: "id == %@", playlistId)
-        let playlistSet = CoreDataHelper.fetchEntities(className: "Playlist", predicate: predicate, moc:moc) as! [Playlist]
-        if playlistSet.count > 0 {
-            return playlistSet[0]
-        } else {
-            let oid = CoreDataHelper.insertManagedObject(className: "Playlist")
-            return  CoreDataHelper.fetchEntityWithID(objectId: oid, moc: moc) as! Playlist
-        }
-    }
-    
-    static func resetEpisodesState() {
-        // Currently we are setting taskIdentifier values = nil on app launch. 
-        // This wipes CoreData references to downloadingEpisodes that did not complete before the app was last closed or crashed.
-        let moc = CoreDataHelper.createMOCForThread(threadType: .privateThread)
-        
-        if let episodeArray = CoreDataHelper.fetchEntities(className: "Episode", predicate: nil, moc: moc) as? [Episode] {
-            for episode in episodeArray {
-                episode.taskIdentifier = nil
-            }
-            
-            moc.saveData(nil)
-        }
-        
-        // If an episode was playing when the app last closed, then load the episode in the media player on app launch
-//        if let lastPlayingEpisodeURL = UserDefaults.standard.url(forKey: kLastPlayingEpisodeURL) {
-//            if let lastPlayingEpisodeObjectID = CoreDataHelper.shared.persistentStoreCoordinator.managedObjectID(forURIRepresentation: lastPlayingEpisodeURL) {
-//                PVMediaPlayer.shared.loadEpisodeDownloadedMediaFileOrStream(episodeID: lastPlayingEpisodeObjectID, paused: true)
-//            }
+//    static func retrieveExistingOrCreateNewClip(mediaRefId: String, moc:NSManagedObjectContext) -> Clip {
+//        let predicate = NSPredicate(format: "mediaRefId == %@", mediaRefId)
+//        let clipSet = CoreDataHelper.fetchEntities(className: "Clip", predicate: predicate, moc:moc) as! [Clip]
+//        if clipSet.count > 0 {
+//            return clipSet[0]
+//        } else {
+//            let oid = CoreDataHelper.insertManagedObject(className: "Clip")
+//            return  CoreDataHelper.fetchEntityWithID(objectId: oid, moc: moc) as! Clip
 //        }
-    }
+//    }
+//    
+//    static func retrieveExistingOrCreateNewPlaylist(playlistId: String, moc:NSManagedObjectContext) -> Playlist {
+//        let predicate = NSPredicate(format: "id == %@", playlistId)
+//        let playlistSet = CoreDataHelper.fetchEntities(className: "Playlist", predicate: predicate, moc:moc) as! [Playlist]
+//        if playlistSet.count > 0 {
+//            return playlistSet[0]
+//        } else {
+//            let oid = CoreDataHelper.insertManagedObject(className: "Playlist")
+//            return  CoreDataHelper.fetchEntityWithID(objectId: oid, moc: moc) as! Playlist
+//        }
+//    }
     
     static func createMOCForThread(threadType:ThreadType) -> NSManagedObjectContext {
         let concurrencyType:NSManagedObjectContextConcurrencyType = threadType == .privateThread ? .privateQueueConcurrencyType : .mainQueueConcurrencyType

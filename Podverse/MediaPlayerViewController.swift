@@ -11,9 +11,9 @@ import CoreData
 import AVFoundation
 
 class MediaPlayerViewController: PVViewController {
-    
-    let pvMediaPlayer = PVMediaPlayer.shared
+
     var playerSpeedRate:PlayingSpeed = .regular
+    var shouldAutoplay = false
     
     @IBOutlet weak var clipsContainerView: UIView!
     @IBOutlet weak var progress: UISlider!
@@ -29,11 +29,6 @@ class MediaPlayerViewController: PVViewController {
     @IBOutlet weak var device: UIButton!
     
     override func viewDidLoad() {
-        super.viewDidLoad()
-        
-        pvMediaPlayer.avPlayer.rate = 1
-        speed.setTitle(playerSpeedRate.speedText, for: .normal)
-        
         let share = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.action, target: self, action: #selector(showShareMenu))
         let makeClip = UIBarButtonItem(title: "Make Clip", style: .plain, target: self, action: #selector(showMakeClip))
         let addToPlaylist = UIBarButtonItem(title: "Add to Playlist", style: .plain, target: self, action: #selector(showAddToPlaylist))
@@ -47,8 +42,6 @@ class MediaPlayerViewController: PVViewController {
         viewSelector.setTitle("Show Clips", for: .normal)
         clipsContainerView.isHidden = true
         
-        setPlayIcon()
-        
         setPlayerInfo()
         
         // TODO: does this need an unowned self or something?
@@ -56,7 +49,18 @@ class MediaPlayerViewController: PVViewController {
             self.updateCurrentTime(currentTime: CMTimeGetSeconds(time))
         }
         
+        hidePlayerView()
     }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        if (shouldAutoplay) {
+            pvMediaPlayer.avPlayer.rate = 0
+            pvMediaPlayer.playOrPause()
+        }
+        setPlayIcon()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {}
     
     @IBAction func sliderAction(_ sender: UISlider) {
         if let currentItem = pvMediaPlayer.avPlayer.currentItem {
@@ -151,23 +155,10 @@ class MediaPlayerViewController: PVViewController {
             podcastTitle.text = item.podcastTitle
             episodeTitle.text = item.episodeTitle
             
-            var cellImage:UIImage?
-            if let podcastFeedUrl = item.podcastFeedUrl, let imageData = retrievePodcastImageData(feedUrl: podcastFeedUrl, imageUrl: item.podcastImageUrl) {
-                DispatchQueue.global().async {
-                    if let image = UIImage(data: imageData) {
-                        cellImage = image
-                    } else {
-                        cellImage = UIImage(named: "PodverseIcon")
-                    }
+            DispatchQueue.global().async {
+                Podcast.retrievePodcastUIImage(item: item) { (podcastImage) -> Void in
                     DispatchQueue.main.async {
-                        self.image.image = cellImage
-                    }
-                }
-            } else {
-                DispatchQueue.global().async {
-                    cellImage = UIImage(named: "PodverseIcon")
-                    DispatchQueue.main.async {
-                        self.image.image = cellImage
+                        self.image.image = podcastImage
                     }
                 }
             }
@@ -183,30 +174,6 @@ class MediaPlayerViewController: PVViewController {
         }
         
         
-    }
-    
-    func retrievePodcastImageData(feedUrl: String, imageUrl: String?) -> Data? {
-        let moc = CoreDataHelper.createMOCForThread(threadType: .mainThread)
-        
-        let predicate = NSPredicate(format: "feedUrl == %@", feedUrl)
-        if let podcastSet = CoreDataHelper.fetchEntities(className: "Podcast", predicate: predicate, moc:moc) as? [Podcast] {
-            if podcastSet.count > 0 {
-                let podcast = podcastSet[0]
-                
-                if let imageData = podcast.imageData {
-                    return imageData
-                }
-            }
-        } else if let podcastImageUrl = imageUrl, let url = URL(string: podcastImageUrl) {
-            do {
-                return try Data(contentsOf: url)
-            }
-            catch {
-                print("No Image Data at give URL")
-            }
-        }
-        
-        return nil
     }
     
     func updateCurrentTime(currentTime: Double) {

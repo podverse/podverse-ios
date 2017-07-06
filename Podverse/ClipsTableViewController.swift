@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ClipsTableViewController: UIViewController {
+class ClipsTableViewController: PVViewController {
 
     var clipsArray = [MediaRef]()
     let reachability = PVReachability.shared

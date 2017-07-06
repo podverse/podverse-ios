@@ -63,9 +63,9 @@ enum PlayingSpeed {
 }
 
 protocol PVMediaPlayerDelegate {
-    func setMediaPlayerVCPlayPauseIcon()
-    func episodeFinishedPlaying(_ currentEpisode:Episode?)
-    func clipFinishedPlaying(_ currentClip:Clip?)
+//    func setMediaPlayerVCPlayPauseIcon()
+//    func episodeFinishedPlaying(_ currentEpisode:Episode?)
+//    func clipFinishedPlaying(_ currentClip:Clip?)
     
 }
 
@@ -123,32 +123,33 @@ class PVMediaPlayer {
                 if reason == AVAudioSessionRouteChangeReason.oldDeviceUnavailable {
                     // Headphones were unplugged and AVPlayer has paused, so set the Play/Pause icon to Pause
                     DispatchQueue.main.async {
-                        self.delegate?.setMediaPlayerVCPlayPauseIcon()
+//                        self.delegate?.setMediaPlayerVCPlayPauseIcon()
                     }
                 }
             }
         }
     }
     
-    @discardableResult func playOrPause() -> Bool {
+    // TODO: should this be public here or not?
+    @objc @discardableResult public func playOrPause() -> Bool {
 
         self.setPlayingInfo()
         
         if avPlayer.rate == 0 {
             avPlayer.play()
             mediaPlayerIsPlaying = true
-            self.delegate?.setMediaPlayerVCPlayPauseIcon()
+//            self.delegate?.setMediaPlayerVCPlayPauseIcon()
             return true
             
         } else {
             saveCurrentTimeAsPlaybackPosition()
             avPlayer.pause()
             mediaPlayerIsPlaying = false
-            self.delegate?.setMediaPlayerVCPlayPauseIcon()
+//            self.delegate?.setMediaPlayerVCPlayPauseIcon()
             return false
         }
 
-        self.delegate?.setMediaPlayerVCPlayPauseIcon()
+//        self.delegate?.setMediaPlayerVCPlayPauseIcon()
         mediaPlayerIsPlaying = false
         return false
     }
@@ -248,6 +249,10 @@ class PVMediaPlayer {
     }
         
     func loadPlayerHistoryItem(playerHistoryItem: PlayerHistoryItem) {
+        if avPlayer.rate == 1 {
+            saveCurrentTimeAsPlaybackPosition()
+        }
+        
         currentlyPlayingItem = playerHistoryItem
         
         avPlayer.replaceCurrentItem(with: nil)
@@ -256,6 +261,8 @@ class PVMediaPlayer {
         moc.parent = CoreDataHelper.shared.managedObjectContext
         
         if let episodeMediaUrl = playerHistoryItem.episodeMediaUrl {
+            playerHistoryManager.addOrUpdateItem(item: playerHistoryItem)
+            
             let episodesPredicate = NSPredicate(format: "mediaUrl == %@", episodeMediaUrl)
             if let episodes = CoreDataHelper.fetchEntities(className: "Episode", predicate: episodesPredicate, moc: moc) as? [Episode] {
                 if let episode = episodes.first {
@@ -283,8 +290,6 @@ class PVMediaPlayer {
                 }
             }
         }
-        
-
         
     }
         

@@ -9,24 +9,23 @@
 import Foundation
 
 enum TabItems:Int {
-    case Podcasts = 0, Playlists, Find, Downloads, Settings
+    case Podcasts = 0, Clips, Playlists, Find, More
     
     var index:Int {
         switch self {
         case .Podcasts:
             return 0
-        case .Playlists:
+        case .Clips:
             return 1
-        case .Find:
+        case .Playlists:
             return 2
-        case .Downloads:
+        case .Find:
             return 3
-        case .Settings:
+        case .More:
             return 4
         }
     }
 }
-
 
 enum SharePermission:String {
     case isPrivate = "isPrivate", isSharableWithLink = "isSharableWithLink", isPublic = "isPublic"
