@@ -10,9 +10,8 @@ import UIKit
 import CoreData
 import AVFoundation
 
-class MediaPlayerViewController: UIViewController {
-    
-    let pvMediaPlayer = PVMediaPlayer.shared
+class MediaPlayerViewController: PVViewController {
+
     var playerSpeedRate:PlayingSpeed = .regular
     var shouldAutoplay = false
     
@@ -30,8 +29,6 @@ class MediaPlayerViewController: UIViewController {
     @IBOutlet weak var device: UIButton!
     
     override func viewDidLoad() {
-        super.viewDidLoad()
-        
         let share = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.action, target: self, action: #selector(showShareMenu))
         let makeClip = UIBarButtonItem(title: "Make Clip", style: .plain, target: self, action: #selector(showMakeClip))
         let addToPlaylist = UIBarButtonItem(title: "Add to Playlist", style: .plain, target: self, action: #selector(showAddToPlaylist))
@@ -52,6 +49,7 @@ class MediaPlayerViewController: UIViewController {
             self.updateCurrentTime(currentTime: CMTimeGetSeconds(time))
         }
         
+        hidePlayerView()
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -61,6 +59,8 @@ class MediaPlayerViewController: UIViewController {
         }
         setPlayIcon()
     }
+    
+    override func viewWillAppear(_ animated: Bool) {}
     
     @IBAction func sliderAction(_ sender: UISlider) {
         if let currentItem = pvMediaPlayer.avPlayer.currentItem {

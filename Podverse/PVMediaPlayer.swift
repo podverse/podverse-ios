@@ -131,7 +131,7 @@ class PVMediaPlayer {
     }
     
     // TODO: should this be public here or not?
-    @objc public func playOrPause() -> Bool {
+    @objc @discardableResult public func playOrPause() -> Bool {
 
         self.setPlayingInfo()
         

@@ -78,7 +78,7 @@ class PVDownloader:NSObject {
             downloadingEpisode.taskIdentifier = downloadTask.taskIdentifier
             
             if !DownloadingEpisodeList.shared.downloadingEpisodes.contains(where: { downloadingEpisode in downloadingEpisode.mediaUrl == episode.mediaUrl }) {
-                DownloadingEpisodeList.shared.downloadingEpisodes.append(downloadingEpisode)
+                DownloadingEpisodeList.shared.downloadingEpisodes.insert(downloadingEpisode, at: 0)
                 incrementBadge()
             } else {
                 print("that's already downloading / downloaded")

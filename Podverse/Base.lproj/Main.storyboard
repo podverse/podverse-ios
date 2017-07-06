@@ -277,7 +277,6 @@
                     <connections>
                         <outlet property="parsingActivityContainer" destination="5T6-DS-Lmx" id="ZbX-Uz-ej2"/>
                         <outlet property="tableView" destination="TnJ-Ls-LeL" id="GWb-4j-YZr"/>
-                        <segue destination="fGh-hH-QQS" kind="show" identifier="To Now Playing" id="WJJ-II-E2z"/>
                         <segue destination="DYF-Bg-yz8" kind="show" identifier="Show Episodes" id="7Y1-Qv-nBb"/>
                     </connections>
                 </viewController>
@@ -374,7 +373,6 @@
                         <segue destination="wkJ-fx-uxS" kind="show" identifier="Show Login" id="8Mm-fy-dza"/>
                         <segue destination="Y7Q-Cf-MT3" kind="show" identifier="Show About" id="woU-xR-wIP"/>
                         <segue destination="Ak4-gJ-3iH" kind="show" identifier="Show Settings" id="FJm-2F-lTy"/>
-                        <segue destination="fGh-hH-QQS" kind="show" identifier="To Now Playing" id="D7m-nE-mId"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="iVi-4r-gHu" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -394,9 +392,6 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
-                    <connections>
-                        <segue destination="fGh-hH-QQS" kind="show" identifier="To Now Playing" id="RU4-pG-EQ1"/>
-                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="483-Gd-Qc8" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -415,9 +410,6 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
-                    <connections>
-                        <segue destination="fGh-hH-QQS" kind="show" identifier="To Now Playing" id="bv4-7n-YPC"/>
-                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="9fF-RV-dYc" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -436,9 +428,6 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
-                    <connections>
-                        <segue destination="fGh-hH-QQS" kind="show" identifier="To Now Playing" id="k7W-qa-ewg"/>
-                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="0XZ-aq-hYW" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -546,7 +535,6 @@
                     </view>
                     <connections>
                         <outlet property="tableView" destination="zaq-ZL-IQU" id="Ssc-rB-7nf"/>
-                        <segue destination="fGh-hH-QQS" kind="show" identifier="To Now Playing" id="E6q-Hn-bK4"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="o20-Ni-e6h" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -698,7 +686,6 @@
                         <outlet property="retryButton" destination="oeE-hL-VuD" id="zRg-Kx-emw"/>
                         <outlet property="statusMessage" destination="YNF-hj-Oyh" id="ot0-AP-lBJ"/>
                         <outlet property="tableView" destination="vEq-k2-ABP" id="q9Z-J2-fbJ"/>
-                        <segue destination="fGh-hH-QQS" kind="show" identifier="To Now Playing" id="psA-3k-dMZ"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="IHf-aw-3og" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -747,7 +734,6 @@
                     <navigationItem key="navigationItem" id="Zaw-tO-SET"/>
                     <connections>
                         <outlet property="tableView" destination="rZ5-gI-Z44" id="H80-rd-y9W"/>
-                        <segue destination="fGh-hH-QQS" kind="show" identifier="To Now Playing" id="2eH-AV-x7o"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="gxH-qg-89B" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -885,8 +871,6 @@
                         <outlet property="headerImageView" destination="W2q-RV-W1m" id="y4A-4E-KUw"/>
                         <outlet property="headerPodcastTitle" destination="4bn-tB-LUD" id="iII-EY-sLo"/>
                         <outlet property="tableView" destination="VOa-dX-ejH" id="QWe-WP-Gqg"/>
-                        <segue destination="fGh-hH-QQS" kind="show" identifier="To Now Playing" id="Eel-N3-mrg"/>
-                        <segue destination="fGh-hH-QQS" kind="show" identifier="To Now Playing" id="NYK-ro-0Fx"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="6Xm-6J-YIW" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -896,7 +880,7 @@
         <!--Media Player View Controller-->
         <scene sceneID="UQ2-yh-9RT">
             <objects>
-                <viewController hidesBottomBarWhenPushed="YES" id="fGh-hH-QQS" customClass="MediaPlayerViewController" customModule="Podverse" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="MediaPlayerVC" hidesBottomBarWhenPushed="YES" id="fGh-hH-QQS" customClass="MediaPlayerViewController" customModule="Podverse" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="d5T-eo-vSh"/>
                         <viewControllerLayoutGuide type="bottom" id="h88-c5-jiH"/>
@@ -1153,9 +1137,6 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
                     <navigationItem key="navigationItem" id="gll-NB-RZL"/>
-                    <connections>
-                        <segue destination="fGh-hH-QQS" kind="show" identifier="To Now Playing" id="o0J-1z-tUF"/>
-                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="I2t-g2-vF9" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -1309,7 +1290,4 @@
         <image name="Tab-Podcasts" width="25" height="25"/>
         <image name="banner" width="337" height="61"/>
     </resources>
-    <inferredMetricsTieBreakers>
-        <segue reference="WJJ-II-E2z"/>
-    </inferredMetricsTieBreakers>
 </document>

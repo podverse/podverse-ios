@@ -60,7 +60,7 @@ class EpisodesTableViewController: PVViewController, UITableViewDataSource, UITa
             if episode.fileName != nil {                
                 let playerHistoryItem = playerHistoryManager.convertEpisodeToPlayerHistoryItem(episode: episode)
                 pvMediaPlayer.loadPlayerHistoryItem(playerHistoryItem: playerHistoryItem)
-                segueToNowPlaying()
+                goToNowPlaying()
             } else {
 //                if reachability.hasInternetConnection() == false {
 //                    showInternetNeededAlert("Connect to WiFi or cellular data to download an episode.")
@@ -151,11 +151,11 @@ class EpisodesTableViewController: PVViewController, UITableViewDataSource, UITa
 //            return 60
 //        }
     }
-    
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == "To Now Playing" {
-            let mediaPlayerViewController = segue.destination as! MediaPlayerViewController
-            mediaPlayerViewController.shouldAutoplay = true
+
+    override func goToNowPlaying () {
+        if let mediaPlayerVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "MediaPlayerVC") as? MediaPlayerViewController {
+            mediaPlayerVC.shouldAutoplay = true
+            self.navigationController?.pushViewController(mediaPlayerVC, animated: true)
         }
     }
     
@@ -171,7 +171,7 @@ class EpisodesTableViewController: PVViewController, UITableViewDataSource, UITa
                 episodeActions.addAction(UIAlertAction(title: "Play Episode", style: .default, handler: { action in
                     let playerHistoryItem = self.playerHistoryManager.convertEpisodeToPlayerHistoryItem(episode: episode)
                     self.pvMediaPlayer.loadPlayerHistoryItem(playerHistoryItem: playerHistoryItem)
-                    self.segueToNowPlaying()
+                    self.goToNowPlaying()
                 }))
             } else {
 //                // TODO: check if episode is in downloading array
@@ -205,7 +205,7 @@ class EpisodesTableViewController: PVViewController, UITableViewDataSource, UITa
                 }
                 let playerHistoryItem = self.playerHistoryManager.convertEpisodeToPlayerHistoryItem(episode: episode)
                 self.pvMediaPlayer.loadPlayerHistoryItem(playerHistoryItem: playerHistoryItem)
-                self.segueToNowPlaying()
+                self.goToNowPlaying()
             }))
             
             episodeActions.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
