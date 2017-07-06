@@ -40,6 +40,9 @@ class MediaRef {
             let task = URLSession.shared.dataTask(with: request) { data, response, error in
 
                 guard error == nil else {
+                    DispatchQueue.main.async {
+                        completion([])
+                    }
                     return
                 }
                 
