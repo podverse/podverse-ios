@@ -228,14 +228,20 @@ extension PVFeedParser:FeedParserDelegate {
             return
         }
         
+        let podcastPredicate = NSPredicate(format: "podcast == %@", podcast)
+        
         // If subscribing to a podcast, then get the latest episode and begin downloading
         if subscribeToPodcast == true {
-            let podcastPredicate = NSPredicate(format: "podcast == %@", podcast)
             if let latestEpisode = CoreDataHelper.fetchEntityWithMostRecentPubDate(className:"Episode", predicate: podcastPredicate, moc:moc) as? Episode {
                 if latestEpisode.fileName == nil {
                     PVDownloader.shared.startDownloadingEpisode(episode: latestEpisode)
                 }
             }
+        }
+        
+        if let mostRecentEpisode = CoreDataHelper.fetchEntityWithMostRecentPubDate(className:"Episode", predicate: podcastPredicate, moc:moc) as? Episode {
+            podcast.lastPubDate = mostRecentEpisode.pubDate
+            moc.saveData(nil)
         }
         
         DispatchQueue.main.async {

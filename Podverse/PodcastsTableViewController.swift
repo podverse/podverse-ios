@@ -97,15 +97,7 @@ class PodcastsTableViewController: PVViewController {
         self.subscribedPodcastsArray = CoreDataHelper.fetchEntities(className:"Podcast", predicate: subscribedPredicate, moc:moc) as! [Podcast]
         self.subscribedPodcastsArray.sort(by: { $0.title.removeArticles() < $1.title.removeArticles() } )
         
-        for podcast in self.subscribedPodcastsArray {
-            let podcastPredicate = NSPredicate(format: "podcast == %@", podcast)
-            if let mostRecentEpisode = CoreDataHelper.fetchEntityWithMostRecentPubDate(className:"Episode", predicate: podcastPredicate, moc:moc) as? Episode {
-                podcast.lastPubDate = mostRecentEpisode.pubDate
-            }
-        }
-        
         self.tableView.reloadData()
-        moc.saveData(nil)
     }
     
     fileprivate func reloadAllData() {
