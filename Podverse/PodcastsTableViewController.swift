@@ -128,6 +128,8 @@ class PodcastsTableViewController: PVViewController {
 extension PodcastsTableViewController:PVFeedParserDelegate {
     func feedParsingComplete(feedUrl:String?) {
         let moc = CoreDataHelper.createMOCForThread(threadType: .mainThread)
+        let subscribedPredicate = NSPredicate(format: "isSubscribed == YES")
+        self.subscribedPodcastsArray = CoreDataHelper.fetchEntities(className:"Podcast", predicate: subscribedPredicate, moc:moc) as! [Podcast]
         
         if let url = feedUrl, let index = self.subscribedPodcastsArray.index(where: { url == $0.feedUrl }) {
             let podcast = CoreDataHelper.fetchEntityWithID(objectId: self.subscribedPodcastsArray[index].objectID, moc: moc) as! Podcast
