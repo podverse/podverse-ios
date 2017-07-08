@@ -23,6 +23,12 @@ class PodcastsTableViewController: PVViewController {
     let reachability = PVReachability.shared
     var refreshControl: UIRefreshControl!
     
+    override func viewDidAppear(_ animated: Bool) {
+        PVAudioSearch.searchPodcasts(term: "joe") { (podcasts) -> Void in
+            print("here now")
+        }
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         var isFirstTimeAppOpened: Bool = false

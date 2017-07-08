@@ -8,15 +8,6 @@
 
 import Foundation
 
-class SearchResultPodcast {
-    var artistName: String?
-    var episodesTotal: Int?
-    var feedUrl: String?
-    var imageURL: String?
-    var itunesImageURL: String?
-    var isSubscribed: Bool?
-    var lastPubDate: Date?
-    var categories: String?
-    var summary: String?
+class PodcastSearchResult {
     var title: String?
 }
