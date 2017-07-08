@@ -27,7 +27,7 @@ class PVViewController: UIViewController {
     }
     
     func loadNowPlayingBar() { // thanks sanjeet https://stackoverflow.com/a/38157137/2608858
-        guard let window = UIApplication.shared.keyWindow, !window.subviews.contains(where: {$0.tag == playerTag}) else {
+        guard let tabbarVC = self.tabBarController, !tabbarVC.view.subviews.contains(where: {$0.tag == playerTag}) else {
             return
         }
         
@@ -36,12 +36,7 @@ class PVViewController: UIViewController {
         
         if let currentItem = playerHistoryManager.historyItems.first {
             
-            guard let tabBarController = self.tabBarController else {
-                return
-            }
-            
-            let tabbarFrame = tabBarController.tabBar.frame
-            let localTabbarMinY = tabBarController.view.convert(tabbarFrame, to: UIApplication.shared.keyWindow).minY
+            let localTabbarMinY = tabbarVC.tabBar.frame.minY
             nowPlayingBar.frame = CGRect(x: 0, y: localTabbarMinY - nowPlayingBarHeight, width: self.view.bounds.size.width, height: nowPlayingBarHeight)
             nowPlayingBar.backgroundColor = UIColor.white
             
@@ -96,16 +91,16 @@ class PVViewController: UIViewController {
             nowPlayingBar.addSubview(bottomDivider)
             
             nowPlayingBar.tag = playerTag
-            window.addSubview(nowPlayingBar)
+            tabbarVC.view.addSubview(nowPlayingBar)
         }
     }
     
     func showPlayerView() {
-        UIApplication.shared.keyWindow?.subviews.first(where: {$0.tag == playerTag})?.isHidden = false
+        self.tabBarController?.view.subviews.first(where: {$0.tag == playerTag})?.isHidden = false
     }
     
     func hidePlayerView() {
-        UIApplication.shared.keyWindow?.subviews.first(where: {$0.tag == playerTag})?.isHidden = true
+        self.tabBarController?.view.subviews.first(where: {$0.tag == playerTag})?.isHidden = true
     }
     
     func goToNowPlaying() {
