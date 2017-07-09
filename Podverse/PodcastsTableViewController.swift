@@ -24,9 +24,7 @@ class PodcastsTableViewController: PVViewController {
     var refreshControl: UIRefreshControl!
     
     override func viewDidAppear(_ animated: Bool) {
-        PVAudioSearch.searchPodcasts(term: "joe") { (podcasts) -> Void in
-            print("here now")
-        }
+        PVAudioSearch.getAudiosearchAccessToken()
     }
     
     override func viewDidLoad() {

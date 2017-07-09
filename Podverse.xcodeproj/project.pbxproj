@@ -24,6 +24,7 @@
 		30A575681EBED8360088CCA6 /* EpisodeTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30A575671EBED8360088CCA6 /* EpisodeTableViewCell.swift */; };
 		30B427F21EBE4CB100BAD942 /* PVSubscriber.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30B427F11EBE4CB100BAD942 /* PVSubscriber.swift */; };
 		30DBD4D11F11872E00A431E6 /* PVAudioSearch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30DBD4D01F11872E00A431E6 /* PVAudioSearch.swift */; };
+		30DBD4D31F11B05900A431E6 /* OAuth2RetryHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30DBD4D21F11B05900A431E6 /* OAuth2RetryHandler.swift */; };
 		30EB67781ECCAB2800C5AB80 /* MediaPlayerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30EB67771ECCAB2800C5AB80 /* MediaPlayerViewController.swift */; };
 		B1AE53F4E32D75A0EB47D9CF /* Pods_PodverseTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 88FA166C7706B35F999BC032 /* Pods_PodverseTests.framework */; };
 		E70E4A1A1E038F8F003CEC64 /* PodcastsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E70E4A191E038F8F003CEC64 /* PodcastsTableViewController.swift */; };
@@ -113,6 +114,7 @@
 		30A575671EBED8360088CCA6 /* EpisodeTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EpisodeTableViewCell.swift; sourceTree = "<group>"; };
 		30B427F11EBE4CB100BAD942 /* PVSubscriber.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PVSubscriber.swift; sourceTree = "<group>"; };
 		30DBD4D01F11872E00A431E6 /* PVAudioSearch.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PVAudioSearch.swift; sourceTree = "<group>"; };
+		30DBD4D21F11B05900A431E6 /* OAuth2RetryHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OAuth2RetryHandler.swift; sourceTree = "<group>"; };
 		30EB67771ECCAB2800C5AB80 /* MediaPlayerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MediaPlayerViewController.swift; sourceTree = "<group>"; };
 		352685A8C8D7339C77B0CED1 /* Pods-PodverseTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PodverseTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-PodverseTests/Pods-PodverseTests.debug.xcconfig"; sourceTree = "<group>"; };
 		49BE088E3142C7867041D587 /* Pods-PodverseUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PodverseUITests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-PodverseUITests/Pods-PodverseUITests.debug.xcconfig"; sourceTree = "<group>"; };
@@ -250,6 +252,7 @@
 			isa = PBXGroup;
 			children = (
 				E753027E1E072F160007B6F7 /* FeedParser */,
+				30DBD4D21F11B05900A431E6 /* OAuth2RetryHandler.swift */,
 			);
 			path = "Supporting Libraries";
 			sourceTree = "<group>";
@@ -749,6 +752,7 @@
 				E70E4A1A1E038F8F003CEC64 /* PodcastsTableViewController.swift in Sources */,
 				30A575661EBECFF90088CCA6 /* EpisodesTableViewController.swift in Sources */,
 				E75302881E072F160007B6F7 /* FeedItem.swift in Sources */,
+				30DBD4D31F11B05900A431E6 /* OAuth2RetryHandler.swift in Sources */,
 				30026D8B1F0B322000043D79 /* AboutViewController.swift in Sources */,
 				E7D25BDC1E0F30C500B60368 /* podverse.xcdatamodeld in Sources */,
 				E7B2A5A81E16246B00AAE036 /* LoginViewController.swift in Sources */,

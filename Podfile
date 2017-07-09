@@ -11,6 +11,7 @@ target 'Podverse' do
   pod 'Lock', '~> 1.26'
   pod 'Auth0', '~> 1.0'
   pod 'ReachabilitySwift', '~> 3'
+  pod 'p2.OAuth2', '3.0.3'
 
   target 'PodverseTests' do
     inherit! :search_paths
