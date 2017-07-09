@@ -74,8 +74,7 @@ extension FindTableViewController:UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if indexPath.section == 0 {
             if indexPath.row == 0 {
-// TODO
-//                self.performSegueWithIdentifier("Search for Podcasts", sender: tableView)
+                self.performSegue(withIdentifier: "Search for Podcasts", sender: tableView)
             }
             else {
                 if reachability.hasInternetConnection() == false {

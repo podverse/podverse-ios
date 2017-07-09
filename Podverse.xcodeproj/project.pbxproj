@@ -23,8 +23,10 @@
 		30A575661EBECFF90088CCA6 /* EpisodesTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30A575651EBECFF90088CCA6 /* EpisodesTableViewController.swift */; };
 		30A575681EBED8360088CCA6 /* EpisodeTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30A575671EBED8360088CCA6 /* EpisodeTableViewCell.swift */; };
 		30B427F21EBE4CB100BAD942 /* PVSubscriber.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30B427F11EBE4CB100BAD942 /* PVSubscriber.swift */; };
-		30DBD4D11F11872E00A431E6 /* PVAudioSearch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30DBD4D01F11872E00A431E6 /* PVAudioSearch.swift */; };
+		30DBD4D11F11872E00A431E6 /* AudiosearchClientSwift.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30DBD4D01F11872E00A431E6 /* AudiosearchClientSwift.swift */; };
 		30DBD4D31F11B05900A431E6 /* OAuth2RetryHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30DBD4D21F11B05900A431E6 /* OAuth2RetryHandler.swift */; };
+		30DBD4D51F11DBFA00A431E6 /* FindSearchTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30DBD4D41F11DBFA00A431E6 /* FindSearchTableViewController.swift */; };
+		30DBD4D91F11F42B00A431E6 /* PodcastSearchResultTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30DBD4D81F11F42B00A431E6 /* PodcastSearchResultTableViewCell.swift */; };
 		30EB67781ECCAB2800C5AB80 /* MediaPlayerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30EB67771ECCAB2800C5AB80 /* MediaPlayerViewController.swift */; };
 		B1AE53F4E32D75A0EB47D9CF /* Pods_PodverseTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 88FA166C7706B35F999BC032 /* Pods_PodverseTests.framework */; };
 		E70E4A1A1E038F8F003CEC64 /* PodcastsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E70E4A191E038F8F003CEC64 /* PodcastsTableViewController.swift */; };
@@ -113,8 +115,10 @@
 		30A575651EBECFF90088CCA6 /* EpisodesTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EpisodesTableViewController.swift; sourceTree = "<group>"; };
 		30A575671EBED8360088CCA6 /* EpisodeTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EpisodeTableViewCell.swift; sourceTree = "<group>"; };
 		30B427F11EBE4CB100BAD942 /* PVSubscriber.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PVSubscriber.swift; sourceTree = "<group>"; };
-		30DBD4D01F11872E00A431E6 /* PVAudioSearch.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PVAudioSearch.swift; sourceTree = "<group>"; };
+		30DBD4D01F11872E00A431E6 /* AudiosearchClientSwift.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AudiosearchClientSwift.swift; path = ../AudiosearchClientSwift.swift; sourceTree = "<group>"; };
 		30DBD4D21F11B05900A431E6 /* OAuth2RetryHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OAuth2RetryHandler.swift; sourceTree = "<group>"; };
+		30DBD4D41F11DBFA00A431E6 /* FindSearchTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FindSearchTableViewController.swift; sourceTree = "<group>"; };
+		30DBD4D81F11F42B00A431E6 /* PodcastSearchResultTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PodcastSearchResultTableViewCell.swift; sourceTree = "<group>"; };
 		30EB67771ECCAB2800C5AB80 /* MediaPlayerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MediaPlayerViewController.swift; sourceTree = "<group>"; };
 		352685A8C8D7339C77B0CED1 /* Pods-PodverseTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PodverseTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-PodverseTests/Pods-PodverseTests.debug.xcconfig"; sourceTree = "<group>"; };
 		49BE088E3142C7867041D587 /* Pods-PodverseUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PodverseUITests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-PodverseUITests/Pods-PodverseUITests.debug.xcconfig"; sourceTree = "<group>"; };
@@ -238,6 +242,7 @@
 				3097AA901EE7C7D200AD0ED0 /* DownloadsTableViewController.swift */,
 				30A575651EBECFF90088CCA6 /* EpisodesTableViewController.swift */,
 				E70E4A1E1E039047003CEC64 /* FindTableViewController.swift */,
+				30DBD4D41F11DBFA00A431E6 /* FindSearchTableViewController.swift */,
 				E7B2A5A71E16246B00AAE036 /* LoginViewController.swift */,
 				30EB67771ECCAB2800C5AB80 /* MediaPlayerViewController.swift */,
 				E70E4A221E03907A003CEC64 /* MoreTableViewController.swift */,
@@ -253,6 +258,7 @@
 			children = (
 				E753027E1E072F160007B6F7 /* FeedParser */,
 				30DBD4D21F11B05900A431E6 /* OAuth2RetryHandler.swift */,
+				30DBD4D01F11872E00A431E6 /* AudiosearchClientSwift.swift */,
 			);
 			path = "Supporting Libraries";
 			sourceTree = "<group>";
@@ -372,6 +378,7 @@
 				30A575671EBED8360088CCA6 /* EpisodeTableViewCell.swift */,
 				E7AD9A9B1EDDFEAD0093F051 /* MediaPlayerClipTableViewCell.swift */,
 				E7B2A5A31E12CC5A00AAE036 /* PodcastTableViewCell.swift */,
+				30DBD4D81F11F42B00A431E6 /* PodcastSearchResultTableViewCell.swift */,
 			);
 			name = "Custom UI Classes";
 			sourceTree = "<group>";
@@ -387,7 +394,6 @@
 		E7D25BBE1E0F092200B60368 /* PVHelpers */ = {
 			isa = PBXGroup;
 			children = (
-				30DBD4D01F11872E00A431E6 /* PVAudioSearch.swift */,
 				E7B2A5A01E123E9900AAE036 /* PVAuth.swift */,
 				E7B2A5981E12103D00AAE036 /* PVClipStreamer.swift */,
 				E7D25BCB1E0F176C00B60368 /* PVDeleter.swift */,
@@ -716,6 +722,7 @@
 				E7B2A59D1E123A4400AAE036 /* UIViewController+InternetRequiredAlert.swift in Sources */,
 				E7D25BBD1E0F056600B60368 /* ExtendedFeedParser.swift in Sources */,
 				3097AA911EE7C7D200AD0ED0 /* DownloadsTableViewController.swift in Sources */,
+				30DBD4D51F11DBFA00A431E6 /* FindSearchTableViewController.swift in Sources */,
 				3097AA8F1EE7C1D500AD0ED0 /* ClipTableViewCell.swift in Sources */,
 				30026D8D1F0B328000043D79 /* SettingsViewController.swift in Sources */,
 				E7B2A5AA1E162AE400AAE036 /* Date+Formatters.swift in Sources */,
@@ -734,11 +741,12 @@
 				E7D25BC21E0F118C00B60368 /* PVFeedParser.swift in Sources */,
 				E7D25BD41E0F23DB00B60368 /* Data+ResizeImageData.swift in Sources */,
 				30B427F21EBE4CB100BAD942 /* PVSubscriber.swift in Sources */,
-				30DBD4D11F11872E00A431E6 /* PVAudioSearch.swift in Sources */,
+				30DBD4D11F11872E00A431E6 /* AudiosearchClientSwift.swift in Sources */,
 				E7B2A5A61E12D38200AAE036 /* String+CharacterManipulation.swift in Sources */,
 				E76C49CA1E0F950E00F81217 /* DownloadingEpisode.swift in Sources */,
 				30EB67781ECCAB2800C5AB80 /* MediaPlayerViewController.swift in Sources */,
 				E753028A1E072F160007B6F7 /* NSDate+FeedsDate.swift in Sources */,
+				30DBD4D91F11F42B00A431E6 /* PodcastSearchResultTableViewCell.swift in Sources */,
 				3048E88A1EDD1B1A001AADCE /* Int+MediaPlayerString.swift in Sources */,
 				E7D25BC61E0F141500B60368 /* Episode.swift in Sources */,
 				E78BF9311E0FA64F002194FE /* PVReachability.swift in Sources */,

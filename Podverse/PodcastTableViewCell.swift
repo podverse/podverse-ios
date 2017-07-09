@@ -10,10 +10,10 @@ import UIKit
 
 class PodcastTableViewCell: UITableViewCell {
     
+    @IBOutlet weak var lastPublishedDate: UILabel!
     @IBOutlet weak var pvImage: UIImageView!
     @IBOutlet weak var title: UILabel!
     @IBOutlet weak var totalClips: UILabel!
-    @IBOutlet weak var lastPublishedDate: UILabel!
-    @IBOutlet weak var episodesDownloadedOrStarted: UILabel!
+    @IBOutlet weak var totalEpisodes: UILabel!
 
 }

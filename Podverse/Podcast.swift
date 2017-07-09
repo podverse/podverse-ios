@@ -39,19 +39,17 @@ class Podcast: NSManagedObject {
     static func retrieveMediaRefsFromServer(episodeMediaUrl: String? = nil, podcastFeedUrl: String? = nil, onlySubscribed: Bool? = nil, completion: @escaping (_ mediaRefs:[MediaRef]?) -> Void) {
     }
     
-    static func retrievePodcastUIImage(item: PlayerHistoryItem? = nil, podcast: Podcast? = nil, downloadingEpisode: DownloadingEpisode? = nil, completion: @escaping (_ podcastImage: UIImage?) -> Void) {
+    static func retrievePodcastUIImage(podcastFeedUrl: String?, podcastImageUrl: String?, completion: @escaping (_ podcastImage: UIImage?) -> Void) {
         var cellImage:UIImage?
         
-        if let podcastFeedUrl = item?.podcastFeedUrl, let imageData = retrievePodcastImageData(feedUrl: podcastFeedUrl, imageUrl: item?.podcastImageUrl) {
-            cellImage = podcastImageOrDefault(imageData: imageData)
-        } else if let podcastFeedUrl = podcast?.feedUrl, let imageData = retrievePodcastImageData(feedUrl: podcastFeedUrl, imageUrl: podcast?.imageUrl) {
-            cellImage = podcastImageOrDefault(imageData: imageData)
-        } else if let podcastFeedUrl = downloadingEpisode?.podcastFeedUrl, let imageData = retrievePodcastImageData(feedUrl: podcastFeedUrl, imageUrl: downloadingEpisode?.podcastImageUrl) {
-            cellImage = podcastImageOrDefault(imageData: imageData)
+        if let imageUrl = podcastImageUrl {
+            if let imageData = retrievePodcastImageData(feedUrl: podcastFeedUrl, imageUrl: imageUrl) {
+                cellImage = podcastImageOrDefault(imageData: imageData)
+            }
         } else {
             cellImage = UIImage(named: "PodverseIcon")
         }
-        
+    
         completion(cellImage)
     }
     
@@ -63,16 +61,17 @@ class Podcast: NSManagedObject {
         }
     }
     
-    static func retrievePodcastImageData(feedUrl: String, imageUrl: String?) -> Data? {
+    static func retrievePodcastImageData(feedUrl: String?, imageUrl: String?) -> Data? {
         let moc = CoreDataHelper.createMOCForThread(threadType: .mainThread)
         
-        let predicate = NSPredicate(format: "feedUrl == %@", feedUrl)
-        if let podcastSet = CoreDataHelper.fetchEntities(className: "Podcast", predicate: predicate, moc:moc) as? [Podcast] {
-            if podcastSet.count > 0 {
-                let podcast = podcastSet[0]
-                
-                if let imageData = podcast.imageData {
-                    return imageData
+        if let feedUrl = feedUrl {
+            let predicate = NSPredicate(format: "feedUrl == %@", feedUrl)
+            if let podcastSet = CoreDataHelper.fetchEntities(className: "Podcast", predicate: predicate, moc:moc) as? [Podcast] {
+                if podcastSet.count > 0 {
+                    let podcast = podcastSet[0]
+                    if let imageData = podcast.imageData {
+                        return imageData
+                    }
                 }
             }
         } else if let podcastImageUrl = imageUrl, let url = URL(string: podcastImageUrl) {

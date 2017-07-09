@@ -156,7 +156,7 @@ class MediaPlayerViewController: PVViewController {
             episodeTitle.text = item.episodeTitle
             
             DispatchQueue.global().async {
-                Podcast.retrievePodcastUIImage(item: item) { (podcastImage) -> Void in
+                Podcast.retrievePodcastUIImage(podcastFeedUrl: item.podcastFeedUrl, podcastImageUrl: item.podcastImageUrl) { (podcastImage) -> Void in
                     DispatchQueue.main.async {
                         self.image.image = podcastImage
                     }
