@@ -71,8 +71,7 @@ class PodcastsTableViewController: PVViewController {
     fileprivate func refreshPodcastFeeds() {
         let moc = CoreDataHelper.createMOCForThread(threadType: .mainThread)
         
-        let podcastsPredicate = NSPredicate(format: "isSubscribed == YES")
-        let podcastArray = CoreDataHelper.fetchEntities(className:"Podcast", predicate: podcastsPredicate, moc:moc) as! [Podcast]
+        let podcastArray = CoreDataHelper.fetchEntities(className:"Podcast", predicate: nil, moc:moc) as! [Podcast]
         
         for podcast in podcastArray {
             parsingPodcasts.urls.append(podcast.feedUrl)
@@ -92,9 +91,8 @@ class PodcastsTableViewController: PVViewController {
     }
     
     func loadPodcastData() {
-        let subscribedPredicate = NSPredicate(format: "isSubscribed == YES")
         let moc = CoreDataHelper.createMOCForThread(threadType: .mainThread)
-        self.subscribedPodcastsArray = CoreDataHelper.fetchEntities(className:"Podcast", predicate: subscribedPredicate, moc:moc) as! [Podcast]
+        self.subscribedPodcastsArray = CoreDataHelper.fetchEntities(className:"Podcast", predicate: nil, moc:moc) as! [Podcast]
         self.subscribedPodcastsArray.sort(by: { $0.title.removeArticles() < $1.title.removeArticles() } )
         
         for podcast in self.subscribedPodcastsArray {
@@ -223,35 +221,16 @@ extension PodcastsTableViewController:UITableViewDelegate, UITableViewDataSource
     
     func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
         let podcastToEdit = subscribedPodcastsArray[indexPath.row]
-        var subscribeOrFollow = "Subscribe"
         
-        let subscribeOrFollowAction = UITableViewRowAction(style: .default, title: subscribeOrFollow, handler: {action, indexpath in
-            if subscribeOrFollow == "Subscribe" {
-                //PVSubscriber.subscribeToPodcast(podcastToEdit.feedUrl, podcastTableDelegate: self)
-            } else {
-                //PVFollower.followPodcast(podcastToEdit.feedUrl, podcastTableDelegate: self)
+        let deleteAction = UITableViewRowAction(style: .default, title: "Delete", handler: {action, indexpath in
+            self.subscribedPodcastsArray.remove(at: indexPath.row)
+            self.tableView.deleteRows(at: [indexPath], with: .fade)
+            DispatchQueue.global().async {
+                PVDeleter.deletePodcast(podcastId: podcastToEdit.objectID, feedUrl: nil)
             }
         })
         
-        subscribeOrFollowAction.backgroundColor = UIColor(red: 0.5, green: 0.5, blue: 0.5, alpha: 1.0);
-        
-        let deleteAction = UITableViewRowAction(style: .default, title: "Delete", handler: {action, indexpath in
-            
-            // Remove Player button if the now playing episode was one of the podcast's episodes
-//            if let nowPlayingEpisode = PVMediaPlayer.shared.currentlyPlayingItem {
-////                if podcastToEdit.episodes.contains(nowPlayingEpisode) {
-////                    self.navigationItem.rightBarButtonItem = nil
-////                }
-//            }
-            self.subscribedPodcastsArray.remove(at: indexPath.row)
-            self.tableView.deleteRows(at: [indexPath], with: .fade)
-            
-            //PVFollower.unfollowPodcast(podcastToEdit.objectID, completionBlock: nil)
-            
-            //self.showFindAPodcastIfNoneAreFollowed()
-        })
-        
-        return [deleteAction, subscribeOrFollowAction]
+        return [deleteAction]
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {

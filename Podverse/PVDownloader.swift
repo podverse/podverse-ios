@@ -92,7 +92,7 @@ class PVDownloader:NSObject {
         }
     }
     
-    fileprivate func decrementBadge() {
+    func decrementBadge() {
         if let tabBarCntrl = self.appDelegate.window?.rootViewController as? UITabBarController {
             if let badgeValue = tabBarCntrl.tabBar.items?[TabItems.More.index].badgeValue, let badgeInt = Int(badgeValue) {
                 tabBarCntrl.tabBar.items?[TabItems.More.index].badgeValue = "\(badgeInt - 1)"

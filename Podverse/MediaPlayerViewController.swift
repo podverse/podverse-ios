@@ -172,8 +172,6 @@ class MediaPlayerViewController: PVViewController {
             }
             
         }
-        
-        
     }
     
     func updateCurrentTime(currentTime: Double) {

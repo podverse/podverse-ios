@@ -137,16 +137,6 @@ extension PVFeedParser:FeedParserDelegate {
             podcast.categories = categories
         }
         
-        if self.subscribeToPodcast {
-            podcast.isSubscribed = true
-            podcast.isFollowed = true
-        }
-        
-        if self.followPodcast {
-            podcast.isSubscribed = false
-            podcast.isFollowed = true
-        }
-        
         currentPodcastID = podcast.objectID
         
         moc.saveData { 

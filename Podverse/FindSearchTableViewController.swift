@@ -82,15 +82,15 @@ extension FindSearchTableViewController: UITableViewDataSource, UITableViewDeleg
         if let feedUrl = podcast.rssUrl {
             var isSubscribed = false
             
-            if let managedObjectPodcast = Podcast.retrievePodcastByFeedUrl(feedUrlString: feedUrl) {
-                isSubscribed = managedObjectPodcast.isSubscribed
+            if let _ = Podcast.retrievePodcastByFeedUrl(feedUrlString: feedUrl) {
+                isSubscribed = true
             }
             
             let podcastActions = UIAlertController(title: "", message: "", preferredStyle: .actionSheet)
             
             if isSubscribed == true {
                 podcastActions.addAction(UIAlertAction(title: "Unsubscribe", style: .default, handler: { action in
-                    // TODO unsubscribe
+                    PVDeleter.deletePodcast(podcastId: nil, feedUrl: feedUrl)
                 }))
             } else {
                 podcastActions.addAction(UIAlertAction(title: "Subscribe", style: .default, handler: { action in
@@ -98,16 +98,16 @@ extension FindSearchTableViewController: UITableViewDataSource, UITableViewDeleg
                 }))
             }
             
+            podcastActions.addAction(UIAlertAction(title: "About", style: .default, handler: { action in
+                // TODO segue to about page
+            }))
+            
             podcastActions.addAction(UIAlertAction(title: "Episodes", style: .default, handler: { action in
                 // TODO segue to podcast clip's page
             }))
             
             podcastActions.addAction(UIAlertAction(title: "Clips", style: .default, handler: { action in
                 // TODO segue to podcast clip's page
-            }))
-            
-            podcastActions.addAction(UIAlertAction(title: "About", style: .default, handler: { action in
-                // TODO segue to about page
             }))
             
             podcastActions.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))

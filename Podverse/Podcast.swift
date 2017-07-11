@@ -23,8 +23,6 @@ class Podcast: NSManagedObject {
     @NSManaged public var lastPubDate: Date?
     @NSManaged public var summary: String?
     @NSManaged public var title: String
-    @NSManaged public var isSubscribed: Bool
-    @NSManaged public var isFollowed: Bool
     @NSManaged public var categories: String?
     @NSManaged public var episodes: Set<Episode>
     

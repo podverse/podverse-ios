@@ -19,6 +19,7 @@ class PVViewController: UIViewController {
         super.viewWillAppear(animated)
         loadNowPlayingBar()
         showPlayerView()
+        PVDeleter.delegate = self
     }
     
     override func viewDidLoad() {
@@ -109,4 +110,22 @@ class PVViewController: UIViewController {
         }
     }
     
+}
+
+extension PVViewController:PVDeleterDelegate {
+    func podcastDeleted(feedUrl: String?) {
+        if let feedUrl = feedUrl {
+            if playerHistoryManager.checkIfPodcastWasLastPlayed(feedUrl: feedUrl) == true {
+                self.hidePlayerView()
+            }
+        }
+    }
+    
+    func episodeDeleted(mediaUrl: String?) {
+        if let mediaUrl = mediaUrl {
+            if playerHistoryManager.checkIfEpisodeWasLastPlayed(mediaUrl: mediaUrl) == true {
+                self.hidePlayerView()
+            }
+        }
+    }
 }
