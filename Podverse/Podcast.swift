@@ -39,11 +39,11 @@ class Podcast: NSManagedObject {
     static func retrieveMediaRefsFromServer(episodeMediaUrl: String? = nil, podcastFeedUrl: String? = nil, onlySubscribed: Bool? = nil, completion: @escaping (_ mediaRefs:[MediaRef]?) -> Void) {
     }
     
-    static func retrievePodcastUIImage(podcastFeedUrl: String?, podcastImageUrl: String?, completion: @escaping (_ podcastImage: UIImage?) -> Void) {
+    static func retrievePodcastUIImage(podcastFeedUrl: String?, podcastImageUrl: String?, managedObjectId: NSManagedObjectID?, completion: @escaping (_ podcastImage: UIImage?) -> Void) {
         var cellImage:UIImage?
         
         if let imageUrl = podcastImageUrl {
-            if let imageData = retrievePodcastImageData(feedUrl: podcastFeedUrl, imageUrl: imageUrl) {
+            if let imageData = retrievePodcastImageData(feedUrl: podcastFeedUrl, imageUrl: imageUrl, managedObjectId: managedObjectId) {
                 cellImage = podcastImageOrDefault(imageData: imageData)
             }
         } else {
@@ -61,10 +61,16 @@ class Podcast: NSManagedObject {
         }
     }
     
-    static func retrievePodcastImageData(feedUrl: String?, imageUrl: String?) -> Data? {
+    static func retrievePodcastImageData(feedUrl: String?, imageUrl: String?, managedObjectId: NSManagedObjectID?) -> Data? {
         let moc = CoreDataHelper.createMOCForThread(threadType: .mainThread)
         
-        if let feedUrl = feedUrl {
+        if let managedObjectId = managedObjectId {
+            if let podcast = CoreDataHelper.fetchEntityWithID(objectId: managedObjectId, moc: moc) as? Podcast {
+                if let imageData = podcast.imageData {
+                    return imageData
+                }
+            }
+        } else if let feedUrl = feedUrl {
             let predicate = NSPredicate(format: "feedUrl == %@", feedUrl)
             if let podcastSet = CoreDataHelper.fetchEntities(className: "Podcast", predicate: predicate, moc:moc) as? [Podcast] {
                 if podcastSet.count > 0 {

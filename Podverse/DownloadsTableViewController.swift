@@ -55,7 +55,7 @@ extension DownloadsTableViewController:UITableViewDelegate, UITableViewDataSourc
         let episode = DownloadingEpisodeList.shared.downloadingEpisodes[indexPath.row]
         
         DispatchQueue.global().async {
-            Podcast.retrievePodcastUIImage(podcastFeedUrl: episode.podcastFeedUrl, podcastImageUrl: episode.podcastImageUrl) { (podcastImage) -> Void in
+            Podcast.retrievePodcastUIImage(podcastFeedUrl: episode.podcastFeedUrl, podcastImageUrl: episode.podcastImageUrl, managedObjectId: nil) { (podcastImage) -> Void in
                 DispatchQueue.main.async {
                     cell.podcastImage.image = podcastImage
                 }

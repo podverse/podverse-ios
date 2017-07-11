@@ -51,22 +51,12 @@ class PodcastSearchResult {
             podcast.hosts = hostsString
         }
         
-        if let imageFiles = json["image_files"] as? [[String:Any]] {
-            if let imageFile = imageFiles.first as? [String:Any] {
-                if let file = imageFile["file"] as? [String:Any] {
-                    if let thumb = file["thumb"] as? [String:Any] {
-                        if let url = thumb["url"] as? String {
-                            podcast.imageUrl = url
-                        }
-                    }
-                }
-            }
+        if let imageFiles = json["image_files"] as? [[String:Any]], let imageFile = imageFiles.first, let file = imageFile["file"] as? [String:Any], let thumb = file["thumb"] as? [String:Any], let url = thumb["url"] as? String {
+            podcast.imageUrl = url
         }
         
-        if let network = json["network"] as? [String:Any] {
-            if let name = network["name"] as? String {
-                podcast.network = name
-            }
+        if let network = json["network"] as? [String:Any], let name = network["name"] as? String {
+            podcast.network = name
         }
         
         podcast.rssUrl = json["rss_url"] as? String
