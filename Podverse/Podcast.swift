@@ -36,8 +36,17 @@ class Podcast: NSManagedObject {
         self.mutableSetValue(forKey: "episodes").remove(value)
     }
     
-    static func retrieveMediaRefsFromServer(episodeMediaUrl: String? = nil, podcastFeedUrl: String? = nil, onlySubscribed: Bool? = nil, completion: @escaping (_ mediaRefs:[MediaRef]?) -> Void) {
+    static func retrievePodcastByFeedUrl(feedUrlString: String) -> Podcast? {
+        let moc = CoreDataHelper.createMOCForThread(threadType: .mainThread)
+        let predicate = NSPredicate(format: "feedUrl == %@", feedUrlString)
+        let podcastSet = CoreDataHelper.fetchEntities(className: "Podcast", predicate: predicate, moc:moc) as! [Podcast]
+        if podcastSet.count > 0 {
+            return podcastSet[0]
+        } else {
+            return nil
+        }
     }
+    
     
     static func retrievePodcastUIImage(podcastFeedUrl: String?, podcastImageUrl: String?, managedObjectId: NSManagedObjectID?, completion: @escaping (_ podcastImage: UIImage?) -> Void) {
         var cellImage:UIImage?
