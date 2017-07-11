@@ -29,6 +29,13 @@ class DownloadsTableViewController: PVViewController {
         }
         return nil
     }
+    
+    override func goToNowPlaying () {
+        if let mediaPlayerVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "MediaPlayerVC") as? MediaPlayerViewController {
+            mediaPlayerVC.shouldAutoplay = true
+            self.navigationController?.pushViewController(mediaPlayerVC, animated: true)
+        }
+    }
 
 }
 
@@ -48,7 +55,7 @@ extension DownloadsTableViewController:UITableViewDelegate, UITableViewDataSourc
         let episode = DownloadingEpisodeList.shared.downloadingEpisodes[indexPath.row]
         
         DispatchQueue.global().async {
-            Podcast.retrievePodcastUIImage(downloadingEpisode: episode) { (podcastImage) -> Void in
+            Podcast.retrievePodcastUIImage(podcastFeedUrl: episode.podcastFeedUrl, podcastImageUrl: episode.podcastImageUrl, managedObjectId: nil) { (podcastImage) -> Void in
                 DispatchQueue.main.async {
                     cell.podcastImage.image = podcastImage
                 }
@@ -93,13 +100,6 @@ extension DownloadsTableViewController:UITableViewDelegate, UITableViewDataSourc
         
         tableView.deselectRow(at: indexPath, animated: false)
 
-    }
-    
-    override func goToNowPlaying () {
-        if let mediaPlayerVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "MediaPlayerVC") as? MediaPlayerViewController {
-            mediaPlayerVC.shouldAutoplay = true
-            self.navigationController?.pushViewController(mediaPlayerVC, animated: true)
-        }
     }
     
 }

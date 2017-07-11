@@ -49,7 +49,7 @@ class PVViewController: UIViewController {
             
             let podcastImageView:UIImageView = UIImageView(frame: CGRect(x: 0, y:0, width: 49, height: 49))
             DispatchQueue.global().async {
-                Podcast.retrievePodcastUIImage(item: currentItem) { (podcastImage) -> Void in
+                Podcast.retrievePodcastUIImage(podcastFeedUrl: currentItem.podcastFeedUrl, podcastImageUrl: currentItem.podcastImageUrl, managedObjectId: nil) { (podcastImage) -> Void in
                     DispatchQueue.main.async {
                         podcastImageView.image = podcastImage
                     }

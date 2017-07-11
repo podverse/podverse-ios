@@ -183,7 +183,7 @@ extension PodcastsTableViewController:UITableViewDelegate, UITableViewDataSource
         
         let episodes = podcast.episodes
         let episodesDownloaded = episodes.filter{ $0.fileName != nil }
-        cell.episodesDownloadedOrStarted?.text = "\(episodesDownloaded.count) downloaded"
+        cell.totalEpisodes?.text = "\(episodesDownloaded.count) downloaded"
         
         cell.totalClips?.text = "123 clips"
         
@@ -193,7 +193,7 @@ extension PodcastsTableViewController:UITableViewDelegate, UITableViewDataSource
         }
         
         DispatchQueue.global().async {
-            Podcast.retrievePodcastUIImage(podcast: podcast) { (podcastImage) -> Void in
+            Podcast.retrievePodcastUIImage(podcastFeedUrl: podcast.feedUrl, podcastImageUrl: podcast.imageUrl, managedObjectId: podcast.objectID) { (podcastImage) -> Void in
                 DispatchQueue.main.async {
                     if let visibleRows = self.tableView.indexPathsForVisibleRows, visibleRows.contains(indexPath) {
                         let existingCell = self.tableView.cellForRow(at: indexPath) as! PodcastTableViewCell
