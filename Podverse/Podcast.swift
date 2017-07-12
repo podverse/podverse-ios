@@ -47,17 +47,19 @@ class Podcast: NSManagedObject {
     
     
     static func retrievePodcastUIImage(podcastFeedUrl: String?, podcastImageUrl: String?, managedObjectId: NSManagedObjectID?, completion: @escaping (_ podcastImage: UIImage?) -> Void) {
-        var cellImage:UIImage?
-        
-        if let imageUrl = podcastImageUrl {
-            if let imageData = retrievePodcastImageData(feedUrl: podcastFeedUrl, imageUrl: imageUrl, managedObjectId: managedObjectId) {
-                cellImage = podcastImageOrDefault(imageData: imageData)
+        DispatchQueue.global().async {
+            var cellImage:UIImage?
+            
+            if let imageUrl = podcastImageUrl {
+                if let imageData = retrievePodcastImageData(feedUrl: podcastFeedUrl, imageUrl: imageUrl, managedObjectId: managedObjectId) {
+                    cellImage = podcastImageOrDefault(imageData: imageData)
+                }
+            } else {
+                cellImage = UIImage(named: "PodverseIcon")
             }
-        } else {
-            cellImage = UIImage(named: "PodverseIcon")
+            
+            completion(cellImage)
         }
-    
-        completion(cellImage)
     }
     
     static func podcastImageOrDefault (imageData: Data) -> UIImage? {

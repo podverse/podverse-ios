@@ -47,45 +47,48 @@ class PVDeleter {
     }
     
     static func deleteEpisode(episodeId: NSManagedObjectID, shouldCallProtocolMethod: Bool = false) {
-        let moc = CoreDataHelper.createMOCForThread(threadType: .privateThread)
-        
-        if let episode = CoreDataHelper.fetchEntityWithID(objectId: episodeId, moc: moc) as? Episode {
-            let podcastFeedUrl = episode.podcast.feedUrl
-            let mediaUrl = episode.mediaUrl
-            let downloadSession = PVDownloader.shared.downloadSession
-            downloadSession?.getTasksWithCompletionHandler { dataTasks, uploadTasks, downloadTasks in
-                for downloadTask in downloadTasks {
-                    if let _ = DownloadingEpisodeList.shared.downloadingEpisodes.first(where:{ $0.taskIdentifier == downloadTask.taskIdentifier && $0.podcastFeedUrl == podcastFeedUrl}) {
-                        downloadTask.cancel()
+        DispatchQueue.global().async {
+            let moc = CoreDataHelper.createMOCForThread(threadType: .privateThread)
+            
+            if let episode = CoreDataHelper.fetchEntityWithID(objectId: episodeId, moc: moc) as? Episode {
+                let podcastFeedUrl = episode.podcast.feedUrl
+                let mediaUrl = episode.mediaUrl
+                let downloadSession = PVDownloader.shared.downloadSession
+                downloadSession?.getTasksWithCompletionHandler { dataTasks, uploadTasks, downloadTasks in
+                    for downloadTask in downloadTasks {
+                        if let _ = DownloadingEpisodeList.shared.downloadingEpisodes.first(where:{ $0.taskIdentifier == downloadTask.taskIdentifier && $0.podcastFeedUrl == podcastFeedUrl}) {
+                            downloadTask.cancel()
+                        }
+                    }
+                    
+                }
+                
+                DownloadingEpisodeList.removeDownloadingEpisodeWithMediaURL(mediaUrl: mediaUrl)
+                
+                if let currentlyPlayingItem = PVMediaPlayer.shared.currentlyPlayingItem {
+                    if mediaUrl == currentlyPlayingItem.episodeMediaUrl {
+                        PVMediaPlayer.shared.avPlayer.pause()
+                        PVMediaPlayer.shared.currentlyPlayingItem = nil
                     }
                 }
                 
-            }
-            
-            DownloadingEpisodeList.removeDownloadingEpisodeWithMediaURL(mediaUrl: mediaUrl)
-            
-            if let currentlyPlayingItem = PVMediaPlayer.shared.currentlyPlayingItem {
-                if mediaUrl == currentlyPlayingItem.episodeMediaUrl {
-                    PVMediaPlayer.shared.avPlayer.pause()
-                    PVMediaPlayer.shared.currentlyPlayingItem = nil
+                if let fileName = episode.fileName {
+                    PVDeleter.deleteEpisodeFromDiskWithName(fileName: fileName)
                 }
-            }
-            
-            if let fileName = episode.fileName {
-                PVDeleter.deleteEpisodeFromDiskWithName(fileName: fileName)
-            }
-            
-            CoreDataHelper.deleteItemFromCoreData(deleteObjectID: episode.objectID, moc: moc)
-            
-            moc.saveData(nil)
-            
-            DispatchQueue.main.async {
-                PVDownloader.shared.decrementBadge()
                 
-                if shouldCallProtocolMethod == true {
-                    self.delegate?.episodeDeleted(mediaUrl: mediaUrl)
+                CoreDataHelper.deleteItemFromCoreData(deleteObjectID: episode.objectID, moc: moc)
+                
+                moc.saveData(nil)
+                
+                DispatchQueue.main.async {
+                    PVDownloader.shared.decrementBadge()
+                    
+                    if shouldCallProtocolMethod == true {
+                        self.delegate?.episodeDeleted(mediaUrl: mediaUrl)
+                    }
                 }
             }
+
         }
     }
     
