@@ -76,5 +76,21 @@ class PlayerHistory {
     func convertMediaRefToPlayerHistoryItem(mediaRef: MediaRef) {
         
     }
+    
+    func checkIfPodcastWasLastPlayed(feedUrl: String) -> Bool {
+        if historyItems.first?.podcastFeedUrl == feedUrl {
+            return true
+        } else {
+            return false
+        }
+    }
+    
+    func checkIfEpisodeWasLastPlayed(mediaUrl: String) -> Bool {
+        if historyItems.first?.episodeMediaUrl == mediaUrl {
+            return true
+        } else {
+            return false
+        }
+    }
 
 }

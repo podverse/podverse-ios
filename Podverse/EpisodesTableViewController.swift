@@ -220,6 +220,18 @@ class EpisodesTableViewController: PVViewController, UITableViewDataSource, UITa
         tableView.deselectRow(at: indexPath as IndexPath, animated: true)
 
     }
+    
+    func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
+        let episodeToEdit = episodesArray[indexPath.row]
+        
+        let deleteAction = UITableViewRowAction(style: .default, title: "Delete", handler: {action, indexpath in
+            self.episodesArray.remove(at: indexPath.row)
+            self.tableView.deleteRows(at: [indexPath], with: .fade)
+            PVDeleter.deleteEpisode(episodeId: episodeToEdit.objectID, shouldCallProtocolMethod: true)
+        })
+        
+        return [deleteAction]
+    }
 
 
 //

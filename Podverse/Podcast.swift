@@ -23,8 +23,6 @@ class Podcast: NSManagedObject {
     @NSManaged public var lastPubDate: Date?
     @NSManaged public var summary: String?
     @NSManaged public var title: String
-    @NSManaged public var isSubscribed: Bool
-    @NSManaged public var isFollowed: Bool
     @NSManaged public var categories: String?
     @NSManaged public var episodes: Set<Episode>
     
@@ -36,21 +34,32 @@ class Podcast: NSManagedObject {
         self.mutableSetValue(forKey: "episodes").remove(value)
     }
     
-    static func retrieveMediaRefsFromServer(episodeMediaUrl: String? = nil, podcastFeedUrl: String? = nil, onlySubscribed: Bool? = nil, completion: @escaping (_ mediaRefs:[MediaRef]?) -> Void) {
+    static func podcastForFeedUrl(feedUrlString: String) -> Podcast? {
+        let moc = CoreDataHelper.createMOCForThread(threadType: .mainThread)
+        let predicate = NSPredicate(format: "feedUrl == %@", feedUrlString)
+        let podcastSet = CoreDataHelper.fetchEntities(className: "Podcast", predicate: predicate, moc:moc) as! [Podcast]
+        if podcastSet.count > 0 {
+            return podcastSet[0]
+        } else {
+            return nil
+        }
     }
     
-    static func retrievePodcastUIImage(podcastFeedUrl: String?, podcastImageUrl: String?, managedObjectId: NSManagedObjectID?, completion: @escaping (_ podcastImage: UIImage?) -> Void) {
-        var cellImage:UIImage?
-        
-        if let imageUrl = podcastImageUrl {
-            if let imageData = retrievePodcastImageData(feedUrl: podcastFeedUrl, imageUrl: imageUrl, managedObjectId: managedObjectId) {
-                cellImage = podcastImageOrDefault(imageData: imageData)
-            }
-        } else {
-            cellImage = UIImage(named: "PodverseIcon")
-        }
     
-        completion(cellImage)
+    static func retrievePodcastUIImage(podcastFeedUrl: String?, podcastImageUrl: String?, managedObjectId: NSManagedObjectID?, completion: @escaping (_ podcastImage: UIImage?) -> Void) {
+        DispatchQueue.global().async {
+            var cellImage:UIImage?
+            
+            if let imageUrl = podcastImageUrl {
+                if let imageData = retrievePodcastImageData(feedUrl: podcastFeedUrl, imageUrl: imageUrl, managedObjectId: managedObjectId) {
+                    cellImage = podcastImageOrDefault(imageData: imageData)
+                }
+            } else {
+                cellImage = UIImage(named: "PodverseIcon")
+            }
+            
+            completion(cellImage)
+        }
     }
     
     static func podcastImageOrDefault (imageData: Data) -> UIImage? {

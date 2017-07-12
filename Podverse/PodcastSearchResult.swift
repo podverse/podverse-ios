@@ -64,9 +64,6 @@ class PodcastSearchResult {
         podcast.title = json["title"] as? String
         podcast.webProfiles = json["web_profiles"] as? String
         
-        
-
-        
         return podcast
     }
 }
