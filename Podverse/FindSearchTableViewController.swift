@@ -82,7 +82,7 @@ extension FindSearchTableViewController: UITableViewDataSource, UITableViewDeleg
         if let feedUrl = podcast.rssUrl {
             var isSubscribed = false
             
-            if let _ = Podcast.retrievePodcastByFeedUrl(feedUrlString: feedUrl) {
+            if let _ = Podcast.podcastForFeedUrl(feedUrlString: feedUrl) {
                 isSubscribed = true
             }
             
