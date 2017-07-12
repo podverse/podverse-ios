@@ -28,7 +28,7 @@ class PVDeleter {
             DispatchQueue.main.async {
                 self.delegate?.podcastDeleted(feedUrl: podcast.feedUrl)
             }
-        } else if let feedUrl = feedUrl, let podcast = Podcast.podcastForFeedUrl(feedUrlString: feedUrl) {
+        } else if let feedUrl = feedUrl, let podcast = Podcast.podcastForFeedUrl(feedUrlString: feedUrl, managedObjectContext: moc) {
             deleteAllEpisodesFromPodcast(podcast: podcast)
             moc.delete(podcast)
             DispatchQueue.main.async {

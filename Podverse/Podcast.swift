@@ -34,8 +34,9 @@ class Podcast: NSManagedObject {
         self.mutableSetValue(forKey: "episodes").remove(value)
     }
     
-    static func podcastForFeedUrl(feedUrlString: String) -> Podcast? {
-        let moc = CoreDataHelper.createMOCForThread(threadType: .mainThread)
+    static func podcastForFeedUrl(feedUrlString: String, managedObjectContext:NSManagedObjectContext? = nil) -> Podcast? {
+        let moc = managedObjectContext ?? CoreDataHelper.createMOCForThread(threadType: .mainThread)
+
         let predicate = NSPredicate(format: "feedUrl == %@", feedUrlString)
         let podcastSet = CoreDataHelper.fetchEntities(className: "Podcast", predicate: predicate, moc:moc) as! [Podcast]
         if podcastSet.count > 0 {

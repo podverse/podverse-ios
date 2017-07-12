@@ -13,7 +13,6 @@ class FindSearchTableViewController: PVViewController {
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var searchBar: UISearchBar!
     
-    var searchActive:Bool = false
     var searchResults = [PodcastSearchResult]()
     
     override func viewDidLoad() {
@@ -119,21 +118,12 @@ extension FindSearchTableViewController: UITableViewDataSource, UITableViewDeleg
 }
 
 extension FindSearchTableViewController: UISearchBarDelegate {
-    
-    func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
-        searchActive = true
-    }
-    
-    func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
-        searchActive = false
-    }
-    
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
-        searchActive = false
+        self.resignFirstResponder()
     }
 
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        searchActive = false
+        self.resignFirstResponder()
         
         if let text = searchBar.text {
             AudioSearchClientSwift.search(query: text, params: nil, type: "shows") { (serviceResponse) in
@@ -167,8 +157,4 @@ extension FindSearchTableViewController: UISearchBarDelegate {
         }
         
     }
-    
-    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-    }
-    
 }
