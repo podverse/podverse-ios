@@ -14,12 +14,12 @@ protocol ClipsListDelegate:class {
 
 class ClipsListContainerViewController: UIViewController {
 
-    @IBOutlet weak var segmentControl: UISegmentedControl!
-    @IBOutlet weak var tableView: UITableView!
-    @IBOutlet weak var loadingView: UIView!
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
-    @IBOutlet weak var statusMessage: UILabel!
+    @IBOutlet weak var loadingView: UIView!
     @IBOutlet weak var retryButton: UIButton!
+    @IBOutlet weak var segmentControl: UISegmentedControl!
+    @IBOutlet weak var statusMessage: UILabel!
+    @IBOutlet weak var tableView: UITableView!
     
     let pvMediaPlayer = PVMediaPlayer.shared
     var clipsArray = [MediaRef]()
