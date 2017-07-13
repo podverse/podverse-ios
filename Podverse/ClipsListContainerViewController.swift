@@ -17,43 +17,52 @@ class ClipsListContainerViewController: UIViewController {
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     @IBOutlet weak var loadingView: UIView!
     @IBOutlet weak var retryButton: UIButton!
-    @IBOutlet weak var segmentControl: UISegmentedControl!
     @IBOutlet weak var statusMessage: UILabel!
     @IBOutlet weak var tableView: UITableView!
+    @IBOutlet weak var filterType: UIButton!
+    @IBOutlet weak var sorting: UIButton!
     
     let pvMediaPlayer = PVMediaPlayer.shared
     var clipsArray = [MediaRef]()
     weak var delegate:ClipsListDelegate?
     let reachability = PVReachability.shared
-    
-    @IBAction func segmentSelect(_ sender: UISegmentedControl) {
-        showIndicator()
         
-        clipsArray.removeAll()
-        self.tableView.reloadData()
+    @IBAction func retryButtonTouched(_ sender: Any) {
         
-        if let item = pvMediaPlayer.currentlyPlayingItem {
-            switch sender.selectedSegmentIndex {
-            case 0:
+    }
+    @IBAction func updateFilter(_ sender: Any) {
+        let alert = UIAlertController(title: "Clips From", message: nil, preferredStyle: .alert)
+        
+        alert.addAction(UIAlertAction(title: "Episode", style: .default, handler: { action in
+            if let item = self.pvMediaPlayer.currentlyPlayingItem {
                 MediaRef.retrieveMediaRefsFromServer(episodeMediaUrl: item.episodeMediaUrl, podcastFeedUrl: nil) { (mediaRefs) -> Void in
                     self.reloadClipData(mediaRefs: mediaRefs)
                 }
-            case 1:
+            }
+            self.filterType.setTitle("Episode\u{2304}", for: .normal)
+        }))
+        
+        alert.addAction(UIAlertAction(title: "Podcast", style: .default, handler: { action in
+            if let item = self.pvMediaPlayer.currentlyPlayingItem {
                 MediaRef.retrieveMediaRefsFromServer(episodeMediaUrl: nil, podcastFeedUrl: item.podcastFeedUrl) { (mediaRefs) -> Void in
                     self.reloadClipData(mediaRefs: mediaRefs)
                 }
-            case 2:
+            }
+            self.filterType.setTitle("Podcast\u{2304}", for: .normal)
+        }))
+        
+        alert.addAction(UIAlertAction(title: "Subscribed", style: .default, handler: { action in
+            if let _ = self.pvMediaPlayer.currentlyPlayingItem {
                 MediaRef.retrieveMediaRefsFromServer(episodeMediaUrl: nil, podcastFeedUrl: nil) { (mediaRefs) -> Void in
                     self.reloadClipData(mediaRefs: mediaRefs)
                 }
-            default:
-                break
             }
-        }
-    }
-    
-    @IBAction func retryButtonTouched(_ sender: Any) {
-        segmentControl.sendActions(for: .valueChanged)
+            self.filterType.setTitle("Subscribed\u{2304}", for: .normal)
+        }))
+        
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        
+        self.present(alert, animated: true, completion: nil)
     }
     
     override func viewDidLoad() {
@@ -68,6 +77,8 @@ class ClipsListContainerViewController: UIViewController {
                 self.reloadClipData(mediaRefs: mediaRefs)
             }
         }
+        
+        filterType.setTitle("Episode\u{2304}", for: .normal)
     }
     
     func reloadClipData(mediaRefs: [MediaRef]? = nil) {

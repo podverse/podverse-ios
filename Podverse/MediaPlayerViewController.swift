@@ -17,32 +17,16 @@ class MediaPlayerViewController: PVViewController, UIWebViewDelegate {
     
     @IBOutlet weak var aboutWebView: UIWebView!
     @IBOutlet weak var clipsContainerView: UIView!
-    @IBOutlet weak var contentView: UIView!
     @IBOutlet weak var currentTime: UILabel!
     @IBOutlet weak var device: UIButton!
     @IBOutlet weak var duration: UILabel!
     @IBOutlet weak var episodeTitle: UILabel!
     @IBOutlet weak var image: UIImageView!
+    @IBOutlet weak var pageControl: UIPageControl!
     @IBOutlet weak var play: UIButton!
     @IBOutlet weak var podcastTitle: UILabel!
     @IBOutlet weak var progress: UISlider!
-    @IBOutlet weak var sorting: UIButton!
     @IBOutlet weak var speed: UIButton!
-    @IBOutlet weak var viewSelector: UIButton!
-    
-    @IBAction func viewSelectorTouched(_ sender: Any) {
-        if aboutWebView.isHidden == false {
-            viewSelector.setTitle("Clips\u{2304}", for: .normal)
-            aboutWebView.isHidden = true
-            clipsContainerView.isHidden = false
-            sorting.isHidden = false
-        } else {
-            viewSelector.setTitle("About\u{2304}", for: .normal)
-            aboutWebView.isHidden = false
-            clipsContainerView.isHidden = true
-            sorting.isHidden = true
-        }
-    }
     
     override func viewDidLoad() {
         let share = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.action, target: self, action: #selector(showShareMenu))
@@ -58,11 +42,6 @@ class MediaPlayerViewController: PVViewController, UIWebViewDelegate {
         self.aboutWebView.delegate = self
         
         clipsContainerView.isHidden = true
-        sorting.isHidden = true
-        
-        viewSelector.setTitle("About\u{2304}", for: .normal)
-        
-        sorting.setTitle("top\u{2304}", for: .normal)
         
         setPlayerInfo()
         
@@ -89,7 +68,17 @@ class MediaPlayerViewController: PVViewController, UIWebViewDelegate {
         aboutWebView.scrollView.contentInset = UIEdgeInsets.zero;
     }
     
-    
+    @IBAction func pageControlAction(_ sender: Any) {
+        if let sender = sender as? UIPageControl {
+            if sender.currentPage == 1 {
+                aboutWebView.isHidden = true
+                clipsContainerView.isHidden = false
+            } else {
+                aboutWebView.isHidden = false
+                clipsContainerView.isHidden = true
+            }
+        }
+    }
     
     @IBAction func sliderAction(_ sender: UISlider) {
         if let currentItem = pvMediaPlayer.avPlayer.currentItem {
