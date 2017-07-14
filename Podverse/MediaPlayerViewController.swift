@@ -10,23 +10,23 @@ import UIKit
 import CoreData
 import AVFoundation
 
-class MediaPlayerViewController: PVViewController {
+class MediaPlayerViewController: PVViewController, UIWebViewDelegate {
 
     var playerSpeedRate:PlayingSpeed = .regular
     var shouldAutoplay = false
     
+    @IBOutlet weak var aboutWebView: UIWebView!
     @IBOutlet weak var clipsContainerView: UIView!
-    @IBOutlet weak var progress: UISlider!
     @IBOutlet weak var currentTime: UILabel!
-    @IBOutlet weak var duration: UILabel!
-    @IBOutlet weak var image: UIImageView!
-    @IBOutlet weak var podcastTitle: UILabel!
-    @IBOutlet weak var episodeTitle: UILabel!
-    @IBOutlet weak var viewSelector: UIButton!
-    @IBOutlet weak var contentView: UIView!
-    @IBOutlet weak var play: UIButton!
-    @IBOutlet weak var speed: UIButton!
     @IBOutlet weak var device: UIButton!
+    @IBOutlet weak var duration: UILabel!
+    @IBOutlet weak var episodeTitle: UILabel!
+    @IBOutlet weak var image: UIImageView!
+    @IBOutlet weak var pageControl: UIPageControl!
+    @IBOutlet weak var play: UIButton!
+    @IBOutlet weak var podcastTitle: UILabel!
+    @IBOutlet weak var progress: UISlider!
+    @IBOutlet weak var speed: UIButton!
     
     override func viewDidLoad() {
         let share = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.action, target: self, action: #selector(showShareMenu))
@@ -39,7 +39,8 @@ class MediaPlayerViewController: PVViewController {
         
         progress.isContinuous = false
         
-        viewSelector.setTitle("Show Clips", for: .normal)
+        self.aboutWebView.delegate = self
+        
         clipsContainerView.isHidden = true
         
         setPlayerInfo()
@@ -62,6 +63,23 @@ class MediaPlayerViewController: PVViewController {
     
     override func viewWillAppear(_ animated: Bool) {}
     
+    override func viewWillLayoutSubviews() {
+        super.viewWillLayoutSubviews()
+        aboutWebView.scrollView.contentInset = UIEdgeInsets.zero;
+    }
+    
+    @IBAction func pageControlAction(_ sender: Any) {
+        if let sender = sender as? UIPageControl {
+            if sender.currentPage == 1 {
+                aboutWebView.isHidden = true
+                clipsContainerView.isHidden = false
+            } else {
+                aboutWebView.isHidden = false
+                clipsContainerView.isHidden = true
+            }
+        }
+    }
+    
     @IBAction func sliderAction(_ sender: UISlider) {
         if let currentItem = pvMediaPlayer.avPlayer.currentItem {
             let totalTime = CMTimeGetSeconds(currentItem.asset.duration)
@@ -69,18 +87,7 @@ class MediaPlayerViewController: PVViewController {
             pvMediaPlayer.goToTime(seconds: newTime)
         }
     }
-    
-    @IBAction func toggleClipsView(_ sender: Any) {
-        if clipsContainerView.isHidden {
-            viewSelector.setTitle("Show About", for: .normal)
-            clipsContainerView.isHidden = false
-        }
-        else {
-            viewSelector.setTitle("Show Clips", for: .normal)
-            clipsContainerView.isHidden = true
-        }
-    }
-    
+
     @IBAction func play(_ sender: Any) {
         pvMediaPlayer.playOrPause()
         setPlayIcon()
@@ -171,7 +178,21 @@ class MediaPlayerViewController: PVViewController {
                 progress.value = Float(Int(lastPlaybackPosition) / totalTime)
             }
             
+            if let summary = item.episodeSummary {
+                aboutWebView.loadHTMLString(summary.formatHtmlString(), baseURL: nil)
+            }
+            
         }
+    }
+    
+    func webView(_ webView: UIWebView, shouldStartLoadWith request: URLRequest, navigationType: UIWebViewNavigationType) -> Bool {
+        if navigationType == UIWebViewNavigationType.linkClicked {
+            if let url = request.url {
+                UIApplication.shared.openURL(url)
+            }
+            return false
+        }
+        return true
     }
     
     func updateCurrentTime(currentTime: Double) {
@@ -188,22 +209,6 @@ class MediaPlayerViewController: PVViewController {
     
     func updateSpeedLabel() {
         speed.setTitle(playerSpeedRate.speedText, for: .normal)
-    }
-    
-    func showAbout() {
-        return
-    }
-    
-    func showPodcastClips() {
-        return
-    }
-    
-    func showEpisodeClips() {
-        return
-    }
-    
-    func showSubscribedClips() {
-        return
     }
     
     func showShareMenu() {

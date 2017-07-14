@@ -14,14 +14,12 @@ class PodcastsTableViewController: PVViewController {
 
     @IBOutlet weak var tableView: UITableView!
     
-    @IBOutlet weak var parsingActivityContainer: UIView!
-    
     var subscribedPodcastsArray = [Podcast]()
     let coreDataHelper = CoreDataHelper.shared
-    //var playlistManager = PlaylistManager.shared
-    let parsingPodcasts = ParsingPodcastsList.shared
     let reachability = PVReachability.shared
-    var refreshControl: UIRefreshControl!
+    let refreshControl = UIRefreshControl()
+    
+    let moc = CoreDataHelper.createMOCForThread(threadType: .mainThread)
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -37,23 +35,15 @@ class PodcastsTableViewController: PVViewController {
             isFirstTimeAppOpened = true
         }
 
-        navigationItem.title = "Podcasts"
+        self.navigationItem.title = "Podcasts"
+        self.tabBarController?.tabBar.isTranslucent = false
         
-        tabBarController?.tabBar.isTranslucent = false
-        
-//        bottomButton.hidden = true
-        
-        refreshControl = UIRefreshControl()
-        refreshControl.attributedTitle = NSAttributedString(string: "Pull to refresh all podcasts")
-        refreshControl.addTarget(self, action: #selector(refreshPodcastData), for: UIControlEvents.valueChanged)
-        tableView.addSubview(refreshControl)
-        
-//        NotificationCenter.default.addObserver(self, selector: #selector(loadPodcastData), name: NSNotification.Name(rawValue: kDownloadHasFinished), object: nil)
-//        NotificationCenter.default.addObserver(self, selector: #selector(clearParsingActivity), name: NSNotification.Name(rawValue: kInternetIsUnreachable), object: nil)
-        updateParsingActivity()
+        self.refreshControl.attributedTitle = NSAttributedString(string: "Pull to refresh all podcasts")
+        self.refreshControl.addTarget(self, action: #selector(refreshPodcastData), for: UIControlEvents.valueChanged)
+        self.tableView.addSubview(refreshControl)
         
         if isFirstTimeAppOpened != true {
-            reloadAllData()
+            refreshPodcastFeeds()
         }
         
 //        startCheckSubscriptionsForNewEpisodesTimer()
@@ -62,91 +52,52 @@ class PodcastsTableViewController: PVViewController {
     func refreshPodcastData() {
         if reachability.hasInternetConnection() == false && refreshControl.isRefreshing == true {
             showInternetNeededAlertWithDesciription(message:"Connect to WiFi or cellular data to parse podcast feeds.")
-            refreshControl.endRefreshing()
+            self.refreshControl.endRefreshing()
             return
         }
         refreshPodcastFeeds()
     }
     
     fileprivate func refreshPodcastFeeds() {
-        let moc = CoreDataHelper.createMOCForThread(threadType: .mainThread)
-        
         let podcastArray = CoreDataHelper.fetchEntities(className:"Podcast", predicate: nil, moc:moc) as! [Podcast]
         
         for podcast in podcastArray {
-            parsingPodcasts.urls.append(podcast.feedUrl)
             let feedUrl = NSURL(string:podcast.feedUrl)
             
-            let feedParser = PVFeedParser(shouldOnlyGetMostRecentEpisode: true, shouldSubscribe:false, shouldFollowPodcast: false, shouldOnlyParseChannel: false)
-            feedParser.delegate = self
+            let pvFeedParser = PVFeedParser(shouldOnlyGetMostRecentEpisode: true, shouldSubscribe:false, shouldOnlyParseChannel: false)
+            pvFeedParser.delegate = self
             if let feedUrlString = feedUrl?.absoluteString {
-                feedParser.parsePodcastFeed(feedUrlString: feedUrlString)
-                self.updateParsingActivity()
+                pvFeedParser.parsePodcastFeed(feedUrlString: feedUrlString)
             }
         }
-        
-//        showFindAPodcastIfNoneAreFollowed()
-        
+
         refreshControl.endRefreshing()
     }
     
     func loadPodcastData() {
-        let moc = CoreDataHelper.createMOCForThread(threadType: .mainThread)
         self.subscribedPodcastsArray = CoreDataHelper.fetchEntities(className:"Podcast", predicate: nil, moc:moc) as! [Podcast]
         self.subscribedPodcastsArray.sort(by: { $0.title.removeArticles() < $1.title.removeArticles() } )
         
         self.tableView.reloadData()
     }
-    
-    fileprivate func reloadAllData() {
-        loadPodcastData()
-        refreshPodcastFeeds()
-    }
-    
-    func clearParsingActivity() {
-        parsingPodcasts.itemsParsing = 0
-        self.parsingActivityContainer.isHidden = true
-    }
-    
-    func updateParsingActivity() {
-//        self.parsingActivityLabel.text = "\(parsingPodcasts.itemsParsing) of \(parsingPodcasts.urls.count) parsed"
-//        self.parsingActivityBar.progress = Float(parsingPodcasts.itemsParsing)/Float(parsingPodcasts.urls.count)
-//        
-//        if parsingPodcasts.itemsParsing >= parsingPodcasts.urls.count {
-//            self.parsingActivityContainer.hidden = true
-//            self.parsingActivity.stopAnimating()
-//        }
-//        else {
-//            self.parsingActivityContainer.hidden = false
-//            self.parsingActivity.startAnimating()
-//        }
-    }
 }
 
 extension PodcastsTableViewController:PVFeedParserDelegate {
     func feedParsingComplete(feedUrl:String?) {
-        let moc = CoreDataHelper.createMOCForThread(threadType: .mainThread)
-        let subscribedPredicate = NSPredicate(format: "isSubscribed == YES")
-        self.subscribedPodcastsArray = CoreDataHelper.fetchEntities(className:"Podcast", predicate: subscribedPredicate, moc:moc) as! [Podcast]
-        
         if let url = feedUrl, let index = self.subscribedPodcastsArray.index(where: { url == $0.feedUrl }) {
             let podcast = CoreDataHelper.fetchEntityWithID(objectId: self.subscribedPodcastsArray[index].objectID, moc: moc) as! Podcast
             self.subscribedPodcastsArray[index] = podcast
             self.tableView.reloadRows(at: [IndexPath(row: index, section: 0)], with: .none)
         }
         else {
-            self.loadPodcastData()
+            loadPodcastData()
         }
-        
-        updateParsingActivity()
     }
     
-    func feedParsingStarted() {
-        updateParsingActivity()
-    }
+    func feedParsingStarted() { }
     
     func feedParserChannelParsed() {
-        self.loadPodcastData()
+        loadPodcastData()
     }
 }
 
