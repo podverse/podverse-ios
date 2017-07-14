@@ -51,10 +51,12 @@ class Podcast: NSManagedObject {
         DispatchQueue.global().async {
             var cellImage:UIImage?
             
-            if let imageUrl = podcastImageUrl {
-                if let imageData = retrievePodcastImageData(feedUrl: podcastFeedUrl, imageUrl: imageUrl, managedObjectId: managedObjectId) {
-                    cellImage = podcastImageOrDefault(imageData: imageData)
-                }
+            if let managedObjectId = managedObjectId, let imageData = retrievePodcastImageData(feedUrl: nil, imageUrl: nil, managedObjectId: managedObjectId) {
+                cellImage = podcastImageOrDefault(imageData: imageData)
+            } else if let imageUrl = podcastImageUrl, let imageData = retrievePodcastImageData(feedUrl: nil, imageUrl: imageUrl, managedObjectId: nil) {
+                cellImage = podcastImageOrDefault(imageData: imageData)
+            } else if let feedUrl = podcastFeedUrl, let imageData = retrievePodcastImageData(feedUrl: feedUrl, imageUrl: nil, managedObjectId: nil) {
+                cellImage = podcastImageOrDefault(imageData: imageData)
             } else {
                 cellImage = UIImage(named: "PodverseIcon")
             }

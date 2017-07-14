@@ -141,7 +141,7 @@ extension PodcastsTableViewController:UITableViewDelegate, UITableViewDataSource
             //cell.lastPublishedDate?.text = PVUtility.formatDateToString(lastPubDate)
         }
         
-        Podcast.retrievePodcastUIImage(podcastFeedUrl: podcast.feedUrl, podcastImageUrl: podcast.imageUrl, managedObjectId: podcast.objectID) { (podcastImage) -> Void in
+        Podcast.retrievePodcastUIImage(podcastFeedUrl: nil, podcastImageUrl: nil, managedObjectId: podcast.objectID) { (podcastImage) -> Void in
             DispatchQueue.main.async {
                 if let visibleRows = self.tableView.indexPathsForVisibleRows, visibleRows.contains(indexPath) {
                     let existingCell = self.tableView.cellForRow(at: indexPath) as! PodcastTableViewCell

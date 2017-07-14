@@ -28,6 +28,15 @@ class MediaPlayerViewController: PVViewController, UIWebViewDelegate {
     @IBOutlet weak var progress: UISlider!
     @IBOutlet weak var speed: UIButton!
     
+    @IBAction func swipeLeft(_ sender: Any) {
+        showAboutView()
+    }
+
+    
+    @IBAction func swipeRight(_ sender: Any) {
+        showClipsContainerView()
+    }
+    
     override func viewDidLoad() {
         let share = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.action, target: self, action: #selector(showShareMenu))
         let makeClip = UIBarButtonItem(title: "Make Clip", style: .plain, target: self, action: #selector(showMakeClip))
@@ -42,6 +51,11 @@ class MediaPlayerViewController: PVViewController, UIWebViewDelegate {
         self.aboutWebView.delegate = self
         
         clipsContainerView.isHidden = true
+        
+        aboutWebView.layer.borderColor = UIColor.lightGray.cgColor
+        aboutWebView.layer.borderWidth = 1.0
+        clipsContainerView.layer.borderColor = UIColor.lightGray.cgColor
+        clipsContainerView.layer.borderWidth = 1.0
         
         setPlayerInfo()
         
@@ -71,11 +85,9 @@ class MediaPlayerViewController: PVViewController, UIWebViewDelegate {
     @IBAction func pageControlAction(_ sender: Any) {
         if let sender = sender as? UIPageControl {
             if sender.currentPage == 1 {
-                aboutWebView.isHidden = true
-                clipsContainerView.isHidden = false
+                showClipsContainerView()
             } else {
-                aboutWebView.isHidden = false
-                clipsContainerView.isHidden = true
+                showAboutView()
             }
         }
     }
@@ -221,6 +233,18 @@ class MediaPlayerViewController: PVViewController, UIWebViewDelegate {
     
     func showAddToPlaylist() {
         return
+    }
+    
+    func showAboutView() {
+        aboutWebView.isHidden = false
+        clipsContainerView.isHidden = true
+        pageControl.currentPage = 0
+    }
+    
+    func showClipsContainerView() {
+        aboutWebView.isHidden = true
+        clipsContainerView.isHidden = false
+        pageControl.currentPage = 1
     }
 }
 
