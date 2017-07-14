@@ -49,13 +49,11 @@ class PVViewController: UIViewController {
             nowPlayingBar.addSubview(podcastView)
             
             let podcastImageView:UIImageView = UIImageView(frame: CGRect(x: 0, y:0, width: 49, height: 49))
-            DispatchQueue.global().async {
-                Podcast.retrievePodcastUIImage(podcastFeedUrl: currentItem.podcastFeedUrl, podcastImageUrl: currentItem.podcastImageUrl, managedObjectId: nil) { (podcastImage) -> Void in
-                    DispatchQueue.main.async {
-                        podcastImageView.image = podcastImage
-                    }
-                }
+            
+            podcastImageView.image = Podcast.retrievePodcastImage(podcastImageURLString: currentItem.podcastFeedUrl, feedURLString: currentItem.podcastImageUrl) { (podcastImage) -> Void in
+                podcastImageView.image = podcastImage
             }
+            
             podcastView.addSubview(podcastImageView)
 
             let podcastTitle = UILabel(frame: CGRect(x:54, y:3, width: self.view.bounds.size.width - 108, height: 24))

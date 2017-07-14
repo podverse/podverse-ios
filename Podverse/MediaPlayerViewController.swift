@@ -174,12 +174,8 @@ class MediaPlayerViewController: PVViewController, UIWebViewDelegate {
             podcastTitle.text = item.podcastTitle
             episodeTitle.text = item.episodeTitle
             
-            DispatchQueue.global().async {
-                Podcast.retrievePodcastUIImage(podcastFeedUrl: item.podcastFeedUrl, podcastImageUrl: item.podcastImageUrl, managedObjectId: nil) { (podcastImage) -> Void in
-                    DispatchQueue.main.async {
-                        self.image.image = podcastImage
-                    }
-                }
+            self.image.image = Podcast.retrievePodcastImage(podcastImageURLString: item.podcastFeedUrl, feedURLString: item.podcastImageUrl) { (podcastImage) -> Void in
+                self.image.image = podcastImage
             }
             
             let lastPlaybackPosition = item.lastPlaybackPosition ?? 0

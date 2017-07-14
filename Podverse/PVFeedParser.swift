@@ -109,6 +109,10 @@ extension PVFeedParser:FeedParserDelegate {
             podcast.itunesImageUrl = itunesImageURL.absoluteString
             do {
                 podcast.itunesImage = try Data(contentsOf: itunesImageURL)
+                
+                if podcast.imageData == nil {
+                    podcast.imageData = try Data(contentsOf: itunesImageURL)
+                }
             }
             catch {
                 print("No Image Data at give URL")
