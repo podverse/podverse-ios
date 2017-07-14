@@ -15,12 +15,13 @@ protocol ClipsListDelegate:class {
 class ClipsListContainerViewController: UIViewController {
 
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
+    @IBOutlet weak var filterType: UIButton!
     @IBOutlet weak var loadingView: UIView!
     @IBOutlet weak var retryButton: UIButton!
-    @IBOutlet weak var statusMessage: UILabel!
-    @IBOutlet weak var tableView: UITableView!
-    @IBOutlet weak var filterType: UIButton!
     @IBOutlet weak var sorting: UIButton!
+    @IBOutlet weak var statusMessage: UILabel!
+    @IBOutlet weak var tableControlsView: UIView!
+    @IBOutlet weak var tableView: UITableView!
     
     let pvMediaPlayer = PVMediaPlayer.shared
     var clipsArray = [MediaRef]()
@@ -30,6 +31,7 @@ class ClipsListContainerViewController: UIViewController {
     @IBAction func retryButtonTouched(_ sender: Any) {
         
     }
+    
     @IBAction func updateFilter(_ sender: Any) {
         let alert = UIAlertController(title: "Clips From", message: nil, preferredStyle: .alert)
         
@@ -68,7 +70,10 @@ class ClipsListContainerViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.tableView.separatorColor = .clear
+        self.tableView.separatorColor = .darkGray
+        self.tableControlsView.layer.borderColor = UIColor.lightGray.cgColor
+        self.tableControlsView.layer.borderWidth = 1.0
+        
         activityIndicator.hidesWhenStopped = true
         showIndicator()
         
@@ -136,9 +141,17 @@ extension ClipsListContainerViewController:UITableViewDelegate, UITableViewDataS
         return clipsArray.count
     }
     
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 100
+    }
+    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 
         let cell = tableView.dequeueReusableCell(withIdentifier: "mediaPlayerClipCell", for:indexPath) as! MediaPlayerClipTableViewCell
+        
+        cell.contentView.layoutMargins.top = 16
+        cell.contentView.layoutMargins.bottom = 16
+        
         let clip = clipsArray[indexPath.row]
         
         if let title = clip.title {

@@ -38,67 +38,88 @@ class Podcast: NSManagedObject {
         let moc = managedObjectContext ?? CoreDataHelper.createMOCForThread(threadType: .mainThread)
 
         let predicate = NSPredicate(format: "feedUrl == %@", feedUrlString)
-        let podcastSet = CoreDataHelper.fetchEntities(className: "Podcast", predicate: predicate, moc:moc) as! [Podcast]
-        if podcastSet.count > 0 {
-            return podcastSet[0]
-        } else {
-            return nil
-        }
+        let podcastSet = CoreDataHelper.fetchEntities(className: "Podcast", predicate: predicate, moc:moc) as? [Podcast]
+        
+        return podcastSet?.first
     }
     
-    
-    static func retrievePodcastUIImage(podcastFeedUrl: String?, podcastImageUrl: String?, managedObjectId: NSManagedObjectID?, completion: @escaping (_ podcastImage: UIImage?) -> Void) {
-        DispatchQueue.global().async {
-            var cellImage:UIImage?
-            
-            if let imageUrl = podcastImageUrl {
-                if let imageData = retrievePodcastImageData(feedUrl: podcastFeedUrl, imageUrl: imageUrl, managedObjectId: managedObjectId) {
-                    cellImage = podcastImageOrDefault(imageData: imageData)
-                }
-            } else {
-                cellImage = UIImage(named: "PodverseIcon")
-            }
-            
-            completion(cellImage)
-        }
-    }
-    
-    static func podcastImageOrDefault (imageData: Data) -> UIImage? {
-        if let image = UIImage(data: imageData) {
+    /**
+     Retrieves the image of a specific Podcast channel. This method takes 4 optional arguements and returns 
+     the image related to the podcast tied with one of the first three parameters.
+     NOTE: This method can set the podcast image directly only if the arguments used DO NOT include the
+     `podcastImageURLString` parameter. If this parameter is used, the call is asychronous and the completion closure must be used to set the returned image. Everything is dispatched to the main queue in the completion closure.
+     
+     - Parameters:
+         - podcastImageURLString: A string with the url of the podcastImageUrl
+         - feedURLString: A string with the feedURL of the podcast
+         - managedObjectID: The managed object id of the podcast
+         - completion: A completion block for the async functionality of fetchng the image from a url
+     
+     - Returns: The podcast image that was fetched (Discradable)
+     */
+    @discardableResult static func retrievePodcastImage(podcastImageURLString:String? = nil, feedURLString:String? = nil, managedObjectID:NSManagedObjectID? = nil, completion:((_ podcastImage: UIImage?) -> Void)? = nil) -> UIImage? {
+        
+        if let moid = managedObjectID {
+            let image = Podcast.fetchPodcastImage(managedObjectId: moid)
             return image
-        } else {
+        }
+        else if let feedUrl = feedURLString {
+            let image = Podcast.fetchPodcastImage(podcastFeedUrl: feedUrl)
+            return image
+        }
+        else if let imageUrlString = podcastImageURLString, let imageURL = URL(string:imageUrlString) {
+            Podcast.fetchPodcastImage(podcastImageUrl: imageURL, completion: { (image) in
+                completion?(image)
+            })
+        }
+        
+        return UIImage(named: "PodverseIcon")
+    }
+    
+    private static func fetchPodcastImage(managedObjectId: NSManagedObjectID) -> UIImage? {
+        let moc = CoreDataHelper.createMOCForThread(threadType: .mainThread)
+
+        if let podcast = CoreDataHelper.fetchEntityWithID(objectId: managedObjectId, moc: moc) as? Podcast, 
+           let imageData = podcast.imageData {
+            return UIImage(data: imageData)
+        }
+        else {
             return UIImage(named: "PodverseIcon")
         }
     }
     
-    static func retrievePodcastImageData(feedUrl: String?, imageUrl: String?, managedObjectId: NSManagedObjectID?) -> Data? {
+    private static func fetchPodcastImage(podcastFeedUrl: String) -> UIImage? {
         let moc = CoreDataHelper.createMOCForThread(threadType: .mainThread)
         
-        if let managedObjectId = managedObjectId {
-            if let podcast = CoreDataHelper.fetchEntityWithID(objectId: managedObjectId, moc: moc) as? Podcast {
-                if let imageData = podcast.imageData {
-                    return imageData
-                }
-            }
-        } else if let feedUrl = feedUrl {
-            let predicate = NSPredicate(format: "feedUrl == %@", feedUrl)
-            if let podcastSet = CoreDataHelper.fetchEntities(className: "Podcast", predicate: predicate, moc:moc) as? [Podcast] {
-                if podcastSet.count > 0 {
-                    let podcast = podcastSet[0]
-                    if let imageData = podcast.imageData {
-                        return imageData
+        let predicate = NSPredicate(format: "feedUrl == %@", podcastFeedUrl)
+        if let podcastSet = CoreDataHelper.fetchEntities(className: "Podcast", predicate: predicate, moc:moc) as? [Podcast], let imageData = podcastSet.first?.imageData {
+            return UIImage(data:imageData)
+        } 
+        else {
+            return UIImage(named: "PodverseIcon")
+        }
+    }
+    
+    private static func fetchPodcastImage(podcastImageUrl: URL, completion: @escaping (_ podcastImage: UIImage?) -> Void) {
+        let session = URLSession(configuration: .default)
+        _ = session.dataTask(with: podcastImageUrl) { (data, response, error) in
+            DispatchQueue.main.async {
+                var cellImage:UIImage?
+
+                if let e = error {
+                    print("Error downloading picture: \(e)")
+                    cellImage = UIImage(named: "PodverseIcon")
+                } else {
+                    if let _ = response as? HTTPURLResponse, let imageData = data {
+                        cellImage = UIImage(data: imageData)
+                    } else {
+                        print("Couldn't get image response")
+                        cellImage = UIImage(named: "PodverseIcon")
                     }
                 }
+                
+                completion(cellImage)
             }
-        } else if let podcastImageUrl = imageUrl, let url = URL(string: podcastImageUrl) {
-            do {
-                return try Data(contentsOf: url)
-            }
-            catch {
-                print("No Image Data at give URL")
-            }
-        }
-        
-        return nil
+        }.resume()
     }
 }

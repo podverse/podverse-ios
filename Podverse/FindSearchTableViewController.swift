@@ -62,14 +62,10 @@ extension FindSearchTableViewController: UITableViewDataSource, UITableViewDeleg
         cell.network.text = podcast.network
         cell.categories.text = podcast.categories
 
-        DispatchQueue.global().async {
-            Podcast.retrievePodcastUIImage(podcastFeedUrl: nil, podcastImageUrl: podcast.imageUrl, managedObjectId: nil) { (podcastImage) -> Void in
-                DispatchQueue.main.async {
-                    if let visibleRows = self.tableView.indexPathsForVisibleRows, visibleRows.contains(indexPath) {
-                        let existingCell = self.tableView.cellForRow(at: indexPath) as! PodcastSearchResultTableViewCell
-                        existingCell.pvImage.image = podcastImage
-                    }
-                }
+        Podcast.retrievePodcastImage(podcastImageURLString: podcast.imageUrl) { (podcastImage) -> Void in
+            if let visibleRows = self.tableView.indexPathsForVisibleRows, visibleRows.contains(indexPath), 
+               let existingCell = self.tableView.cellForRow(at: indexPath) as? PodcastSearchResultTableViewCell {
+                existingCell.pvImage.image = podcastImage
             }
         }
         
@@ -119,11 +115,11 @@ extension FindSearchTableViewController: UITableViewDataSource, UITableViewDeleg
 
 extension FindSearchTableViewController: UISearchBarDelegate {
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
-        self.resignFirstResponder()
+        searchBar.resignFirstResponder()
     }
 
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        self.resignFirstResponder()
+        searchBar.resignFirstResponder()
         
         if let text = searchBar.text {
             AudioSearchClientSwift.search(query: text, params: nil, type: "shows") { (serviceResponse) in
