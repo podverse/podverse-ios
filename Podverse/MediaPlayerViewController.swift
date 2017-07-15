@@ -10,12 +10,15 @@ import UIKit
 import CoreData
 import AVFoundation
 
-class MediaPlayerViewController: PVViewController, UIWebViewDelegate {
+class MediaPlayerViewController: PVViewController {
 
     var playerSpeedRate:PlayingSpeed = .regular
     var shouldAutoplay = false
     
-    @IBOutlet weak var aboutWebView: UIWebView!
+    weak var currentChildViewController: UIViewController?
+    private let aboutClipsStoryboardId = "AboutPlayingItemVC"
+    private let clipsListStoryBoardId = "ClipsListVC"
+    
     @IBOutlet weak var clipsContainerView: UIView!
     @IBOutlet weak var currentTime: UILabel!
     @IBOutlet weak var device: UIButton!
@@ -28,40 +31,22 @@ class MediaPlayerViewController: PVViewController, UIWebViewDelegate {
     @IBOutlet weak var progress: UISlider!
     @IBOutlet weak var speed: UIButton!
     
-    @IBAction func swipeLeft(_ sender: Any) {
-        showAboutView()
-    }
-
-    
-    @IBAction func swipeRight(_ sender: Any) {
-        showClipsContainerView()
-    }
-    
     override func viewDidLoad() {
+        setupContainerView()
+
         let share = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.action, target: self, action: #selector(showShareMenu))
         let makeClip = UIBarButtonItem(title: "Make Clip", style: .plain, target: self, action: #selector(showMakeClip))
         let addToPlaylist = UIBarButtonItem(title: "Add to Playlist", style: .plain, target: self, action: #selector(showAddToPlaylist))
         navigationItem.rightBarButtonItems = [share, makeClip, addToPlaylist]
-        
-        // Make sure the Play/Pause button displays properly after returning from background
-        //        NotificationCenter.default.addObserver(self, selector: #selector(MediaPlayerViewController.setPlayIcon), name: NSNotification.Name.UIApplicationWillEnterForeground, object: nil)
-        
-        progress.isContinuous = false
-        
-        self.aboutWebView.delegate = self
-        
-        clipsContainerView.isHidden = true
-        
-        aboutWebView.layer.borderColor = UIColor.lightGray.cgColor
-        aboutWebView.layer.borderWidth = 1.0
-        clipsContainerView.layer.borderColor = UIColor.lightGray.cgColor
-        clipsContainerView.layer.borderWidth = 1.0
+
+        self.progress.isContinuous = false
+
         
         setPlayerInfo()
         
         // TODO: does this need an unowned self or something?
-        pvMediaPlayer.avPlayer.addPeriodicTimeObserver(forInterval: CMTimeMake(1, 1), queue: DispatchQueue.main) { time in
-            self.updateCurrentTime(currentTime: CMTimeGetSeconds(time))
+        self.pvMediaPlayer.avPlayer.addPeriodicTimeObserver(forInterval: CMTimeMake(1, 1), queue: DispatchQueue.main) {[weak self] time in
+            self?.updateCurrentTime(currentTime: CMTimeGetSeconds(time))
         }
         
         hidePlayerView()
@@ -69,18 +54,13 @@ class MediaPlayerViewController: PVViewController, UIWebViewDelegate {
     
     override func viewDidAppear(_ animated: Bool) {
         if (shouldAutoplay) {
-            pvMediaPlayer.avPlayer.rate = 0
-            pvMediaPlayer.playOrPause()
+            self.pvMediaPlayer.avPlayer.rate = 0
+            self.pvMediaPlayer.playOrPause()
         }
         setPlayIcon()
     }
     
     override func viewWillAppear(_ animated: Bool) {}
-    
-    override func viewWillLayoutSubviews() {
-        super.viewWillLayoutSubviews()
-        aboutWebView.scrollView.contentInset = UIEdgeInsets.zero;
-    }
     
     @IBAction func pageControlAction(_ sender: Any) {
         if let sender = sender as? UIPageControl {
@@ -153,12 +133,25 @@ class MediaPlayerViewController: PVViewController, UIWebViewDelegate {
         updateSpeedLabel()
     }
     
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == "showClipsList" {
-            if let clipListVC = segue.destination as? ClipsListContainerViewController {
-                clipListVC.delegate = self
-            }
+    fileprivate func setupContainerView() {
+        if let currentVC = self.storyboard?.instantiateViewController(withIdentifier: self.aboutClipsStoryboardId) {
+            self.currentChildViewController = currentVC
+            self.currentChildViewController?.view.translatesAutoresizingMaskIntoConstraints = false
+            self.addChildViewController(currentVC)
+            self.addSubview(subView: currentVC.view, toView: self.clipsContainerView)
         }
+        
+        let swipeLeft = UISwipeGestureRecognizer(target: self, action: #selector(MediaPlayerViewController.showClipsContainerView))
+        let swipeRight = UISwipeGestureRecognizer(target: self, action: #selector(MediaPlayerViewController.showAboutView))
+        swipeLeft.direction = .left
+        swipeRight.direction = .right
+        self.clipsContainerView.addGestureRecognizer(swipeLeft)
+        self.clipsContainerView.addGestureRecognizer(swipeRight)
+        
+        self.clipsContainerView.layer.borderColor = UIColor.lightGray.cgColor
+        self.clipsContainerView.layer.borderWidth = 1.0
+        
+        self.pageControl.currentPage = 0
     }
     
     func setPlayIcon() {
@@ -185,23 +178,9 @@ class MediaPlayerViewController: PVViewController, UIWebViewDelegate {
                 duration.text = Int(totalTime).toMediaPlayerString()
                 progress.value = Float(Int(lastPlaybackPosition) / totalTime)
             }
-            
-            if let summary = item.episodeSummary {
-                aboutWebView.loadHTMLString(summary.formatHtmlString(), baseURL: nil)
-            }
-            
         }
     }
-    
-    func webView(_ webView: UIWebView, shouldStartLoadWith request: URLRequest, navigationType: UIWebViewNavigationType) -> Bool {
-        if navigationType == UIWebViewNavigationType.linkClicked {
-            if let url = request.url {
-                UIApplication.shared.openURL(url)
-            }
-            return false
-        }
-        return true
-    }
+
     
     func updateCurrentTime(currentTime: Double) {
         self.currentTime.text = Int(currentTime).toMediaPlayerString()
@@ -232,15 +211,69 @@ class MediaPlayerViewController: PVViewController, UIWebViewDelegate {
     }
     
     func showAboutView() {
-        aboutWebView.isHidden = false
-        clipsContainerView.isHidden = true
-        pageControl.currentPage = 0
+        if let newViewController = self.storyboard?.instantiateViewController(withIdentifier: self.aboutClipsStoryboardId), self.currentChildViewController is ClipsListContainerViewController {
+            newViewController.view.translatesAutoresizingMaskIntoConstraints = false
+            self.cycleFromViewController(oldViewController: self.currentChildViewController!, toViewController: newViewController)
+            self.currentChildViewController = newViewController
+            pageControl.currentPage = 0
+        }
     }
     
     func showClipsContainerView() {
-        aboutWebView.isHidden = true
-        clipsContainerView.isHidden = false
-        pageControl.currentPage = 1
+        if let newViewController = self.storyboard?.instantiateViewController(withIdentifier: self.clipsListStoryBoardId) as? ClipsListContainerViewController, self.currentChildViewController is AboutPlayingItemViewController {
+            newViewController.view.translatesAutoresizingMaskIntoConstraints = false
+            self.cycleFromViewController(oldViewController: self.currentChildViewController!, toViewController: newViewController)
+            self.currentChildViewController = newViewController
+            newViewController.delegate = self
+            pageControl.currentPage = 1
+        }    
+    }
+    
+    private func addSubview(subView:UIView, toView parentView:UIView) {
+        parentView.addSubview(subView)
+        
+        var viewBindingsDict = [String: AnyObject]()
+        viewBindingsDict["subView"] = subView
+        parentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|[subView]|",
+                                                                                 options: [], metrics: nil, views: viewBindingsDict))
+        parentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|[subView]|",
+                                                                                 options: [], metrics: nil, views: viewBindingsDict))
+    }
+    
+    private func cycleFromViewController(oldViewController: UIViewController, toViewController newViewController: UIViewController) {
+        oldViewController.willMove(toParentViewController: nil)
+        self.addChildViewController(newViewController)
+        self.addSubview(subView: newViewController.view, toView:self.clipsContainerView)
+        
+        let initialX = newViewController is ClipsListContainerViewController ? self.clipsContainerView.frame.maxX : -self.clipsContainerView.frame.maxX
+        newViewController.view.frame = CGRect(x: initialX, 
+                                              y: 0.0, 
+                                              width: newViewController.view.frame.width, 
+                                              height: newViewController.view.frame.height)
+        
+        UIView.animate(withDuration: 0.5, animations: {
+            if newViewController is ClipsListContainerViewController {
+                oldViewController.view.frame = CGRect(x: -oldViewController.view.frame.width, 
+                                                      y: 0.0, 
+                                                      width: oldViewController.view.frame.width, 
+                                                      height: oldViewController.view.frame.height)
+            }
+            else {
+                oldViewController.view.frame = CGRect(x: oldViewController.view.frame.width, 
+                                                      y: 0.0, 
+                                                      width: oldViewController.view.frame.width, 
+                                                      height: oldViewController.view.frame.height)
+            }
+            newViewController.view.frame = CGRect(x: 0.0, 
+                                                  y: 0.0, 
+                                                  width: newViewController.view.frame.width, 
+                                                  height: newViewController.view.frame.height)
+        },
+           completion: { finished in
+            oldViewController.view.removeFromSuperview()
+            oldViewController.removeFromParentViewController()
+            newViewController.didMove(toParentViewController: self)
+        })
     }
 }
 
