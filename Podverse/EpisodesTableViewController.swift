@@ -78,6 +78,7 @@ class EpisodesTableViewController: PVViewController, UITableViewDataSource, UITa
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         PVDownloader.shared.delegate = self
     }
 
@@ -227,6 +228,10 @@ class EpisodesTableViewController: PVViewController, UITableViewDataSource, UITa
         let deleteAction = UITableViewRowAction(style: .default, title: "Delete", handler: {action, indexpath in
             self.episodesArray.remove(at: indexPath.row)
             self.tableView.deleteRows(at: [indexPath], with: .fade)
+            if self.pvMediaPlayer.currentlyPlayingItem?.episodeMediaUrl == episodeToEdit.mediaUrl {
+                self.tabBarController?.hidePlayerView()
+            }
+
             PVDeleter.deleteEpisode(episodeId: episodeToEdit.objectID, shouldCallProtocolMethod: true)
         })
         

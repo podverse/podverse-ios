@@ -19,7 +19,7 @@ class PVDeleter {
     
     static var delegate: PVDeleterDelegate?
     
-    static func deletePodcast(podcastId: NSManagedObjectID?, feedUrl: String?) {
+    static func deletePodcast(podcastId: NSManagedObjectID?, feedUrl: String? = nil) {
         let moc = CoreDataHelper.createMOCForThread(threadType: .privateThread)
         
         if let podcastId = podcastId, let podcast = CoreDataHelper.fetchEntityWithID(objectId: podcastId, moc: moc) as? Podcast {
@@ -64,6 +64,9 @@ class PVDeleter {
                 }
                 
                 DownloadingEpisodeList.removeDownloadingEpisodeWithMediaURL(mediaUrl: mediaUrl)
+                if let index = PlayerHistory.manager.historyItems.index(where: { $0.episodeMediaUrl == mediaUrl }) {
+                    PlayerHistory.manager.historyItems.remove(at: index)
+                }
                 
                 if let currentlyPlayingItem = PVMediaPlayer.shared.currentlyPlayingItem {
                     if mediaUrl == currentlyPlayingItem.episodeMediaUrl {

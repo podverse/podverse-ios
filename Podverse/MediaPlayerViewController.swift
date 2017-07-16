@@ -49,7 +49,7 @@ class MediaPlayerViewController: PVViewController {
             self?.updateCurrentTime(currentTime: CMTimeGetSeconds(time))
         }
         
-        hidePlayerView()
+        self.tabBarController?.hidePlayerView()
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -167,7 +167,7 @@ class MediaPlayerViewController: PVViewController {
             podcastTitle.text = item.podcastTitle
             episodeTitle.text = item.episodeTitle
             
-            self.image.image = Podcast.retrievePodcastImage(podcastImageURLString: item.podcastFeedUrl, feedURLString: item.podcastImageUrl) { (podcastImage) -> Void in
+            self.image.image = Podcast.retrievePodcastImage(podcastImageURLString: item.podcastImageUrl, feedURLString: item.podcastFeedUrl) { (podcastImage) -> Void in
                 self.image.image = podcastImage
             }
             

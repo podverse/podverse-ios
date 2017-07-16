@@ -63,7 +63,7 @@ class Podcast: NSManagedObject {
             let image = Podcast.fetchPodcastImage(managedObjectId: moid)
             return image
         }
-        else if let feedUrl = feedURLString {
+        else if let feedUrl = feedURLString, !feedUrl.isEmpty {
             let image = Podcast.fetchPodcastImage(podcastFeedUrl: feedUrl)
             return image
         }

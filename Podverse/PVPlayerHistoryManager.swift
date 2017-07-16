@@ -10,7 +10,11 @@ import Foundation
 
 class PlayerHistory {
     static let manager = PlayerHistory()
-    var historyItems = [PlayerHistoryItem]()
+    var historyItems = [PlayerHistoryItem]() {
+        didSet {
+            self.saveData()
+        }
+    }
     
     //save data
     func saveData() {
@@ -63,8 +67,6 @@ class PlayerHistory {
         } else {
             historyItems.insert(item, at: 0)
         }
-        
-        saveData()
     }
     
     func convertEpisodeToPlayerHistoryItem(episode: Episode) -> PlayerHistoryItem {

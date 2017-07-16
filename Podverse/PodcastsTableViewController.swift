@@ -161,9 +161,10 @@ extension PodcastsTableViewController:UITableViewDelegate, UITableViewDataSource
         let deleteAction = UITableViewRowAction(style: .default, title: "Delete", handler: {action, indexpath in
             self.subscribedPodcastsArray.remove(at: indexPath.row)
             self.tableView.deleteRows(at: [indexPath], with: .fade)
-            DispatchQueue.global().async {
-                PVDeleter.deletePodcast(podcastId: podcastToEdit.objectID, feedUrl: nil)
+            if self.pvMediaPlayer.currentlyPlayingItem?.podcastFeedUrl == podcastToEdit.feedUrl {
+                self.tabBarController?.hidePlayerView()
             }
+            PVDeleter.deletePodcast(podcastId: podcastToEdit.objectID)
         })
         
         return [deleteAction]
