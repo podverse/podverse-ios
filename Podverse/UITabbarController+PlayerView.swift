@@ -29,14 +29,10 @@ extension UITabBarController:PlayerViewProtocol {
         }
     }
     
-    override open func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        setupPlayerBar()
-    }
-    
     override open func viewDidLoad() {
         super.viewDidLoad()
         self.playerView = NowPlayingBar()
+        setupPlayerBar()
     }
     
     func setupPlayerBar() {
