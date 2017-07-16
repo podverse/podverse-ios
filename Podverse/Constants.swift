@@ -31,6 +31,7 @@ enum SharePermission:String {
     case isPrivate = "isPrivate", isSharableWithLink = "isSharableWithLink", isPublic = "isPublic"
 }
 
+let kNowPlayingTag = 100
 
 let kDownloadHasFinished  = "downloadHasFinished"
 

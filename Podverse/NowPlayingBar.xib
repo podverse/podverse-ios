@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="12121" systemVersion="16F73" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12089"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="NowPlayingBar" customModule="Podverse" customModuleProvider="target">
+            <connections>
+                <outlet property="episodeTitle" destination="5Yx-gc-Ry1" id="Wz4-5E-Dca"/>
+                <outlet property="playButton" destination="KrJ-cs-BGD" id="2UY-FX-FT2"/>
+                <outlet property="podcastImageView" destination="1tY-5h-x3N" id="r35-Va-XH8"/>
+                <outlet property="podcastTitleLabel" destination="LlN-Jq-gMl" id="wX0-e4-kOn"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="1Ox-UM-LRA">
+            <rect key="frame" x="0.0" y="0.0" width="375" height="60"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <subviews>
+                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="1tY-5h-x3N">
+                    <rect key="frame" x="0.0" y="1" width="55" height="58"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="55" id="tn1-vX-JBM"/>
+                    </constraints>
+                </imageView>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="KrJ-cs-BGD">
+                    <rect key="frame" x="320" y="1" width="55" height="58"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="55" id="Kdu-u0-9KD"/>
+                    </constraints>
+                    <state key="normal" image="Play"/>
+                    <connections>
+                        <action selector="playPause:" destination="-1" eventType="touchUpInside" id="FhI-eY-eHL"/>
+                    </connections>
+                </button>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="LlN-Jq-gMl">
+                    <rect key="frame" x="65" y="5" width="245" height="21"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                    <nil key="textColor"/>
+                    <nil key="highlightedColor"/>
+                </label>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5Yx-gc-Ry1">
+                    <rect key="frame" x="65" y="34" width="245" height="21"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                    <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                    <nil key="highlightedColor"/>
+                </label>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="aBC-3L-i2l">
+                    <rect key="frame" x="0.0" y="59" width="375" height="1"/>
+                    <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="1" id="HeU-8O-XCs"/>
+                    </constraints>
+                </view>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="SPp-Xs-7kY">
+                    <rect key="frame" x="0.0" y="0.0" width="375" height="1"/>
+                    <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="1" id="FfT-K4-rrS"/>
+                    </constraints>
+                </view>
+            </subviews>
+            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+            <gestureRecognizers/>
+            <constraints>
+                <constraint firstItem="SPp-Xs-7kY" firstAttribute="top" secondItem="1Ox-UM-LRA" secondAttribute="top" id="2G0-I7-F5X"/>
+                <constraint firstItem="KrJ-cs-BGD" firstAttribute="top" secondItem="1Ox-UM-LRA" secondAttribute="top" constant="1" id="2Vo-lO-5cZ"/>
+                <constraint firstItem="5Yx-gc-Ry1" firstAttribute="leading" secondItem="1tY-5h-x3N" secondAttribute="trailing" constant="10" id="4GO-RR-PYl"/>
+                <constraint firstAttribute="bottom" secondItem="aBC-3L-i2l" secondAttribute="bottom" id="5ah-d5-Jrw"/>
+                <constraint firstItem="1tY-5h-x3N" firstAttribute="leading" secondItem="1Ox-UM-LRA" secondAttribute="leading" id="76Y-EQ-I6g"/>
+                <constraint firstAttribute="bottom" secondItem="KrJ-cs-BGD" secondAttribute="bottom" constant="1" id="93n-Dd-Ceo"/>
+                <constraint firstItem="LlN-Jq-gMl" firstAttribute="top" secondItem="1Ox-UM-LRA" secondAttribute="top" constant="5" id="BW1-Lx-IVC"/>
+                <constraint firstAttribute="bottom" secondItem="1tY-5h-x3N" secondAttribute="bottom" constant="1" id="FNG-IG-SpI"/>
+                <constraint firstAttribute="trailing" secondItem="KrJ-cs-BGD" secondAttribute="trailing" id="IRd-5c-wNi"/>
+                <constraint firstItem="KrJ-cs-BGD" firstAttribute="leading" secondItem="5Yx-gc-Ry1" secondAttribute="trailing" constant="10" id="OYz-ei-BJh"/>
+                <constraint firstItem="1tY-5h-x3N" firstAttribute="top" secondItem="1Ox-UM-LRA" secondAttribute="top" constant="1" id="S71-9H-HsV"/>
+                <constraint firstItem="LlN-Jq-gMl" firstAttribute="leading" secondItem="1tY-5h-x3N" secondAttribute="trailing" constant="10" id="Wyn-DB-AHr"/>
+                <constraint firstItem="SPp-Xs-7kY" firstAttribute="leading" secondItem="1Ox-UM-LRA" secondAttribute="leading" id="ciE-ds-n3s"/>
+                <constraint firstItem="KrJ-cs-BGD" firstAttribute="leading" secondItem="LlN-Jq-gMl" secondAttribute="trailing" constant="10" id="h8Z-aX-CqG"/>
+                <constraint firstAttribute="trailing" secondItem="SPp-Xs-7kY" secondAttribute="trailing" id="lQ4-Oo-CxW"/>
+                <constraint firstAttribute="trailing" secondItem="aBC-3L-i2l" secondAttribute="trailing" id="oi3-XQ-Id4"/>
+                <constraint firstItem="aBC-3L-i2l" firstAttribute="leading" secondItem="1Ox-UM-LRA" secondAttribute="leading" id="xuL-Yy-w7u"/>
+                <constraint firstAttribute="bottom" secondItem="5Yx-gc-Ry1" secondAttribute="bottom" constant="5" id="zUL-nt-SXB"/>
+            </constraints>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <connections>
+                <outletCollection property="gestureRecognizers" destination="gkq-BK-7fK" appends="YES" id="cMi-Tf-uvs"/>
+            </connections>
+            <point key="canvasLocation" x="2.5" y="-218.5"/>
+        </view>
+        <tapGestureRecognizer id="gkq-BK-7fK">
+            <connections>
+                <action selector="didTapView:" destination="-1" id="moc-Yw-ehn"/>
+            </connections>
+        </tapGestureRecognizer>
+    </objects>
+    <resources>
+        <image name="Play" width="40" height="40"/>
+    </resources>
+</document>

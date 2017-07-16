@@ -217,16 +217,6 @@ class PVMediaPlayer {
         if let eTitle = item.episodeTitle {
             episodeTitle = eTitle
         }
-        
-//        if let podcastiTunesImageData = episode.podcast.itunesImage {
-//            let podcastiTunesImage = UIImage(data: podcastiTunesImageData)
-//            podcastImage = MPMediaItemArtwork(image: podcastiTunesImage!)
-//        } else if let podcastImageData = episode.podcast.imageData {
-//            let podcastImage = UIImage(data: podcastImageData)
-//            podcastImage = MPMediaItemArtwork(image: podcastImage!)
-//        } else {
-//            podcastImage = MPMediaItemArtwork(image: UIImage(named: "PodverseIcon")!)
-//        }
 
         if let eDuration = item.episodeDuration {
             episodeDuration = eDuration as NSNumber
