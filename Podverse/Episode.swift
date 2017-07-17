@@ -22,4 +22,15 @@ class Episode: NSManagedObject {
     @NSManaged var title: String?
     @NSManaged var uuid: String?
     @NSManaged var podcast: Podcast
+    
+    static func episodeForMediaUrl(mediaUrlString: String, managedObjectContext:NSManagedObjectContext? = nil) -> Episode? {
+        let moc = managedObjectContext ?? CoreDataHelper.createMOCForThread(threadType: .mainThread)
+        
+        let predicate = NSPredicate(format: "mediaUrl == %@", mediaUrlString)
+        let episodeSet = CoreDataHelper.fetchEntities(className: "Episode", predicate: predicate, moc:moc) as? [Episode]
+        
+        return episodeSet?.first
+    }
 }
+
+

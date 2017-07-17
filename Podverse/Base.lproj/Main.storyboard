@@ -849,6 +849,14 @@
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="VOa-dX-ejH">
                                 <rect key="frame" x="0.0" y="156" width="375" height="462"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <button key="tableFooterView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="0UU-2S-rgC">
+                                    <rect key="frame" x="0.0" y="148" width="375" height="44"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                    <state key="normal" title="Show All Episodes"/>
+                                    <connections>
+                                        <action selector="bottomButtonTouched:" destination="DYF-Bg-yz8" eventType="touchUpInside" id="6Dh-LO-pDS"/>
+                                    </connections>
+                                </button>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="Cell" rowHeight="120" id="AM8-s1-2g7" customClass="EpisodeTableViewCell" customModule="Podverse" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="28" width="375" height="120"/>
@@ -962,6 +970,7 @@
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="bottomButton" destination="VOa-dX-ejH" id="akg-G5-uRs"/>
                         <outlet property="headerImageView" destination="W2q-RV-W1m" id="y4A-4E-KUw"/>
                         <outlet property="headerPodcastTitle" destination="4bn-tB-LUD" id="iII-EY-sLo"/>
                         <outlet property="tableView" destination="VOa-dX-ejH" id="QWe-WP-Gqg"/>

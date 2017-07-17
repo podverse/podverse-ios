@@ -67,6 +67,7 @@ class PlayerHistory {
         } else {
             historyItems.insert(item, at: 0)
         }
+        
     }
     
     func convertEpisodeToPlayerHistoryItem(episode: Episode) -> PlayerHistoryItem {

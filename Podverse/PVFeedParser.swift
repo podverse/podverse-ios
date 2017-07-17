@@ -249,8 +249,7 @@ extension PVFeedParser:FeedParserDelegate {
             return
         }
         
-        // If the parser is only returning the latest episode, then if the podcast's latest episode returned is not the same as the latest episode saved locally, 
-        // parse the entire feed again, then download and save the latest episode
+        // If the parser is only returning the latest episode, then if the podcast's latest episode returned is not the same as the latest episode saved locally, parse the entire feed again, then download and save the latest episode
         if let latestEpisodePubDateInRSSFeed = latestEpisodePubDate, self.onlyGetMostRecentEpisode == true {
             let podcastPredicate = NSPredicate(format: "podcast == %@", podcast)
             

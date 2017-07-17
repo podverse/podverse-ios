@@ -46,7 +46,7 @@ class PVDeleter {
         }
     }
     
-    static func deleteEpisode(episodeId: NSManagedObjectID, shouldCallProtocolMethod: Bool = false) {
+    static func deleteEpisode(episodeId: NSManagedObjectID, fileOnly: Bool = false, shouldCallProtocolMethod: Bool = false) {
         DispatchQueue.global().async {
             let moc = CoreDataHelper.createMOCForThread(threadType: .privateThread)
             
@@ -64,9 +64,6 @@ class PVDeleter {
                 }
                 
                 DownloadingEpisodeList.removeDownloadingEpisodeWithMediaURL(mediaUrl: mediaUrl)
-                if let index = PlayerHistory.manager.historyItems.index(where: { $0.episodeMediaUrl == mediaUrl }) {
-                    PlayerHistory.manager.historyItems.remove(at: index)
-                }
                 
                 if let currentlyPlayingItem = PVMediaPlayer.shared.currentlyPlayingItem {
                     if mediaUrl == currentlyPlayingItem.episodeMediaUrl {
@@ -77,9 +74,12 @@ class PVDeleter {
                 
                 if let fileName = episode.fileName {
                     PVDeleter.deleteEpisodeFromDiskWithName(fileName: fileName)
+                    episode.fileName = nil
                 }
                 
-                CoreDataHelper.deleteItemFromCoreData(deleteObjectID: episode.objectID, moc: moc)
+                if fileOnly == false {
+                    CoreDataHelper.deleteItemFromCoreData(deleteObjectID: episode.objectID, moc: moc)
+                }
                 
                 moc.saveData(nil)
                 
@@ -91,8 +91,9 @@ class PVDeleter {
                     }
                 }
             }
-
+            
         }
+
     }
     
     static func deleteEpisodeFromDiskWithName(fileName:String) {
