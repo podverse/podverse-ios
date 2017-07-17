@@ -23,10 +23,10 @@ class EpisodesTableViewController: PVViewController, UITableViewDataSource, UITa
     
     @IBAction func bottomButtonTouched(_ sender: Any) {
         showAllEpisodes = !showAllEpisodes
-        loadData(onlyDownloaded: showAllEpisodes)
+        loadData()
     }
     
-    func loadData(onlyDownloaded: Bool = false) {
+    func loadData() {
         if let podcast = CoreDataHelper.fetchEntityWithID(objectId: self.selectedPodcastID, moc: moc) as? Podcast {
             episodesArray.removeAll()
             
@@ -47,7 +47,7 @@ class EpisodesTableViewController: PVViewController, UITableViewDataSource, UITa
                 }
             }
             
-            if (onlyDownloaded) {
+            if (!showAllEpisodes) {
                 episodesArray = Array(podcast.episodes.filter { $0.fileName != nil } )
             } else {
                 episodesArray = Array(podcast.episodes)
