@@ -19,8 +19,16 @@ class EpisodesTableViewController: PVViewController, UITableViewDataSource, UITa
     
     @IBOutlet weak var headerImageView: UIImageView!
     
+    @IBOutlet weak var bottomButton: UITableView!
+    
+    @IBAction func bottomButtonTouched(_ sender: Any) {
+        showAllEpisodes = !showAllEpisodes
+        loadData()
+    }
+    
     func loadData() {
         if let podcast = CoreDataHelper.fetchEntityWithID(objectId: self.selectedPodcastID, moc: moc) as? Podcast {
+            episodesArray.removeAll()
             
             headerPodcastTitle.text = podcast.title
             
@@ -39,7 +47,12 @@ class EpisodesTableViewController: PVViewController, UITableViewDataSource, UITa
                 }
             }
             
-            episodesArray = Array(podcast.episodes).sorted(by: { (prevEp, nextEp) -> Bool in
+            if (!showAllEpisodes) {
+                episodesArray = Array(podcast.episodes.filter { $0.fileName != nil } )
+            } else {
+                episodesArray = Array(podcast.episodes)
+            }
+            episodesArray.sort(by: { (prevEp, nextEp) -> Bool in
                 if let prevTimeInterval = prevEp.pubDate, let nextTimeInterval = nextEp.pubDate {
                     return (prevTimeInterval > nextTimeInterval)
                 }
@@ -100,15 +113,15 @@ class EpisodesTableViewController: PVViewController, UITableViewDataSource, UITa
     }
 
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-//        if showAllEpisodes == false {
-//            return "Downloaded"
-//        } else {
+        if showAllEpisodes {
             return "All Available Episodes"
-//        }
+        } else {
+            return "Downloaded"
+        }
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return episodesArray.count + 1
+        return episodesArray.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -244,7 +257,7 @@ class EpisodesTableViewController: PVViewController, UITableViewDataSource, UITa
                 self.tabBarController?.hidePlayerView()
             }
 
-            PVDeleter.deleteEpisode(episodeId: episodeToEdit.objectID, shouldCallProtocolMethod: true)
+            PVDeleter.deleteEpisode(episodeId: episodeToEdit.objectID, fileOnly: true, shouldCallProtocolMethod: true)
         })
         
         return [deleteAction]

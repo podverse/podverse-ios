@@ -25,7 +25,7 @@ class PlayerHistoryItem: NSObject, NSCoding {
     let clipDescription: String?
     let ownerName: String?
     let ownerId: String?
-    let didFinishPlaying: Bool
+    var didFinishPlaying: Bool
     let lastPlaybackPosition: NSNumber?
     let lastUpdated: Date?
     

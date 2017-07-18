@@ -155,11 +155,12 @@ class PVMediaPlayer {
     }
     
     @objc func playerDidFinishPlaying() {
-//        if nowPlayingClip == nil {
-//            self.delegate?.episodeFinishedPlaying(nowPlayingEpisode)
-//        } else {
-//            self.delegate?.clipFinishedPlaying(nowPlayingClip)
-//        }
+        let moc = CoreDataHelper.createMOCForThread(threadType: .mainThread)
+        if var currentlyPlayingItem = playerHistoryManager.historyItems.first, let episodeMediaUrl = currentlyPlayingItem.episodeMediaUrl, let episode = Episode.episodeForMediaUrl(mediaUrlString: episodeMediaUrl, managedObjectContext: moc) {
+            PVDeleter.deleteEpisode(episodeId: episode.objectID, fileOnly: true)
+            currentlyPlayingItem.didFinishPlaying = true
+            playerHistoryManager.addOrUpdateItem(item: currentlyPlayingItem)
+        }
     }
 
     func saveCurrentTimeAsPlaybackPosition() {
@@ -245,10 +246,11 @@ class PVMediaPlayer {
         
         currentlyPlayingItem = playerHistoryItem
         
+        currentlyPlayingItem?.didFinishPlaying = false
+        
         avPlayer.replaceCurrentItem(with: nil)
         
-        let moc = NSManagedObjectContext(concurrencyType: .mainQueueConcurrencyType)
-        moc.parent = CoreDataHelper.shared.managedObjectContext
+        let moc = CoreDataHelper.createMOCForThread(threadType: .mainThread)
         
         if let episodeMediaUrl = playerHistoryItem.episodeMediaUrl {
             playerHistoryManager.addOrUpdateItem(item: playerHistoryItem)
