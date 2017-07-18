@@ -159,7 +159,7 @@ class PVMediaPlayer {
         if var currentlyPlayingItem = playerHistoryManager.historyItems.first, let episodeMediaUrl = currentlyPlayingItem.episodeMediaUrl, let episode = Episode.episodeForMediaUrl(mediaUrlString: episodeMediaUrl, managedObjectContext: moc) {
             PVDeleter.deleteEpisode(episodeId: episode.objectID, fileOnly: true)
             currentlyPlayingItem.didFinishPlaying = true
-            playerHistoryManager.addOrUpdateItem(item: currentlyPlayingItem)  // TODO: why isn't this working??? I see didFinishPlaying is set to true, but on app restart, the playerHistoryManager.historyItems.first.didFinishPlaying always equals false...am I not saving the updated historyItems array properly? 
+            playerHistoryManager.addOrUpdateItem(item: currentlyPlayingItem)
         }
     }
 
