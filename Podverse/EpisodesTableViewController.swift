@@ -1,7 +1,7 @@
 import UIKit
 import CoreData
 
-class EpisodesTableViewController: PVViewController, UITableViewDataSource, UITableViewDelegate, PVFeedParserDelegate {
+class EpisodesTableViewController: PVViewController, UITableViewDataSource, UITableViewDelegate {
     
     var showAllEpisodes = false
     
@@ -39,14 +39,13 @@ class EpisodesTableViewController: PVViewController, UITableViewDataSource, UITa
                 }
             }
             
-            episodesArray = Array(podcast.episodes)
-            
-            let unsortedEpisodes = NSMutableArray()
-            let sortDescriptor = NSSortDescriptor(key: "pubDate", ascending: false)
-            for singleEpisode in episodesArray {
-                unsortedEpisodes.add(singleEpisode)
-            }
-            episodesArray = unsortedEpisodes.sortedArray(using: [sortDescriptor]) as! [Episode]
+            episodesArray = Array(podcast.episodes).sorted(by: { (prevEp, nextEp) -> Bool in
+                if let prevTimeInterval = prevEp.pubDate, let nextTimeInterval = nextEp.pubDate {
+                    return (prevTimeInterval > nextTimeInterval)
+                }
+                
+                return false
+            })
             
             self.tableView.reloadData()
         }
@@ -67,7 +66,6 @@ class EpisodesTableViewController: PVViewController, UITableViewDataSource, UITa
 //                    return
 //                }
                 PVDownloader.shared.startDownloadingEpisode(episode: episode)
-                cell.button.setTitle("DLing", for: .normal)
             }
         }
     }
@@ -75,11 +73,25 @@ class EpisodesTableViewController: PVViewController, UITableViewDataSource, UITa
     override func viewDidLoad() {
         super.viewDidLoad()
         loadData()
+        setupNotificationListeners()
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        PVDownloader.shared.delegate = self
+    deinit {
+        removeObservers()
+    }
+    
+    fileprivate func setupNotificationListeners() {
+        NotificationCenter.default.addObserver(self, selector: #selector(self.downloadStarted(_:)), name: .downloadStarted, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.downloadResumed(_:)), name: .downloadResumed, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.downloadPaused(_:)), name: .downloadPaused, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.downloadFinished(_:)), name: .downloadFinished, object: nil)
+    }
+    
+    fileprivate func removeObservers() {
+        NotificationCenter.default.removeObserver(self, name: .downloadStarted, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .downloadResumed, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .downloadPaused, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .downloadFinished, object: nil)
     }
 
 //    // MARK: - Table view data source
@@ -237,85 +249,38 @@ class EpisodesTableViewController: PVViewController, UITableViewDataSource, UITa
         
         return [deleteAction]
     }
-
-
-//
-//    func toggleShowAllEpisodes() {
-//        let vc = self.storyboard?.instantiateViewControllerWithIdentifier("episodesTableViewController") as! EpisodesTableViewController
-//        vc.selectedPodcastId = selectedPodcast.objectID
-//        vc.showAllEpisodes = !showAllEpisodes
-//        if showAllEpisodes == false {
-//            self.navigationController?.pushViewController(vc, animated: true)
-//        } else {
-//            navigationController?.popViewControllerAnimated(true)
-//        }
-//        
-//    }
-//    
-//    // Override to support conditional editing of the table view.
-//    func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
-//        // Return False if you do not want the specified item to be editable.
-//        if indexPath.row < episodesArray.count {
-//            let episode = episodesArray[indexPath.row]
-//            if episode.fileName != nil {
-//                return true
-//            }
-//            else {
-//                return false
-//            }
-//        }
-//        else {
-//            return false
-//        }
-//    }
-//    
-//    // Override to support editing the table view.
-//    func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
-//        if editingStyle == .Delete {
-//            PVDeleter.deleteEpisode(episodesArray[indexPath.row].objectID)
-//            episodesArray.removeAtIndex(indexPath.row)
-//            self.tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Fade)
-//            if let podcastTableVC = self.navigationController?.viewControllers.first as? PodcastsTableViewController {
-//                podcastTableVC.reloadPodcastData()
-//            }
-//        }
-//    }
-//    
-//    // MARK: - Navigation
-//    
-//    // In a storyboard-based application, you will often want to do a little preparation before navigation
-//    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-//        if segue.identifier == Constants.TO_PLAYER_SEGUE_ID {
-//            let mediaPlayerViewController = segue.destinationViewController as! MediaPlayerViewController
-//            mediaPlayerViewController.hidesBottomBarWhenPushed = true
-//        } else if segue.identifier == "Show Clips" {
-//            let clipsTableViewController = segue.destinationViewController as! ClipsTableViewController
-//            clipsTableViewController.selectedPodcast = selectedPodcast
-//            clipsTableViewController.selectedEpisode = selectedEpisode
-//        }
-//    }
-//    
-// TODO Why does this need feedUrl twice?
-    func feedParsingComplete(feedUrl feedUrl:String?) {
-//        TODO
-//        self.refreshControl.endRefreshing()
-//        tableView.reloadData()
-    }
 }
 
-extension EpisodesTableViewController:PVDownloaderDelegate {
-    func downloadFinished(episode: DownloadingEpisode) {
-        print("no wai")
+extension EpisodesTableViewController {
+    func downloadFinished(_ notification:Notification) {
+        if let episode = notification.userInfo?["episode"] as? DownloadingEpisode, 
+           let index = self.episodesArray.index(where: { $0.mediaUrl == episode.mediaUrl }), 
+           let cell = self.tableView.cellForRow(at: IndexPath(row: index, section: 0)) as? EpisodeTableViewCell {
+            cell.button.setTitle("Play", for: .normal)
+        }
     }
-    func downloadPaused(episode: DownloadingEpisode) {
-        print("pause plz")
+    
+    func downloadPaused(_ notification:Notification) {
+        if let episode = notification.userInfo?["episode"] as? DownloadingEpisode, 
+           let index = self.episodesArray.index(where: { $0.mediaUrl == episode.mediaUrl }), 
+           let cell = self.tableView.cellForRow(at: IndexPath(row: index, section: 0)) as? EpisodeTableViewCell {
+            cell.button.setTitle("Resume", for: .normal)
+        }
     }
-    func downloadProgressed(episode: DownloadingEpisode) {
+
+    func downloadResumed(_ notification:Notification) {
+        if let episode = notification.userInfo?["episode"] as? DownloadingEpisode, 
+           let index = self.episodesArray.index(where: { $0.mediaUrl == episode.mediaUrl }), 
+           let cell = self.tableView.cellForRow(at: IndexPath(row: index, section: 0)) as? EpisodeTableViewCell {
+            cell.button.setTitle("DLing", for: .normal)
+        }
     }
-    func downloadResumed(episode: DownloadingEpisode) {
-        print("ok carry on")
-    }
-    func downloadStarted() {
-        print("oh hai")
+    
+    func downloadStarted(_ notification:Notification) {
+        if let episode = notification.userInfo?["episode"] as? DownloadingEpisode, 
+           let index = self.episodesArray.index(where: { $0.mediaUrl == episode.mediaUrl }), 
+           let cell = self.tableView.cellForRow(at: IndexPath(row: index, section: 0)) as? EpisodeTableViewCell {
+            cell.button.setTitle("DLing", for: .normal)
+        }
     }
 }

@@ -23,7 +23,6 @@ class PodcastsTableViewController: PVViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        var isFirstTimeAppOpened: Bool = false
         
         if UserDefaults.standard.object(forKey: "ONE_TIME_LOGIN") == nil {
             let storyboard = UIStoryboard(name: "Main", bundle: nil)
@@ -31,8 +30,8 @@ class PodcastsTableViewController: PVViewController {
                 loginVC.delegate = self
                 self.present(loginVC, animated: false, completion: nil)
             }
+            
             UserDefaults.standard.set(NSUUID().uuidString, forKey: "ONE_TIME_LOGIN")
-            isFirstTimeAppOpened = true
         }
 
         self.navigationItem.title = "Podcasts"
@@ -42,11 +41,9 @@ class PodcastsTableViewController: PVViewController {
         self.refreshControl.addTarget(self, action: #selector(refreshPodcastData), for: UIControlEvents.valueChanged)
         self.tableView.addSubview(refreshControl)
         
-        if isFirstTimeAppOpened != true {
-            refreshPodcastFeeds()
-        }
-        
-//        startCheckSubscriptionsForNewEpisodesTimer()
+        refreshPodcastFeeds()
+        loadPodcastData()
+        NotificationCenter.default.addObserver(self, selector: #selector(self.downloadFinished(_:)), name: .downloadFinished, object: nil)
     }
         
     func refreshPodcastData() {
@@ -92,13 +89,16 @@ extension PodcastsTableViewController:PVFeedParserDelegate {
         else {
             loadPodcastData()
         }
+        
+        if let navVCs = self.navigationController?.viewControllers, navVCs.count > 1, 
+           let episodesTableVC = self.navigationController?.viewControllers[1] as? EpisodesTableViewController {
+            episodesTableVC.loadData()
+        }
     }
     
     func feedParsingStarted() { }
     
-    func feedParserChannelParsed() {
-        loadPodcastData()
-    }
+    func feedParserChannelParsed() { }
 }
 
 extension PodcastsTableViewController:UITableViewDelegate, UITableViewDataSource {
@@ -185,5 +185,17 @@ extension PodcastsTableViewController:UITableViewDelegate, UITableViewDataSource
 extension PodcastsTableViewController:LoginModalDelegate {
     func loginTapped() {
         PVAuth.sharedInstance.showAuth0LockLoginVC(vc: self)
+    }
+}
+
+extension PodcastsTableViewController {
+    func downloadFinished(_ notification:Notification) {
+        if let episode = notification.userInfo?["episode"] as? DownloadingEpisode, 
+            let index = self.subscribedPodcastsArray.index(where: { $0.feedUrl == episode.podcastFeedUrl }), 
+            let cell = self.tableView.cellForRow(at: IndexPath(row: index, section: 0)) as? PodcastTableViewCell {
+            let episodes = subscribedPodcastsArray[index].episodes
+            let episodesDownloaded = episodes.filter{ $0.fileName != nil }
+            cell.totalEpisodes?.text = "\(episodesDownloaded.count) downloaded"
+        }
     }
 }
