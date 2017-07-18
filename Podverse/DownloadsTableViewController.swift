@@ -15,12 +15,16 @@ class DownloadsTableViewController: PVViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        setupNotificationListeners()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        PVDownloader.shared.delegate = self
         tableView.reloadData()
+    }
+    
+    deinit {
+        removeObservers()
     }
     
     func indexPathOfDownload(episode: DownloadingEpisode) -> IndexPath? {
@@ -36,7 +40,22 @@ class DownloadsTableViewController: PVViewController {
             self.navigationController?.pushViewController(mediaPlayerVC, animated: true)
         }
     }
-
+    
+    fileprivate func setupNotificationListeners() {
+        NotificationCenter.default.addObserver(self, selector: #selector(self.downloadStarted), name: .downloadStarted, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.downloadProgressed(_:)), name: .downloadProgressed, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.downloadResumed(_:)), name: .downloadResumed, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.downloadPaused(_:)), name: .downloadPaused, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.downloadFinished(_:)), name: .downloadFinished, object: nil)
+    }
+    
+    fileprivate func removeObservers() {
+        NotificationCenter.default.removeObserver(self, name: .downloadStarted, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .downloadResumed, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .downloadPaused, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .downloadFinished, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .downloadProgressed, object: nil)
+    }
 }
 
 extension DownloadsTableViewController:UITableViewDelegate, UITableViewDataSource {
@@ -97,55 +116,49 @@ extension DownloadsTableViewController:UITableViewDelegate, UITableViewDataSourc
         tableView.deselectRow(at: indexPath, animated: false)
 
     }
-    
 }
 
-extension DownloadsTableViewController:PVDownloaderDelegate {
-    func downloadFinished(episode: DownloadingEpisode) {
-        if let indexPath = indexPathOfDownload(episode: episode), let cell = tableView.cellForRow(at: indexPath) as? DownloadTableViewCell {
-            DispatchQueue.main.async {
-                cell.progress.setProgress(1, animated: false)
-                cell.progressStats.text = ""
-                cell.status.text = "Finished"
-            }
+extension DownloadsTableViewController {
+    func downloadFinished(_ notification:Notification) {
+        if let episode = notification.userInfo?["episode"] as? DownloadingEpisode, 
+           let indexPath = indexPathOfDownload(episode: episode), 
+           let cell = tableView.cellForRow(at: indexPath) as? DownloadTableViewCell {
+            cell.progress.setProgress(1, animated: false)
+            cell.progressStats.text = ""
+            cell.status.text = "Finished"
         }
     }
-    func downloadPaused(episode: DownloadingEpisode) {
-        if let indexPath = indexPathOfDownload(episode: episode) {
-            DispatchQueue.main.async {
-                if let cell = self.tableView.cellForRow(at: indexPath) as? DownloadTableViewCell {
-                    cell.progress.setProgress(episode.progress, animated: false)
-                    cell.progressStats.text = ""
-                    cell.status.text = "Paused"
-                }
-            }
+    
+    func downloadPaused(_ notification:Notification) {
+        if let episode = notification.userInfo?["episode"] as? DownloadingEpisode, 
+           let indexPath = indexPathOfDownload(episode: episode), 
+           let cell = self.tableView.cellForRow(at: indexPath) as? DownloadTableViewCell {
+            cell.progress.setProgress(episode.progress, animated: false)
+            cell.progressStats.text = ""
+            cell.status.text = "Paused"
         }
     }
-    func downloadProgressed(episode: DownloadingEpisode) {
-        if let indexPath = indexPathOfDownload(episode: episode) {
-            DispatchQueue.main.async {
-                if let cell = self.tableView.cellForRow(at: indexPath) as? DownloadTableViewCell {
-                    cell.progress.setProgress(episode.progress, animated: false)
-                    cell.progressStats.text = episode.formattedTotalBytesDownloaded
-                    cell.status.text = "Downloading"
-                }
-            }
+    
+    func downloadProgressed(_ notification:Notification) {
+        if let episode = notification.userInfo?["episode"] as? DownloadingEpisode, 
+           let indexPath = indexPathOfDownload(episode: episode),
+           let cell = self.tableView.cellForRow(at: indexPath) as? DownloadTableViewCell {
+            cell.progress.setProgress(episode.progress, animated: false)
+            cell.progressStats.text = episode.formattedTotalBytesDownloaded
+            cell.status.text = "Downloading"
         }
     }
-    func downloadResumed(episode: DownloadingEpisode) {
-        if let indexPath = indexPathOfDownload(episode: episode) {
-            DispatchQueue.main.async {
-                if let cell = self.tableView.cellForRow(at: indexPath) as? DownloadTableViewCell {
-                    cell.progress.setProgress(episode.progress, animated: false)
-                    cell.progressStats.text = episode.formattedTotalBytesDownloaded
-                    cell.status.text = "Downloading"
-                }
-            }
+    func downloadResumed(_ notification:Notification) {
+        if let episode = notification.userInfo?["episode"] as? DownloadingEpisode, 
+           let indexPath = indexPathOfDownload(episode: episode), 
+           let cell = self.tableView.cellForRow(at: indexPath) as? DownloadTableViewCell {
+            cell.progress.setProgress(episode.progress, animated: false)
+            cell.progressStats.text = episode.formattedTotalBytesDownloaded
+            cell.status.text = "Downloading"
         }
     }
+    
     func downloadStarted() {
-        DispatchQueue.main.async {
-            self.tableView.reloadData()
-        }
+        self.tableView.reloadData()
     }
 }
