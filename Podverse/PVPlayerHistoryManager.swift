@@ -64,6 +64,7 @@ class PlayerHistory {
         
         if let index = previousIndex {
             historyItems.rearrange(from: index, to: 0)
+            historyItems[index] = item
         } else {
             historyItems.insert(item, at: 0)
         }
