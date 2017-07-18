@@ -37,13 +37,6 @@ extension Date {
         return components.minute!
     }
 }
-public func ==(lhs: Date, rhs: Date) -> Bool {
-    return lhs.compare(rhs) == .orderedSame
-}
-
-public func <(lhs: Date, rhs: Date) -> Bool {
-    return lhs.compare(rhs) == .orderedAscending
-}
 
 extension String {
     func toDateDate() -> Date? {

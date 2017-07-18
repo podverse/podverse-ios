@@ -60,7 +60,7 @@ class MediaPlayerViewController: PVViewController {
         setPlayIcon()
     }
     
-    override func viewWillAppear(_ animated: Bool) {}
+    override func viewWillAppear(_ animated: Bool) { /* Intentionally left blank so super won't get called */ }
     
     @IBAction func pageControlAction(_ sender: Any) {
         if let sender = sender as? UIPageControl {

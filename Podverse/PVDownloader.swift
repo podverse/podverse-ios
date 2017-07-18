@@ -10,16 +10,15 @@ import Foundation
 import UIKit
 import CoreData
 
-protocol PVDownloaderDelegate:class {
-    func downloadFinished(episode: DownloadingEpisode)
-    func downloadPaused(episode: DownloadingEpisode)
-    func downloadProgressed(episode: DownloadingEpisode)
-    func downloadResumed(episode: DownloadingEpisode)
-    func downloadStarted()
+extension Notification.Name {
+    static let downloadStarted = Notification.Name("downloadStarted")
+    static let downloadPaused = Notification.Name("downloadPaused")
+    static let downloadProgressed = Notification.Name("downloadProgressed")
+    static let downloadResumed = Notification.Name("downloadResumed")
+    static let downloadFinished = Notification.Name("downloadFinished")
 }
 
 class PVDownloader:NSObject {
-    weak var delegate: PVDownloaderDelegate?
     static let shared = PVDownloader()
     var appDelegate = UIApplication.shared.delegate as! AppDelegate
     var docDirectoryURL: URL?
@@ -47,7 +46,9 @@ class PVDownloader:NSObject {
                     episodeDownloadTask.cancel(byProducingResumeData: { (resumeData) in
                         if resumeData != nil {
                             downloadingEpisode.taskResumeData = resumeData
-                            self.delegate?.downloadPaused(episode: downloadingEpisode)
+                            DispatchQueue.main.async {
+                                NotificationCenter.default.post(name: .downloadPaused, object: nil, userInfo: ["episode":downloadingEpisode])
+                            }
                         }
                     })
                 }
@@ -65,7 +66,9 @@ class PVDownloader:NSObject {
             downloadTask.resume()
             endBackgroundTask(taskID)
             
-            self.delegate?.downloadResumed(episode: downloadingEpisode)
+            DispatchQueue.main.async {
+               NotificationCenter.default.post(name: .downloadResumed, object: nil, userInfo: ["episode":downloadingEpisode])
+            }
         }
     }
     
@@ -82,13 +85,16 @@ class PVDownloader:NSObject {
                 incrementBadge()
             } else {
                 print("that's already downloading / downloaded")
+                return
             }
             
             let taskID = beginBackgroundTask()
             downloadTask.resume()
             endBackgroundTask(taskID)
             
-            self.delegate?.downloadStarted()
+            DispatchQueue.main.async {
+                NotificationCenter.default.post(name: .downloadStarted, object: nil, userInfo: ["episode":downloadingEpisode])
+            }
         }
     }
     
@@ -133,10 +139,12 @@ extension PVDownloader:URLSessionDelegate, URLSessionDownloadDelegate {
         }
         else {
             if let episodeDownloadIndex = DownloadingEpisodeList.shared.downloadingEpisodes.index(where: {$0.taskIdentifier == downloadTask.taskIdentifier}) {
-                let episode = DownloadingEpisodeList.shared.downloadingEpisodes[episodeDownloadIndex]
-                episode.totalBytesWritten = Float(totalBytesWritten)
-                episode.totalBytesExpectedToWrite = Float(totalBytesExpectedToWrite)
-                self.delegate?.downloadProgressed(episode: episode)
+                let downloadingEpisode = DownloadingEpisodeList.shared.downloadingEpisodes[episodeDownloadIndex]
+                downloadingEpisode.totalBytesWritten = Float(totalBytesWritten)
+                downloadingEpisode.totalBytesExpectedToWrite = Float(totalBytesExpectedToWrite)
+                DispatchQueue.main.async {
+                    NotificationCenter.default.post(name: .downloadProgressed, object: nil, userInfo: ["episode":downloadingEpisode])
+                }
             }
         }
     }
@@ -202,24 +210,18 @@ extension PVDownloader:URLSessionDelegate, URLSessionDownloadDelegate {
                     
                     let podcastTitle = episode.podcast.title
                     // Save the downloadedMediaFileDestination with the object
-                    moc.saveData {
-                        let downloadHasFinishedUserInfo = ["episode":episode]
-                        
-                        DispatchQueue.main.async { [weak self] in
-                            guard let strongSelf = self else {
-                                return
-                            }
-                            
-                            strongSelf.delegate?.downloadFinished(episode: downloadingEpisode)
-                            // TODO: When a download finishes and Podverse is in the background, two localnotifications show in the UI. Why are we receiving two instead of one, when only one notification is getting scheduled below?
+                    moc.saveData {                        
+                        DispatchQueue.main.async { _ in
+                            NotificationCenter.default.post(name: .downloadFinished, object: nil, userInfo: ["episode":downloadingEpisode])
+
                             let notification = UILocalNotification()
                             notification.applicationIconBadgeNumber = UIApplication.shared.applicationIconBadgeNumber + 1
-                            notification.alertBody = podcastTitle + " - " + episodeTitle // text that will be displayed in the notification
+                            notification.alertBody = podcastTitle + " - " + episodeTitle
                             notification.alertAction = "open"
-                            notification.soundName = UILocalNotificationDefaultSoundName // play default sound
+                            notification.soundName = UILocalNotificationDefaultSoundName
                             UIApplication.shared.presentLocalNotificationNow(notification)
                             
-                            strongSelf.decrementBadge()
+                            PVDownloader.shared.decrementBadge()
                         }
                     }
                 }
