@@ -10,14 +10,12 @@ import Foundation
 import CoreData
 import UIKit
 
-protocol PVDeleterDelegate {
-    func episodeDeleted(mediaUrl: String?)
-    func podcastDeleted(feedUrl: String?)
+extension Notification.Name {
+    static let episodeDeleted = Notification.Name("episodeDeleted")
+    static let podcastDeleted = Notification.Name("podcastDeleted")
 }
 
 class PVDeleter {
-    
-    static var delegate: PVDeleterDelegate?
     
     static func deletePodcast(podcastId: NSManagedObjectID?, feedUrl: String? = nil) {
         let moc = CoreDataHelper.createMOCForThread(threadType: .privateThread)
@@ -26,13 +24,13 @@ class PVDeleter {
             deleteAllEpisodesFromPodcast(podcast: podcast)
             moc.delete(podcast)
             DispatchQueue.main.async {
-                self.delegate?.podcastDeleted(feedUrl: podcast.feedUrl)
+                NotificationCenter.default.post(name: .podcastDeleted, object: nil, userInfo: ["feedUrl": podcast.feedUrl as? Any])
             }
         } else if let feedUrl = feedUrl, let podcast = Podcast.podcastForFeedUrl(feedUrlString: feedUrl, managedObjectContext: moc) {
             deleteAllEpisodesFromPodcast(podcast: podcast)
             moc.delete(podcast)
             DispatchQueue.main.async {
-                self.delegate?.podcastDeleted(feedUrl: podcast.feedUrl)
+                NotificationCenter.default.post(name: .podcastDeleted, object: nil, userInfo: ["feedUrl": feedUrl as? Any])
             }
         }
         
@@ -46,7 +44,7 @@ class PVDeleter {
         }
     }
     
-    static func deleteEpisode(episodeId: NSManagedObjectID, fileOnly: Bool = false, shouldCallProtocolMethod: Bool = false) {
+    static func deleteEpisode(episodeId: NSManagedObjectID, fileOnly: Bool = false, shouldCallNotificationMethod: Bool = false) {
         DispatchQueue.global().async {
             let moc = CoreDataHelper.createMOCForThread(threadType: .privateThread)
             
@@ -86,8 +84,8 @@ class PVDeleter {
                 DispatchQueue.main.async {
                     PVDownloader.shared.decrementBadge()
                     
-                    if shouldCallProtocolMethod == true {
-                        self.delegate?.episodeDeleted(mediaUrl: mediaUrl)
+                    if shouldCallNotificationMethod == true {
+                        NotificationCenter.default.post(name: .episodeDeleted, object: nil, userInfo: ["mediaUrl":mediaUrl as? Any])
                     }
                 }
             }

@@ -22,6 +22,7 @@
 		309BFE161F0A04F8008D101B /* Array+rearrange.swift in Sources */ = {isa = PBXBuildFile; fileRef = 309BFE151F0A04F8008D101B /* Array+rearrange.swift */; };
 		30A0A4941F1AD6A500242F85 /* NowPlayingBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30A0A4931F1AD6A500242F85 /* NowPlayingBar.swift */; };
 		30A0A4961F1ADAA200242F85 /* NowPlayingBar.xib in Resources */ = {isa = PBXBuildFile; fileRef = 30A0A4951F1ADAA200242F85 /* NowPlayingBar.xib */; };
+		30A0A4981F1EFF1900242F85 /* UIApplication+topViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30A0A4971F1EFF1900242F85 /* UIApplication+topViewController.swift */; };
 		30A575661EBECFF90088CCA6 /* EpisodesTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30A575651EBECFF90088CCA6 /* EpisodesTableViewController.swift */; };
 		30A575681EBED8360088CCA6 /* EpisodeTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30A575671EBED8360088CCA6 /* EpisodeTableViewCell.swift */; };
 		30B427F21EBE4CB100BAD942 /* PVSubscriber.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30B427F11EBE4CB100BAD942 /* PVSubscriber.swift */; };
@@ -117,6 +118,7 @@
 		309BFE151F0A04F8008D101B /* Array+rearrange.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Array+rearrange.swift"; sourceTree = "<group>"; };
 		30A0A4931F1AD6A500242F85 /* NowPlayingBar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NowPlayingBar.swift; sourceTree = "<group>"; };
 		30A0A4951F1ADAA200242F85 /* NowPlayingBar.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = NowPlayingBar.xib; sourceTree = "<group>"; };
+		30A0A4971F1EFF1900242F85 /* UIApplication+topViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIApplication+topViewController.swift"; sourceTree = "<group>"; };
 		30A575651EBECFF90088CCA6 /* EpisodesTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EpisodesTableViewController.swift; sourceTree = "<group>"; };
 		30A575671EBED8360088CCA6 /* EpisodeTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EpisodeTableViewCell.swift; sourceTree = "<group>"; };
 		30B427F11EBE4CB100BAD942 /* PVSubscriber.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PVSubscriber.swift; sourceTree = "<group>"; };
@@ -437,6 +439,7 @@
 				E7B2A5AB1E162B8500AAE036 /* String+Formatters.swift */,
 				E7B2A59C1E123A4400AAE036 /* UIViewController+InternetRequiredAlert.swift */,
 				E7B2A59A1E12111500AAE036 /* URL+RemoteSize.swift */,
+				30A0A4971F1EFF1900242F85 /* UIApplication+topViewController.swift */,
 			);
 			name = Extensions;
 			sourceTree = "<group>";
@@ -783,6 +786,7 @@
 				30DBD4D31F11B05900A431E6 /* OAuth2RetryHandler.swift in Sources */,
 				E7299F121F19368400AB3168 /* AboutPlayingItemViewController.swift in Sources */,
 				30026D8B1F0B322000043D79 /* AboutViewController.swift in Sources */,
+				30A0A4981F1EFF1900242F85 /* UIApplication+topViewController.swift in Sources */,
 				E7D25BDC1E0F30C500B60368 /* podverse.xcdatamodeld in Sources */,
 				E7B2A5A81E16246B00AAE036 /* LoginViewController.swift in Sources */,
 				E7B2A59B1E12111500AAE036 /* URL+RemoteSize.swift in Sources */,

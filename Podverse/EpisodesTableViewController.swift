@@ -257,7 +257,7 @@ class EpisodesTableViewController: PVViewController, UITableViewDataSource, UITa
                 self.tabBarController?.hidePlayerView()
             }
 
-            PVDeleter.deleteEpisode(episodeId: episodeToEdit.objectID, fileOnly: true, shouldCallProtocolMethod: true)
+            PVDeleter.deleteEpisode(episodeId: episodeToEdit.objectID, fileOnly: true, shouldCallNotificationMethod: true)
         })
         
         return [deleteAction]
