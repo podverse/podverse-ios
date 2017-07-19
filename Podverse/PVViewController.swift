@@ -65,17 +65,17 @@ class PVViewController: UIViewController {
 }
 
 extension PVViewController {
-    func podcastDeleted(_ notification:Notification) {
-        if let feedUrl = notification.userInfo?["feedUrl"] as? String {
-            if playerHistoryManager.checkIfPodcastWasLastPlayed(feedUrl: feedUrl) == true {
+    func episodeDeleted(_ notification:Notification) {
+        if let mediaUrl = notification.userInfo?["mediaUrl"] as? String {
+            if playerHistoryManager.checkIfEpisodeWasLastPlayed(mediaUrl: mediaUrl) == true {
                 self.tabBarController?.hidePlayerView()
             }
         }
     }
     
-    func episodeDeleted(_ notification:Notification) {
-        if let mediaUrl = notification.userInfo?["mediaUrl"] as? String {
-            if playerHistoryManager.checkIfEpisodeWasLastPlayed(mediaUrl: mediaUrl) == true {
+    func podcastDeleted(_ notification:Notification) {
+        if let feedUrl = notification.userInfo?["feedUrl"] as? String {
+            if playerHistoryManager.checkIfPodcastWasLastPlayed(feedUrl: feedUrl) == true {
                 self.tabBarController?.hidePlayerView()
             }
         }

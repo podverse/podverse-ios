@@ -180,6 +180,7 @@ extension PodcastsTableViewController:UITableViewDelegate, UITableViewDataSource
         }
         
     }
+
 }
 
 extension PodcastsTableViewController:LoginModalDelegate {
@@ -196,6 +197,18 @@ extension PodcastsTableViewController {
             let episodes = subscribedPodcastsArray[index].episodes
             let episodesDownloaded = episodes.filter{ $0.fileName != nil }
             cell.totalEpisodes?.text = "\(episodesDownloaded.count) downloaded"
+        }
+    }
+    
+    override func episodeDeleted(_ notification:Notification) {
+        super.episodeDeleted(notification)
+        loadPodcastData()
+    }
+    
+    override func podcastDeleted(_ notification:Notification) {
+        super.podcastDeleted(notification)
+        if let feedUrl = notification.userInfo?["feedUrl"] as? String, let index = self.subscribedPodcastsArray.index(where: { $0.feedUrl == feedUrl }) {
+                self.tableView.deleteRows(at: [IndexPath(row: index, section: 0)], with: .automatic)
         }
     }
 }

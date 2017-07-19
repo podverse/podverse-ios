@@ -24,6 +24,7 @@ class EpisodesTableViewController: PVViewController, UITableViewDataSource, UITa
     @IBAction func bottomButtonTouched(_ sender: Any) {
         showAllEpisodes = !showAllEpisodes
         loadData()
+        self.tableView.reloadData()
     }
     
     func loadData() {
@@ -59,8 +60,6 @@ class EpisodesTableViewController: PVViewController, UITableViewDataSource, UITa
                 
                 return false
             })
-            
-            self.tableView.reloadData()
         }
     }
 
@@ -86,6 +85,7 @@ class EpisodesTableViewController: PVViewController, UITableViewDataSource, UITa
     override func viewDidLoad() {
         super.viewDidLoad()
         loadData()
+        self.tableView.reloadData()
         setupNotificationListeners()
     }
     
@@ -125,57 +125,39 @@ class EpisodesTableViewController: PVViewController, UITableViewDataSource, UITa
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        
-        if indexPath.row < episodesArray.count {
-            let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath as IndexPath) as! EpisodeTableViewCell
 
-            let episode = episodesArray[indexPath.row]
+        let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath as IndexPath) as! EpisodeTableViewCell
 
-            cell.title?.text = episode.title
+        let episode = episodesArray[indexPath.row]
 
-            if let summary = episode.summary {
-                cell.summary?.text = summary.removeHTMLFromString()
-            }
+        cell.title?.text = episode.title
 
-            let totalClips = String(123)
-            cell.totalClips?.text = String(totalClips + " clips")
-     
-            if let pubDate = episode.pubDate {
-                cell.pubDate?.text = pubDate.toShortFormatString()
-            }
-            
-            if episode.fileName != nil {
-                cell.button.setTitle("Play", for: .normal)
-            } else if (DownloadingEpisodeList.shared.downloadingEpisodes.contains(where: {$0.mediaUrl == episode.mediaUrl})) {
-                cell.button.setTitle("DLing", for: .normal)
-            } else {
-                cell.button.setTitle("DL", for: .normal)
-            }
-
-            cell.button.addTarget(self, action: #selector(downloadPlay(sender:)), for: .touchUpInside)
-
-            return cell
-        } else {
-            let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath as IndexPath)
-//
-//            if showAllEpisodes == false {
-//                cell.textLabel!.text = "Show All Episodes"
-//                
-//            } else {
-//                cell.textLabel!.text = "Show Downloaded Episodes"
-//            }
-//            
-            return cell
+        if let summary = episode.summary {
+            cell.summary?.text = summary.removeHTMLFromString()
         }
+
+        let totalClips = String(123)
+        cell.totalClips?.text = String(totalClips + " clips")
+ 
+        if let pubDate = episode.pubDate {
+            cell.pubDate?.text = pubDate.toShortFormatString()
+        }
+        
+        if episode.fileName != nil {
+            cell.button.setTitle("Play", for: .normal)
+        } else if (DownloadingEpisodeList.shared.downloadingEpisodes.contains(where: {$0.mediaUrl == episode.mediaUrl})) {
+            cell.button.setTitle("DLing", for: .normal)
+        } else {
+            cell.button.setTitle("DL", for: .normal)
+        }
+
+        cell.button.addTarget(self, action: #selector(downloadPlay(sender:)), for: .touchUpInside)
+
+        return cell
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-//        if indexPath.row < episodesArray.count {
-            return 120
-//        }
-//        else {
-//            return 60
-//        }
+        return 120
     }
 
     override func goToNowPlaying () {
@@ -265,35 +247,43 @@ class EpisodesTableViewController: PVViewController, UITableViewDataSource, UITa
 }
 
 extension EpisodesTableViewController {
-    func downloadFinished(_ notification:Notification) {
-        if let episode = notification.userInfo?["episode"] as? DownloadingEpisode, 
-           let index = self.episodesArray.index(where: { $0.mediaUrl == episode.mediaUrl }), 
-           let cell = self.tableView.cellForRow(at: IndexPath(row: index, section: 0)) as? EpisodeTableViewCell {
-            cell.button.setTitle("Play", for: .normal)
+    
+    func updateCellByNotification(_ notification:Notification) {
+        loadData()
+        if let downloadingEpisode = notification.userInfo?["episode"] as? DownloadingEpisode, let mediaUrl = downloadingEpisode.mediaUrl, let index = self.episodesArray.index(where: { $0.mediaUrl == mediaUrl }) {
+            
+            DispatchQueue.main.async {
+                self.tableView.reloadRows(at: [IndexPath(row: index, section: 0)], with: .automatic)
+            }
+            
         }
+    }
+    
+    func downloadFinished(_ notification:Notification) {
+        updateCellByNotification(notification)
     }
     
     func downloadPaused(_ notification:Notification) {
-        if let episode = notification.userInfo?["episode"] as? DownloadingEpisode, 
-           let index = self.episodesArray.index(where: { $0.mediaUrl == episode.mediaUrl }), 
-           let cell = self.tableView.cellForRow(at: IndexPath(row: index, section: 0)) as? EpisodeTableViewCell {
-            cell.button.setTitle("Resume", for: .normal)
-        }
+        updateCellByNotification(notification)
     }
 
     func downloadResumed(_ notification:Notification) {
-        if let episode = notification.userInfo?["episode"] as? DownloadingEpisode, 
-           let index = self.episodesArray.index(where: { $0.mediaUrl == episode.mediaUrl }), 
-           let cell = self.tableView.cellForRow(at: IndexPath(row: index, section: 0)) as? EpisodeTableViewCell {
-            cell.button.setTitle("DLing", for: .normal)
-        }
+        updateCellByNotification(notification)
     }
     
     func downloadStarted(_ notification:Notification) {
-        if let episode = notification.userInfo?["episode"] as? DownloadingEpisode, 
-           let index = self.episodesArray.index(where: { $0.mediaUrl == episode.mediaUrl }), 
-           let cell = self.tableView.cellForRow(at: IndexPath(row: index, section: 0)) as? EpisodeTableViewCell {
-            cell.button.setTitle("DLing", for: .normal)
+        updateCellByNotification(notification)
+    }
+    
+    override func episodeDeleted(_ notification:Notification) {
+        loadData()
+        if let mediaUrl = notification.userInfo?["mediaUrl"] as? String, let index = self.episodesArray.index(where: { $0.mediaUrl == mediaUrl }), let _ = tableView.cellForRow(at: IndexPath(row: index, section: 0)) as? DownloadTableViewCell {
+            if showAllEpisodes == false {
+                DispatchQueue.main.async {
+                    self.tableView.deleteRows(at: [IndexPath(row: index, section: 0)], with: .automatic)
+                }
+            }
         }
     }
+
 }
