@@ -150,13 +150,11 @@ class PVMediaPlayer {
         }
 
 //        self.delegate?.setMediaPlayerVCPlayPauseIcon()
-        mediaPlayerIsPlaying = false
-        return false
     }
     
     @objc func playerDidFinishPlaying() {
         let moc = CoreDataHelper.createMOCForThread(threadType: .mainThread)
-        if var currentlyPlayingItem = playerHistoryManager.historyItems.first, let episodeMediaUrl = currentlyPlayingItem.episodeMediaUrl, let episode = Episode.episodeForMediaUrl(mediaUrlString: episodeMediaUrl, managedObjectContext: moc) {
+        if let currentlyPlayingItem = playerHistoryManager.historyItems.first, let episodeMediaUrl = currentlyPlayingItem.episodeMediaUrl, let episode = Episode.episodeForMediaUrl(mediaUrlString: episodeMediaUrl, managedObjectContext: moc) {
             PVDeleter.deleteEpisode(episodeId: episode.objectID, fileOnly: true)
             currentlyPlayingItem.didFinishPlaying = true
             playerHistoryManager.addOrUpdateItem(item: currentlyPlayingItem)

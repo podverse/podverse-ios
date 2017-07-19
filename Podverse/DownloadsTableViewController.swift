@@ -120,7 +120,7 @@ extension DownloadsTableViewController:UITableViewDelegate, UITableViewDataSourc
 
 extension DownloadsTableViewController {
     func downloadFinished(_ notification:Notification) {
-        if let episode = notification.userInfo?["episode"] as? DownloadingEpisode, 
+        if let episode = notification.userInfo?[PVDownloader.episodeKey] as? DownloadingEpisode, 
            let indexPath = indexPathOfDownload(episode: episode), 
            let cell = tableView.cellForRow(at: indexPath) as? DownloadTableViewCell {
             cell.progress.setProgress(1, animated: false)
@@ -130,7 +130,7 @@ extension DownloadsTableViewController {
     }
     
     func downloadPaused(_ notification:Notification) {
-        if let episode = notification.userInfo?["episode"] as? DownloadingEpisode, 
+        if let episode = notification.userInfo?[PVDownloader.episodeKey] as? DownloadingEpisode, 
            let indexPath = indexPathOfDownload(episode: episode), 
            let cell = self.tableView.cellForRow(at: indexPath) as? DownloadTableViewCell {
             cell.progress.setProgress(episode.progress, animated: false)
@@ -140,7 +140,7 @@ extension DownloadsTableViewController {
     }
     
     func downloadProgressed(_ notification:Notification) {
-        if let episode = notification.userInfo?["episode"] as? DownloadingEpisode, 
+        if let episode = notification.userInfo?[PVDownloader.episodeKey] as? DownloadingEpisode, 
            let indexPath = indexPathOfDownload(episode: episode),
            let cell = self.tableView.cellForRow(at: indexPath) as? DownloadTableViewCell {
             cell.progress.setProgress(episode.progress, animated: false)
@@ -149,7 +149,7 @@ extension DownloadsTableViewController {
         }
     }
     func downloadResumed(_ notification:Notification) {
-        if let episode = notification.userInfo?["episode"] as? DownloadingEpisode, 
+        if let episode = notification.userInfo?[PVDownloader.episodeKey] as? DownloadingEpisode, 
            let indexPath = indexPathOfDownload(episode: episode), 
            let cell = self.tableView.cellForRow(at: indexPath) as? DownloadTableViewCell {
             cell.progress.setProgress(episode.progress, animated: false)
