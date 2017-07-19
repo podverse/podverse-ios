@@ -160,6 +160,10 @@ class PVMediaPlayer {
             PVDeleter.deleteEpisode(episodeId: episode.objectID, fileOnly: true)
             currentlyPlayingItem.didFinishPlaying = true
             playerHistoryManager.addOrUpdateItem(item: currentlyPlayingItem)
+            
+            if let topController = UIApplication.topViewController() as? MediaPlayerViewController {
+                topController.navigationController?.popViewController(animated: true)
+            }
         }
     }
 
