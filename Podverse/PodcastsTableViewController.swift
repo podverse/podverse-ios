@@ -190,12 +190,16 @@ extension PodcastsTableViewController:LoginModalDelegate {
 
 extension PodcastsTableViewController {
     func downloadFinished(_ notification:Notification) {
-        if let episode = notification.userInfo?["episode"] as? DownloadingEpisode, 
+        if let episode = notification.userInfo?[PVDownloader.episodeKey] as? DownloadingEpisode, 
             let index = self.subscribedPodcastsArray.index(where: { $0.feedUrl == episode.podcastFeedUrl }), 
             let cell = self.tableView.cellForRow(at: IndexPath(row: index, section: 0)) as? PodcastTableViewCell {
             let episodes = subscribedPodcastsArray[index].episodes
             let episodesDownloaded = episodes.filter{ $0.fileName != nil }
             cell.totalEpisodes?.text = "\(episodesDownloaded.count) downloaded"
         }
+    }
+    
+    override func episodeDeleted(mediaUrl: String?) {
+        super.episodeDeleted(mediaUrl: mediaUrl)
     }
 }
