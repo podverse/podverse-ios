@@ -50,6 +50,8 @@ class MediaPlayerViewController: PVViewController {
         }
         
         self.tabBarController?.hidePlayerView()
+        
+        navigationController?.interactivePopGestureRecognizer?.isEnabled = false
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -61,6 +63,10 @@ class MediaPlayerViewController: PVViewController {
     }
     
     override func viewWillAppear(_ animated: Bool) { /* Intentionally left blank so super won't get called */ }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        navigationController?.interactivePopGestureRecognizer?.isEnabled = true
+    }
     
     @IBAction func pageControlAction(_ sender: Any) {
         if let sender = sender as? UIPageControl {
