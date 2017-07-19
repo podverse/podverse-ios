@@ -79,6 +79,11 @@ class PVDeleter {
                     CoreDataHelper.deleteItemFromCoreData(deleteObjectID: episode.objectID, moc: moc)
                 }
                 
+                if var currentlyPlayingItem = PlayerHistory.manager.historyItems.first {
+                    currentlyPlayingItem.wasDeleted = true
+                    PlayerHistory.manager.addOrUpdateItem(item: currentlyPlayingItem)
+                }
+                
                 moc.saveData(nil)
                 
                 DispatchQueue.main.async {

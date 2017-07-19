@@ -250,7 +250,7 @@ class PVMediaPlayer {
         
         currentlyPlayingItem = playerHistoryItem
         
-        currentlyPlayingItem?.didFinishPlaying = false
+        currentlyPlayingItem?.wasDeleted = false
         
         avPlayer.replaceCurrentItem(with: nil)
         

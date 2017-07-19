@@ -63,16 +63,16 @@ class PlayerHistory {
         })
         
         if let index = previousIndex {
-            historyItems.rearrange(from: index, to: 0)
             historyItems[index] = item
+            historyItems.rearrange(from: index, to: 0)
         } else {
             historyItems.insert(item, at: 0)
         }
-        
+
     }
     
     func convertEpisodeToPlayerHistoryItem(episode: Episode) -> PlayerHistoryItem {
-        let playerHistoryItem = PlayerHistoryItem(podcastFeedUrl: episode.podcast.feedUrl, podcastTitle: episode.podcast.title, podcastImageUrl: episode.podcast.imageUrl, episodeMediaUrl: episode.mediaUrl, episodeTitle: episode.title, episodeSummary: episode.summary, episodeDuration: episode.duration, episodePubDate: episode.pubDate, didFinishPlaying: false, lastPlaybackPosition: 0)
+        let playerHistoryItem = PlayerHistoryItem(podcastFeedUrl: episode.podcast.feedUrl, podcastTitle: episode.podcast.title, podcastImageUrl: episode.podcast.imageUrl, episodeMediaUrl: episode.mediaUrl, episodeTitle: episode.title, episodeSummary: episode.summary, episodeDuration: episode.duration, episodePubDate: episode.pubDate, wasDeleted: false, lastPlaybackPosition: 0)
         
         return playerHistoryItem
     }
