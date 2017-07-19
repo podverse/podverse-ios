@@ -75,8 +75,9 @@ extension PVViewController:PVDeleterDelegate {
 
 extension PVViewController:TableViewHeightProtocol {
     func adjustTableView() {
-        if let index = self.view.constraints.index(where: {$0.secondItem is UITableView && $0.secondAttribute == NSLayoutAttribute.bottom }) {
-            self.view.constraints[index].constant = self.tabBarController!.playerView.isHidden ? 0.0 : (self.tabBarController?.playerView.frame.height ?? 0.0)
+        if let index = self.view.constraints.index(where: {$0.secondItem is UITableView && $0.secondAttribute == NSLayoutAttribute.bottom }),
+           let tabbarVC = self.tabBarController {
+            self.view.constraints[index].constant = tabbarVC.playerView.isHidden ? 0.0 : tabbarVC.playerView.frame.height
         }
     }
 }
