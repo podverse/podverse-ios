@@ -276,6 +276,7 @@ extension EpisodesTableViewController {
     }
     
     override func episodeDeleted(_ notification:Notification) {
+        super.episodeDeleted(notification)
         loadData()
         if let mediaUrl = notification.userInfo?["mediaUrl"] as? String, let index = self.episodesArray.index(where: { $0.mediaUrl == mediaUrl }), let _ = tableView.cellForRow(at: IndexPath(row: index, section: 0)) as? DownloadTableViewCell {
             if showAllEpisodes == false {
