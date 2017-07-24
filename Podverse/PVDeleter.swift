@@ -84,13 +84,13 @@ class PVDeleter {
                     PlayerHistory.manager.addOrUpdateItem(item: currentlyPlayingItem)
                 }
                 
-                moc.saveData(nil)
-                
-                DispatchQueue.main.async {
-                    PVDownloader.shared.decrementBadge()
-                    
-                    if shouldCallNotificationMethod == true {
-                        NotificationCenter.default.post(name: .episodeDeleted, object: nil, userInfo: ["mediaUrl":mediaUrl as? Any])
+                moc.saveData() {
+                    DispatchQueue.main.async {
+                        PVDownloader.shared.decrementBadge()
+                        
+                        if shouldCallNotificationMethod == true {
+                            NotificationCenter.default.post(name: .episodeDeleted, object: nil, userInfo: ["mediaUrl":mediaUrl as? Any])
+                        }
                     }
                 }
             }

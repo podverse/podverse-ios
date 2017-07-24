@@ -279,10 +279,8 @@ extension EpisodesTableViewController {
         if let mediaUrl = notification.userInfo?["mediaUrl"] as? String, let index = self.episodesArray.index(where: { $0.mediaUrl == mediaUrl }), let _ = tableView.cellForRow(at: IndexPath(row: index, section: 0)) as? EpisodeTableViewCell {
             if showAllEpisodes == false {
                 self.episodesArray.remove(at: index)
-                
-                DispatchQueue.main.async {
-                    self.tableView.deleteRows(at: [IndexPath(row: index, section: 0)], with: .automatic)
-                }
+                self.tableView.deleteRows(at: [IndexPath(row: index, section: 0)], with: .automatic)
+                self.moc.refreshAllObjects()
             }
         }
     }

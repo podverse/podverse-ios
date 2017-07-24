@@ -63,10 +63,7 @@ enum PlayingSpeed {
 }
 
 protocol PVMediaPlayerDelegate {
-//    func setMediaPlayerVCPlayPauseIcon()
-//    func episodeFinishedPlaying(_ currentEpisode:Episode?)
-//    func clipFinishedPlaying(_ currentClip:Clip?)
-    
+    func didFinishPlaying()
 }
 
 protocol PVMediaPlayerUIDelegate {
@@ -150,18 +147,16 @@ class PVMediaPlayer {
         }
 
 //        self.delegate?.setMediaPlayerVCPlayPauseIcon()
-        mediaPlayerIsPlaying = false
-        return false
     }
     
     @objc func playerDidFinishPlaying() {
         let moc = CoreDataHelper.createMOCForThread(threadType: .mainThread)
-        if var currentlyPlayingItem = playerHistoryManager.historyItems.first, let episodeMediaUrl = currentlyPlayingItem.episodeMediaUrl, let episode = Episode.episodeForMediaUrl(mediaUrlString: episodeMediaUrl, managedObjectContext: moc) {
+        if let currentlyPlayingItem = playerHistoryManager.historyItems.first, let episodeMediaUrl = currentlyPlayingItem.episodeMediaUrl, let episode = Episode.episodeForMediaUrl(mediaUrlString: episodeMediaUrl, managedObjectContext: moc) {
             PVDeleter.deleteEpisode(episodeId: episode.objectID, fileOnly: true, shouldCallNotificationMethod: true)
+            currentlyPlayingItem.wasDeleted = true
+            playerHistoryManager.addOrUpdateItem(item: currentlyPlayingItem)
             
-            if let topController = UIApplication.topViewController() as? MediaPlayerViewController {
-                topController.navigationController?.popViewController(animated: true)
-            }
+            self.delegate?.didFinishPlaying()
         }
     }
 

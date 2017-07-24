@@ -33,6 +33,8 @@ class MediaPlayerViewController: PVViewController {
     
     override func viewDidLoad() {
         setupContainerView()
+        
+        pvMediaPlayer.delegate = self
 
         let share = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.action, target: self, action: #selector(showShareMenu))
         let makeClip = UIBarButtonItem(title: "Make Clip", style: .plain, target: self, action: #selector(showMakeClip))
@@ -286,5 +288,13 @@ class MediaPlayerViewController: PVViewController {
 extension MediaPlayerViewController:ClipsListDelegate {
     func didSelectClip(clip: MediaRef) {
         //Change the player data and info to the passed in clip
+    }
+}
+
+extension MediaPlayerViewController:PVMediaPlayerDelegate {
+    func didFinishPlaying() {
+        DispatchQueue.main.async {
+            self.navigationController?.popViewController(animated: true)
+        }
     }
 }

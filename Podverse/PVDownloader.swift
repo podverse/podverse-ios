@@ -24,6 +24,7 @@ class PVDownloader:NSObject {
     var docDirectoryURL: URL?
     var downloadSession: URLSession!
     let reachability = PVReachability.shared
+    static let episodeKey = "episodeKey"
     
     override init() {
         super.init()
@@ -67,7 +68,7 @@ class PVDownloader:NSObject {
             endBackgroundTask(taskID)
             
             DispatchQueue.main.async {
-               NotificationCenter.default.post(name: .downloadResumed, object: nil, userInfo: ["episode":downloadingEpisode])
+               NotificationCenter.default.post(name: .downloadResumed, object: nil, userInfo: [Episode.episodeKey:downloadingEpisode])
             }
         }
     }
