@@ -250,12 +250,10 @@ extension EpisodesTableViewController {
     
     func updateCellByNotification(_ notification:Notification) {
         loadData()
-        if let downloadingEpisode = notification.userInfo?["episode"] as? DownloadingEpisode, let mediaUrl = downloadingEpisode.mediaUrl, let index = self.episodesArray.index(where: { $0.mediaUrl == mediaUrl }) {
+        if let downloadingEpisode = notification.userInfo?[Episode.episodeKey] as? DownloadingEpisode, let mediaUrl = downloadingEpisode.mediaUrl, let index = self.episodesArray.index(where: { $0.mediaUrl == mediaUrl }) {
             
-            DispatchQueue.main.async {
-                self.tableView.reloadRows(at: [IndexPath(row: index, section: 0)], with: .automatic)
-            }
-            
+            self.moc.refresh(self.episodesArray[index], mergeChanges: true)
+            self.tableView.reloadRows(at: [IndexPath(row: index, section: 0)], with: .automatic)            
         }
     }
     

@@ -47,7 +47,7 @@ class PVDownloader:NSObject {
                         if resumeData != nil {
                             downloadingEpisode.taskResumeData = resumeData
                             DispatchQueue.main.async {
-                                NotificationCenter.default.post(name: .downloadPaused, object: nil, userInfo: ["episode":downloadingEpisode])
+                                NotificationCenter.default.post(name: .downloadPaused, object: nil, userInfo: [Episode.episodeKey:downloadingEpisode])
                             }
                         }
                     })
@@ -93,7 +93,7 @@ class PVDownloader:NSObject {
             endBackgroundTask(taskID)
             
             DispatchQueue.main.async {
-                NotificationCenter.default.post(name: .downloadStarted, object: nil, userInfo: ["episode":downloadingEpisode])
+                NotificationCenter.default.post(name: .downloadStarted, object: nil, userInfo: [Episode.episodeKey:downloadingEpisode])
             }
         }
     }
@@ -143,7 +143,7 @@ extension PVDownloader:URLSessionDelegate, URLSessionDownloadDelegate {
                 downloadingEpisode.totalBytesWritten = Float(totalBytesWritten)
                 downloadingEpisode.totalBytesExpectedToWrite = Float(totalBytesExpectedToWrite)
                 DispatchQueue.main.async {
-                    NotificationCenter.default.post(name: .downloadProgressed, object: nil, userInfo: ["episode":downloadingEpisode])
+                    NotificationCenter.default.post(name: .downloadProgressed, object: nil, userInfo: [Episode.episodeKey:downloadingEpisode])
                 }
             }
         }
@@ -212,7 +212,7 @@ extension PVDownloader:URLSessionDelegate, URLSessionDownloadDelegate {
                     // Save the downloadedMediaFileDestination with the object
                     moc.saveData {                        
                         DispatchQueue.main.async { _ in
-                            NotificationCenter.default.post(name: .downloadFinished, object: nil, userInfo: ["episode":downloadingEpisode])
+                            NotificationCenter.default.post(name: .downloadFinished, object: nil, userInfo: [Episode.episodeKey:downloadingEpisode])
 
                             let notification = UILocalNotification()
                             notification.applicationIconBadgeNumber = UIApplication.shared.applicationIconBadgeNumber + 1
