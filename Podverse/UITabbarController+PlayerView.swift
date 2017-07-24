@@ -47,10 +47,12 @@ extension UITabBarController:PlayerViewProtocol {
     
     func hidePlayerView() {
         self.playerView.isHidden = true
+        PVViewController.delegate?.adjustTableView()
     }
     
     func showPlayerView() {
         self.playerView.isHidden = false
+        PVViewController.delegate?.adjustTableView()
     }
     
     func goToMediaPlayer() {

@@ -266,7 +266,7 @@ class EpisodesTableViewController: PVViewController, UITableViewDataSource, UITa
 
 extension EpisodesTableViewController {
     func downloadFinished(_ notification:Notification) {
-        if let episode = notification.userInfo?["episode"] as? DownloadingEpisode, 
+        if let episode = notification.userInfo?[PVDownloader.episodeKey] as? DownloadingEpisode, 
            let index = self.episodesArray.index(where: { $0.mediaUrl == episode.mediaUrl }), 
            let cell = self.tableView.cellForRow(at: IndexPath(row: index, section: 0)) as? EpisodeTableViewCell {
             cell.button.setTitle("Play", for: .normal)
@@ -274,7 +274,7 @@ extension EpisodesTableViewController {
     }
     
     func downloadPaused(_ notification:Notification) {
-        if let episode = notification.userInfo?["episode"] as? DownloadingEpisode, 
+        if let episode = notification.userInfo?[PVDownloader.episodeKey] as? DownloadingEpisode, 
            let index = self.episodesArray.index(where: { $0.mediaUrl == episode.mediaUrl }), 
            let cell = self.tableView.cellForRow(at: IndexPath(row: index, section: 0)) as? EpisodeTableViewCell {
             cell.button.setTitle("Resume", for: .normal)
@@ -282,7 +282,7 @@ extension EpisodesTableViewController {
     }
 
     func downloadResumed(_ notification:Notification) {
-        if let episode = notification.userInfo?["episode"] as? DownloadingEpisode, 
+        if let episode = notification.userInfo?[PVDownloader.episodeKey] as? DownloadingEpisode, 
            let index = self.episodesArray.index(where: { $0.mediaUrl == episode.mediaUrl }), 
            let cell = self.tableView.cellForRow(at: IndexPath(row: index, section: 0)) as? EpisodeTableViewCell {
             cell.button.setTitle("DLing", for: .normal)
@@ -290,7 +290,7 @@ extension EpisodesTableViewController {
     }
     
     func downloadStarted(_ notification:Notification) {
-        if let episode = notification.userInfo?["episode"] as? DownloadingEpisode, 
+        if let episode = notification.userInfo?[PVDownloader.episodeKey] as? DownloadingEpisode, 
            let index = self.episodesArray.index(where: { $0.mediaUrl == episode.mediaUrl }), 
            let cell = self.tableView.cellForRow(at: IndexPath(row: index, section: 0)) as? EpisodeTableViewCell {
             cell.button.setTitle("DLing", for: .normal)

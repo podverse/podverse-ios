@@ -147,8 +147,6 @@ class PVMediaPlayer {
         }
 
 //        self.delegate?.setMediaPlayerVCPlayPauseIcon()
-        mediaPlayerIsPlaying = false
-        return false
     }
     
     @objc func playerDidFinishPlaying() {

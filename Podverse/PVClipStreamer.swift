@@ -190,7 +190,7 @@ class PVClipStreamer:NSObject, AVAssetResourceLoaderDelegate {
         }
         let range:Range<Int> = Int(startOffset)..<Int(numberOfBytesToRespondWith)
         dataRequest.respond(with: self.mediaFileData.subdata(in: range))
-        let endOffset = startOffset + dataRequest.requestedLength
+        let endOffset = startOffset + Int64(dataRequest.requestedLength)
         let didRespondFully = mediaFileDataLength >= endOffset
         return didRespondFully
     }
