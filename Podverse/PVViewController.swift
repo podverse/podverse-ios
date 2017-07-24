@@ -20,12 +20,12 @@ class PVViewController: UIViewController {
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        PVDeleter.delegate = self
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         self.navigationItem.backBarButtonItem = UIBarButtonItem(title:"", style:.plain, target:nil, action:nil)
+        setupNotificationListeners()
         PVViewController.delegate = self
     }
     
@@ -34,8 +34,23 @@ class PVViewController: UIViewController {
         loadNowPlayingBarData()
     }
     
+    deinit {
+        removeObservers()
+    }
+    
+    fileprivate func setupNotificationListeners() {
+        NotificationCenter.default.addObserver(self, selector: #selector(self.episodeDeleted(_:)), name: .episodeDeleted, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.podcastDeleted(_:)), name: .podcastDeleted, object: nil)
+    }
+    
+    fileprivate func removeObservers() {
+        NotificationCenter.default.removeObserver(self, name: .episodeDeleted, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .podcastDeleted, object: nil)
+    }
+    
+    
     func loadNowPlayingBarData() {
-        guard let currentItem = playerHistoryManager.historyItems.first, let tabbarVC = self.tabBarController, PVMediaPlayer.shared.currentlyPlayingItem != nil && currentItem.didFinishPlaying != true else {
+        guard let currentItem = playerHistoryManager.historyItems.first, let tabbarVC = self.tabBarController, PVMediaPlayer.shared.currentlyPlayingItem != nil && currentItem.wasDeleted != true else {
             self.tabBarController?.hidePlayerView()
             return
         }
@@ -55,17 +70,17 @@ class PVViewController: UIViewController {
     }
 }
 
-extension PVViewController:PVDeleterDelegate {
-    func podcastDeleted(feedUrl: String?) {
-        if let feedUrl = feedUrl {
+extension PVViewController {
+    func podcastDeleted(_ notification:Notification) {
+        if let feedUrl = notification.userInfo?["feedUrl"] as? String {
             if playerHistoryManager.checkIfPodcastWasLastPlayed(feedUrl: feedUrl) == true {
                 self.tabBarController?.hidePlayerView()
             }
         }
     }
     
-    func episodeDeleted(mediaUrl: String?) {
-        if let mediaUrl = mediaUrl {
+    func episodeDeleted(_ notification:Notification) {
+        if let mediaUrl = notification.userInfo?["mediaUrl"] as? String {
             if playerHistoryManager.checkIfEpisodeWasLastPlayed(mediaUrl: mediaUrl) == true {
                 self.tabBarController?.hidePlayerView()
             }

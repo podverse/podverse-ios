@@ -63,10 +63,7 @@ enum PlayingSpeed {
 }
 
 protocol PVMediaPlayerDelegate {
-//    func setMediaPlayerVCPlayPauseIcon()
-//    func episodeFinishedPlaying(_ currentEpisode:Episode?)
-//    func clipFinishedPlaying(_ currentClip:Clip?)
-    
+    func didFinishPlaying()
 }
 
 protocol PVMediaPlayerUIDelegate {
@@ -156,8 +153,10 @@ class PVMediaPlayer {
         let moc = CoreDataHelper.createMOCForThread(threadType: .mainThread)
         if let currentlyPlayingItem = playerHistoryManager.historyItems.first, let episodeMediaUrl = currentlyPlayingItem.episodeMediaUrl, let episode = Episode.episodeForMediaUrl(mediaUrlString: episodeMediaUrl, managedObjectContext: moc) {
             PVDeleter.deleteEpisode(episodeId: episode.objectID, fileOnly: true)
-            currentlyPlayingItem.didFinishPlaying = true
+            currentlyPlayingItem.wasDeleted = true
             playerHistoryManager.addOrUpdateItem(item: currentlyPlayingItem)
+            
+            self.delegate?.didFinishPlaying()
         }
     }
 
@@ -244,7 +243,7 @@ class PVMediaPlayer {
         
         currentlyPlayingItem = playerHistoryItem
         
-        currentlyPlayingItem?.didFinishPlaying = false
+        currentlyPlayingItem?.wasDeleted = false
         
         avPlayer.replaceCurrentItem(with: nil)
         

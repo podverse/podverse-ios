@@ -33,7 +33,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         playerHistoryManager.loadData()
         if let previousItem = playerHistoryManager.historyItems.first {
-            pvMediaPlayer.loadPlayerHistoryItem(playerHistoryItem: previousItem)
+            if previousItem.wasDeleted != true {
+                pvMediaPlayer.loadPlayerHistoryItem(playerHistoryItem: previousItem)
+            }            
         }
         
         return true

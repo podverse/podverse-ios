@@ -33,6 +33,8 @@ class MediaPlayerViewController: PVViewController {
     
     override func viewDidLoad() {
         setupContainerView()
+        
+        pvMediaPlayer.delegate = self
 
         let share = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.action, target: self, action: #selector(showShareMenu))
         let makeClip = UIBarButtonItem(title: "Make Clip", style: .plain, target: self, action: #selector(showMakeClip))
@@ -50,6 +52,8 @@ class MediaPlayerViewController: PVViewController {
         }
         
         self.tabBarController?.hidePlayerView()
+        
+        navigationController?.interactivePopGestureRecognizer?.isEnabled = false
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -61,6 +65,10 @@ class MediaPlayerViewController: PVViewController {
     }
     
     override func viewWillAppear(_ animated: Bool) { /* Intentionally left blank so super won't get called */ }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        navigationController?.interactivePopGestureRecognizer?.isEnabled = true
+    }
     
     @IBAction func pageControlAction(_ sender: Any) {
         if let sender = sender as? UIPageControl {
@@ -280,5 +288,13 @@ class MediaPlayerViewController: PVViewController {
 extension MediaPlayerViewController:ClipsListDelegate {
     func didSelectClip(clip: MediaRef) {
         //Change the player data and info to the passed in clip
+    }
+}
+
+extension MediaPlayerViewController:PVMediaPlayerDelegate {
+    func didFinishPlaying() {
+        DispatchQueue.main.async {
+            self.navigationController?.popViewController(animated: true)
+        }
     }
 }
