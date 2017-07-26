@@ -9,33 +9,22 @@
 import UIKit
 import Lock
 
-protocol LoginModalDelegate:class {
-    func loginTapped()
-}
-
 class LoginViewController: PVViewController {
     
-//    let reachability = PVReachability()
-////    let playlistManager = PlaylistManager.sharedInstance
-    weak var delegate:LoginModalDelegate?
-//    @IBOutlet weak var loginButton: UIButton!
+    let pvAuth = PVAuth.shared
+    
+    @IBOutlet weak var textView: UITextView!
+    
+    @IBAction func login(_ sender: Any) {
+        pvAuth.showAuth0LockLoginVC(vc: self)
+    }
+    
+    @IBAction func cancel(_ sender: Any) {
+        dismiss(animated: true, completion: nil)
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-//        loginButton.layer.borderColor = UIColor.white
-//        loginButton.layer.borderWidth = 1.0
     }
-    
-//    @IBAction func login(sender: AnyObject) {
-//        self.dismiss(animated: false, completion: {
-//            self.delegate?.loginTapped()
-//        })
-//    }
-//    
-//    @IBAction func dismissView(sender: AnyObject) {
-//        self.dismiss(animated: true, completion: nil)
-//        PVAuth.sharedInstance.loginAsAnon()
-//    }
     
 }

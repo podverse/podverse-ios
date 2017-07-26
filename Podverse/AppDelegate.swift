@@ -21,16 +21,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     let playerHistoryManager = PlayerHistory.manager
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
-        A0Lock.shared().applicationLaunched(options: launchOptions)
+        
         UIApplication.shared.statusBarStyle = .lightContent
         setupUI()
         setupRemoteFunctions()
-        
+                
         // Ask for permission for Podverse to use push notifications
         application.registerUserNotificationSettings(UIUserNotificationSettings(types: [.alert, .badge, .sound], categories: nil))  // types are UIUserNotificationType members
         application.beginBackgroundTask(withName: "showNotification", expirationHandler: nil)
         
+        // Load the last playerHistoryItem in the media player if the user didn't finish listening to it
         playerHistoryManager.loadData()
         if let previousItem = playerHistoryManager.historyItems.first {
             if previousItem.wasDeleted != true {
@@ -42,20 +42,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func applicationWillResignActive(_ application: UIApplication) {
-        // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
-        // Use this method to pause ongoing tasks, disable timers, and invalidate graphics rendering callbacks. Games should use this method to pause the game.
     }
 
     func applicationDidEnterBackground(_ application: UIApplication) {
-//        if let _ = PVMediaPlayer.shared.nowPlayingEpisode {
-//            PVMediaPlayer.shared.setPlayingInfo()
-//        }
-        
         UIApplication.shared.applicationIconBadgeNumber = 0
     }
 
     func applicationWillEnterForeground(_ application: UIApplication) {
-        // Called as part of the transition from the background to the active state; here you can undo many of the changes made on entering the background.
     }
 
     func applicationDidBecomeActive(_ application: UIApplication) {
@@ -70,13 +63,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         UIApplication.shared.applicationIconBadgeNumber = 0
     }
     
-    func application(_ application: UIApplication, open url: URL, sourceApplication: String?, annotation: Any) -> Bool {
-        return A0Lock.shared().handle(url as URL, sourceApplication: sourceApplication)
+    func application(_ app: UIApplication, open url: URL, options: [UIApplicationOpenURLOptionsKey : Any] = [:]) -> Bool {
+        return Lock.resumeAuth(url, options: options)
     }
+    
+//    func application(_ application: UIApplication, open url: URL, sourceApplication: String?, annotation: Any) -> Bool {
+  //      return A0Lock.shared().handle(url as URL, sourceApplication: sourceApplication)
+    // }
 
-    func application(_ application: UIApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([Any]?) -> Void) -> Bool {
-        return A0Lock.shared().continue(userActivity, restorationHandler: restorationHandler)
-    }
+    // func application(_ application: UIApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([Any]?) -> Void) -> Bool {
+       // return A0Lock.shared().continue(userActivity, restorationHandler: restorationHandler)
+    // }
     
     override func remoteControlReceived(with event: UIEvent?) {
         if let evt = event {

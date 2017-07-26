@@ -23,15 +23,14 @@ class PodcastsTableViewController: PVViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        if UserDefaults.standard.object(forKey: "ONE_TIME_LOGIN") == nil {
+        // if UserDefaults.standard.object(forKey: "ONE_TIME_LOGIN") == nil {
             let storyboard = UIStoryboard(name: "Main", bundle: nil)
             if let loginVC = storyboard.instantiateViewController(withIdentifier: "LoginVC") as? LoginViewController {
-                loginVC.delegate = self
                 self.present(loginVC, animated: false, completion: nil)
             }
             
-            UserDefaults.standard.set(NSUUID().uuidString, forKey: "ONE_TIME_LOGIN")
-        }
+            // UserDefaults.standard.set(NSUUID().uuidString, forKey: "ONE_TIME_LOGIN")
+        // }
 
         self.navigationItem.title = "Podcasts"
         self.tabBarController?.tabBar.isTranslucent = false
@@ -182,15 +181,9 @@ extension PodcastsTableViewController:UITableViewDelegate, UITableViewDataSource
 
 }
 
-extension PodcastsTableViewController:LoginModalDelegate {
-    func loginTapped() {
-        PVAuth.sharedInstance.showAuth0LockLoginVC(vc: self)
-    }
-}
-
 extension PodcastsTableViewController {
     func downloadFinished(_ notification:Notification) {
-        if let episode = notification.userInfo?[Episode.episodeKey] as? DownloadingEpisode, 
+        if let episode = notification.userInfo?[Episode.episodeKey] as? DownloadingEpisode,
             let index = self.subscribedPodcastsArray.index(where: { $0.feedUrl == episode.podcastFeedUrl }), 
             let cell = self.tableView.cellForRow(at: IndexPath(row: index, section: 0)) as? PodcastTableViewCell {
             let episodes = subscribedPodcastsArray[index].episodes
