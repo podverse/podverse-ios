@@ -33,13 +33,13 @@ extension MoreTableViewController:UITableViewDelegate, UITableViewDataSource {
         case 0:
             cell.textLabel?.text = "Downloads"
         case 1:
+            cell.textLabel?.text = "About"
+        case 2:
             if let _ = UserDefaults.standard.string(forKey: "idToken") {
                 cell.textLabel?.text = "Log out"
             } else {
                 cell.textLabel?.text = "Log in"
             }
-        case 2:
-            cell.textLabel?.text = "About"
         case 3:
             cell.textLabel?.text = "Settings"
         default: break
@@ -54,6 +54,10 @@ extension MoreTableViewController:UITableViewDelegate, UITableViewDataSource {
         case 0:
             performSegue(withIdentifier: "Show Downlolads", sender: nil)
         case 1:
+            if let url = URL(string: "https://podverse.fm/about") {
+                UIApplication.shared.openURL(url)
+            }
+        case 2:
             if let _ = UserDefaults.standard.string(forKey: "idToken") {
                 
                 let logoutAlert = UIAlertController(title: "Log out", message: "Are you sure?", preferredStyle: .alert)
@@ -74,8 +78,6 @@ extension MoreTableViewController:UITableViewDelegate, UITableViewDataSource {
                     }
                 }
             }
-        case 2:
-            performSegue(withIdentifier: "Show About", sender: nil)
         case 3:
             performSegue(withIdentifier: "Show Settings", sender: nil)
         default: break
