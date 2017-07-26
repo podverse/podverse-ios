@@ -9,14 +9,15 @@
 import Foundation
 
 class MediaRef {
-    var title:String?
-    var startTime:Int?
-    var endTime:Int?
-    var episodeTitle:String?
-    var episodeMediaUrl:String?
+    var title: String?
+    var startTime: Int?
+    var endTime: Int?
+    var episodeTitle: String?
+    var episodeMediaUrl: String?
     var episodePubDate: Date?
-    var podcastTitle:String?
-    var podcastFeedUrl:String?
+    var podcastTitle: String?
+    var podcastFeedUrl: String?
+    var podcastImageUrl: String?
     
     static func retrieveMediaRefsFromServer(episodeMediaUrl: String? = nil, podcastFeedUrl: String? = nil, onlySubscribed: Bool? = nil, completion: @escaping (_ mediaRefs:[MediaRef]?) -> Void) {
         if let url = URL(string: "https://podverse.fm/api/clips") {
@@ -57,10 +58,13 @@ class MediaRef {
                                     mediaRef.title = item["title"] as? String
                                     mediaRef.startTime = item["startTime"] as? Int
                                     mediaRef.endTime = item["endTime"] as? Int
+                                    
                                     mediaRef.episodeTitle = item["episodeTitle"] as? String
-                                    mediaRef.episodeMediaUrl = item["episodeMediaUrl"] as? String
+                                    mediaRef.episodeMediaUrl = item["episodeMediaURL"] as? String
+                                    
                                     mediaRef.podcastTitle = item["podcastTitle"] as? String
-                                    mediaRef.podcastFeedUrl = item["podcastFeedUrl"] as? String
+                                    mediaRef.podcastFeedUrl = item["podcastFeedURL"] as? String
+                                    mediaRef.podcastImageUrl = item["podcastImageURL"] as? String
                                     
                                     if let episodePubDate = item["episodePubDate"] as? String {
                                         let dateFormatter = DateFormatter()

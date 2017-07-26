@@ -36,24 +36,21 @@ class PodcastsTableViewController: PVViewController {
         self.tabBarController?.tabBar.isTranslucent = false
         
         self.refreshControl.attributedTitle = NSAttributedString(string: "Pull to refresh all podcasts")
-        self.refreshControl.addTarget(self, action: #selector(refreshPodcastData), for: UIControlEvents.valueChanged)
+        self.refreshControl.addTarget(self, action: #selector(refreshPodcastFeeds), for: UIControlEvents.valueChanged)
         self.tableView.addSubview(refreshControl)
         
         refreshPodcastFeeds()
         loadPodcastData()
         NotificationCenter.default.addObserver(self, selector: #selector(self.downloadFinished(_:)), name: .downloadFinished, object: nil)
     }
-        
-    func refreshPodcastData() {
+    
+    @objc fileprivate func refreshPodcastFeeds() {
         if reachability.hasInternetConnection() == false && refreshControl.isRefreshing == true {
             showInternetNeededAlertWithDesciription(message:"Connect to WiFi or cellular data to parse podcast feeds.")
             self.refreshControl.endRefreshing()
             return
         }
-        refreshPodcastFeeds()
-    }
-    
-    fileprivate func refreshPodcastFeeds() {
+        
         let podcastArray = CoreDataHelper.fetchEntities(className:"Podcast", predicate: nil, moc:moc) as! [Podcast]
         
         for podcast in podcastArray {
