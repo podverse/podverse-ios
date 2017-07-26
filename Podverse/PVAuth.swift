@@ -28,6 +28,8 @@ class PVAuth: NSObject {
             }
             .withStyle {
                 $0.title = "Podverse Login"
+                $0.primaryColor = UIColor(red: 0.15, green: 0.41, blue: 0.70, alpha: 1.0)
+                $0.hideTitle = true
             }
             .onAuth {
                 
@@ -43,12 +45,13 @@ class PVAuth: NSObject {
                     .start { result in
                         switch result {
                         case .success(let profile):
-                            self.setUserInfo(idToken: idToken, userName: profile.nickname)
+                            self.setUserInfo(idToken: idToken, userId: profile.sub, userName: profile.nickname)
                         case .failure(let error):
-                            self.setUserInfo(idToken: idToken, userName: nil)
+                            self.setUserInfo(idToken: idToken, userId: nil, userName: nil)
                             print(error)
                         }
                     }
+                
             }
             .onError {
                 print("Failed with \($0)")
@@ -56,8 +59,33 @@ class PVAuth: NSObject {
             .present(from: vc)
     }
     
-    func setUserInfo(idToken: String, userName: String?) {
+    func syncUserInfoWithServer () {
+        if let idToken = UserDefaults.standard.string(forKey: "idToken"), let userId = UserDefaults.standard.string(forKey: "userId") {
+            Auth0
+                .users(token: idToken)
+                .get(userId, fields: ["nickname"], include: true)
+                .start { result in
+                    switch result {
+                    case .success(let user):
+                        guard let nickname = user["nickname"] as? String else {
+                            return
+                        }
+                        
+                        self.setUserInfo(idToken: idToken, userId: userId, userName: nickname)
+                    case .failure(let error):
+                        print(error)
+                    }
+                }
+            
+        }
+    }
+    
+    func setUserInfo(idToken: String, userId: String?, userName: String?) {
         UserDefaults.standard.set(idToken, forKey: "idToken")
+        
+        if let userId = userId {
+            UserDefaults.standard.set(userId, forKey: "userId")
+        }
 
         if let userName = userName {
             UserDefaults.standard.set(userName, forKey: "userName")
