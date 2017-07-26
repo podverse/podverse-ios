@@ -43,7 +43,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Benefits of logging in:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lxb-Cg-2OU">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Log in to:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lxb-Cg-2OU">
                                 <rect key="frame" x="30" y="141" width="315" height="21"/>
                                 <fontDescription key="fontDescription" type="system" weight="black" pointSize="17"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -57,7 +57,7 @@
                                 <constraints>
                                     <constraint firstAttribute="height" constant="47" id="1Ga-Q6-IZd"/>
                                 </constraints>
-                                <fontDescription key="fontDescription" name=".AppleSystemUIFont" family=".AppleSystemUIFont" pointSize="14"/>
+                                <fontDescription key="fontDescription" name=".AppleSystemUIFont" family=".AppleSystemUIFont" pointSize="16"/>
                                 <inset key="contentEdgeInsets" minX="30" minY="15" maxX="30" maxY="15"/>
                                 <state key="normal" title="No Thanks">
                                     <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -66,10 +66,14 @@
                                     <action selector="cancel:" destination="Ghk-Rw-jJ6" eventType="touchUpInside" id="F43-Hb-x1o"/>
                                 </connections>
                             </button>
-                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" text="– List of benefits goes here" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="xcI-2y-uVJ">
-                                <rect key="frame" x="30" y="170" width="315" height="345"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="xcI-2y-uVJ">
+                                <rect key="frame" x="30" y="170" width="315" height="356"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                <string key="text">– Sync podcasts on desktop and mobile
+
+– Create and share playlists
+
+– Edit your clips </string>
                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="16"/>
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
@@ -79,7 +83,7 @@
                                 <constraints>
                                     <constraint firstAttribute="height" constant="58" id="SUI-eu-xgK"/>
                                 </constraints>
-                                <fontDescription key="fontDescription" type="system" weight="black" pointSize="15"/>
+                                <fontDescription key="fontDescription" type="system" weight="black" pointSize="16"/>
                                 <inset key="contentEdgeInsets" minX="40" minY="20" maxX="40" maxY="20"/>
                                 <state key="normal" title="Login / Register">
                                     <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -91,12 +95,16 @@
                         </subviews>
                         <color key="backgroundColor" red="0.14509803921568626" green="0.41176470588235292" blue="0.69803921568627447" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
+                            <constraint firstItem="xcI-2y-uVJ" firstAttribute="top" secondItem="lxb-Cg-2OU" secondAttribute="bottom" constant="8" id="1QL-Sw-SYS"/>
                             <constraint firstItem="GmD-v1-Ans" firstAttribute="top" secondItem="JM6-tc-ZhY" secondAttribute="bottom" constant="8" id="Alw-8E-Xjk"/>
                             <constraint firstAttribute="trailing" secondItem="gdK-Yq-0tE" secondAttribute="trailing" constant="30" id="DFP-Qg-vui"/>
+                            <constraint firstItem="xcI-2y-uVJ" firstAttribute="leading" secondItem="opR-qw-myW" secondAttribute="leadingMargin" constant="14" id="GzN-ue-Xm0"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="xcI-2y-uVJ" secondAttribute="trailing" constant="14" id="HD8-bb-zvT"/>
                             <constraint firstItem="JM6-tc-ZhY" firstAttribute="leading" secondItem="opR-qw-myW" secondAttribute="leadingMargin" id="Js3-VN-wSA"/>
                             <constraint firstItem="gdK-Yq-0tE" firstAttribute="top" secondItem="oey-SX-fuF" secondAttribute="bottom" constant="30" id="Llb-Vg-335"/>
                             <constraint firstItem="lxb-Cg-2OU" firstAttribute="leading" secondItem="gdK-Yq-0tE" secondAttribute="leading" id="RjH-21-YpV"/>
                             <constraint firstItem="8b5-4S-7XS" firstAttribute="top" secondItem="GmD-v1-Ans" secondAttribute="bottom" constant="20" id="Rs9-TZ-53s"/>
+                            <constraint firstItem="JM6-tc-ZhY" firstAttribute="top" secondItem="xcI-2y-uVJ" secondAttribute="bottom" constant="8" id="XDx-fm-LqZ"/>
                             <constraint firstItem="gdK-Yq-0tE" firstAttribute="leading" secondItem="opR-qw-myW" secondAttribute="leading" constant="30" id="bdz-Hq-kFG"/>
                             <constraint firstItem="GmD-v1-Ans" firstAttribute="trailing" secondItem="opR-qw-myW" secondAttribute="trailingMargin" id="dXs-hE-7LU"/>
                             <constraint firstItem="JM6-tc-ZhY" firstAttribute="trailing" secondItem="opR-qw-myW" secondAttribute="trailingMargin" id="e9f-W8-Uml"/>

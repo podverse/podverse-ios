@@ -10,6 +10,8 @@ import UIKit
 
 class MoreTableViewController: PVViewController {
     
+    let pvAuth = PVAuth.shared
+    
     @IBOutlet weak var tableView: UITableView!
     
     override func viewDidLoad() {
@@ -31,7 +33,11 @@ extension MoreTableViewController:UITableViewDelegate, UITableViewDataSource {
         case 0:
             cell.textLabel?.text = "Downloads"
         case 1:
-            cell.textLabel?.text = "Login"
+            if let _ = UserDefaults.standard.string(forKey: "idToken") {
+                cell.textLabel?.text = "Log out"
+            } else {
+                cell.textLabel?.text = "Log in"
+            }
         case 2:
             cell.textLabel?.text = "About"
         case 3:
@@ -46,9 +52,28 @@ extension MoreTableViewController:UITableViewDelegate, UITableViewDataSource {
         
         switch indexPath.row {
         case 0:
-            performSegue(withIdentifier: "Show Downloads", sender: nil)
+            performSegue(withIdentifier: "Show Downlolads", sender: nil)
         case 1:
-            performSegue(withIdentifier: "Show Login", sender: nil)
+            if let _ = UserDefaults.standard.string(forKey: "idToken") {
+                
+                let logoutAlert = UIAlertController(title: "Log out", message: "Are you sure?", preferredStyle: .alert)
+                
+                logoutAlert.addAction(UIAlertAction(title: "Yes", style: .default, handler: { (action: UIAlertAction!) in
+                    self.pvAuth.removeUserInfo()
+                    tableView.reloadData()
+                }))
+                
+                logoutAlert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+                
+                present(logoutAlert, animated: true, completion: nil)
+                
+            } else {
+                pvAuth.showAuth0Lock(vc: self) {
+                    DispatchQueue.main.async {
+                        tableView.reloadData()
+                    }
+                }
+            }
         case 2:
             performSegue(withIdentifier: "Show About", sender: nil)
         case 3:

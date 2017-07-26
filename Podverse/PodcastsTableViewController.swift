@@ -23,14 +23,14 @@ class PodcastsTableViewController: PVViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        // if UserDefaults.standard.object(forKey: "ONE_TIME_LOGIN") == nil {
+        if UserDefaults.standard.object(forKey: "ONE_TIME_LOGIN") == nil {
             let storyboard = UIStoryboard(name: "Main", bundle: nil)
             if let loginVC = storyboard.instantiateViewController(withIdentifier: "LoginVC") as? LoginViewController {
                 self.present(loginVC, animated: false, completion: nil)
             }
             
-            // UserDefaults.standard.set(NSUUID().uuidString, forKey: "ONE_TIME_LOGIN")
-        // }
+            UserDefaults.standard.set(NSUUID().uuidString, forKey: "ONE_TIME_LOGIN")
+        }
 
         self.navigationItem.title = "Podcasts"
         self.tabBarController?.tabBar.isTranslucent = false

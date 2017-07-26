@@ -38,6 +38,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             }            
         }
         
+        PVAuth.shared.syncUserInfoWithServer()
+        
         return true
     }
 

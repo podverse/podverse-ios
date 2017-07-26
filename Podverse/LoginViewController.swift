@@ -16,7 +16,7 @@ class LoginViewController: PVViewController {
     @IBOutlet weak var textView: UITextView!
     
     @IBAction func login(_ sender: Any) {
-        pvAuth.showAuth0LockLoginVC(vc: self)
+        pvAuth.showAuth0Lock(vc: self, completion: nil)
     }
     
     @IBAction func cancel(_ sender: Any) {
@@ -25,6 +25,7 @@ class LoginViewController: PVViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+
     }
     
 }

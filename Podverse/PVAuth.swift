@@ -14,8 +14,9 @@ import CoreData
 class PVAuth: NSObject {
     
     static let shared = PVAuth()
-    
-    func showAuth0LockLoginVC (vc: UIViewController) {
+
+    func showAuth0Lock (vc: UIViewController, completion:(() -> ())?) {
+
         Lock
             .classic()
             .withOptions{
@@ -33,7 +34,9 @@ class PVAuth: NSObject {
             }
             .onAuth {
                 
-                vc.dismiss(animated: true, completion: nil)
+                DispatchQueue.main.async {
+                    vc.dismiss(animated: true, completion: nil)
+                }
                 
                 guard let accessToken = $0.accessToken, let idToken = $0.idToken else {
                     return
@@ -50,6 +53,12 @@ class PVAuth: NSObject {
                             self.setUserInfo(idToken: idToken, userId: nil, userName: nil)
                             print(error)
                         }
+                        
+                        // TODO: uh is there a better way to do this completion?
+                        if let completion = completion {
+                            completion()
+                        }
+
                     }
                 
             }
@@ -90,6 +99,12 @@ class PVAuth: NSObject {
         if let userName = userName {
             UserDefaults.standard.set(userName, forKey: "userName")
         }
+    }
+    
+    func removeUserInfo() {
+        UserDefaults.standard.set(nil, forKey: "idToken")
+        UserDefaults.standard.set(nil, forKey: "userId")
+        UserDefaults.standard.set(nil, forKey: "userName")
     }
 
 }
