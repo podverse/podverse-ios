@@ -67,10 +67,7 @@ class MediaRef {
                                     mediaRef.podcastImageUrl = item["podcastImageURL"] as? String
                                     
                                     if let episodePubDate = item["episodePubDate"] as? String {
-                                        let dateFormatter = DateFormatter()
-                                        dateFormatter.dateStyle = .short
-                                        let date = dateFormatter.date(from: episodePubDate)
-                                        mediaRef.episodePubDate = date
+                                        mediaRef.episodePubDate = episodePubDate.toServerDate()
                                     }
                                     
                                     mediaRefs.append(mediaRef)
