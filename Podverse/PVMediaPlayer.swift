@@ -236,21 +236,22 @@ class PVMediaPlayer {
         avPlayer.seek(to: CMTimeMakeWithSeconds(seconds, 1))
     }
         
-    func loadPlayerHistoryItem(playerHistoryItem: PlayerHistoryItem) {
+    func loadPlayerHistoryItem(item: PlayerHistoryItem) {
+        currentlyPlayingItem = item
+        
         if avPlayer.rate == 1 {
             saveCurrentTimeAsPlaybackPosition()
         }
         
-        currentlyPlayingItem = playerHistoryItem
-        
-        currentlyPlayingItem?.wasDeleted = false
+        item.wasDeleted = false
         
         avPlayer.replaceCurrentItem(with: nil)
         
         let moc = CoreDataHelper.createMOCForThread(threadType: .mainThread)
         
-        if let episodeMediaUrl = playerHistoryItem.episodeMediaUrl {
-            playerHistoryManager.addOrUpdateItem(item: playerHistoryItem)
+        playerHistoryManager.addOrUpdateItem(item: item)
+        
+        if let episodeMediaUrl = item.episodeMediaUrl {
             
             let episodesPredicate = NSPredicate(format: "mediaUrl == %@", episodeMediaUrl)
             if let episodes = CoreDataHelper.fetchEntities(className: "Episode", predicate: episodesPredicate, moc: moc) as? [Episode] {
@@ -273,75 +274,31 @@ class PVMediaPlayer {
                     }
                 }
             } else {
-                if let urlString = currentlyPlayingItem?.episodeMediaUrl, let url = NSURL(string: urlString) {
-                    let playerItem = AVPlayerItem(url: url as URL)
-                    avPlayer.replaceCurrentItem(with: playerItem)
-                }
+                let playerItem = PVStreamer.shared.streamAudio(item: item)
+                avPlayer.replaceCurrentItem(with: playerItem)
             }
         }
         
-    }
-        
-    func loadClipToPlay(clipID: NSManagedObjectID) {
-        let moc = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
-        moc.parent = CoreDataHelper.shared.managedObjectContext
-        
-        moc.refreshAllObjects()
-        
-//        nowPlayingClip = CoreDataHelper.fetchEntityWithID(objectId: clipID, moc: moc) as? Clip
-//        guard let nowPlayingClip = self.nowPlayingClip else{
-//            return
-//        }
-//        
-//        nowPlayingEpisode = CoreDataHelper.fetchEntityWithID(objectId: nowPlayingClip.episode.objectID, moc: moc) as? Episode
-        // TODO:
-        avPlayer.replaceCurrentItem(with: nil)
-        //        if nowPlayingEpisode.fileName != nil {
-        //            var URLs = NSFileManager().URLsForDirectory(NSSearchPathDirectory.DocumentDirectory, inDomains: NSSearchPathDomainMask.UserDomainMask)
-        //            self.docDirectoryURL = URLs[0]
-        //
-        //            if let fileName = nowPlayingEpisode.fileName, let destinationURL = self.docDirectoryURL?.URLByAppendingPathComponent(fileName) {
-        //                let playerItem = AVPlayerItem(URL: destinationURL)
-        //                avPlayer = AVPlayer(playerItem: playerItem)
-        //
-        //                let endTime = CMTimeMakeWithSeconds(Double(clip.endTime!), 1)
-        //                let endTimeValue = NSValue(CMTime: endTime)
-        //                self.boundaryObserver = avPlayer.addBoundaryTimeObserverForTimes([endTimeValue], queue: nil, usingBlock: {
-        //                    self.playOrPause()
-        //                    if let observer = self.boundaryObserver{
-        //                        self.avPlayer.removeTimeObserver(observer)
-        //                    }
-        //                })
-        //
-        //                goToTime(Double(clip.startTime))
-        //            }
-        //        } else {
-        
-//        PVClipStreamer.shared.streamClip(clip: nowPlayingClip)
-        playOrPause()
-        //        }
-
-        self.setPlayingInfo()
     }
     
     @objc func playInterrupted(notification: NSNotification) {
-        if notification.name == NSNotification.Name.AVAudioSessionInterruption && notification.userInfo != nil {
-            var info = notification.userInfo!
-            var intValue: UInt = 0
-            
-            (info[AVAudioSessionInterruptionTypeKey] as! NSValue).getValue(&intValue)
-            
-            switch AVAudioSessionInterruptionType(rawValue: intValue) {
-                case .some(.began):
-                    saveCurrentTimeAsPlaybackPosition()
-                case .some(.ended):
-                    if mediaPlayerIsPlaying == true {
-                        playOrPause()
-                    }
-                default:
-                    break
-            }
-        }
+//        if notification.name == NSNotification.Name.AVAudioSessionInterruption && notification.userInfo != nil {
+//            var info = notification.userInfo!
+//            var intValue: UInt = 0
+//            
+//            (info[AVAudioSessionInterruptionTypeKey] as! NSValue).getValue(&intValue)
+//            
+//            switch AVAudioSessionInterruptionType(rawValue: intValue) {
+//                case .some(.began):
+//                    saveCurrentTimeAsPlaybackPosition()
+//                case .some(.ended):
+//                    if mediaPlayerIsPlaying == true {
+//                        playOrPause()
+//                    }
+//                default:
+//                    break
+//            }
+//        }
     }
 }
 

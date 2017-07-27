@@ -70,7 +70,7 @@ class EpisodesTableViewController: PVViewController, UITableViewDataSource, UITa
             let episode = episodesArray[indexRow]
             if episode.fileName != nil {                
                 let playerHistoryItem = playerHistoryManager.convertEpisodeToPlayerHistoryItem(episode: episode)
-                pvMediaPlayer.loadPlayerHistoryItem(playerHistoryItem: playerHistoryItem)
+                pvMediaPlayer.loadPlayerHistoryItem(item: playerHistoryItem)
                 goToNowPlaying()
             } else {
 //                if reachability.hasInternetConnection() == false {
@@ -178,7 +178,7 @@ class EpisodesTableViewController: PVViewController, UITableViewDataSource, UITa
             if episode.fileName != nil {
                 episodeActions.addAction(UIAlertAction(title: "Play Episode", style: .default, handler: { action in
                     let playerHistoryItem = self.playerHistoryManager.convertEpisodeToPlayerHistoryItem(episode: episode)
-                    self.pvMediaPlayer.loadPlayerHistoryItem(playerHistoryItem: playerHistoryItem)
+                    self.pvMediaPlayer.loadPlayerHistoryItem(item: playerHistoryItem)
                     self.goToNowPlaying()
                 }))
             } else {
@@ -212,7 +212,7 @@ class EpisodesTableViewController: PVViewController, UITableViewDataSource, UITa
                     return
                 }
                 let playerHistoryItem = self.playerHistoryManager.convertEpisodeToPlayerHistoryItem(episode: episode)
-                self.pvMediaPlayer.loadPlayerHistoryItem(playerHistoryItem: playerHistoryItem)
+                self.pvMediaPlayer.loadPlayerHistoryItem(item: playerHistoryItem)
                 self.goToNowPlaying()
             }))
             
