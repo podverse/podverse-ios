@@ -80,7 +80,7 @@ class PVDeleter {
                 }
                 
                 if var currentlyPlayingItem = PlayerHistory.manager.historyItems.first {
-                    currentlyPlayingItem.wasDeleted = true
+                    currentlyPlayingItem.hasReachedEnd = true
                     PlayerHistory.manager.addOrUpdateItem(item: currentlyPlayingItem)
                 }
                 

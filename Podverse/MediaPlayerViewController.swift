@@ -14,6 +14,9 @@ class MediaPlayerViewController: PVViewController {
 
     var playerSpeedRate:PlayingSpeed = .regular
     var shouldAutoplay = false
+    var timeOffset = Int64(0)
+    var moveToOffset = false
+    
     
     weak var currentChildViewController: UIViewController?
     private let aboutClipsStoryboardId = "AboutPlayingItemVC"
@@ -61,6 +64,13 @@ class MediaPlayerViewController: PVViewController {
             self.pvMediaPlayer.avPlayer.rate = 0
             self.pvMediaPlayer.playOrPause()
         }
+        
+        if moveToOffset == true && timeOffset > 0 {
+            self.pvMediaPlayer.goToTime(seconds: Double(timeOffset))
+            moveToOffset = false
+            setPlayerInfo()
+        }
+        
         setPlayIcon()
     }
     
@@ -180,18 +190,18 @@ class MediaPlayerViewController: PVViewController {
             }
             
             let lastPlaybackPosition = item.lastPlaybackPosition ?? 0
-            currentTime.text = Int(lastPlaybackPosition).toMediaPlayerString()
+            currentTime.text = Int64(lastPlaybackPosition).toMediaPlayerString()
             if let currentItem = pvMediaPlayer.avPlayer.currentItem {
-                let totalTime = Int(CMTimeGetSeconds(currentItem.asset.duration))
-                duration.text = Int(totalTime).toMediaPlayerString()
-                progress.value = Float(Int(lastPlaybackPosition) / totalTime)
+                let totalTime = Int64(CMTimeGetSeconds(currentItem.asset.duration))
+                duration.text = Int64(totalTime).toMediaPlayerString()
+                progress.value = Float(Int64(lastPlaybackPosition) / totalTime)
             }
         }
     }
 
     
     func updateCurrentTime(currentTime: Double) {
-        self.currentTime.text = Int(currentTime).toMediaPlayerString()
+        self.currentTime.text = Int64(currentTime).toMediaPlayerString()
         if let currentItem = pvMediaPlayer.avPlayer.currentItem {
             let totalTime = CMTimeGetSeconds(currentItem.duration)
             progress.value = Float(currentTime / totalTime)

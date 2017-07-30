@@ -111,6 +111,7 @@ class PVMediaPlayer {
         NotificationCenter.default.addObserver(self, selector: #selector(headphonesWereUnplugged(notification:)), name: NSNotification.Name.AVAudioSessionRouteChange, object: AVAudioSession.sharedInstance())
         
         NotificationCenter.default.addObserver(self, selector: #selector(playerDidFinishPlaying), name: NSNotification.Name.AVPlayerItemDidPlayToEndTime, object: avPlayer.currentItem)
+        
     }
     
     @objc func headphonesWereUnplugged(notification: Notification) {
@@ -119,9 +120,6 @@ class PVMediaPlayer {
                 let reason = AVAudioSessionRouteChangeReason(rawValue: reasonKey)
                 if reason == AVAudioSessionRouteChangeReason.oldDeviceUnavailable {
                     // Headphones were unplugged and AVPlayer has paused, so set the Play/Pause icon to Pause
-                    DispatchQueue.main.async {
-//                        self.delegate?.setMediaPlayerVCPlayPauseIcon()
-                    }
                 }
             }
         }
@@ -135,25 +133,22 @@ class PVMediaPlayer {
         if avPlayer.rate == 0 {
             avPlayer.play()
             mediaPlayerIsPlaying = true
-//            self.delegate?.setMediaPlayerVCPlayPauseIcon()
             return true
             
         } else {
             saveCurrentTimeAsPlaybackPosition()
             avPlayer.pause()
             mediaPlayerIsPlaying = false
-//            self.delegate?.setMediaPlayerVCPlayPauseIcon()
             return false
         }
 
-//        self.delegate?.setMediaPlayerVCPlayPauseIcon()
     }
     
     @objc func playerDidFinishPlaying() {
         let moc = CoreDataHelper.createMOCForThread(threadType: .mainThread)
         if let currentlyPlayingItem = playerHistoryManager.historyItems.first, let episodeMediaUrl = currentlyPlayingItem.episodeMediaUrl, let episode = Episode.episodeForMediaUrl(mediaUrlString: episodeMediaUrl, managedObjectContext: moc) {
             PVDeleter.deleteEpisode(episodeId: episode.objectID, fileOnly: true, shouldCallNotificationMethod: true)
-            currentlyPlayingItem.wasDeleted = true
+            currentlyPlayingItem.hasReachedEnd = true
             playerHistoryManager.addOrUpdateItem(item: currentlyPlayingItem)
             
             self.delegate?.didFinishPlaying()
@@ -179,15 +174,12 @@ class PVMediaPlayer {
 //                switch event.subtype {
 //                case UIEventSubtype.remoteControlPlay:
 //                    self.playOrPause()
-//                    delegate?.setMediaPlayerVCPlayPauseIcon()
 //                    break
 //                case UIEventSubtype.remoteControlPause:
 //                    self.playOrPause()
-//                    delegate?.setMediaPlayerVCPlayPauseIcon()
 //                    break
 //                case UIEventSubtype.remoteControlTogglePlayPause:
 //                    self.playOrPause()
-//                    delegate?.setMediaPlayerVCPlayPauseIcon()
 //                    break
 //                default:
 //                    break
@@ -197,6 +189,7 @@ class PVMediaPlayer {
     }
     
     func setPlayingInfo() {
+        
         guard let item =  currentlyPlayingItem else {
             return
         }
@@ -204,7 +197,6 @@ class PVMediaPlayer {
         var podcastTitle: String?
         var episodeTitle: String?
 //        var podcastImage: MPMediaItemArtwork?
-        var episodeDuration: NSNumber?
         var lastPlaybackTime: NSNumber?
         let rate = avPlayer.rate
         
@@ -215,17 +207,14 @@ class PVMediaPlayer {
         if let eTitle = item.episodeTitle {
             episodeTitle = eTitle
         }
-
-        if let eDuration = item.episodeDuration {
-            episodeDuration = eDuration as NSNumber
-        }
+        
+        let episodeDuration = self.avPlayer.currentItem?.asset.duration
         
         let lastPlaybackCMTime = CMTimeGetSeconds(avPlayer.currentTime())
         lastPlaybackTime = NSNumber(value: lastPlaybackCMTime)
         
         MPNowPlayingInfoCenter.default().nowPlayingInfo = [MPMediaItemPropertyArtist: podcastTitle, MPMediaItemPropertyTitle: episodeTitle, MPMediaItemPropertyPlaybackDuration: episodeDuration, MPNowPlayingInfoPropertyElapsedPlaybackTime: lastPlaybackTime, MPNowPlayingInfoPropertyPlaybackRate: rate]
         
-        //        MPNowPlayingInfoCenter.default().nowPlayingInfo = [MPMediaItemPropertyArtist: podcastTitle, MPMediaItemPropertyTitle: episodeTitle, MPMediaItemPropertyArtwork: mpImage, MPMediaItemPropertyPlaybackDuration: mpDuration, MPNowPlayingInfoPropertyElapsedPlaybackTime: mpElapsedPlaybackTime, MPNowPlayingInfoPropertyPlaybackRate: mpRate]
     }
     
     func clearPlayingInfo() {
@@ -243,7 +232,7 @@ class PVMediaPlayer {
             saveCurrentTimeAsPlaybackPosition()
         }
         
-        item.wasDeleted = false
+        item.hasReachedEnd = false
         
         avPlayer.replaceCurrentItem(with: nil)
         
@@ -263,7 +252,7 @@ class PVMediaPlayer {
                         let playerItem = AVPlayerItem(url: destinationUrl)
                         avPlayer.replaceCurrentItem(with: playerItem)
                         
-                        // Remember the downloaded episode loaded in media player so if the app closes while the episode is playing or paused, it can be reloaded on app launch.
+                        // Remember the downloaded episode loaded in media playervyer so if the app closes while the episode is playing or paused it can be reloaded on app launch.
                         UserDefaults.standard.set(episode.objectID.uriRepresentation(), forKey: kLastPlayingEpisodeURL)
                         
                     } else {
@@ -272,10 +261,9 @@ class PVMediaPlayer {
                             avPlayer.replaceCurrentItem(with: playerItem)
                         }
                     }
+                } else {
+                    PVStreamer.shared.streamAudio(item: item)
                 }
-            } else {
-                let playerItem = PVStreamer.shared.streamAudio(item: item)
-                avPlayer.replaceCurrentItem(with: playerItem)
             }
         }
         
@@ -301,6 +289,3 @@ class PVMediaPlayer {
 //        }
     }
 }
-
-
-

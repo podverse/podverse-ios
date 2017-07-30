@@ -1,12 +1,12 @@
 //
-//  Int+MediaPlayerString.swift
+//  Int64+MediaPlayerString.swift
 //  Podverse
 //
 //  Created by Mitchell Downey on 5/29/17.
 //  Copyright © 2017 Podverse LLC. All rights reserved.
 //
 
-extension Int {
+extension Int64 {
     func toMediaPlayerString() -> String {
         let hours = self / 3600
         let minutes = self / 60 % 60

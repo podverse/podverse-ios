@@ -10,11 +10,12 @@ import Foundation
 
 class MediaRef {
     var title: String?
-    var startTime: Int?
-    var endTime: Int?
+    var startTime: Int64?
+    var endTime: Int64?
     var episodeTitle: String?
     var episodeMediaUrl: String?
     var episodePubDate: Date?
+    var episodeSummary: String?
     var podcastTitle: String?
     var podcastFeedUrl: String?
     var podcastImageUrl: String?
@@ -56,11 +57,12 @@ class MediaRef {
                                 for item in clips {
                                     let mediaRef = MediaRef()
                                     mediaRef.title = item["title"] as? String
-                                    mediaRef.startTime = item["startTime"] as? Int
-                                    mediaRef.endTime = item["endTime"] as? Int
+                                    mediaRef.startTime = item["startTime"] as? Int64
+                                    mediaRef.endTime = item["endTime"] as? Int64
                                     
                                     mediaRef.episodeTitle = item["episodeTitle"] as? String
                                     mediaRef.episodeMediaUrl = item["episodeMediaURL"] as? String
+                                    mediaRef.episodeSummary = item["episodeSummary"] as? String
                                     
                                     mediaRef.podcastTitle = item["podcastTitle"] as? String
                                     mediaRef.podcastFeedUrl = item["podcastFeedURL"] as? String

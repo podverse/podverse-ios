@@ -34,7 +34,7 @@ class DownloadsTableViewController: PVViewController {
         return nil
     }
     
-    override func goToNowPlaying () {
+    override func goToNowPlaying (timeOffset: Int64 = 0) {
         if let mediaPlayerVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "MediaPlayerVC") as? MediaPlayerViewController {
             mediaPlayerVC.shouldAutoplay = true
             self.navigationController?.pushViewController(mediaPlayerVC, animated: true)

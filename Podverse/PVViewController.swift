@@ -50,7 +50,7 @@ class PVViewController: UIViewController {
     
     
     func loadNowPlayingBarData() {
-        guard let currentItem = playerHistoryManager.historyItems.first, let tabbarVC = self.tabBarController, PVMediaPlayer.shared.currentlyPlayingItem != nil && currentItem.wasDeleted != true else {
+        guard let currentItem = playerHistoryManager.historyItems.first, let tabbarVC = self.tabBarController, PVMediaPlayer.shared.currentlyPlayingItem != nil && currentItem.hasReachedEnd != true else {
             self.tabBarController?.hidePlayerView()
             return
         }
@@ -65,7 +65,7 @@ class PVViewController: UIViewController {
         tabbarVC.showPlayerView()
     }
     
-    func goToNowPlaying() {
+    func goToNowPlaying(timeOffset: Int64 = 0) {
         self.tabBarController?.goToMediaPlayer()
     }
 }

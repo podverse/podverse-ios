@@ -33,7 +33,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Load the last playerHistoryItem in the media player if the user didn't finish listening to it
         playerHistoryManager.loadData()
         if let previousItem = playerHistoryManager.historyItems.first {
-            if previousItem.wasDeleted != true {
+            if previousItem.hasReachedEnd != true {
                 pvMediaPlayer.loadPlayerHistoryItem(item: previousItem)
             }            
         }
