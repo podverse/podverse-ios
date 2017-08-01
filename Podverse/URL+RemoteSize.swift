@@ -24,7 +24,7 @@ extension URL {
         let group = DispatchGroup()
         group.enter()
         
-        PVStreamer.shared.metaSession.dataTask(with: request, completionHandler: { (data, response, error) -> Void in
+        URLSession.shared.dataTask(with: request, completionHandler: { (data, response, error) -> Void in
             group.leave()
         }).resume()
         _ = group.wait(timeout: DispatchTime.now() + .seconds(5))
