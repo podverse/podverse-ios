@@ -262,7 +262,7 @@ class PVMediaPlayer {
                         }
                     }
                 } else {
-                    PVStreamer.shared.streamPlayerHistoryItem(item: item)
+                    PVStreamer.shared.prepareAsset(item: item)
                 }
             }
         }

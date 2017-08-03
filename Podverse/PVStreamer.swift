@@ -24,7 +24,7 @@ class PVStreamer:NSObject {
     let avPlayer = PVMediaPlayer.shared.avPlayer
     
     var currentAsset: AVURLAsset?
-    var currentRequest: URLRequest?
+    var currentRequest: Request?
     var endBytes = Int64(0)
     var loaderQueue: DispatchQueue
     var mediaData = NSMutableData()
@@ -95,28 +95,39 @@ class PVStreamer:NSObject {
                     // Bail early if the content info request was cancelled
                     guard !loadingRequest.isCancelled else { return }
 
-//                    TODO: do we need something like this?
-//                    guard let request = self.currentRequest as? ContentInfoRequest,
-//                        loadingRequest === request.loadingRequest else
-//                    {
-//                        SodesLog("Bailing early because the loading request has changed.")
-//                        return
-//                    }
+                    // Bailing early because the loading request has changed
+                    guard let request = self.currentRequest as? ContentInfoRequest, loadingRequest === request.loadingRequest else { return }
                     
-                    if let response, error == nil {
-                        
-                        infoRequest.update()
+                    if let response = response, error == nil {
+                        infoRequest.update(with: response)
                         loadingRequest.finishLoading()
-                        
+                    } else {
+                        print(error as Any)
                     }
                     
+                    if self.currentRequest === request {
+                        // "Nil-out `currentRequest` since we're done with it, but
+                        // only if the value of self.currentRequest didn't change
+                        // (since we just called `loadingRequest.finishLoading()"
+                        // From sodes-audio-example, thanks Jared Sinclair
+                        self.currentRequest = nil
+                    }
+                
                 }
+                
+                self.currentRequest = ContentInfoRequest(
+                    resourceUrl: originalUrl,
+                    loadingRequest: loadingRequest,
+                    infoRequest: infoRequest,
+                    task: task
+                )
+                
+                task.resume()
+                
+                return true
                 
             }
             
-            loaderQueue.async {
-
-            }
         }
         
         return true
