@@ -1,5 +1,3 @@
-// Thanks Jared Sinclair https://github.com/jaredsinclair/sodes-audio-example
-// File is shamelessly ripped out of sodes-audio-example. Much of it is not used right now in Podverse (for example, there's no scratch file).
 //
 //  DataRequestLoader.swift
 //  SodesAudio
@@ -7,9 +5,11 @@
 //  Created by Jared Sinclair on 8/7/16.
 //
 //
+
 import Foundation
 import AVFoundation
 //import SwiftableFileHandle
+//import SodesFoundation
 
 protocol DataRequestLoaderDelegate: class {
     func dataRequestLoader(_ loader: DataRequestLoader, didReceive data: Data, forSubrange subrange: ByteRange)
@@ -17,11 +17,11 @@ protocol DataRequestLoaderDelegate: class {
     func dataRequestLoader(_ loader: DataRequestLoader, didFailWithError error: Error?)
 }
 
-/// Loads data for a given AVAssetResourceLoadingRequest. The data is loaded
+/// Loads data for a given AVAssetResourceLoadingRequest. The data is loaded 
 /// from either the scratch file on disk or else downloaded from the Internet.
 /// If data is downloaded from the internet, the data will first be written to
 /// the scratch file, and then (if that write was successful) it will be passed
-/// onto the DataRequestLoader's delegate (which will pass that data onto
+/// onto the DataRequestLoader's delegate (which will pass that data onto 
 /// AVFoundation).
 class DataRequestLoader {
     
@@ -49,7 +49,7 @@ class DataRequestLoader {
     fileprivate let operationQueue: OperationQueue
     
     /// A file handle used for reading/writing data from/to the scratch file.
-//    fileprivate let scratchFileHandle: SODSwiftableFileHandle
+    fileprivate let scratchFileHandle: SODSwiftableFileHandle
     
     // MARK: File Private Properties (Mutable)
     
@@ -68,18 +68,18 @@ class DataRequestLoader {
     // MARK: Init
     
     /// Designated initializer.
-    init(resourceUrl: URL, requestedRange: ByteRange, delegate: DataRequestLoaderDelegate, callbackQueue: DispatchQueue) {
+    init(resourceUrl: URL, requestedRange: ByteRange, delegate: DataRequestLoaderDelegate, callbackQueue: DispatchQueue, scratchFileHandle: SODSwiftableFileHandle, scratchFileRanges: [ByteRange]) {
         self.resourceUrl = resourceUrl
         self.requestedRange = requestedRange
         self.callbackQueue = callbackQueue
         self.httpCallbackQueue = {
-            let queue = OperationQueue()
+           let queue = OperationQueue()
             queue.maxConcurrentOperationCount = 1
             return queue
         }()
         self.delegate = delegate
-//        self.scratchFileHandle = scratchFileHandle
-//        self.scratchFileRanges = scratchFileRanges
+        self.scratchFileHandle = scratchFileHandle
+        self.scratchFileRanges = scratchFileRanges
         self.currentOffset = requestedRange.lowerBound
         self.operationQueue = {
             let queue = OperationQueue()
@@ -113,8 +113,8 @@ class DataRequestLoader {
     fileprivate func newOperations(for subrequests: [ResourceLoaderSubrequest]) -> [Operation] {
         return subrequests.map { (subrequest) -> Operation in
             switch subrequest.source {
-//            case .scratchFile:
-//                return newScratchFileOperation(for: subrequest.range)
+            case .scratchFile:
+                return newScratchFileOperation(for: subrequest.range)
             case .network:
                 return newNetworkRequestOperation(for: resourceUrl, range: subrequest.range)
             }
@@ -122,26 +122,26 @@ class DataRequestLoader {
     }
     
     /// Creates an operation which will load `range` from the scratch file.
-//    fileprivate func newScratchFileOperation(for range: ByteRange) -> Operation {
-//        SodesLog("Creating operation for scratch file for range: \(range)")
-//        return BlockOperation { [weak self] in
-//            guard let this = self else {return}
-//            guard !this.cancelled && !this.failed else {return}
-//            do {
-////                let data = try this.scratchFileHandle.read(from: range)
-//                this.currentOffset = range.upperBound
-//                this.callbackQueue.sync { [weak this] in
-//                    guard let this = this else {return}
-//                    guard !this.cancelled && !this.failed else {return}
-//                    SodesLog("Sucessfully read data from the scratch file: \(range)")
-//                    this.delegate?.dataRequestLoader(this, didReceive: data, forSubrange: range)
-//                }
-//            } catch (let e) {
-//                SodesLog(e)
-//                this.fail(with: e)
-//            }
-//        }
-//    }
+    fileprivate func newScratchFileOperation(for range: ByteRange) -> Operation {
+        SodesLog("Creating operation for scratch file for range: \(range)")
+        return BlockOperation { [weak self] in
+            guard let this = self else {return}
+            guard !this.cancelled && !this.failed else {return}
+            do {
+                let data = try this.scratchFileHandle.read(from: range)
+                this.currentOffset = range.upperBound
+                this.callbackQueue.sync { [weak this] in
+                    guard let this = this else {return}
+                    guard !this.cancelled && !this.failed else {return}
+                    SodesLog("Sucessfully read data from the scratch file: \(range)")
+                    this.delegate?.dataRequestLoader(this, didReceive: data, forSubrange: range)
+                }
+            } catch (let e) {
+                SodesLog(e)
+                this.fail(with: e)
+            }
+        }
+    }
     
     /// Creates an operation which will download `range` from `url`.
     fileprivate func newNetworkRequestOperation(for url: URL, range: ByteRange) -> Operation {
@@ -205,15 +205,15 @@ extension DataRequestLoader: HTTPOperationDataDelegate {
     /// This will be called many times a second as chunks of data are loaded.
     /// The receiver will write the data to the scratch file and, if successful,
     /// will notify its delegate of the loaded data. The receiver will pass the
-    /// data onto AVFoundation and update the metadata registry of loaded
+    /// data onto AVFoundation and update the metadata registry of loaded 
     /// byte ranges.
     func delegatedHTTPOperation(_ operation: DelegatedHTTPOperation, didReceiveData data: Data) {
         
         assert(OperationQueue.current === httpCallbackQueue)
-        
+                
         do {
-//            try scratchFileHandle.write(data, at: UInt64(currentOffset))
-//            scratchFileHandle.synchronizeFile()
+            try scratchFileHandle.write(data, at: UInt64(currentOffset))
+            scratchFileHandle.synchronizeFile()
             let range: ByteRange = (currentOffset..<currentOffset+data.count)
             currentOffset = range.upperBound
             callbackQueue.sync { [weak self] in

@@ -10,26 +10,39 @@
 		30026D8B1F0B322000043D79 /* AboutViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30026D8A1F0B322000043D79 /* AboutViewController.swift */; };
 		30026D8D1F0B328000043D79 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30026D8C1F0B328000043D79 /* SettingsViewController.swift */; };
 		30026D8F1F0C2A6000043D79 /* DownloadTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30026D8E1F0C2A6000043D79 /* DownloadTableViewCell.swift */; };
+		3005318E1F32EF94002A1A4E /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3005318A1F32EF94002A1A4E /* Info.plist */; };
+		3005318F1F32EF94002A1A4E /* SODSwiftableFileHandle.m in Sources */ = {isa = PBXBuildFile; fileRef = 3005318C1F32EF94002A1A4E /* SODSwiftableFileHandle.m */; };
 		300CF2561F305D53006C397D /* URL+Converters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 300CF2551F305D53006C397D /* URL+Converters.swift */; };
-		300CF2581F32BF5D006C397D /* AVContentInfoRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 300CF2571F32BF5D006C397D /* AVContentInfoRequest.swift */; };
-		300CF25A1F32C07B006C397D /* URLResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 300CF2591F32C07B006C397D /* URLResponse.swift */; };
-		300CF25C1F32C7F6006C397D /* Requests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 300CF25B1F32C7F6006C397D /* Requests.swift */; };
-		300CF25E1F32C846006C397D /* DataRequestLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 300CF25D1F32C846006C397D /* DataRequestLoader.swift */; };
-		300CF2601F32CD01006C397D /* ByteRange.swift in Sources */ = {isa = PBXBuildFile; fileRef = 300CF25F1F32CD01006C397D /* ByteRange.swift */; };
-		300CF2621F32CE7A006C397D /* ResourceLoaderSubrequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 300CF2611F32CE7A006C397D /* ResourceLoaderSubrequest.swift */; };
-		300CF2751F32CFBA006C397D /* AsyncBlockOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 300CF2691F32CFBA006C397D /* AsyncBlockOperation.swift */; };
-		300CF2761F32CFBA006C397D /* DelegatedHTTPOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 300CF26A1F32CFBA006C397D /* DelegatedHTTPOperation.swift */; };
-		300CF2771F32CFBA006C397D /* DownloadOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 300CF26B1F32CFBA006C397D /* DownloadOperation.swift */; };
-		300CF2781F32CFBA006C397D /* Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = 300CF26C1F32CFBA006C397D /* Error.swift */; };
-		300CF2791F32CFBA006C397D /* FileManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 300CF26D1F32CFBA006C397D /* FileManager.swift */; };
-		300CF27A1F32CFBA006C397D /* GCD.swift in Sources */ = {isa = PBXBuildFile; fileRef = 300CF26E1F32CFBA006C397D /* GCD.swift */; };
-		300CF27B1F32CFBA006C397D /* HTTPOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 300CF26F1F32CFBA006C397D /* HTTPOperation.swift */; };
-		300CF27C1F32CFBA006C397D /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 300CF2701F32CFBA006C397D /* Info.plist */; };
-		300CF27D1F32CFBA006C397D /* NSDateFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 300CF2711F32CFBA006C397D /* NSDateFormatter.swift */; };
-		300CF27E1F32CFBA006C397D /* SodesLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 300CF2721F32CFBA006C397D /* SodesLog.swift */; };
-		300CF27F1F32CFBA006C397D /* Throttle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 300CF2731F32CFBA006C397D /* Throttle.swift */; };
-		300CF2801F32CFBA006C397D /* WorkOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 300CF2741F32CFBA006C397D /* WorkOperation.swift */; };
-		300CF2831F32D55C006C397D /* Errors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 300CF2821F32D55C006C397D /* Errors.swift */; };
+		300CF2F11F32DC61006C397D /* AVContentInfoRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 300CF2DE1F32DC61006C397D /* AVContentInfoRequest.swift */; };
+		300CF2F21F32DC61006C397D /* ByteRange.swift in Sources */ = {isa = PBXBuildFile; fileRef = 300CF2DF1F32DC61006C397D /* ByteRange.swift */; };
+		300CF2F31F32DC61006C397D /* Data.swift in Sources */ = {isa = PBXBuildFile; fileRef = 300CF2E01F32DC61006C397D /* Data.swift */; };
+		300CF2F41F32DC61006C397D /* DataRequestLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 300CF2E11F32DC61006C397D /* DataRequestLoader.swift */; };
+		300CF2F51F32DC61006C397D /* Errors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 300CF2E21F32DC61006C397D /* Errors.swift */; };
+		300CF2F71F32DC61006C397D /* MiscExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 300CF2E41F32DC61006C397D /* MiscExtensions.swift */; };
+		300CF2F81F32DC61006C397D /* NSObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 300CF2E51F32DC61006C397D /* NSObject.swift */; };
+		300CF2F91F32DC61006C397D /* PlaybackController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 300CF2E61F32DC61006C397D /* PlaybackController.swift */; };
+		300CF2FA1F32DC61006C397D /* PlaybackSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 300CF2E71F32DC61006C397D /* PlaybackSource.swift */; };
+		300CF2FB1F32DC61006C397D /* Requests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 300CF2E81F32DC61006C397D /* Requests.swift */; };
+		300CF2FC1F32DC61006C397D /* ResourceLoaderDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 300CF2E91F32DC61006C397D /* ResourceLoaderDelegate.swift */; };
+		300CF2FD1F32DC61006C397D /* ResourceLoaderSubrequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 300CF2EA1F32DC61006C397D /* ResourceLoaderSubrequest.swift */; };
+		300CF2FE1F32DC61006C397D /* ScratchFileInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 300CF2EB1F32DC61006C397D /* ScratchFileInfo.swift */; };
+		300CF2FF1F32DC61006C397D /* ScratchFileInfoSerialization.swift in Sources */ = {isa = PBXBuildFile; fileRef = 300CF2EC1F32DC61006C397D /* ScratchFileInfoSerialization.swift */; };
+		300CF3001F32DC61006C397D /* SODSwiftableFileHandle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 300CF2ED1F32DC61006C397D /* SODSwiftableFileHandle.swift */; };
+		300CF3011F32DC61006C397D /* URL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 300CF2EE1F32DC61006C397D /* URL.swift */; };
+		300CF3021F32DC61006C397D /* URLRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 300CF2EF1F32DC61006C397D /* URLRequest.swift */; };
+		300CF3031F32DC61006C397D /* URLResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 300CF2F01F32DC61006C397D /* URLResponse.swift */; };
+		300CF3101F32DC6A006C397D /* AsyncBlockOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 300CF3041F32DC6A006C397D /* AsyncBlockOperation.swift */; };
+		300CF3111F32DC6A006C397D /* DelegatedHTTPOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 300CF3051F32DC6A006C397D /* DelegatedHTTPOperation.swift */; };
+		300CF3121F32DC6A006C397D /* DownloadOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 300CF3061F32DC6A006C397D /* DownloadOperation.swift */; };
+		300CF3131F32DC6A006C397D /* Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = 300CF3071F32DC6A006C397D /* Error.swift */; };
+		300CF3141F32DC6A006C397D /* FileManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 300CF3081F32DC6A006C397D /* FileManager.swift */; };
+		300CF3151F32DC6A006C397D /* GCD.swift in Sources */ = {isa = PBXBuildFile; fileRef = 300CF3091F32DC6A006C397D /* GCD.swift */; };
+		300CF3161F32DC6A006C397D /* HTTPOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 300CF30A1F32DC6A006C397D /* HTTPOperation.swift */; };
+		300CF3171F32DC6A006C397D /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 300CF30B1F32DC6A006C397D /* Info.plist */; };
+		300CF3181F32DC6A006C397D /* NSDateFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 300CF30C1F32DC6A006C397D /* NSDateFormatter.swift */; };
+		300CF3191F32DC6A006C397D /* SodesLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 300CF30D1F32DC6A006C397D /* SodesLog.swift */; };
+		300CF31A1F32DC6A006C397D /* Throttle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 300CF30E1F32DC6A006C397D /* Throttle.swift */; };
+		300CF31B1F32DC6A006C397D /* WorkOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 300CF30F1F32DC6A006C397D /* WorkOperation.swift */; };
 		302D55111EC157960032D0A0 /* PVViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 302D55101EC157960032D0A0 /* PVViewController.swift */; };
 		3048E8881EDA7124001AADCE /* MediaRef.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3048E8871EDA7124001AADCE /* MediaRef.swift */; };
 		3048E88A1EDD1B1A001AADCE /* Int64+MediaPlayerString.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3048E8891EDD1B1A001AADCE /* Int64+MediaPlayerString.swift */; };
@@ -124,26 +137,42 @@
 		30026D8A1F0B322000043D79 /* AboutViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AboutViewController.swift; sourceTree = "<group>"; };
 		30026D8C1F0B328000043D79 /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		30026D8E1F0C2A6000043D79 /* DownloadTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DownloadTableViewCell.swift; sourceTree = "<group>"; };
+		300531891F32EF93002A1A4E /* Podverse-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "Podverse-Bridging-Header.h"; path = "Supporting Libraries/Podverse-Bridging-Header.h"; sourceTree = "<group>"; };
+		3005318A1F32EF94002A1A4E /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = SwiftableFileHandle/Info.plist; sourceTree = "<group>"; };
+		3005318B1F32EF94002A1A4E /* SODSwiftableFileHandle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SODSwiftableFileHandle.h; path = SwiftableFileHandle/SODSwiftableFileHandle.h; sourceTree = "<group>"; };
+		3005318C1F32EF94002A1A4E /* SODSwiftableFileHandle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SODSwiftableFileHandle.m; path = SwiftableFileHandle/SODSwiftableFileHandle.m; sourceTree = "<group>"; };
+		3005318D1F32EF94002A1A4E /* SwiftableFileHandle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SwiftableFileHandle.h; path = SwiftableFileHandle/SwiftableFileHandle.h; sourceTree = "<group>"; };
 		300CF2551F305D53006C397D /* URL+Converters.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "URL+Converters.swift"; sourceTree = "<group>"; };
-		300CF2571F32BF5D006C397D /* AVContentInfoRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AVContentInfoRequest.swift; path = ../AVContentInfoRequest.swift; sourceTree = "<group>"; };
-		300CF2591F32C07B006C397D /* URLResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = URLResponse.swift; path = ../URLResponse.swift; sourceTree = "<group>"; };
-		300CF25B1F32C7F6006C397D /* Requests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Requests.swift; path = ../Requests.swift; sourceTree = "<group>"; };
-		300CF25D1F32C846006C397D /* DataRequestLoader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DataRequestLoader.swift; path = ../DataRequestLoader.swift; sourceTree = "<group>"; };
-		300CF25F1F32CD01006C397D /* ByteRange.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ByteRange.swift; path = ../ByteRange.swift; sourceTree = "<group>"; };
-		300CF2611F32CE7A006C397D /* ResourceLoaderSubrequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ResourceLoaderSubrequest.swift; path = ../ResourceLoaderSubrequest.swift; sourceTree = "<group>"; };
-		300CF2691F32CFBA006C397D /* AsyncBlockOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AsyncBlockOperation.swift; path = "../../../../Desktop/sodes-audio-example-72548e948d767ba0b3c2894c13b664c843fbd9a6/Sodes/SodesFoundation/AsyncBlockOperation.swift"; sourceTree = "<group>"; };
-		300CF26A1F32CFBA006C397D /* DelegatedHTTPOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DelegatedHTTPOperation.swift; path = "../../../../Desktop/sodes-audio-example-72548e948d767ba0b3c2894c13b664c843fbd9a6/Sodes/SodesFoundation/DelegatedHTTPOperation.swift"; sourceTree = "<group>"; };
-		300CF26B1F32CFBA006C397D /* DownloadOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DownloadOperation.swift; path = "../../../../Desktop/sodes-audio-example-72548e948d767ba0b3c2894c13b664c843fbd9a6/Sodes/SodesFoundation/DownloadOperation.swift"; sourceTree = "<group>"; };
-		300CF26C1F32CFBA006C397D /* Error.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Error.swift; path = "../../../../Desktop/sodes-audio-example-72548e948d767ba0b3c2894c13b664c843fbd9a6/Sodes/SodesFoundation/Error.swift"; sourceTree = "<group>"; };
-		300CF26D1F32CFBA006C397D /* FileManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FileManager.swift; path = "../../../../Desktop/sodes-audio-example-72548e948d767ba0b3c2894c13b664c843fbd9a6/Sodes/SodesFoundation/FileManager.swift"; sourceTree = "<group>"; };
-		300CF26E1F32CFBA006C397D /* GCD.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = GCD.swift; path = "../../../../Desktop/sodes-audio-example-72548e948d767ba0b3c2894c13b664c843fbd9a6/Sodes/SodesFoundation/GCD.swift"; sourceTree = "<group>"; };
-		300CF26F1F32CFBA006C397D /* HTTPOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = HTTPOperation.swift; path = "../../../../Desktop/sodes-audio-example-72548e948d767ba0b3c2894c13b664c843fbd9a6/Sodes/SodesFoundation/HTTPOperation.swift"; sourceTree = "<group>"; };
-		300CF2701F32CFBA006C397D /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = "../../../../Desktop/sodes-audio-example-72548e948d767ba0b3c2894c13b664c843fbd9a6/Sodes/SodesFoundation/Info.plist"; sourceTree = "<group>"; };
-		300CF2711F32CFBA006C397D /* NSDateFormatter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NSDateFormatter.swift; path = "../../../../Desktop/sodes-audio-example-72548e948d767ba0b3c2894c13b664c843fbd9a6/Sodes/SodesFoundation/NSDateFormatter.swift"; sourceTree = "<group>"; };
-		300CF2721F32CFBA006C397D /* SodesLog.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SodesLog.swift; path = "../../../../Desktop/sodes-audio-example-72548e948d767ba0b3c2894c13b664c843fbd9a6/Sodes/SodesFoundation/SodesLog.swift"; sourceTree = "<group>"; };
-		300CF2731F32CFBA006C397D /* Throttle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Throttle.swift; path = "../../../../Desktop/sodes-audio-example-72548e948d767ba0b3c2894c13b664c843fbd9a6/Sodes/SodesFoundation/Throttle.swift"; sourceTree = "<group>"; };
-		300CF2741F32CFBA006C397D /* WorkOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = WorkOperation.swift; path = "../../../../Desktop/sodes-audio-example-72548e948d767ba0b3c2894c13b664c843fbd9a6/Sodes/SodesFoundation/WorkOperation.swift"; sourceTree = "<group>"; };
-		300CF2821F32D55C006C397D /* Errors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Errors.swift; sourceTree = "<group>"; };
+		300CF2DE1F32DC61006C397D /* AVContentInfoRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AVContentInfoRequest.swift; path = SodesAudio/AVContentInfoRequest.swift; sourceTree = "<group>"; };
+		300CF2DF1F32DC61006C397D /* ByteRange.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ByteRange.swift; path = SodesAudio/ByteRange.swift; sourceTree = "<group>"; };
+		300CF2E01F32DC61006C397D /* Data.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Data.swift; path = SodesAudio/Data.swift; sourceTree = "<group>"; };
+		300CF2E11F32DC61006C397D /* DataRequestLoader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DataRequestLoader.swift; path = SodesAudio/DataRequestLoader.swift; sourceTree = "<group>"; };
+		300CF2E21F32DC61006C397D /* Errors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Errors.swift; path = SodesAudio/Errors.swift; sourceTree = "<group>"; };
+		300CF2E41F32DC61006C397D /* MiscExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MiscExtensions.swift; path = SodesAudio/MiscExtensions.swift; sourceTree = "<group>"; };
+		300CF2E51F32DC61006C397D /* NSObject.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NSObject.swift; path = SodesAudio/NSObject.swift; sourceTree = "<group>"; };
+		300CF2E61F32DC61006C397D /* PlaybackController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PlaybackController.swift; path = SodesAudio/PlaybackController.swift; sourceTree = "<group>"; };
+		300CF2E71F32DC61006C397D /* PlaybackSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PlaybackSource.swift; path = SodesAudio/PlaybackSource.swift; sourceTree = "<group>"; };
+		300CF2E81F32DC61006C397D /* Requests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Requests.swift; path = SodesAudio/Requests.swift; sourceTree = "<group>"; };
+		300CF2E91F32DC61006C397D /* ResourceLoaderDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ResourceLoaderDelegate.swift; path = SodesAudio/ResourceLoaderDelegate.swift; sourceTree = "<group>"; };
+		300CF2EA1F32DC61006C397D /* ResourceLoaderSubrequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ResourceLoaderSubrequest.swift; path = SodesAudio/ResourceLoaderSubrequest.swift; sourceTree = "<group>"; };
+		300CF2EB1F32DC61006C397D /* ScratchFileInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ScratchFileInfo.swift; path = SodesAudio/ScratchFileInfo.swift; sourceTree = "<group>"; };
+		300CF2EC1F32DC61006C397D /* ScratchFileInfoSerialization.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ScratchFileInfoSerialization.swift; path = SodesAudio/ScratchFileInfoSerialization.swift; sourceTree = "<group>"; };
+		300CF2ED1F32DC61006C397D /* SODSwiftableFileHandle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SODSwiftableFileHandle.swift; path = SodesAudio/SODSwiftableFileHandle.swift; sourceTree = "<group>"; };
+		300CF2EE1F32DC61006C397D /* URL.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = URL.swift; path = SodesAudio/URL.swift; sourceTree = "<group>"; };
+		300CF2EF1F32DC61006C397D /* URLRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = URLRequest.swift; path = SodesAudio/URLRequest.swift; sourceTree = "<group>"; };
+		300CF2F01F32DC61006C397D /* URLResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = URLResponse.swift; path = SodesAudio/URLResponse.swift; sourceTree = "<group>"; };
+		300CF3041F32DC6A006C397D /* AsyncBlockOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AsyncBlockOperation.swift; path = SodesFoundation/AsyncBlockOperation.swift; sourceTree = "<group>"; };
+		300CF3051F32DC6A006C397D /* DelegatedHTTPOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DelegatedHTTPOperation.swift; path = SodesFoundation/DelegatedHTTPOperation.swift; sourceTree = "<group>"; };
+		300CF3061F32DC6A006C397D /* DownloadOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DownloadOperation.swift; path = SodesFoundation/DownloadOperation.swift; sourceTree = "<group>"; };
+		300CF3071F32DC6A006C397D /* Error.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Error.swift; path = SodesFoundation/Error.swift; sourceTree = "<group>"; };
+		300CF3081F32DC6A006C397D /* FileManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FileManager.swift; path = SodesFoundation/FileManager.swift; sourceTree = "<group>"; };
+		300CF3091F32DC6A006C397D /* GCD.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = GCD.swift; path = SodesFoundation/GCD.swift; sourceTree = "<group>"; };
+		300CF30A1F32DC6A006C397D /* HTTPOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = HTTPOperation.swift; path = SodesFoundation/HTTPOperation.swift; sourceTree = "<group>"; };
+		300CF30B1F32DC6A006C397D /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = SodesFoundation/Info.plist; sourceTree = "<group>"; };
+		300CF30C1F32DC6A006C397D /* NSDateFormatter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NSDateFormatter.swift; path = SodesFoundation/NSDateFormatter.swift; sourceTree = "<group>"; };
+		300CF30D1F32DC6A006C397D /* SodesLog.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SodesLog.swift; path = SodesFoundation/SodesLog.swift; sourceTree = "<group>"; };
+		300CF30E1F32DC6A006C397D /* Throttle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Throttle.swift; path = SodesFoundation/Throttle.swift; sourceTree = "<group>"; };
+		300CF30F1F32DC6A006C397D /* WorkOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = WorkOperation.swift; path = SodesFoundation/WorkOperation.swift; sourceTree = "<group>"; };
 		302D55101EC157960032D0A0 /* PVViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PVViewController.swift; sourceTree = "<group>"; };
 		3048E8871EDA7124001AADCE /* MediaRef.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MediaRef.swift; sourceTree = "<group>"; };
 		3048E8891EDD1B1A001AADCE /* Int64+MediaPlayerString.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Int64+MediaPlayerString.swift"; sourceTree = "<group>"; };
@@ -159,7 +188,7 @@
 		30A575651EBECFF90088CCA6 /* EpisodesTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EpisodesTableViewController.swift; sourceTree = "<group>"; };
 		30A575671EBED8360088CCA6 /* EpisodeTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EpisodeTableViewCell.swift; sourceTree = "<group>"; };
 		30B427F11EBE4CB100BAD942 /* PVSubscriber.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PVSubscriber.swift; sourceTree = "<group>"; };
-		30DBD4D01F11872E00A431E6 /* AudiosearchClientSwift.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AudiosearchClientSwift.swift; path = ../AudiosearchClientSwift.swift; sourceTree = "<group>"; };
+		30DBD4D01F11872E00A431E6 /* AudiosearchClientSwift.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudiosearchClientSwift.swift; sourceTree = "<group>"; };
 		30DBD4D21F11B05900A431E6 /* OAuth2RetryHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OAuth2RetryHandler.swift; sourceTree = "<group>"; };
 		30DBD4D41F11DBFA00A431E6 /* FindSearchTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FindSearchTableViewController.swift; sourceTree = "<group>"; };
 		30DBD4D81F11F42B00A431E6 /* PodcastSearchResultTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PodcastSearchResultTableViewCell.swift; sourceTree = "<group>"; };
@@ -253,21 +282,32 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		300531861F32EF24002A1A4E /* SwiftableFileHandle */ = {
+			isa = PBXGroup;
+			children = (
+				3005318A1F32EF94002A1A4E /* Info.plist */,
+				3005318B1F32EF94002A1A4E /* SODSwiftableFileHandle.h */,
+				3005318C1F32EF94002A1A4E /* SODSwiftableFileHandle.m */,
+				3005318D1F32EF94002A1A4E /* SwiftableFileHandle.h */,
+			);
+			name = SwiftableFileHandle;
+			sourceTree = "<group>";
+		};
 		300CF2681F32CFA8006C397D /* SodesFoundation */ = {
 			isa = PBXGroup;
 			children = (
-				300CF2691F32CFBA006C397D /* AsyncBlockOperation.swift */,
-				300CF26A1F32CFBA006C397D /* DelegatedHTTPOperation.swift */,
-				300CF26B1F32CFBA006C397D /* DownloadOperation.swift */,
-				300CF26C1F32CFBA006C397D /* Error.swift */,
-				300CF26D1F32CFBA006C397D /* FileManager.swift */,
-				300CF26E1F32CFBA006C397D /* GCD.swift */,
-				300CF26F1F32CFBA006C397D /* HTTPOperation.swift */,
-				300CF2701F32CFBA006C397D /* Info.plist */,
-				300CF2711F32CFBA006C397D /* NSDateFormatter.swift */,
-				300CF2721F32CFBA006C397D /* SodesLog.swift */,
-				300CF2731F32CFBA006C397D /* Throttle.swift */,
-				300CF2741F32CFBA006C397D /* WorkOperation.swift */,
+				300CF3041F32DC6A006C397D /* AsyncBlockOperation.swift */,
+				300CF3051F32DC6A006C397D /* DelegatedHTTPOperation.swift */,
+				300CF3061F32DC6A006C397D /* DownloadOperation.swift */,
+				300CF3071F32DC6A006C397D /* Error.swift */,
+				300CF3081F32DC6A006C397D /* FileManager.swift */,
+				300CF3091F32DC6A006C397D /* GCD.swift */,
+				300CF30A1F32DC6A006C397D /* HTTPOperation.swift */,
+				300CF30B1F32DC6A006C397D /* Info.plist */,
+				300CF30C1F32DC6A006C397D /* NSDateFormatter.swift */,
+				300CF30D1F32DC6A006C397D /* SodesLog.swift */,
+				300CF30E1F32DC6A006C397D /* Throttle.swift */,
+				300CF30F1F32DC6A006C397D /* WorkOperation.swift */,
 			);
 			name = SodesFoundation;
 			sourceTree = "<group>";
@@ -275,13 +315,24 @@
 		300CF2811F32D4FB006C397D /* SodesAudio */ = {
 			isa = PBXGroup;
 			children = (
-				300CF2571F32BF5D006C397D /* AVContentInfoRequest.swift */,
-				300CF25F1F32CD01006C397D /* ByteRange.swift */,
-				300CF25D1F32C846006C397D /* DataRequestLoader.swift */,
-				300CF2821F32D55C006C397D /* Errors.swift */,
-				300CF2611F32CE7A006C397D /* ResourceLoaderSubrequest.swift */,
-				300CF25B1F32C7F6006C397D /* Requests.swift */,
-				300CF2591F32C07B006C397D /* URLResponse.swift */,
+				300CF2DE1F32DC61006C397D /* AVContentInfoRequest.swift */,
+				300CF2DF1F32DC61006C397D /* ByteRange.swift */,
+				300CF2E01F32DC61006C397D /* Data.swift */,
+				300CF2E11F32DC61006C397D /* DataRequestLoader.swift */,
+				300CF2E21F32DC61006C397D /* Errors.swift */,
+				300CF2E41F32DC61006C397D /* MiscExtensions.swift */,
+				300CF2E51F32DC61006C397D /* NSObject.swift */,
+				300CF2E61F32DC61006C397D /* PlaybackController.swift */,
+				300CF2E71F32DC61006C397D /* PlaybackSource.swift */,
+				300CF2E81F32DC61006C397D /* Requests.swift */,
+				300CF2E91F32DC61006C397D /* ResourceLoaderDelegate.swift */,
+				300CF2EA1F32DC61006C397D /* ResourceLoaderSubrequest.swift */,
+				300CF2EB1F32DC61006C397D /* ScratchFileInfo.swift */,
+				300CF2EC1F32DC61006C397D /* ScratchFileInfoSerialization.swift */,
+				300CF2ED1F32DC61006C397D /* SODSwiftableFileHandle.swift */,
+				300CF2EE1F32DC61006C397D /* URL.swift */,
+				300CF2EF1F32DC61006C397D /* URLRequest.swift */,
+				300CF2F01F32DC61006C397D /* URLResponse.swift */,
 			);
 			name = SodesAudio;
 			sourceTree = "<group>";
@@ -338,7 +389,7 @@
 				30DBD4D21F11B05900A431E6 /* OAuth2RetryHandler.swift */,
 				300CF2811F32D4FB006C397D /* SodesAudio */,
 				300CF2681F32CFA8006C397D /* SodesFoundation */,
-				30DBD4D01F11872E00A431E6 /* AudiosearchClientSwift.swift */,
+				300531861F32EF24002A1A4E /* SwiftableFileHandle */,
 			);
 			path = "Supporting Libraries";
 			sourceTree = "<group>";
@@ -370,10 +421,12 @@
 			isa = PBXGroup;
 			children = (
 				E753027D1E072F160007B6F7 /* Supporting Libraries */,
+				30DBD4D01F11872E00A431E6 /* AudiosearchClientSwift.swift */,
 				E79515E51E03853500382BF8 /* Assets.xcassets */,
 				3095EF051EBC396F00F0E043 /* Auth0.plist */,
 				E7D25BCD1E0F184800B60368 /* Constants.swift */,
 				E79515EA1E03853500382BF8 /* Info.plist */,
+				300531891F32EF93002A1A4E /* Podverse-Bridging-Header.h */,
 				E7D25BDA1E0F30C500B60368 /* podverse.xcdatamodeld */,
 			);
 			name = "Supporting Files";
@@ -601,6 +654,7 @@
 					E79515D81E03853400382BF8 = {
 						CreatedOnToolsVersion = 8.2;
 						DevelopmentTeam = NVBK9KF43L;
+						LastSwiftMigration = 0830;
 						ProvisioningStyle = Automatic;
 					};
 					E79515EE1E03853500382BF8 = {
@@ -644,10 +698,11 @@
 			files = (
 				E79515E91E03853500382BF8 /* LaunchScreen.storyboard in Resources */,
 				30A0A4961F1ADAA200242F85 /* NowPlayingBar.xib in Resources */,
-				300CF27C1F32CFBA006C397D /* Info.plist in Resources */,
 				E79515E61E03853500382BF8 /* Assets.xcassets in Resources */,
 				E79515E41E03853500382BF8 /* Main.storyboard in Resources */,
 				3095EF061EBC396F00F0E043 /* Auth0.plist in Resources */,
+				300CF3171F32DC6A006C397D /* Info.plist in Resources */,
+				3005318E1F32EF94002A1A4E /* Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -810,16 +865,19 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				300CF2FE1F32DC61006C397D /* ScratchFileInfo.swift in Sources */,
 				E7B2A5A41E12CC5A00AAE036 /* PodcastTableViewCell.swift in Sources */,
+				300CF3001F32DC61006C397D /* SODSwiftableFileHandle.swift in Sources */,
+				300CF2FC1F32DC61006C397D /* ResourceLoaderDelegate.swift in Sources */,
 				E7B2A59D1E123A4400AAE036 /* UIViewController+InternetRequiredAlert.swift in Sources */,
+				300CF3031F32DC61006C397D /* URLResponse.swift in Sources */,
 				E7D25BBD1E0F056600B60368 /* ExtendedFeedParser.swift in Sources */,
+				300CF2FD1F32DC61006C397D /* ResourceLoaderSubrequest.swift in Sources */,
 				3097AA911EE7C7D200AD0ED0 /* DownloadsTableViewController.swift in Sources */,
 				30DBD4D51F11DBFA00A431E6 /* FindSearchTableViewController.swift in Sources */,
 				3097AA8F1EE7C1D500AD0ED0 /* ClipTableViewCell.swift in Sources */,
 				30026D8D1F0B328000043D79 /* SettingsViewController.swift in Sources */,
-				300CF2831F32D55C006C397D /* Errors.swift in Sources */,
-				300CF2761F32CFBA006C397D /* DelegatedHTTPOperation.swift in Sources */,
-				300CF2621F32CE7A006C397D /* ResourceLoaderSubrequest.swift in Sources */,
+				300CF2FF1F32DC61006C397D /* ScratchFileInfoSerialization.swift in Sources */,
 				E7B2A5AA1E162AE400AAE036 /* Date+Formatters.swift in Sources */,
 				E7B2A5AC1E162B8500AAE036 /* String+Formatters.swift in Sources */,
 				E7B2A5971E11F95C00AAE036 /* PVMediaPlayer.swift in Sources */,
@@ -828,67 +886,76 @@
 				E7D25BD11E0F1CB000B60368 /* CoreDataHelper.swift in Sources */,
 				E7D25BCE1E0F184800B60368 /* Constants.swift in Sources */,
 				30026D8F1F0C2A6000043D79 /* DownloadTableViewCell.swift in Sources */,
+				300CF2FA1F32DC61006C397D /* PlaybackSource.swift in Sources */,
 				E7D25BC41E0F13D300B60368 /* Podcast.swift in Sources */,
+				300CF3121F32DC6A006C397D /* DownloadOperation.swift in Sources */,
 				E753028C1E072F160007B6F7 /* String+Utilities.swift in Sources */,
+				300CF2F81F32DC61006C397D /* NSObject.swift in Sources */,
 				E70E4A1F1E039047003CEC64 /* FindTableViewController.swift in Sources */,
+				300CF3111F32DC6A006C397D /* DelegatedHTTPOperation.swift in Sources */,
 				E7B2A5991E12103D00AAE036 /* PVStreamer.swift in Sources */,
+				300CF3191F32DC6A006C397D /* SodesLog.swift in Sources */,
 				E7D25BC21E0F118C00B60368 /* PVFeedParser.swift in Sources */,
-				300CF2801F32CFBA006C397D /* WorkOperation.swift in Sources */,
 				E7D25BD41E0F23DB00B60368 /* Data+ResizeImageData.swift in Sources */,
+				300CF3141F32DC6A006C397D /* FileManager.swift in Sources */,
 				30B427F21EBE4CB100BAD942 /* PVSubscriber.swift in Sources */,
 				30DBD4D11F11872E00A431E6 /* AudiosearchClientSwift.swift in Sources */,
 				E7B2A5A61E12D38200AAE036 /* String+CharacterManipulation.swift in Sources */,
 				E76C49CA1E0F950E00F81217 /* DownloadingEpisode.swift in Sources */,
 				300CF2561F305D53006C397D /* URL+Converters.swift in Sources */,
-				300CF27D1F32CFBA006C397D /* NSDateFormatter.swift in Sources */,
+				300CF2F21F32DC61006C397D /* ByteRange.swift in Sources */,
 				30EB67781ECCAB2800C5AB80 /* MediaPlayerViewController.swift in Sources */,
 				E753028A1E072F160007B6F7 /* NSDate+FeedsDate.swift in Sources */,
-				300CF2581F32BF5D006C397D /* AVContentInfoRequest.swift in Sources */,
-				300CF2781F32CFBA006C397D /* Error.swift in Sources */,
+				300CF2F91F32DC61006C397D /* PlaybackController.swift in Sources */,
+				300CF2F11F32DC61006C397D /* AVContentInfoRequest.swift in Sources */,
+				3005318F1F32EF94002A1A4E /* SODSwiftableFileHandle.m in Sources */,
 				30DBD4D91F11F42B00A431E6 /* PodcastSearchResultTableViewCell.swift in Sources */,
+				300CF3021F32DC61006C397D /* URLRequest.swift in Sources */,
+				300CF3131F32DC6A006C397D /* Error.swift in Sources */,
 				3048E88A1EDD1B1A001AADCE /* Int64+MediaPlayerString.swift in Sources */,
+				300CF3101F32DC6A006C397D /* AsyncBlockOperation.swift in Sources */,
 				E7D25BC61E0F141500B60368 /* Episode.swift in Sources */,
 				E78BF9311E0FA64F002194FE /* PVReachability.swift in Sources */,
-				300CF25A1F32C07B006C397D /* URLResponse.swift in Sources */,
 				E75302871E072F160007B6F7 /* FeedEnclosure.swift in Sources */,
-				300CF25E1F32C846006C397D /* DataRequestLoader.swift in Sources */,
+				300CF2F71F32DC61006C397D /* MiscExtensions.swift in Sources */,
+				300CF2F41F32DC61006C397D /* DataRequestLoader.swift in Sources */,
 				3048E8881EDA7124001AADCE /* MediaRef.swift in Sources */,
+				300CF2FB1F32DC61006C397D /* Requests.swift in Sources */,
 				E7D25BC01E0F096A00B60368 /* PVTimeHelpers.swift in Sources */,
-				300CF27A1F32CFBA006C397D /* GCD.swift in Sources */,
+				300CF2F31F32DC61006C397D /* Data.swift in Sources */,
 				30A0A4941F1AD6A500242F85 /* NowPlayingBar.swift in Sources */,
+				300CF31B1F32DC6A006C397D /* WorkOperation.swift in Sources */,
+				300CF3011F32DC61006C397D /* URL.swift in Sources */,
 				E70E4A231E03907A003CEC64 /* MoreTableViewController.swift in Sources */,
 				3097AA8D1EE7BEC900AD0ED0 /* ClipsTableViewController.swift in Sources */,
 				3051488D1ED27534009BC839 /* PVPlayerHistoryManager.swift in Sources */,
 				E75302891E072F160007B6F7 /* FeedParser.swift in Sources */,
 				E7E4714D1F1BD2A6007E66EF /* UITabbarController+PlayerView.swift in Sources */,
+				300CF3161F32DC6A006C397D /* HTTPOperation.swift in Sources */,
 				E70E4A1A1E038F8F003CEC64 /* PodcastsTableViewController.swift in Sources */,
 				30A575661EBECFF90088CCA6 /* EpisodesTableViewController.swift in Sources */,
-				300CF2771F32CFBA006C397D /* DownloadOperation.swift in Sources */,
-				300CF27B1F32CFBA006C397D /* HTTPOperation.swift in Sources */,
 				E75302881E072F160007B6F7 /* FeedItem.swift in Sources */,
-				300CF2601F32CD01006C397D /* ByteRange.swift in Sources */,
 				30DBD4D31F11B05900A431E6 /* OAuth2RetryHandler.swift in Sources */,
 				E7299F121F19368400AB3168 /* AboutPlayingItemViewController.swift in Sources */,
 				30026D8B1F0B322000043D79 /* AboutViewController.swift in Sources */,
-				300CF2751F32CFBA006C397D /* AsyncBlockOperation.swift in Sources */,
+				300CF3151F32DC6A006C397D /* GCD.swift in Sources */,
 				E7D25BDC1E0F30C500B60368 /* podverse.xcdatamodeld in Sources */,
 				E7B2A5A81E16246B00AAE036 /* LoginViewController.swift in Sources */,
 				E7B2A59B1E12111500AAE036 /* URL+RemoteSize.swift in Sources */,
-				300CF27F1F32CFBA006C397D /* Throttle.swift in Sources */,
-				300CF2791F32CFBA006C397D /* FileManager.swift in Sources */,
 				E79515DD1E03853500382BF8 /* AppDelegate.swift in Sources */,
 				E76C49C61E0F8DFE00F81217 /* PVDownloader.swift in Sources */,
 				E70E4A1D1E038FC6003CEC64 /* PlaylistsTableViewController.swift in Sources */,
+				300CF31A1F32DC6A006C397D /* Throttle.swift in Sources */,
+				300CF3181F32DC6A006C397D /* NSDateFormatter.swift in Sources */,
 				E75302861E072F160007B6F7 /* FeedChannel.swift in Sources */,
 				3051488B1ED27251009BC839 /* PlayerHistoryItem.swift in Sources */,
-				300CF25C1F32C7F6006C397D /* Requests.swift in Sources */,
 				E7B2A5A11E123E9900AAE036 /* PVAuth.swift in Sources */,
 				E753028B1E072F160007B6F7 /* String+RemoveHTMLCharacters.swift in Sources */,
 				E7D25BCC1E0F176C00B60368 /* PVDeleter.swift in Sources */,
 				E7AD9A981EDDF7160093F051 /* ClipsListContainerViewController.swift in Sources */,
 				302D55111EC157960032D0A0 /* PVViewController.swift in Sources */,
+				300CF2F51F32DC61006C397D /* Errors.swift in Sources */,
 				E76C49C81E0F94BF00F81217 /* DownloadingEpisodeList.swift in Sources */,
-				300CF27E1F32CFBA006C397D /* SodesLog.swift in Sources */,
 				E7D25BCA1E0F16B700B60368 /* Playlist.swift in Sources */,
 				30A575681EBED8360088CCA6 /* EpisodeTableViewCell.swift in Sources */,
 			);
@@ -1041,11 +1108,14 @@
 			baseConfigurationReference = 59F23C92401A9A603AAEFACC /* Pods-Podverse.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				DEVELOPMENT_TEAM = NVBK9KF43L;
 				INFOPLIST_FILE = Podverse/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.podverse.Podverse;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "Podverse/Supporting Libraries/Podverse-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
@@ -1055,11 +1125,13 @@
 			baseConfigurationReference = B16301C0BAC301B56BC1C200 /* Pods-Podverse.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				DEVELOPMENT_TEAM = NVBK9KF43L;
 				INFOPLIST_FILE = Podverse/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.podverse.Podverse;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "Podverse/Supporting Libraries/Podverse-Bridging-Header.h";
 				SWIFT_VERSION = 3.0;
 			};
 			name = Release;

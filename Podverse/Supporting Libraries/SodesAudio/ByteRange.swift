@@ -1,4 +1,3 @@
-// Thanks Jared Sinclair https://github.com/jaredsinclair/sodes-audio-example/blob/72548e948d767ba0b3c2894c13b664c843fbd9a6/Sodes/SodesAudio/ByteRange.swift
 //
 //  ByteRange.swift
 //  SodesAudio
@@ -6,6 +5,7 @@
 //  Created by Jared Sinclair on 7/24/16.
 //
 //
+
 import Foundation
 
 protocol Summable: Comparable {
@@ -127,7 +127,7 @@ func combine(_ ranges: [ByteRange]) -> [ByteRange] {
 /// Adding byte ranges is currently very naive. It takes the lowest lowerBound
 /// and the highest upper bound and computes a range between the two. It assumes
 /// that the programmer desires this behavior, for instance, when you're adding
-/// a sequence of byte ranges which form a continuous range when summed as a
+/// a sequence of byte ranges which form a continuous range when summed as a 
 /// whole even though any two random members might not overlap or be contiguous.
 private func +(lhs: ByteRange, rhs: ByteRange) -> ByteRange {
     let lowerBound = min(lhs.lowerBound, rhs.lowerBound)

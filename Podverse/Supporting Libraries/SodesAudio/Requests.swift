@@ -1,4 +1,3 @@
-// Thanks Jared Sinclair https://github.com/jaredsinclair/sodes-audio-example
 //
 //  Requests.swift
 //  SodesAudio
@@ -6,6 +5,7 @@
 //  Created by Jared Sinclair on 8/9/16.
 //
 //
+
 import Foundation
 import AVFoundation
 
