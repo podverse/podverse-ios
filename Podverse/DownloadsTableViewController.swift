@@ -27,8 +27,8 @@ class DownloadsTableViewController: PVViewController {
         removeObservers()
     }
     
-    func indexPathOfDownload(episode: DownloadingEpisode) -> IndexPath? {
-        if let row = DownloadingEpisodeList.shared.downloadingEpisodes.index(where: {$0.mediaUrl == episode.mediaUrl}) {
+    func indexPathOfDownload(mediaUrl: String?) -> IndexPath? {
+        if let row = DownloadingEpisodeList.shared.downloadingEpisodes.index(where: {$0.mediaUrl == mediaUrl}) {
             return IndexPath(row: row, section: 0)
         }
         return nil
@@ -120,8 +120,8 @@ extension DownloadsTableViewController:UITableViewDelegate, UITableViewDataSourc
 
 extension DownloadsTableViewController {
     func downloadFinished(_ notification:Notification) {
-        if let episode = notification.userInfo?[PVDownloader.episodeKey] as? DownloadingEpisode, 
-           let indexPath = indexPathOfDownload(episode: episode), 
+        if let episode = notification.userInfo?[Episode.episodeKey] as? DownloadingEpisode, 
+           let indexPath = indexPathOfDownload(mediaUrl: episode.mediaUrl),
            let cell = tableView.cellForRow(at: indexPath) as? DownloadTableViewCell {
             cell.progress.setProgress(1, animated: false)
             cell.progressStats.text = ""
@@ -130,8 +130,8 @@ extension DownloadsTableViewController {
     }
     
     func downloadPaused(_ notification:Notification) {
-        if let episode = notification.userInfo?[PVDownloader.episodeKey] as? DownloadingEpisode, 
-           let indexPath = indexPathOfDownload(episode: episode), 
+        if let episode = notification.userInfo?[Episode.episodeKey] as? DownloadingEpisode, 
+           let indexPath = indexPathOfDownload(mediaUrl: episode.mediaUrl),
            let cell = self.tableView.cellForRow(at: indexPath) as? DownloadTableViewCell {
             cell.progress.setProgress(episode.progress, animated: false)
             cell.progressStats.text = ""
@@ -140,8 +140,8 @@ extension DownloadsTableViewController {
     }
     
     func downloadProgressed(_ notification:Notification) {
-        if let episode = notification.userInfo?[PVDownloader.episodeKey] as? DownloadingEpisode, 
-           let indexPath = indexPathOfDownload(episode: episode),
+        if let episode = notification.userInfo?[Episode.episodeKey] as? DownloadingEpisode, 
+           let indexPath = indexPathOfDownload(mediaUrl: episode.mediaUrl),
            let cell = self.tableView.cellForRow(at: indexPath) as? DownloadTableViewCell {
             cell.progress.setProgress(episode.progress, animated: false)
             cell.progressStats.text = episode.formattedTotalBytesDownloaded
@@ -149,8 +149,8 @@ extension DownloadsTableViewController {
         }
     }
     func downloadResumed(_ notification:Notification) {
-        if let episode = notification.userInfo?[PVDownloader.episodeKey] as? DownloadingEpisode, 
-           let indexPath = indexPathOfDownload(episode: episode), 
+        if let episode = notification.userInfo?[Episode.episodeKey] as? DownloadingEpisode, 
+           let indexPath = indexPathOfDownload(mediaUrl: episode.mediaUrl),
            let cell = self.tableView.cellForRow(at: indexPath) as? DownloadTableViewCell {
             cell.progress.setProgress(episode.progress, animated: false)
             cell.progressStats.text = episode.formattedTotalBytesDownloaded
@@ -160,5 +160,12 @@ extension DownloadsTableViewController {
     
     func downloadStarted() {
         self.tableView.reloadData()
+    }
+    
+    override func episodeDeleted(_ notification:Notification) {
+        super.episodeDeleted(notification)
+        if let mediaUrl = notification.userInfo?["mediaUrl"] as? String, let indexPath = indexPathOfDownload(mediaUrl: mediaUrl) {
+            self.tableView.deleteRows(at: [indexPath], with: .automatic)
+        }
     }
 }

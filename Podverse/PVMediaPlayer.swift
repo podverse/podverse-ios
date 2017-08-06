@@ -152,7 +152,7 @@ class PVMediaPlayer {
     @objc func playerDidFinishPlaying() {
         let moc = CoreDataHelper.createMOCForThread(threadType: .mainThread)
         if let currentlyPlayingItem = playerHistoryManager.historyItems.first, let episodeMediaUrl = currentlyPlayingItem.episodeMediaUrl, let episode = Episode.episodeForMediaUrl(mediaUrlString: episodeMediaUrl, managedObjectContext: moc) {
-            PVDeleter.deleteEpisode(episodeId: episode.objectID, fileOnly: true)
+            PVDeleter.deleteEpisode(episodeId: episode.objectID, fileOnly: true, shouldCallNotificationMethod: true)
             currentlyPlayingItem.wasDeleted = true
             playerHistoryManager.addOrUpdateItem(item: currentlyPlayingItem)
             

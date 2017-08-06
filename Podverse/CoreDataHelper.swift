@@ -81,23 +81,26 @@ class CoreDataHelper {
         managedObjectContext.performAndWait({
             do {
                 try self.managedObjectContext.save()
-                completion?()
+                
             } catch {
                 let saveError = error as NSError
                 print("Unable to Save Changes of Managed Object Context")
                 print("\(saveError), \(saveError.localizedDescription)")
             }
+            
+            self.privateManagedObjectContext.perform({
+                do {
+                    try self.privateManagedObjectContext.save()
+                    completion?()
+                } catch {
+                    let saveError = error as NSError
+                    print("Unable to Save Changes of Private Managed Object Context")
+                    print("\(saveError), \(saveError.localizedDescription)")
+                }
+            })
         })
         
-        privateManagedObjectContext.perform({
-            do {
-                try self.privateManagedObjectContext.save()
-            } catch {
-                let saveError = error as NSError
-                print("Unable to Save Changes of Private Managed Object Context")
-                print("\(saveError), \(saveError.localizedDescription)")
-            }
-        })
+        
     }
     
     static func insertManagedObject(className: String, moc:NSManagedObjectContext? = nil) -> NSManagedObjectID {

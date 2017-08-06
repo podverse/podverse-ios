@@ -15,7 +15,6 @@ class PodcastsTableViewController: PVViewController {
     @IBOutlet weak var tableView: UITableView!
     
     var subscribedPodcastsArray = [Podcast]()
-    let coreDataHelper = CoreDataHelper.shared
     let reachability = PVReachability.shared
     let refreshControl = UIRefreshControl()
     
@@ -180,6 +179,7 @@ extension PodcastsTableViewController:UITableViewDelegate, UITableViewDataSource
         }
         
     }
+
 }
 
 extension PodcastsTableViewController:LoginModalDelegate {
@@ -190,7 +190,7 @@ extension PodcastsTableViewController:LoginModalDelegate {
 
 extension PodcastsTableViewController {
     func downloadFinished(_ notification:Notification) {
-        if let episode = notification.userInfo?[PVDownloader.episodeKey] as? DownloadingEpisode, 
+        if let episode = notification.userInfo?[Episode.episodeKey] as? DownloadingEpisode, 
             let index = self.subscribedPodcastsArray.index(where: { $0.feedUrl == episode.podcastFeedUrl }), 
             let cell = self.tableView.cellForRow(at: IndexPath(row: index, section: 0)) as? PodcastTableViewCell {
             let episodes = subscribedPodcastsArray[index].episodes
@@ -199,7 +199,23 @@ extension PodcastsTableViewController {
         }
     }
     
-    override func episodeDeleted(mediaUrl: String?) {
-        super.episodeDeleted(mediaUrl: mediaUrl)
+    override func episodeDeleted(_ notification:Notification) {
+        super.episodeDeleted(notification)
+        
+        if let mediaUrl = notification.userInfo?["mediaUrl"] as? String, let episodes = CoreDataHelper.fetchEntities(className: "Episode", predicate: NSPredicate(format: "mediaUrl == %@", mediaUrl), moc: moc) as? [Episode], let episode = episodes.first, let index = self.subscribedPodcastsArray.index(where: { $0.feedUrl == episode.podcast.feedUrl }) {
+            DispatchQueue.main.async {
+                self.subscribedPodcastsArray[index] = episode.podcast
+                self.tableView.reloadRows(at: [IndexPath(row: index, section: 0)], with: .none)
+            }
+        }
+    }
+    
+    override func podcastDeleted(_ notification:Notification) {
+        super.podcastDeleted(notification)
+        if let feedUrl = notification.userInfo?["feedUrl"] as? String, let index = self.subscribedPodcastsArray.index(where: { $0.feedUrl == feedUrl }) {
+            DispatchQueue.main.async {
+                self.tableView.deleteRows(at: [IndexPath(row: index, section: 0)], with: .automatic)
+            }
+        }
     }
 }
