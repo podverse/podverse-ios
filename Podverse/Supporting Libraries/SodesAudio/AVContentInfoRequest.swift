@@ -17,7 +17,7 @@ internal extension AVAssetResourceLoadingContentInformationRequest {
         if let response = response as? HTTPURLResponse {
             
             // TODO: [MEDIUM] Obtain the actual content type.
-            contentType = "public.mp3"
+            contentType = "public3.mp3"
             
             if let length = response.sodes_expectedContentLength {
                 contentLength = length

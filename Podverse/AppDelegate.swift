@@ -58,9 +58,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func applicationWillTerminate(_ application: UIApplication) {
-        if PVMediaPlayer.shared.avPlayer.rate == 1 {
-            PVMediaPlayer.shared.saveCurrentTimeAsPlaybackPosition()
-        }
+//        if PVMediaPlayer.shared.avPlayer.rate == 1 {
+//            PVMediaPlayer.shared.saveCurrentTimeAsPlaybackPosition()
+//        }
         
         UIApplication.shared.applicationIconBadgeNumber = 0
     }
@@ -79,7 +79,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     override func remoteControlReceived(with event: UIEvent?) {
         if let evt = event {
-            PVMediaPlayer.shared.remoteControlReceivedWithEvent(event: evt)
+//            PVMediaPlayer.shared.remoteControlReceivedWithEvent(event: evt)
         }
     }
     
@@ -107,15 +107,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func skipBackwardEvent() {
-        if let currentItem = pvMediaPlayer.avPlayer.currentItem {
-            pvMediaPlayer.goToTime(seconds: CMTimeGetSeconds(currentItem.currentTime()) - 15)
-        }
+//        if let currentItem = pvMediaPlayer.avPlayer.currentItem {
+//            pvMediaPlayer.goToTime(seconds: CMTimeGetSeconds(currentItem.currentTime()) - 15)
+//        }
     }
     
     func skipForwardEvent() {
-        if let currentItem = pvMediaPlayer.avPlayer.currentItem {
-            pvMediaPlayer.goToTime(seconds: CMTimeGetSeconds(currentItem.currentTime()) + 15)
-        }
+//        if let currentItem = pvMediaPlayer.avPlayer.currentItem {
+//            pvMediaPlayer.goToTime(seconds: CMTimeGetSeconds(currentItem.currentTime()) + 15)
+//        }
     }
     
     func playOrPauseEvent() {

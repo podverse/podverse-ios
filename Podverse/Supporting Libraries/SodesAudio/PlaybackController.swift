@@ -261,8 +261,10 @@ public class PlaybackController: NSObject {
                     this.elapsedTime = elapsedTime
                     if !this.hasPlayedYet && elapsedTime > 0.5 {
                         this.hasPlayedYet = true
-                        let delay = Date().timeIntervalSince(this.lastPrepTime!)
-                        SodesLog("Latency was: \(delay) seconds")
+                        if let lastPrepTime = this.lastPrepTime {
+                            let delay = Date().timeIntervalSince(lastPrepTime)
+                            SodesLog("Latency was: \(delay) seconds")   
+                        }
                     }
                 }
             }

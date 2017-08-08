@@ -65,7 +65,7 @@ class PVDeleter {
                 
                 if let currentlyPlayingItem = PVMediaPlayer.shared.currentlyPlayingItem {
                     if mediaUrl == currentlyPlayingItem.episodeMediaUrl {
-                        PVMediaPlayer.shared.avPlayer.pause()
+//                        PVMediaPlayer.shared.avPlayer.pause()
                         PVMediaPlayer.shared.currentlyPlayingItem = nil
                     }
                 }

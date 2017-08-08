@@ -88,7 +88,6 @@
 		E79515FF1E03853500382BF8 /* PodverseUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E79515FE1E03853500382BF8 /* PodverseUITests.swift */; };
 		E7AD9A981EDDF7160093F051 /* ClipsListContainerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7AD9A971EDDF7160093F051 /* ClipsListContainerViewController.swift */; };
 		E7B2A5971E11F95C00AAE036 /* PVMediaPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7B2A5961E11F95C00AAE036 /* PVMediaPlayer.swift */; };
-		E7B2A5991E12103D00AAE036 /* PVStreamer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7B2A5981E12103D00AAE036 /* PVStreamer.swift */; };
 		E7B2A59B1E12111500AAE036 /* URL+RemoteSize.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7B2A59A1E12111500AAE036 /* URL+RemoteSize.swift */; };
 		E7B2A59D1E123A4400AAE036 /* UIViewController+InternetRequiredAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7B2A59C1E123A4400AAE036 /* UIViewController+InternetRequiredAlert.swift */; };
 		E7B2A5A11E123E9900AAE036 /* PVAuth.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7B2A5A01E123E9900AAE036 /* PVAuth.swift */; };
@@ -230,7 +229,6 @@
 		E79516001E03853500382BF8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		E7AD9A971EDDF7160093F051 /* ClipsListContainerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClipsListContainerViewController.swift; sourceTree = "<group>"; };
 		E7B2A5961E11F95C00AAE036 /* PVMediaPlayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PVMediaPlayer.swift; sourceTree = "<group>"; };
-		E7B2A5981E12103D00AAE036 /* PVStreamer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PVStreamer.swift; sourceTree = "<group>"; };
 		E7B2A59A1E12111500AAE036 /* URL+RemoteSize.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "URL+RemoteSize.swift"; sourceTree = "<group>"; };
 		E7B2A59C1E123A4400AAE036 /* UIViewController+InternetRequiredAlert.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIViewController+InternetRequiredAlert.swift"; sourceTree = "<group>"; };
 		E7B2A5A01E123E9900AAE036 /* PVAuth.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PVAuth.swift; sourceTree = "<group>"; };
@@ -535,7 +533,6 @@
 				E7B2A5961E11F95C00AAE036 /* PVMediaPlayer.swift */,
 				3051488C1ED27534009BC839 /* PVPlayerHistoryManager.swift */,
 				E78BF9301E0FA64F002194FE /* PVReachability.swift */,
-				E7B2A5981E12103D00AAE036 /* PVStreamer.swift */,
 				30B427F11EBE4CB100BAD942 /* PVSubscriber.swift */,
 				E7D25BBF1E0F096A00B60368 /* PVTimeHelpers.swift */,
 			);
@@ -893,7 +890,6 @@
 				300CF2F81F32DC61006C397D /* NSObject.swift in Sources */,
 				E70E4A1F1E039047003CEC64 /* FindTableViewController.swift in Sources */,
 				300CF3111F32DC6A006C397D /* DelegatedHTTPOperation.swift in Sources */,
-				E7B2A5991E12103D00AAE036 /* PVStreamer.swift in Sources */,
 				300CF3191F32DC6A006C397D /* SodesLog.swift in Sources */,
 				E7D25BC21E0F118C00B60368 /* PVFeedParser.swift in Sources */,
 				E7D25BD41E0F23DB00B60368 /* Data+ResizeImageData.swift in Sources */,
