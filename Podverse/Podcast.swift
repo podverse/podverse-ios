@@ -69,7 +69,9 @@ class Podcast: NSManagedObject {
         }
         else if let imageUrlString = podcastImageURLString, let imageURL = URL(string:imageUrlString) {
             Podcast.fetchPodcastImage(podcastImageUrl: imageURL, completion: { (image) in
-                completion?(image)
+                DispatchQueue.main.async {
+                    completion?(image)
+                }
             })
         }
         

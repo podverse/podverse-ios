@@ -132,10 +132,8 @@ extension ClipsTableViewController:UITableViewDelegate, UITableViewDataSource {
         }
         
         Podcast.retrievePodcastImage(podcastImageURLString: clip.podcastImageUrl) { (podcastImage) -> Void in
-            DispatchQueue.main.async {
-                if let visibleRows = self.tableView.indexPathsForVisibleRows, visibleRows.contains(indexPath), let existingCell = self.tableView.cellForRow(at: indexPath) as? ClipTableViewCell, let podcastImage = podcastImage {
-                    existingCell.podcastImage?.image = podcastImage
-                }
+            if let visibleRows = self.tableView.indexPathsForVisibleRows, visibleRows.contains(indexPath), let existingCell = self.tableView.cellForRow(at: indexPath) as? ClipTableViewCell, let podcastImage = podcastImage {
+                existingCell.podcastImage?.image = podcastImage
             }
         }
 
