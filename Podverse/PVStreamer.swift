@@ -24,18 +24,19 @@ class PVStreamer:NSObject {
     let avPlayer = PVMediaPlayer.shared.avPlayer
     
     var currentAsset: AVURLAsset?
+    var currentFullDuration: CMTime?
     var currentRequest: URLRequest?
     var endBytes = Int64(0)
     var loaderQueue: DispatchQueue
     var mediaData = NSMutableData()
     var playerHistoryItem: PlayerHistoryItem?
-    var remoteFileSize: Int64?
     var response: URLResponse?
     var startBytes = Int64(0)
     
     override init() {
         self.loaderQueue = DispatchQueue(label: "com.Podverse.ResourceLoaderDelegate.loaderQueue")
         super.init()
+        avPlayer.addObserver(self, forKeyPath: "status", options: NSKeyValueObservingOptions(), context: nil)
     }
     
     func prepareAsset(item: PlayerHistoryItem) -> AVURLAsset? {
@@ -66,72 +67,84 @@ class PVStreamer:NSObject {
         guard let originalUrl = customMediaUrl.convertToOriginalUrl() else { return false }
         
         if let asset = currentAsset, let item = playerHistoryItem {
-            let metadataBytes = getMetadataBytesCount(asset: asset)
-            let duration = asset.duration
+            
             let mediaUrl = asset.url
-            let durationInt64 = Int64(CMTimeGetSeconds(duration))
             
-            // The remoteFileSize gets set in the URLSessionDataDelegate methods
-            mediaUrl.remoteSize()
+            // If a media file has metadata in the beginning, the clip start time and end time will be off. Calculate the metadata bytes size to then use it to offset byte range requests.
+            let metadataBytes = getMetadataBytesCount(asset: asset)
             
-            if let remoteFileSize = self.remoteFileSize {
+            currentFullDuration = asset.duration
+            
+            if let duration = currentFullDuration {
                 
-                if let startTime = item.startTime {
-                    self.startBytes = self.calcByteRangeOffset(metadataBytes: metadataBytes, time: startTime, duration: durationInt64, remoteFileSize: remoteFileSize)
-                }
-                
-                if let endTime = item.endTime {
-                    self.endBytes = self.calcByteRangeOffset(metadataBytes: metadataBytes, time: endTime, duration: durationInt64, remoteFileSize: remoteFileSize)
-                }
+                let durationInt64 = Int64(CMTimeGetSeconds(duration))
                 
                 var request = URLRequest(url: originalUrl)
                 
-                if let dataRequest = loadingRequest.dataRequest {
-                    request.addValue(self.getByteRangeHeaderString(startBytes: self.startBytes, endBytes: self.endBytes), forHTTPHeaderField: "Range")
-                }
-                
                 let task = URLSession.shared.downloadTask(with: request) { (tempUrl, response, error) in
                     
-                    // Bail early if the content info request was cancelled
-                    guard !loadingRequest.isCancelled else { return }
-
-//                    TODO: do we need something like this?
-//                    guard let request = self.currentRequest as? ContentInfoRequest,
-//                        loadingRequest === request.loadingRequest else
-//                    {
-//                        SodesLog("Bailing early because the loading request has changed.")
-//                        return
-//                    }
-                    
-                    if let response, error == nil {
-                        
-                        infoRequest.update()
-                        loadingRequest.finishLoading()
+                    // TODO: should this really be put in loaderQueue async?
+                    self.loaderQueue.async {
+                        if let response = response, error == nil {
+                            
+                            let expectedContentLength = response.expectedContentLength
+                            
+                            if let startTime = item.startTime {
+                                self.startBytes = self.calcByteRangeOffset(metadataBytes: metadataBytes, time: startTime, duration: durationInt64, expectedContentLength: expectedContentLength)
+                            }
+                            
+                            if let endTime = item.endTime {
+                                self.endBytes = self.calcByteRangeOffset(metadataBytes: metadataBytes, time: endTime, duration: durationInt64, expectedContentLength: expectedContentLength)
+                            }
+                            
+                            if let dataRequest = loadingRequest.dataRequest {
+                                request.addValue(self.getByteRangeHeaderString(startBytes: self.startBytes, endBytes: self.endBytes), forHTTPHeaderField: "Range")
+                            }
+//        
+//                            Bail early if the content info request was cancelled
+//                            guard !loadingRequest.isCancelled else { return }
+//        
+//                            TODO: do we need something like this?
+//                            guard let request = self.currentRequest as? ContentInfoRequest,
+//                                loadingRequest === request.loadingRequest else
+//                            {
+//                                SodesLog("Bailing early because the loading request has changed.")
+//                                return
+//                            }
+//        
+                            infoRequest.update(with: response)
+                            loadingRequest.finishLoading()
+                            
+                        } else {
+                            print(error)
+                        }
                         
                     }
                     
                 }
                 
+                task.resume()
+                
             }
             
-            loaderQueue.async {
-
-            }
         }
         
         return true
         
     }
     
-    func calcByteRangeOffset (metadataBytes: Int64, time: Int64, duration: Int64, remoteFileSize: Int64) -> Int64 {
-        return metadataBytes + Int64((Double(time) / Double(duration)) * Double(remoteFileSize - metadataBytes))
+    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
+        if let newValue = change?[.newKey]
+    }
+    
+    func calcByteRangeOffset (metadataBytes: Int64, time: Int64, duration: Int64, expectedContentLength: Int64) -> Int64 {
+        return metadataBytes + Int64((Double(time) / Double(duration)) * Double(expectedContentLength - metadataBytes))
     }
         
     func getByteRangeHeaderString(startBytes: Int64, endBytes: Int64) -> String {
         return "bytes=" + String(startBytes) + "-" + String(endBytes)
     }
     
-    // If a media file has metadata in the beginning, the clip start time and end time will be off. Calculate the metadata bytes size to offset byte range requests.
     func getMetadataBytesCount(asset: AVURLAsset) -> Int64 {
         var metadataBytes = Int64(0)
         let metadata = asset.metadata
@@ -175,18 +188,18 @@ extension PVStreamer:AVAssetResourceLoaderDelegate {
     
 }
 
-extension PVStreamer:URLSessionDataDelegate {
-    func urlSession(_ session: URLSession, didBecomeInvalidWithError error: Error?) {
-        print(error)
-    }
-    
-    public func urlSession(_ session: URLSession, task: URLSessionTask, willPerformHTTPRedirection response: HTTPURLResponse, newRequest request: URLRequest, completionHandler: @escaping (URLRequest?) -> Void) {
-        URLSession.shared.dataTask(with: request).resume()
-    }
-    
-    public func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive response: URLResponse, completionHandler: @escaping (URLSession.ResponseDisposition) -> Void) {
-        remoteFileSize = response.expectedContentLength
-        session.invalidateAndCancel()
-    }
-}
+//extension PVStreamer:URLSessionDataDelegate {
+//    func urlSession(_ session: URLSession, didBecomeInvalidWithError error: Error?) {
+//        print(error)
+//    }
+//    
+//    public func urlSession(_ session: URLSession, task: URLSessionTask, willPerformHTTPRedirection response: HTTPURLResponse, newRequest request: URLRequest, completionHandler: @escaping (URLRequest?) -> Void) {
+//        URLSession.shared.dataTask(with: request).resume()
+//    }
+//    
+//    public func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive response: URLResponse, completionHandler: @escaping (URLSession.ResponseDisposition) -> Void) {
+//        remoteFileSize = response.expectedContentLength
+//        session.invalidateAndCancel()
+//    }
+//}
 
