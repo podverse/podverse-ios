@@ -48,16 +48,13 @@ class PVAuth: NSObject {
                     .start { result in
                         switch result {
                         case .success(let profile):
-                            self.setUserInfo(idToken: idToken, userId: profile.sub, userName: profile.nickname)
+                            self.populateUserInfoWith(idToken: idToken, userId: profile.sub, userName: profile.nickname)
                         case .failure(let error):
-                            self.setUserInfo(idToken: idToken, userId: nil, userName: nil)
+                            self.populateUserInfoWith(idToken: idToken, userId: nil, userName: nil)
                             print(error)
                         }
                         
-                        // TODO: uh is there a better way to do this completion?
-                        if let completion = completion {
-                            completion()
-                        }
+                        completion?()
 
                     }
                 
@@ -76,11 +73,8 @@ class PVAuth: NSObject {
                 .start { result in
                     switch result {
                     case .success(let user):
-                        guard let nickname = user["nickname"] as? String else {
-                            return
-                        }
-                        
-                        self.setUserInfo(idToken: idToken, userId: userId, userName: nickname)
+                        let nickname = user["nickname"] as? String
+                        self.populateUserInfoWith(idToken: idToken, userId: userId, userName: nickname)
                     case .failure(let error):
                         print(error)
                     }
@@ -89,7 +83,7 @@ class PVAuth: NSObject {
         }
     }
     
-    func setUserInfo(idToken: String, userId: String?, userName: String?) {
+    func populateUserInfoWith(idToken: String, userId: String?, userName: String?) {
         UserDefaults.standard.set(idToken, forKey: "idToken")
         
         if let userId = userId {
