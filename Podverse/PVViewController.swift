@@ -50,19 +50,19 @@ class PVViewController: UIViewController {
     
     
     func loadNowPlayingBarData() {
-//        guard let currentItem = playerHistoryManager.historyItems.first, let tabbarVC = self.tabBarController, PVMediaPlayer.shared.currentlyPlayingItem != nil && currentItem.hasReachedEnd != true else {
-//            self.tabBarController?.hidePlayerView()
-//            return
-//        }
-//        
-//        tabbarVC.playerView.podcastTitleLabel.text = currentItem.podcastTitle
-//        tabbarVC.playerView.episodeTitle.text = currentItem.episodeTitle
-//        tabbarVC.playerView.podcastImageView.image = Podcast.retrievePodcastImage(podcastImageURLString: currentItem.podcastImageUrl, 
-//                                                                       feedURLString: currentItem.podcastFeedUrl) { (podcastImage) -> Void in
-//                                              tabbarVC.playerView.podcastImageView.image = podcastImage
-//                                          }
-//        tabbarVC.playerView.isPlaying = self.pvMediaPlayer.mediaPlayerIsPlaying
-//        tabbarVC.showPlayerView()
+        guard let currentItem = playerHistoryManager.historyItems.first, let tabbarVC = self.tabBarController, PVMediaPlayer.shared.currentlyPlayingItem != nil && currentItem.hasReachedEnd != true else {
+            self.tabBarController?.hidePlayerView()
+            return
+        }
+        
+        tabbarVC.playerView.podcastTitleLabel.text = currentItem.podcastTitle
+        tabbarVC.playerView.episodeTitle.text = currentItem.episodeTitle
+        tabbarVC.playerView.podcastImageView.image = Podcast.retrievePodcastImage(podcastImageURLString: currentItem.podcastImageUrl, 
+                                                                       feedURLString: currentItem.podcastFeedUrl) { (podcastImage) -> Void in
+                                              tabbarVC.playerView.podcastImageView.image = podcastImage
+                                          }
+        tabbarVC.playerView.isPlaying = self.pvMediaPlayer.mediaPlayerIsPlaying
+        tabbarVC.showPlayerView()
     }
     
     func goToNowPlaying(timeOffset: Int64 = 0) {

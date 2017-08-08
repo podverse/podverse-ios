@@ -31,7 +31,7 @@ class NowPlayingBar:UIView {
     }
     
     @IBAction func playPause(_ sender: Any) {
-        PVMediaPlayer.shared.playOrPause()
+       self.isPlaying = PVMediaPlayer.shared.playOrPause()
     }
     
     override init(frame: CGRect) {

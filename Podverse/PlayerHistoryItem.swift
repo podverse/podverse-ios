@@ -7,7 +7,6 @@
 //
 
 import UIKit
-import MediaPlayer
 
 class PlayerHistoryItem: NSObject, NSCoding {
 

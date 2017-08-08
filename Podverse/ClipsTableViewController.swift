@@ -158,8 +158,8 @@ extension ClipsTableViewController:UITableViewDelegate, UITableViewDataSource {
     override func goToNowPlaying (timeOffset: Int64 = 0) {
         if let mediaPlayerVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "MediaPlayerVC") as? MediaPlayerViewController {
             mediaPlayerVC.shouldAutoplay = true
-//            mediaPlayerVC.timeOffset = timeOffset
-//            mediaPlayerVC.moveToOffset = true
+            mediaPlayerVC.timeOffset = timeOffset
+            mediaPlayerVC.moveToOffset = true
             self.navigationController?.pushViewController(mediaPlayerVC, animated: true)
         }
     }

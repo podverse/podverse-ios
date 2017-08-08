@@ -12,7 +12,6 @@ target 'Podverse' do
   pod 'Auth0', '~> 1.6'
   pod 'ReachabilitySwift', '~> 3'
   pod 'p2.OAuth2', '3.0.3'
-  pod 'Arcane', git: 'https://github.com/onmyway133/Arcane'
 
   target 'PodverseTests' do
     inherit! :search_paths

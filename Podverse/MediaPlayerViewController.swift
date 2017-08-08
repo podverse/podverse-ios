@@ -8,16 +8,15 @@
 
 import UIKit
 import CoreData
-import MediaPlayer
+import AVFoundation
 
 class MediaPlayerViewController: PVViewController {
-    
-    let playbackController = PlaybackController.sharedController
+
     var playerSpeedRate:PlayingSpeed = .regular
     var shouldAutoplay = false
-//    var timeOffset = Int64(0)
-//    var moveToOffset = false
-//    
+    var timeOffset = Int64(0)
+    var moveToOffset = false
+    
     
     weak var currentChildViewController: UIViewController?
     private let aboutClipsStoryboardId = "AboutPlayingItemVC"
@@ -38,7 +37,7 @@ class MediaPlayerViewController: PVViewController {
     override func viewDidLoad() {
         setupContainerView()
         
-//        pvMediaPlayer.delegate = self
+        pvMediaPlayer.delegate = self
 
         let share = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.action, target: self, action: #selector(showShareMenu))
         let makeClip = UIBarButtonItem(title: "Make Clip", style: .plain, target: self, action: #selector(showMakeClip))
@@ -46,21 +45,14 @@ class MediaPlayerViewController: PVViewController {
         navigationItem.rightBarButtonItems = [share, makeClip, addToPlaylist]
 
         self.progress.isContinuous = false
-        
-        let source = TestSource()
-        playbackController.prepare(source)
-        
-        let center = NotificationCenter.default
-        
-        
 
         
-//        setPlayerInfo()
+        setPlayerInfo()
         
         // TODO: does this need an unowned self or something?
-//        self.pvMediaPlayer.avPlayer.addPeriodicTimeObserver(forInterval: CMTimeMake(1, 1), queue: DispatchQueue.main) {[weak self] time in
-//            self?.updateCurrentTime(currentTime: CMTimeGetSeconds(time))
-//        }
+        self.pvMediaPlayer.avPlayer.addPeriodicTimeObserver(forInterval: CMTimeMake(1, 1), queue: DispatchQueue.main) {[weak self] time in
+            self?.updateCurrentTime(currentTime: CMTimeGetSeconds(time))
+        }
         
         self.tabBarController?.hidePlayerView()
         
@@ -68,18 +60,18 @@ class MediaPlayerViewController: PVViewController {
     }
     
     override func viewDidAppear(_ animated: Bool) {
-//        if (shouldAutoplay) {
-//            self.pvMediaPlayer.avPlayer.rate = 0
-//            self.pvMediaPlayer.playOrPause()
-//        }
-//        
-//        if moveToOffset == true && timeOffset > 0 {
-//            self.pvMediaPlayer.goToTime(seconds: Double(timeOffset))
-//            moveToOffset = false
-//            setPlayerInfo()
-//        }
-//        
-//        setPlayIcon()
+        if (shouldAutoplay) {
+            self.pvMediaPlayer.avPlayer.rate = 0
+            self.pvMediaPlayer.playOrPause()
+        }
+        
+        if moveToOffset == true && timeOffset > 0 {
+            self.pvMediaPlayer.goToTime(seconds: Double(timeOffset))
+            moveToOffset = false
+            setPlayerInfo()
+        }
+        
+        setPlayIcon()
     }
     
     override func viewWillAppear(_ animated: Bool) { /* Intentionally left blank so super won't get called */ }
@@ -99,27 +91,32 @@ class MediaPlayerViewController: PVViewController {
     }
     
     @IBAction func sliderAction(_ sender: UISlider) {
-        if let totalTime = playbackController.duration {
+        if let currentItem = pvMediaPlayer.avPlayer.currentItem {
+            let totalTime = CMTimeGetSeconds(currentItem.asset.duration)
             let newTime = Double(sender.value) * totalTime
-            playbackController.seekToTime(newTime)
+            pvMediaPlayer.goToTime(seconds: newTime)
         }
     }
 
     @IBAction func play(_ sender: Any) {
         pvMediaPlayer.playOrPause()
-//        setPlayIcon()
+        setPlayIcon()
     }
 
     @IBAction func timeJumpBackward(_ sender: Any) {
-        let elapsedTime = playbackController.elapsedTime
-        playbackController.seekToTime(elapsedTime - 15)
-//      updateCurrentTime(currentTime: elapsedTime)
+        if let currentItem = pvMediaPlayer.avPlayer.currentItem {
+            let newTime = CMTimeGetSeconds(currentItem.currentTime())
+            pvMediaPlayer.goToTime(seconds: newTime - 15)
+            updateCurrentTime(currentTime: newTime)
+        }
     }
     
     @IBAction func timeJumpForward(_ sender: Any) {
-        let elapsedTime = playbackController.elapsedTime
-        playbackController.seekToTime(elapsedTime + 15)
-//      updateCurrentTime(currentTime: elapsedTime)
+        if let currentItem = pvMediaPlayer.avPlayer.currentItem {
+            let newTime = CMTimeGetSeconds(currentItem.currentTime())
+            pvMediaPlayer.goToTime(seconds: newTime + 15)
+            updateCurrentTime(currentTime: newTime)
+        }
     }
     
     @IBAction func changeSpeed(_ sender: Any) {
@@ -150,7 +147,7 @@ class MediaPlayerViewController: PVViewController {
             break
         }
         
-//        pvMediaPlayer.avPlayer.rate = playerSpeedRate.speedVaue
+        pvMediaPlayer.avPlayer.rate = playerSpeedRate.speedVaue
         updateSpeedLabel()
     }
     
@@ -176,43 +173,43 @@ class MediaPlayerViewController: PVViewController {
     }
     
     func setPlayIcon() {
-//        if pvMediaPlayer.avPlayer.rate == 0 {
-//            play.setImage(UIImage(named:"Play"), for: .normal)
-//        } else {
-//            play.setImage(UIImage(named:"Pause"), for: .normal)
-//        }
+        if pvMediaPlayer.avPlayer.rate == 0 {
+            play.setImage(UIImage(named:"Play"), for: .normal)
+        } else {
+            play.setImage(UIImage(named:"Pause"), for: .normal)
+        }
     }
     
     func setPlayerInfo() {
-//        if let item = pvMediaPlayer.currentlyPlayingItem {
-//            podcastTitle.text = item.podcastTitle
-//            episodeTitle.text = item.episodeTitle
-//            
-//            self.image.image = Podcast.retrievePodcastImage(podcastImageURLString: item.podcastImageUrl, feedURLString: item.podcastFeedUrl) { (podcastImage) -> Void in
-//                self.image.image = podcastImage
-//            }
-//            
-//            let lastPlaybackPosition = item.lastPlaybackPosition ?? 0
-//            currentTime.text = Int64(lastPlaybackPosition).toMediaPlayerString()
-//            if let currentItem = pvMediaPlayer.avPlayer.currentItem {
-//                let totalTime = Int64(CMTimeGetSeconds(currentItem.asset.duration))
-//                duration.text = Int64(totalTime).toMediaPlayerString()
-//                progress.value = Float(Int64(lastPlaybackPosition) / totalTime)
-//            }
-//        }
+        if let item = pvMediaPlayer.currentlyPlayingItem {
+            podcastTitle.text = item.podcastTitle
+            episodeTitle.text = item.episodeTitle
+            
+            self.image.image = Podcast.retrievePodcastImage(podcastImageURLString: item.podcastImageUrl, feedURLString: item.podcastFeedUrl) { (podcastImage) -> Void in
+                self.image.image = podcastImage
+            }
+            
+            let lastPlaybackPosition = item.lastPlaybackPosition ?? 0
+            currentTime.text = Int64(lastPlaybackPosition).toMediaPlayerString()
+            if let currentItem = pvMediaPlayer.avPlayer.currentItem {
+                let totalTime = Int64(CMTimeGetSeconds(currentItem.asset.duration))
+                duration.text = Int64(totalTime).toMediaPlayerString()
+                progress.value = Float(Int64(lastPlaybackPosition) / totalTime)
+            }
+        }
     }
 
     
     func updateCurrentTime(currentTime: Double) {
-//        self.currentTime.text = Int64(currentTime).toMediaPlayerString()
-//        if let currentItem = pvMediaPlayer.avPlayer.currentItem {
-//            let totalTime = CMTimeGetSeconds(currentItem.duration)
-//            progress.value = Float(currentTime / totalTime)
-//        } else {
-//            DispatchQueue.main.async {
-//                self.navigationController?.popViewController(animated: true)
-//            }
-//        }
+        self.currentTime.text = Int64(currentTime).toMediaPlayerString()
+        if let currentItem = pvMediaPlayer.avPlayer.currentItem {
+            let totalTime = CMTimeGetSeconds(currentItem.duration)
+            progress.value = Float(currentTime / totalTime)
+        } else {
+            DispatchQueue.main.async {
+                self.navigationController?.popViewController(animated: true)
+            }
+        }
     }
     
     func updateSpeedLabel() {
@@ -304,10 +301,10 @@ extension MediaPlayerViewController:ClipsListDelegate {
     }
 }
 
-//extension MediaPlayerViewController:PVMediaPlayerDelegate {
-//    func didFinishPlaying() {
-//        DispatchQueue.main.async {
-//            self.navigationController?.popViewController(animated: true)
-//        }
-//    }
-//}
+extension MediaPlayerViewController:PVMediaPlayerDelegate {
+    func didFinishPlaying() {
+        DispatchQueue.main.async {
+            self.navigationController?.popViewController(animated: true)
+        }
+    }
+}
