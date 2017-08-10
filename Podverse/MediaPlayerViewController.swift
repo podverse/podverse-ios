@@ -17,11 +17,11 @@ class MediaPlayerViewController: PVViewController {
     var timeOffset = Int64(0)
     var moveToOffset = false
     
-    
     weak var currentChildViewController: UIViewController?
     private let aboutClipsStoryboardId = "AboutPlayingItemVC"
     private let clipsListStoryBoardId = "ClipsListVC"
     
+    @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     @IBOutlet weak var clipsContainerView: UIView!
     @IBOutlet weak var currentTime: UILabel!
     @IBOutlet weak var device: UIButton!
@@ -45,7 +45,8 @@ class MediaPlayerViewController: PVViewController {
         navigationItem.rightBarButtonItems = [share, makeClip, addToPlaylist]
 
         self.progress.isContinuous = false
-
+        
+        hideProgressBar()
         
         setPlayerInfo()
         
@@ -199,7 +200,6 @@ class MediaPlayerViewController: PVViewController {
         }
     }
 
-    
     func updateCurrentTime(currentTime: Double) {
         self.currentTime.text = Int64(currentTime).toMediaPlayerString()
         if let currentItem = pvMediaPlayer.avPlayer.currentItem {
@@ -210,6 +210,20 @@ class MediaPlayerViewController: PVViewController {
                 self.navigationController?.popViewController(animated: true)
             }
         }
+    }
+    
+    func showProgressBar () {
+        self.activityIndicator.isHidden = true
+        self.progress.isHidden = false
+        self.duration.isHidden = false
+        self.currentTime.isHidden = false
+    }
+    
+    func hideProgressBar () {
+        self.activityIndicator.isHidden = false
+        self.progress.isHidden = true
+        self.duration.isHidden = true
+        self.currentTime.isHidden = true
     }
     
     func updateSpeedLabel() {

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12121" systemVersion="16F73" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="49e-Tb-3d3">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12121" systemVersion="16G29" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="49e-Tb-3d3">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
@@ -1147,10 +1147,14 @@
                                     <action selector="pageControlAction:" destination="fGh-hH-QQS" eventType="valueChanged" id="YP7-tE-dwL"/>
                                 </connections>
                             </pageControl>
+                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="GzK-yD-80V">
+                                <rect key="frame" x="169" y="513" width="37" height="37"/>
+                            </activityIndicatorView>
                         </subviews>
                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="i1e-q4-aop" firstAttribute="leading" secondItem="N8d-St-BhC" secondAttribute="leading" id="3To-fe-YG3"/>
+                            <constraint firstItem="xgo-aW-bmE" firstAttribute="top" secondItem="GzK-yD-80V" secondAttribute="bottom" constant="17" id="3gc-Xr-BFQ"/>
                             <constraint firstItem="XV8-p8-n0p" firstAttribute="top" secondItem="09J-Zt-eRz" secondAttribute="bottom" id="67N-5t-xmV"/>
                             <constraint firstItem="Yv3-Oc-a1n" firstAttribute="leading" secondItem="N8d-St-BhC" secondAttribute="leading" id="68u-MP-xjf"/>
                             <constraint firstAttribute="trailing" secondItem="i1e-q4-aop" secondAttribute="trailing" id="7pg-vo-cYP"/>
@@ -1158,6 +1162,7 @@
                             <constraint firstItem="09J-Zt-eRz" firstAttribute="top" secondItem="i1e-q4-aop" secondAttribute="bottom" constant="-8" id="Drc-94-Fns"/>
                             <constraint firstItem="uTA-rm-Ib9" firstAttribute="leading" secondItem="N8d-St-BhC" secondAttribute="leading" constant="8" id="I7s-mE-Y7O"/>
                             <constraint firstItem="xgo-aW-bmE" firstAttribute="leading" secondItem="N8d-St-BhC" secondAttribute="leading" id="Jzt-WS-5sn"/>
+                            <constraint firstItem="GzK-yD-80V" firstAttribute="top" secondItem="XV8-p8-n0p" secondAttribute="bottom" constant="13" id="M8W-FJ-QFp"/>
                             <constraint firstItem="i1e-q4-aop" firstAttribute="top" secondItem="d5T-eo-vSh" secondAttribute="bottom" constant="8" id="N5f-Yb-7g8"/>
                             <constraint firstItem="xgo-aW-bmE" firstAttribute="top" secondItem="uTA-rm-Ib9" secondAttribute="bottom" constant="4" id="QC5-97-vmP"/>
                             <constraint firstItem="XV8-p8-n0p" firstAttribute="leading" secondItem="N8d-St-BhC" secondAttribute="leading" constant="-1" id="Sys-Of-61E"/>
@@ -1169,9 +1174,11 @@
                             <constraint firstItem="09J-Zt-eRz" firstAttribute="centerX" secondItem="N8d-St-BhC" secondAttribute="centerX" id="pRP-6w-IJD"/>
                             <constraint firstAttribute="trailing" secondItem="Gf5-u2-hI0" secondAttribute="trailing" constant="8" id="uxV-aU-wdf"/>
                             <constraint firstItem="uTA-rm-Ib9" firstAttribute="top" secondItem="Yv3-Oc-a1n" secondAttribute="bottom" id="wzP-Vp-tqm"/>
+                            <constraint firstItem="GzK-yD-80V" firstAttribute="centerX" secondItem="N8d-St-BhC" secondAttribute="centerX" id="x7s-ao-Tts"/>
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="activityIndicator" destination="GzK-yD-80V" id="2N6-SD-vWP"/>
                         <outlet property="clipsContainerView" destination="XV8-p8-n0p" id="IzA-zb-lBt"/>
                         <outlet property="currentTime" destination="uTA-rm-Ib9" id="APu-g9-5sk"/>
                         <outlet property="device" destination="qsu-6Y-Pz9" id="gA0-o7-2Iy"/>
@@ -1307,8 +1314,8 @@
                                     <outlet property="delegate" destination="PTS-x4-uBx" id="x2z-z9-ub1"/>
                                 </connections>
                             </tableView>
-                            <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="EiM-6C-YCB">
-                                <rect key="frame" x="8" y="253" width="359" height="599"/>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="EiM-6C-YCB">
+                                <rect key="frame" x="8" y="68" width="359" height="599"/>
                                 <subviews>
                                     <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="j2A-52-Vjl">
                                         <rect key="frame" x="161" y="281" width="37" height="37"/>
