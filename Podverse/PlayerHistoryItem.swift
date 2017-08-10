@@ -13,11 +13,12 @@ class PlayerHistoryItem: NSObject, NSCoding {
     let podcastFeedUrl: String?
     let podcastTitle: String?
     let podcastImageUrl: String?
-    let episodeMediaUrl: String?
-    let episodeTitle: String?
+    let episodeDuration: Int64?
     let episodeImageUrl: String?
-    let episodeSummary: String?
+    let episodeMediaUrl: String?
     let episodePubDate: Date?
+    let episodeSummary: String?
+    let episodeTitle: String?
     let startTime: Int64?     // If startTime and endTime = 0, then item is a clip, else it is an episode
     let endTime: Int64?
     let clipTitle: String?
@@ -27,15 +28,16 @@ class PlayerHistoryItem: NSObject, NSCoding {
     let lastPlaybackPosition: Int64?
     let lastUpdated: Date?
     
-    required init(podcastFeedUrl:String? = nil, podcastTitle:String? = nil, podcastImageUrl:String? = nil, episodeMediaUrl:String? = nil, episodeTitle:String? = nil, episodeImageUrl:String? = nil, episodeSummary:String? = nil, episodePubDate:Date? = nil, startTime:Int64? = nil, endTime:Int64? = nil, clipTitle:String? = nil, ownerName:String? = nil, ownerId:String? = nil, hasReachedEnd:Bool, lastPlaybackPosition:Int64? = 0, lastUpdated:Date? = nil) {
+    required init(podcastFeedUrl:String? = nil, podcastTitle:String? = nil, podcastImageUrl:String? = nil, episodeDuration: Int64? = nil, episodeMediaUrl:String? = nil, episodeTitle:String? = nil, episodeImageUrl:String? = nil, episodeSummary:String? = nil, episodePubDate:Date? = nil, startTime:Int64? = nil, endTime:Int64? = nil, clipTitle:String? = nil, ownerName:String? = nil, ownerId:String? = nil, hasReachedEnd:Bool, lastPlaybackPosition:Int64? = 0, lastUpdated:Date? = nil) {
         self.podcastFeedUrl = podcastFeedUrl
         self.podcastTitle = podcastTitle
         self.podcastImageUrl = podcastImageUrl
+        self.episodeDuration = episodeDuration
         self.episodeMediaUrl = episodeMediaUrl
-        self.episodeTitle = episodeTitle
         self.episodeImageUrl = episodeImageUrl
-        self.episodeSummary = episodeSummary
         self.episodePubDate = episodePubDate
+        self.episodeSummary = episodeSummary
+        self.episodeTitle = episodeTitle
         self.startTime = startTime
         self.endTime = endTime
         self.clipTitle = clipTitle
@@ -50,11 +52,12 @@ class PlayerHistoryItem: NSObject, NSCoding {
         self.podcastFeedUrl = decoder.decodeObject(forKey: "podcastFeedUrl") as? String
         self.podcastTitle = decoder.decodeObject(forKey: "podcastTitle") as? String
         self.podcastImageUrl = decoder.decodeObject(forKey: "podcastImageUrl") as? String
-        self.episodeMediaUrl = decoder.decodeObject(forKey: "episodeMediaUrl") as? String
-        self.episodeTitle = decoder.decodeObject(forKey: "episodeTitle") as? String
+        self.episodeDuration = decoder.decodeObject(forKey: "episodeDuration") as? Int64
         self.episodeImageUrl = decoder.decodeObject(forKey: "episodeImageUrl") as? String
+        self.episodeMediaUrl = decoder.decodeObject(forKey: "episodeMediaUrl") as? String
         self.episodeSummary = decoder.decodeObject(forKey: "episodeSummary") as? String
         self.episodePubDate = decoder.decodeObject(forKey: "episodePubDate") as? Date
+        self.episodeTitle = decoder.decodeObject(forKey: "episodeTitle") as? String
         self.startTime = decoder.decodeObject(forKey: "startTime") as? Int64 ?? 0
         self.endTime = decoder.decodeObject(forKey: "endTime") as? Int64
         self.clipTitle = decoder.decodeObject(forKey: "clipTitle") as? String
@@ -69,11 +72,12 @@ class PlayerHistoryItem: NSObject, NSCoding {
         coder.encode(podcastFeedUrl, forKey:"podcastFeedUrl")
         coder.encode(podcastTitle, forKey:"podcastTitle")
         coder.encode(podcastImageUrl, forKey:"podcastImageUrl")
-        coder.encode(episodeMediaUrl, forKey:"episodeMediaUrl")
-        coder.encode(episodeTitle, forKey:"episodeTitle")
+        coder.encode(episodeDuration, forKey:"episodeDuration")
         coder.encode(episodeImageUrl, forKey:"episodeImageUrl")
-        coder.encode(episodeSummary, forKey:"episodeSummary")
+        coder.encode(episodeMediaUrl, forKey:"episodeMediaUrl")
         coder.encode(episodePubDate, forKey:"episodePubDate")
+        coder.encode(episodeSummary, forKey:"episodeSummary")
+        coder.encode(episodeTitle, forKey:"episodeTitle")
         coder.encode(startTime, forKey:"startTime")
         coder.encode(endTime, forKey:"endTime")
         coder.encode(clipTitle, forKey:"clipTitle")

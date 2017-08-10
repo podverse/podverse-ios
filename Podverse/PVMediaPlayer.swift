@@ -262,10 +262,10 @@ class PVMediaPlayer {
 //                        }
 //                    }
 //                } else {
-                    if let asset = PVStreamer.shared.prepareAsset(item: item) {
-                        let playerItem = AVPlayerItem(asset: asset)
-                        avPlayer.replaceCurrentItem(with: playerItem)
-                    }
+                    PVStreamer.shared.prepareAsset(item: item)
+//                        let playerItem = AVPlayerItem(asset: asset)
+//                        avPlayer.replaceCurrentItem(with: playerItem)
+//                    }
 //                }
 //            }
         }

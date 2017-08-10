@@ -23,42 +23,89 @@ class PVStreamer:NSObject {
     
     let avPlayer = PVMediaPlayer.shared.avPlayer
     
-    var currentAsset: AVURLAsset?
-    var currentFullDuration: CMTime?
-    var currentRequest: URLRequest?
+    var currentAvUrlAsset: AVURLAsset?
+    var currentFullDuration = Int64(0)
+    var currentHistoryItem: PlayerHistoryItem?
+    var currentMetaDataBytes = Int64(0)
+    var currentTotalBytes = Int64(0)
     var endBytes = Int64(0)
     var loaderQueue: DispatchQueue
     var mediaData = NSMutableData()
-    var playerHistoryItem: PlayerHistoryItem?
     var response: URLResponse?
     var startBytes = Int64(0)
     
     override init() {
         self.loaderQueue = DispatchQueue(label: "com.Podverse.ResourceLoaderDelegate.loaderQueue")
         super.init()
-        avPlayer.addObserver(self, forKeyPath: "status", options: NSKeyValueObservingOptions(), context: nil)
+//        metaPlayer.addObserver(self, forKeyPath: "status", options: NSKeyValueObservingOptions(), context: nil)
     }
     
-    func prepareAsset(item: PlayerHistoryItem) -> AVURLAsset? {
+    func prepareAsset(item: PlayerHistoryItem) {
         
-        // We need to use the AVAssetResourceLoaderDelegate methhods to calculate and set the byte range request headers, and the AVAssetResourceLoaderDelegate methods will only be called if you provide a custom (non http/https) scheme.
-        
-        guard let originalUrlString = item.episodeMediaUrl, let originalUrl = URL(string: originalUrlString) else { return nil }
-        guard let customUrl = originalUrl.convertToCustomUrl(scheme: "streaming") else { return nil }
-        
-        let asset = AVURLAsset(url: customUrl as URL, options: nil)
-        
-        // TODO: is there a better way to do this? without setting currentAsset and playerHistoryItem on parent scope?
-        currentAsset = asset
-        playerHistoryItem = item
-        
-        // Once the delegate is set the AVAssetResourceLoaderDelegate shouldWaitForLoadingOfRequestedResource method will begin
-        // TODO: should this be a serial queue? how would we pass a serial queue in as the parameter in Swift 3?
-        asset.resourceLoader.setDelegate(self, queue: DispatchQueue.global(qos: .background))
-        
-        return asset
+        DispatchQueue.global().async {
+            
+            self.currentAvUrlAsset = nil
+            self.currentFullDuration = 0
+            self.currentHistoryItem = item
+            self.currentMetaDataBytes = 0
+            self.currentTotalBytes = 0
+            
+            guard let originalUrlString = item.episodeMediaUrl, let originalUrl = URL(string: originalUrlString) else { return }
+            
+            let metaAsset = AVURLAsset(url: originalUrl as URL, options: nil)
+            self.currentAvUrlAsset = metaAsset
+            
+            // If a media file has metadata in the beginning, the clip start time and end time will be off. Calculate the metadata bytes size to then use it to offset byte range requests.
+            self.currentMetaDataBytes = self.getMetadataBytesCount(asset: metaAsset)
+            
+            // It takes several seconds to retrieve the duration from the asset itself, so use the episodeDuration stored with the playerHistoryItem instead if available.
+            if let duration = item.episodeDuration {
+                self.currentFullDuration = Int64(duration)
+            } else {
+                let duration = floor(CMTimeGetSeconds(metaAsset.duration))
+                self.currentFullDuration = Int64(duration)
+            }
+            
+            guard let remoteFileSize = URL(string: originalUrlString)?.remoteSize else { return }
+            self.currentTotalBytes = remoteFileSize
+            
+            // Since URL.remoteSize is async, make sure the currentAvUrlAsset is still the same
+            guard self.currentAvUrlAsset == metaAsset else { return }
+            
+            // AVAssetResourceLoaderDelegate methods will only be called with a custom (non-http/s) URL protocol scheme AND after an AVPlayerItem is created with that asset and loaded in an AVPlayer.
+            if let customUrl = originalUrl.convertToCustomUrl(scheme: "streaming") {
+                let asset = AVURLAsset(url: customUrl, options: nil)
+                self.currentAvUrlAsset = asset
+                
+                // TODO: should this be a serial queue? Or is this a serial queue already? How would we pass a serial queue in as the parameter in Swift 3?
+                asset.resourceLoader.setDelegate(self, queue: DispatchQueue.global(qos: .background))
+                
+                let playerItem = AVPlayerItem(asset: asset)
+                PVMediaPlayer.shared.avPlayer.replaceCurrentItem(with: playerItem)
+            }
+            
+        }
         
     }
+        
+
+        
+//        // We need to use the AVAssetResourceLoaderDelegate methhods to calculate and set the byte range request headers, and the AVAssetResourceLoaderDelegate methods will only be called if you provide a custom (non http/https) scheme.
+//        
+//        guard let originalUrlString = item.episodeMediaUrl, let originalUrl = URL(string: originalUrlString) else { return nil }
+//        guard let customUrl = originalUrl.convertToCustomUrl(scheme: "streaming") else { return nil }
+//        
+//        let asset = AVURLAsset(url: customUrl as URL, options: nil)
+//        
+//        currentAsset = asset
+//        
+//        // Once the delegate is set the AVAssetResourceLoaderDelegate shouldWaitForLoadingOfRequestedResource method will begin
+//        // TODO: should this be a serial queue? how would we pass a serial queue in as the parameter in Swift 3?
+//        asset.resourceLoader.setDelegate(self, queue: DispatchQueue.global(qos: .background))
+        
+//        return currentAsset
+        
+//    }
     
     func handleContentInfoRequest(for loadingRequest: AVAssetResourceLoadingRequest) -> Bool {
         
@@ -66,83 +113,61 @@ class PVStreamer:NSObject {
         guard let customMediaUrl = loadingRequest.request.url else { return false }
         guard let originalUrl = customMediaUrl.convertToOriginalUrl() else { return false }
         
-        if let asset = currentAsset, let item = playerHistoryItem {
+        guard loadingRequest.request.url == currentAvUrlAsset?.url else { return false }
+        
+        if let item = currentHistoryItem {
             
-            let mediaUrl = asset.url
+            var request = URLRequest(url: originalUrl)
             
-            // If a media file has metadata in the beginning, the clip start time and end time will be off. Calculate the metadata bytes size to then use it to offset byte range requests.
-            let metadataBytes = getMetadataBytesCount(asset: asset)
+            let startTime = item.startTime
+            let startBytes = self.calcByteRangeOffset(metadataBytes: self.currentMetaDataBytes, time: startTime, duration: self.currentFullDuration, fileSize: self.currentTotalBytes)
             
-            currentFullDuration = asset.duration
+            let endTime = item.endTime
+            let endBytes = self.calcByteRangeOffset(metadataBytes: self.currentMetaDataBytes, time: endTime, duration: self.currentFullDuration, fileSize: self.currentTotalBytes)
             
-            if let duration = currentFullDuration {
+            request.addValue(self.getByteRangeHeaderString(startBytes: startBytes, endBytes: endBytes), forHTTPHeaderField: "Range")
+            
+            let task = URLSession.shared.downloadTask(with: request) { (tempUrl, response, error) in
                 
-                let durationInt64 = Int64(CMTimeGetSeconds(duration))
-                
-                var request = URLRequest(url: originalUrl)
-                
-                let task = URLSession.shared.downloadTask(with: request) { (tempUrl, response, error) in
+                self.loaderQueue.async {
+                    guard loadingRequest.request.url == self.currentAvUrlAsset?.url else { return }
                     
-                    // TODO: should this really be put in loaderQueue async?
-                    self.loaderQueue.async {
-                        if let response = response, error == nil {
-                            
-                            let expectedContentLength = response.expectedContentLength
-                            
-                            if let startTime = item.startTime {
-                                self.startBytes = self.calcByteRangeOffset(metadataBytes: metadataBytes, time: startTime, duration: durationInt64, expectedContentLength: expectedContentLength)
-                            }
-                            
-                            if let endTime = item.endTime {
-                                self.endBytes = self.calcByteRangeOffset(metadataBytes: metadataBytes, time: endTime, duration: durationInt64, expectedContentLength: expectedContentLength)
-                            }
-                            
-                            if let dataRequest = loadingRequest.dataRequest {
-                                request.addValue(self.getByteRangeHeaderString(startBytes: self.startBytes, endBytes: self.endBytes), forHTTPHeaderField: "Range")
-                            }
-//        
-//                            Bail early if the content info request was cancelled
-//                            guard !loadingRequest.isCancelled else { return }
-//        
-//                            TODO: do we need something like this?
-//                            guard let request = self.currentRequest as? ContentInfoRequest,
-//                                loadingRequest === request.loadingRequest else
-//                            {
-//                                SodesLog("Bailing early because the loading request has changed.")
-//                                return
-//                            }
-//        
-                            infoRequest.update(with: response)
-                            loadingRequest.finishLoading()
-                            
-                        } else {
-                            print(error)
-                        }
-                        
+                    if let response = response, error == nil {
+                        infoRequest.update(with: response)
+                        loadingRequest.finishLoading()
+                    } else {
+                        print(error as Any)
+                        loadingRequest.finishLoading(with: error)
                     }
                     
                 }
                 
-                task.resume()
-                
             }
             
+            task.resume()
+            
         }
-        
+            
         return true
         
     }
     
-    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
-        if let newValue = change?[.newKey]
+    func calcByteRangeOffset (metadataBytes: Int64, time: Int64?, duration: Int64, fileSize: Int64) -> Int64 {
+        guard duration > Int64(0) else { return Int64(0) }
+        
+        if let time = time {
+            return metadataBytes + Int64((Double(time) / Double(duration)) * Double(fileSize - metadataBytes))
+        }
+        
+        return Int64(0)
     }
     
-    func calcByteRangeOffset (metadataBytes: Int64, time: Int64, duration: Int64, expectedContentLength: Int64) -> Int64 {
-        return metadataBytes + Int64((Double(time) / Double(duration)) * Double(expectedContentLength - metadataBytes))
-    }
-        
     func getByteRangeHeaderString(startBytes: Int64, endBytes: Int64) -> String {
-        return "bytes=" + String(startBytes) + "-" + String(endBytes)
+        if (endBytes > startBytes) {
+            return "bytes=" + String(startBytes) + "-" + String(endBytes)
+        } else {
+            return "bytes=" + String(startBytes) + "-"
+        }
     }
     
     func getMetadataBytesCount(asset: AVURLAsset) -> Int64 {
@@ -165,6 +190,24 @@ class PVStreamer:NSObject {
         return metadataBytes
     }
     
+//    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
+//        
+//        if let player = object as? AVPlayer {
+//            
+//            // If currentAvUrlAsset does not match the player's AVURLAsset, then a new request must have been made, and we should bail out.
+//            guard let observedAsset = player.currentItem?.asset as? AVURLAsset else { return }
+//            guard currentAvUrlAsset == observedAsset else { return }
+//            
+//            if metaPlayer == player && player.currentItem?.status == AVPlayerItemStatus.readyToPlay {
+//                currentFullDuration = player.currentItem?.duration
+//            } else if avPlayer == player && player.currentItem?.status == AVPlayerItemStatus.readyToPlay {
+//                
+//            }
+//    
+//        }
+//
+//    }
+
 }
 
 extension PVStreamer:AVAssetResourceLoaderDelegate {
