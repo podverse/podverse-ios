@@ -193,9 +193,9 @@ class MediaPlayerViewController: PVViewController {
             let lastPlaybackPosition = item.lastPlaybackPosition ?? 0
             currentTime.text = Int64(lastPlaybackPosition).toMediaPlayerString()
             if let currentItem = pvMediaPlayer.avPlayer.currentItem {
-                let totalTime = Int64(CMTimeGetSeconds(currentItem.asset.duration))
-                duration.text = Int64(totalTime).toMediaPlayerString()
-                progress.value = Float(Int64(lastPlaybackPosition) / totalTime)
+//                let totalTime = Int64(CMTimeGetSeconds(currentItem.asset.duration))
+//                duration.text = Int64(totalTime).toMediaPlayerString()
+//                progress.value = Float(Int64(lastPlaybackPosition) / totalTime)
             }
         }
     }

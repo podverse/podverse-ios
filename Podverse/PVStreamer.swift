@@ -28,22 +28,23 @@ class PVStreamer:NSObject {
     var currentHistoryItem: PlayerHistoryItem?
     var currentMetaDataBytes = Int64(0)
     var currentTotalBytes = Int64(0)
-    var endBytes = Int64(0)
     var loaderQueue: DispatchQueue
     var mediaData = NSMutableData()
-    var response: URLResponse?
-    var startBytes = Int64(0)
+    var pendingRequests = [AVAssetResourceLoadingRequest]()
+    var session: URLSession?
+    
     
     override init() {
         self.loaderQueue = DispatchQueue(label: "com.Podverse.ResourceLoaderDelegate.loaderQueue")
         super.init()
-//        metaPlayer.addObserver(self, forKeyPath: "status", options: NSKeyValueObservingOptions(), context: nil)
     }
     
     func prepareAsset(item: PlayerHistoryItem) {
         
         DispatchQueue.global().async {
             
+            self.session = nil
+            self.pendingRequests = []
             self.currentAvUrlAsset = nil
             self.currentFullDuration = 0
             self.currentHistoryItem = item
@@ -66,12 +67,6 @@ class PVStreamer:NSObject {
                 self.currentFullDuration = Int64(duration)
             }
             
-            guard let remoteFileSize = URL(string: originalUrlString)?.remoteSize else { return }
-            self.currentTotalBytes = remoteFileSize
-            
-            // Since URL.remoteSize is async, make sure the currentAvUrlAsset is still the same
-            guard self.currentAvUrlAsset == metaAsset else { return }
-            
             // AVAssetResourceLoaderDelegate methods will only be called with a custom (non-http/s) URL protocol scheme AND after an AVPlayerItem is created with that asset and loaded in an AVPlayer.
             if let customUrl = originalUrl.convertToCustomUrl(scheme: "streaming") {
                 let asset = AVURLAsset(url: customUrl, options: nil)
@@ -87,70 +82,141 @@ class PVStreamer:NSObject {
         }
         
     }
-        
-
-        
-//        // We need to use the AVAssetResourceLoaderDelegate methhods to calculate and set the byte range request headers, and the AVAssetResourceLoaderDelegate methods will only be called if you provide a custom (non http/https) scheme.
-//        
-//        guard let originalUrlString = item.episodeMediaUrl, let originalUrl = URL(string: originalUrlString) else { return nil }
-//        guard let customUrl = originalUrl.convertToCustomUrl(scheme: "streaming") else { return nil }
-//        
-//        let asset = AVURLAsset(url: customUrl as URL, options: nil)
-//        
-//        currentAsset = asset
-//        
-//        // Once the delegate is set the AVAssetResourceLoaderDelegate shouldWaitForLoadingOfRequestedResource method will begin
-//        // TODO: should this be a serial queue? how would we pass a serial queue in as the parameter in Swift 3?
-//        asset.resourceLoader.setDelegate(self, queue: DispatchQueue.global(qos: .background))
-        
-//        return currentAsset
-        
-//    }
     
-    func handleContentInfoRequest(for loadingRequest: AVAssetResourceLoadingRequest) -> Bool {
+    func processPendingRequests() {
         
-        guard let infoRequest = loadingRequest.contentInformationRequest else { return false }
-        guard let customMediaUrl = loadingRequest.request.url else { return false }
-        guard let originalUrl = customMediaUrl.convertToOriginalUrl() else { return false }
+        var requestsCompleted = [AVAssetResourceLoadingRequest]()
         
-        guard loadingRequest.request.url == currentAvUrlAsset?.url else { return false }
+        for loadingRequest in self.pendingRequests {
+            if let _ = loadingRequest.contentInformationRequest {
+                handleContentInfoRequest(loadingRequest: loadingRequest)
+                requestsCompleted.append(loadingRequest)
+            } else if let _ = loadingRequest.dataRequest {
+                let didRespondCompletely = handleDataRequest(loadingRequest: loadingRequest)
+                if didRespondCompletely {
+                    requestsCompleted.append(loadingRequest)
+                    loadingRequest.finishLoading()
+                }
+            }
+        }
         
-        if let item = currentHistoryItem {
-            
-            var request = URLRequest(url: originalUrl)
-            
-            let startTime = item.startTime
-            let startBytes = self.calcByteRangeOffset(metadataBytes: self.currentMetaDataBytes, time: startTime, duration: self.currentFullDuration, fileSize: self.currentTotalBytes)
-            
-            let endTime = item.endTime
-            let endBytes = self.calcByteRangeOffset(metadataBytes: self.currentMetaDataBytes, time: endTime, duration: self.currentFullDuration, fileSize: self.currentTotalBytes)
-            
-            request.addValue(self.getByteRangeHeaderString(startBytes: startBytes, endBytes: endBytes), forHTTPHeaderField: "Range")
+        for requestCompleted in requestsCompleted {
+            for (i, pendingRequest) in self.pendingRequests.enumerated() {
+                if requestCompleted == pendingRequest {
+                    self.pendingRequests.remove(at: i)
+                }
+            }
+        }
+        
+    }
+    
+    func handleContentInfoRequest (loadingRequest: AVAssetResourceLoadingRequest) {
+        
+        guard let infoRequest = loadingRequest.contentInformationRequest else { return }
+        guard let customMediaUrl = loadingRequest.request.url else { return }
+        guard let originalUrl = customMediaUrl.convertToOriginalUrl() else { return }
+        
+        do {
+            var request = try URLRequest(url: originalUrl, method: .get)
+            request.addValue("bytes=0-1", forHTTPHeaderField: "Range")
             
             let task = URLSession.shared.downloadTask(with: request) { (tempUrl, response, error) in
-                
-                self.loaderQueue.async {
-                    guard loadingRequest.request.url == self.currentAvUrlAsset?.url else { return }
-                    
-                    if let response = response, error == nil {
-                        infoRequest.update(with: response)
-                        loadingRequest.finishLoading()
-                    } else {
-                        print(error as Any)
-                        loadingRequest.finishLoading(with: error)
+                if let response = response as? HTTPURLResponse, error == nil {
+                    if let mimeType = response.mimeType, let unmanagedContentType = UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, mimeType as CFString, nil) {
+                        let cfContentType = unmanagedContentType.takeRetainedValue()
+                        infoRequest.contentType = String(cfContentType)
+                        infoRequest.isByteRangeAccessSupported = true
+                        
+                        if let contentLengthString = response.allHeaderFields["Content-Range"] as? String {
+                            let delimiter = "/"
+                            let stringComponents = contentLengthString.components(separatedBy: delimiter)
+                            if stringComponents.count > 1 {
+                                if let contentLength = Int64(stringComponents[1]) {
+                                    infoRequest.contentLength = 500000
+                                }
+                            }
+                        }
+
                     }
-                    
+                } else {
+                    print(error as Any)
                 }
                 
+                loadingRequest.finishLoading()
             }
             
             task.resume()
             
+        } catch {
+            print(error.localizedDescription)
         }
-            
-        return true
         
     }
+    
+
+        
+        
+//
+//        // We can assume the first loadingRequest will be a contentInfoRequest, so we should use URLSessionDelegate instead of calling processPendingRequests()
+//        if self.session == nil {
+//            let request = URLRequest(url: originalUrl, cachePolicy: NSURLRequest.CachePolicy.reloadIgnoringLocalAndRemoteCacheData, timeoutInterval: 60)
+//            let config = URLSessionConfiguration.default
+//            self.session = URLSession(configuration: config, delegate: self, delegateQueue: OperationQueue.main)
+//            if let task = session?.dataTask(with: request) {
+//                task.resume()
+//            }
+//            
+//            return true
+//        }
+
+    
+    func handleDataRequest (loadingRequest: AVAssetResourceLoadingRequest) -> Bool {
+        
+        guard let dataRequest = loadingRequest.dataRequest else { return true }
+        guard let customMediaUrl = loadingRequest.request.url else { return true }
+        guard let originalUrl = customMediaUrl.convertToOriginalUrl() else { return true }
+        
+        if self.session == nil {
+            let config = URLSessionConfiguration.default
+            self.session = URLSession(configuration: config, delegate: self, delegateQueue: OperationQueue.main)
+            
+            var request = URLRequest(url: originalUrl, cachePolicy: NSURLRequest.CachePolicy.reloadIgnoringLocalAndRemoteCacheData, timeoutInterval: 60)
+            
+            let fullContentLength = dataRequest.requestedLength
+            request.addValue("bytes=1000000-1500000", forHTTPHeaderField: "Range")
+            
+            let task = self.session?.dataTask(with: request)
+            task?.resume()
+            
+            return false
+        }
+        
+        var startOffset = dataRequest.requestedOffset
+        if dataRequest.currentOffset != 0 {
+            startOffset = dataRequest.currentOffset
+        }
+        
+        let mediaFileDataLength = Int64(self.mediaData.length)
+        if mediaFileDataLength < startOffset {
+            return false
+        }
+        
+        let unreadBytes = mediaFileDataLength - startOffset
+        
+        let numberOfBytesToRespondWith: Int64
+        if Int64(dataRequest.requestedLength) > unreadBytes {
+            numberOfBytesToRespondWith = unreadBytes
+        } else {
+            numberOfBytesToRespondWith = Int64(dataRequest.requestedLength)
+        }
+        dataRequest.respond(with: self.mediaData.subdata(with: NSMakeRange(Int(startOffset), Int(numberOfBytesToRespondWith))))
+        let endOffset = startOffset + dataRequest.requestedLength
+        let didRespondFully = mediaFileDataLength >= endOffset
+        return didRespondFully
+    }
+    
+
+
     
     func calcByteRangeOffset (metadataBytes: Int64, time: Int64?, duration: Int64, fileSize: Int64) -> Int64 {
         guard duration > Int64(0) else { return Int64(0) }
@@ -162,7 +228,7 @@ class PVStreamer:NSObject {
         return Int64(0)
     }
     
-    func getByteRangeHeaderString(startBytes: Int64, endBytes: Int64) -> String {
+    func generateByteRangeHeaderString(startBytes: Int64, endBytes: Int64) -> String {
         if (endBytes > startBytes) {
             return "bytes=" + String(startBytes) + "-" + String(endBytes)
         } else {
@@ -190,59 +256,44 @@ class PVStreamer:NSObject {
         return metadataBytes
     }
     
-//    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
-//        
-//        if let player = object as? AVPlayer {
-//            
-//            // If currentAvUrlAsset does not match the player's AVURLAsset, then a new request must have been made, and we should bail out.
-//            guard let observedAsset = player.currentItem?.asset as? AVURLAsset else { return }
-//            guard currentAvUrlAsset == observedAsset else { return }
-//            
-//            if metaPlayer == player && player.currentItem?.status == AVPlayerItemStatus.readyToPlay {
-//                currentFullDuration = player.currentItem?.duration
-//            } else if avPlayer == player && player.currentItem?.status == AVPlayerItemStatus.readyToPlay {
-//                
-//            }
-//    
-//        }
-//
-//    }
-
 }
 
 extension PVStreamer:AVAssetResourceLoaderDelegate {
     
     func resourceLoader(_ resourceLoader: AVAssetResourceLoader, shouldWaitForLoadingOfRequestedResource loadingRequest: AVAssetResourceLoadingRequest) -> Bool {
-        
-        if let _ = loadingRequest.contentInformationRequest {
-            return handleContentInfoRequest(for: loadingRequest)
-        } else if let _ = loadingRequest.dataRequest {
-//             return handleDataRequest(for: loadingRequest)
-            return false
-        } else {
-            return false
-        }
-        
+        self.pendingRequests.append(loadingRequest)
+        processPendingRequests()
+        return true
     }
     
     func resourceLoader(_ resourceLoader: AVAssetResourceLoader, didCancel loadingRequest: AVAssetResourceLoadingRequest) {
-        print("huh")
+        for (i, pendingRequest) in self.pendingRequests.enumerated() {
+            if pendingRequest == pendingRequests[i] {
+                pendingRequests.remove(at: i)
+            }
+        }
+        pendingRequests = []
     }
     
 }
 
-//extension PVStreamer:URLSessionDataDelegate {
-//    func urlSession(_ session: URLSession, didBecomeInvalidWithError error: Error?) {
-//        print(error)
-//    }
-//    
-//    public func urlSession(_ session: URLSession, task: URLSessionTask, willPerformHTTPRedirection response: HTTPURLResponse, newRequest request: URLRequest, completionHandler: @escaping (URLRequest?) -> Void) {
-//        URLSession.shared.dataTask(with: request).resume()
-//    }
-//    
-//    public func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive response: URLResponse, completionHandler: @escaping (URLSession.ResponseDisposition) -> Void) {
-//        remoteFileSize = response.expectedContentLength
-//        session.invalidateAndCancel()
-//    }
-//}
+extension PVStreamer:URLSessionDelegate, URLSessionDataDelegate {
+    public func urlSession(_ session: URLSession, didBecomeInvalidWithError error: Error?) {
+        print(error)
+    }
+    
+    public func urlSession(_ session: URLSession, task: URLSessionTask, willPerformHTTPRedirection response: HTTPURLResponse, newRequest request: URLRequest, completionHandler: @escaping (URLRequest?) -> Void) {
+        session.dataTask(with: request).resume()
+    }
+    
+    public func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive response: URLResponse, completionHandler: @escaping (URLSession.ResponseDisposition) -> Void) {
+        self.mediaData = NSMutableData()
+        completionHandler(URLSession.ResponseDisposition.allow)
+    }
+    
+    public func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive data: Data) {
+        self.mediaData.append(data)
+        processPendingRequests()
+    }
+}
 
