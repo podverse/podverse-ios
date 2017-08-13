@@ -94,8 +94,9 @@ class MediaPlayerViewController: PVViewController {
     @IBAction func sliderAction(_ sender: UISlider) {
         if let currentItem = pvMediaPlayer.avPlayer.currentItem {
             let totalTime = CMTimeGetSeconds(currentItem.asset.duration)
-            let newTime = Double(sender.value) * totalTime
-            pvMediaPlayer.goToTime(seconds: newTime)
+            var newTime = Double(sender.value) * totalTime
+            pvMediaPlayer.goToTime(seconds: newTime, timePercent: sender.value)
+            updateCurrentTime(currentTime: newTime)
         }
     }
 

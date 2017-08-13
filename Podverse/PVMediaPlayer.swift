@@ -238,12 +238,26 @@ class PVMediaPlayer: NSObject {
         MPNowPlayingInfoCenter.default().nowPlayingInfo = nil
     }
     
-    func goToTime(seconds: Double) {
+    func goToTime(seconds: Double, timePercent: Float? = nil) {
         
-        var sec = Int64(seconds)
-        if self.shouldStreamOnlyRange {
-            if let time = self.nowPlayingClipStartTime {
-                sec = sec + time
+        var sec = Float(seconds)
+        
+        if let timePercent = timePercent {
+            if self.shouldStreamOnlyRange {
+                if let time = self.nowPlayingClipStartTime {
+                    sec = timePercent * Float(pvStreamer.currentFullDuration)
+                }
+            } else {
+                if let item = self.avPlayer.currentItem {
+                    let duration = Float(CMTimeGetSeconds(item.duration))
+                    sec = timePercent * duration
+                }
+            }
+        } else {
+            if self.shouldStreamOnlyRange {
+                if let time = self.nowPlayingClipStartTime {
+                    sec = sec + Float(time)
+                }
             }
         }
         
