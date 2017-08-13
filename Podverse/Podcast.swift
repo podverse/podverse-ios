@@ -63,11 +63,14 @@ class Podcast: NSManagedObject {
             let image = Podcast.fetchPodcastImage(managedObjectId: moid)
             return image
         }
-        else if let feedUrl = feedURLString, !feedUrl.isEmpty {
-            let image = Podcast.fetchPodcastImage(podcastFeedUrl: feedUrl)
-            return image
+        
+        if let feedUrl = feedURLString, !feedUrl.isEmpty {
+            if let image = Podcast.fetchPodcastImage(podcastFeedUrl: feedUrl) {
+                return image
+            }
         }
-        else if let imageUrlString = podcastImageURLString, let imageURL = URL(string:imageUrlString) {
+        
+        if let imageUrlString = podcastImageURLString, let imageURL = URL(string:imageUrlString) {
             Podcast.fetchPodcastImage(podcastImageUrl: imageURL, completion: { (image) in
                 completion?(image)
             })
@@ -96,7 +99,7 @@ class Podcast: NSManagedObject {
             return UIImage(data:imageData)
         } 
         else {
-            return UIImage(named: "PodverseIcon")
+            return nil
         }
     }
     

@@ -57,10 +57,9 @@ class PVViewController: UIViewController {
         
         tabbarVC.playerView.podcastTitleLabel.text = currentItem.podcastTitle
         tabbarVC.playerView.episodeTitle.text = currentItem.episodeTitle
-        tabbarVC.playerView.podcastImageView.image = Podcast.retrievePodcastImage(podcastImageURLString: currentItem.podcastImageUrl, 
-                                                                       feedURLString: currentItem.podcastFeedUrl) { (podcastImage) -> Void in
-                                              tabbarVC.playerView.podcastImageView.image = podcastImage
-                                          }
+        tabbarVC.playerView.podcastImageView.image = Podcast.retrievePodcastImage(podcastImageURLString: currentItem.podcastImageUrl, feedURLString: currentItem.podcastFeedUrl) { (podcastImage) -> Void in
+            tabbarVC.playerView.podcastImageView.image = podcastImage
+        }
         tabbarVC.playerView.isPlaying = self.pvMediaPlayer.mediaPlayerIsPlaying
         tabbarVC.showPlayerView()
     }
