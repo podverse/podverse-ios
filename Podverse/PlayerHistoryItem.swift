@@ -19,14 +19,14 @@ class PlayerHistoryItem: NSObject, NSCoding {
     let episodePubDate: Date?
     let episodeSummary: String?
     let episodeTitle: String?
-    let startTime: Int64?     // If startTime and endTime = 0, then item is a clip, else it is an episode
-    let endTime: Int64?
-    let clipTitle: String?
-    let ownerName: String?
-    let ownerId: String?
+    var startTime: Int64?     // If startTime and endTime = 0, then item is a clip, else it is an episode
+    var endTime: Int64?
+    var clipTitle: String?
+    var ownerName: String?
+    var ownerId: String?
     var hasReachedEnd: Bool?
-    let lastPlaybackPosition: Int64?
-    let lastUpdated: Date?
+    var lastPlaybackPosition: Int64?
+    var lastUpdated: Date?
     
     required init(podcastFeedUrl:String? = nil, podcastTitle:String? = nil, podcastImageUrl:String? = nil, episodeDuration: Int64? = nil, episodeMediaUrl:String? = nil, episodeTitle:String? = nil, episodeImageUrl:String? = nil, episodeSummary:String? = nil, episodePubDate:Date? = nil, startTime:Int64? = nil, endTime:Int64? = nil, clipTitle:String? = nil, ownerName:String? = nil, ownerId:String? = nil, hasReachedEnd:Bool, lastPlaybackPosition:Int64? = 0, lastUpdated:Date? = nil) {
         self.podcastFeedUrl = podcastFeedUrl
@@ -86,6 +86,34 @@ class PlayerHistoryItem: NSObject, NSCoding {
         coder.encode(hasReachedEnd, forKey:"hasReachedEnd")
         coder.encode(lastPlaybackPosition, forKey:"lastPlaybackPosition")
         coder.encode(lastUpdated, forKey:"lastUpdated")
+    }
+    
+    func isClip() -> Bool {
+        
+        if let startTime = self.startTime {
+            if startTime > 0 {
+                return true
+            }
+        } else if let endTime = self.endTime {
+            if endTime > 0 {
+                return true
+            }
+        }
+        
+        return false
+    }
+    
+    func convertClipToEpisode() -> PlayerHistoryItem {
+        self.clipTitle = nil
+        self.startTime = 0
+        self.endTime = nil
+        self.ownerName = nil
+        self.ownerId = nil
+        self.hasReachedEnd = false
+        self.lastPlaybackPosition = nil
+        self.lastUpdated = nil
+        
+        return self
     }
     
 }

@@ -13,13 +13,13 @@ import AVFoundation
 class MediaPlayerViewController: PVViewController {
 
     var playerSpeedRate:PlayingSpeed = .regular
-    var shouldAutoplay = false
     var timeOffset = Int64(0)
     var moveToOffset = false
     
     weak var currentChildViewController: UIViewController?
     private let aboutClipsStoryboardId = "AboutPlayingItemVC"
     private let clipsListStoryBoardId = "ClipsListVC"
+    let pvStreamer = PVStreamer.shared
     
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     @IBOutlet weak var clipsContainerView: UIView!
@@ -37,16 +37,12 @@ class MediaPlayerViewController: PVViewController {
     override func viewDidLoad() {
         setupContainerView()
         
-        pvMediaPlayer.delegate = self
-
         let share = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.action, target: self, action: #selector(showShareMenu))
         let makeClip = UIBarButtonItem(title: "Make Clip", style: .plain, target: self, action: #selector(showMakeClip))
         let addToPlaylist = UIBarButtonItem(title: "Add to Playlist", style: .plain, target: self, action: #selector(showAddToPlaylist))
         navigationItem.rightBarButtonItems = [share, makeClip, addToPlaylist]
 
         self.progress.isContinuous = false
-        
-        hideProgressBar()
         
         setPlayerInfo()
         
@@ -58,20 +54,24 @@ class MediaPlayerViewController: PVViewController {
         self.tabBarController?.hidePlayerView()
         
         navigationController?.interactivePopGestureRecognizer?.isEnabled = false
+        
+        setupNotificationListeners()
+        
+        activityIndicator.startAnimating()
+        
+        if pvMediaPlayer.avPlayer.currentItem?.status == AVPlayerItemStatus.readyToPlay {
+            setPlayerTimeInfo()
+            showProgressBar()
+        } else {
+            hideProgressBar()
+        }
+    }
+    
+    deinit {
+        removeObservers()
     }
     
     override func viewDidAppear(_ animated: Bool) {
-        if (shouldAutoplay) {
-            self.pvMediaPlayer.avPlayer.rate = 0
-            self.pvMediaPlayer.playOrPause()
-        }
-        
-        if moveToOffset == true && timeOffset > 0 {
-            self.pvMediaPlayer.goToTime(seconds: Double(timeOffset))
-            moveToOffset = false
-            setPlayerInfo()
-        }
-        
         setPlayIcon()
     }
     
@@ -152,6 +152,16 @@ class MediaPlayerViewController: PVViewController {
         updateSpeedLabel()
     }
     
+    fileprivate func setupNotificationListeners() {
+        NotificationCenter.default.addObserver(self, selector: #selector(setPlayerTimeInfo), name: .playerReadyToPlay, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(hideProgressBar), name: .playerIsLoading, object: nil)
+    }
+    
+    fileprivate func removeObservers() {
+        NotificationCenter.default.removeObserver(self, name: .playerReadyToPlay, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .playerIsLoading, object: nil)
+    }
+    
     fileprivate func setupContainerView() {
         if let currentVC = self.storyboard?.instantiateViewController(withIdentifier: self.aboutClipsStoryboardId) {
             self.currentChildViewController = currentVC
@@ -182,48 +192,86 @@ class MediaPlayerViewController: PVViewController {
     }
     
     func setPlayerInfo() {
-        if let item = pvMediaPlayer.currentlyPlayingItem {
+        if let item = pvMediaPlayer.nowPlayingItem {
             podcastTitle.text = item.podcastTitle
             episodeTitle.text = item.episodeTitle
             
             self.image.image = Podcast.retrievePodcastImage(podcastImageURLString: item.podcastImageUrl, feedURLString: item.podcastFeedUrl) { (podcastImage) -> Void in
                 self.image.image = podcastImage
             }
+        }
+    }
+    
+    // This method should only be called in the event of the AVPlayerItem "ready to play" notification.
+    func setPlayerTimeInfo () {
+        if let playerItem = pvMediaPlayer.avPlayer.currentItem, let playerHistoryItem = pvMediaPlayer.nowPlayingItem {
             
-            let lastPlaybackPosition = item.lastPlaybackPosition ?? 0
-            currentTime.text = Int64(lastPlaybackPosition).toMediaPlayerString()
-            if let currentItem = pvMediaPlayer.avPlayer.currentItem {
-//                let totalTime = Int64(CMTimeGetSeconds(currentItem.asset.duration))
-//                duration.text = Int64(totalTime).toMediaPlayerString()
-//                progress.value = Float(Int64(lastPlaybackPosition) / totalTime)
+            if pvMediaPlayer.shouldStreamOnlyRange == true {
+                
+                var startTime = Int64(0)
+                if let time = playerHistoryItem.startTime {
+                    startTime = time
+                }
+                
+                currentTime.text = Int64(startTime).toMediaPlayerString()
+                let totalTime = pvStreamer.currentFullDuration
+                duration.text = Int64(totalTime).toMediaPlayerString()
+                progress.value = Float(startTime) / Float(totalTime)
+                
+            } else {
+                
+                let playbackPosition = pvMediaPlayer.nowPlayingPlaybackPosition
+                currentTime.text = Int64(playbackPosition).toMediaPlayerString()
+                let totalTime = Int64(CMTimeGetSeconds(playerItem.asset.duration))
+                duration.text = Int64(totalTime).toMediaPlayerString()
+                progress.value = Float(playbackPosition) / Float(totalTime)
+                
             }
+            
+            showProgressBar()
+            
         }
     }
 
     func updateCurrentTime(currentTime: Double) {
-        self.currentTime.text = Int64(currentTime).toMediaPlayerString()
+        
         if let currentItem = pvMediaPlayer.avPlayer.currentItem {
-            let totalTime = CMTimeGetSeconds(currentItem.duration)
-            progress.value = Float(currentTime / totalTime)
+            var adjustedSeconds = currentTime
+            var adjustedFullDuration = CMTimeGetSeconds(currentItem.duration)
+            if pvMediaPlayer.shouldStreamOnlyRange {
+                if let time = pvMediaPlayer.nowPlayingClipStartTime {
+                    adjustedSeconds = adjustedSeconds + Double(time)
+                }
+                adjustedFullDuration = Float64(pvStreamer.currentFullDuration)
+            }
+            
+            self.currentTime.text = Int64(adjustedSeconds).toMediaPlayerString()
+            
+            progress.value = Float(adjustedSeconds / adjustedFullDuration)
         } else {
             DispatchQueue.main.async {
                 self.navigationController?.popViewController(animated: true)
             }
         }
+        
     }
     
     func showProgressBar () {
-        self.activityIndicator.isHidden = true
-        self.progress.isHidden = false
-        self.duration.isHidden = false
-        self.currentTime.isHidden = false
+        DispatchQueue.main.async {
+            self.activityIndicator.isHidden = true
+            self.progress.isHidden = false
+            self.duration.isHidden = false
+            self.currentTime.isHidden = false
+        }
     }
     
     func hideProgressBar () {
-        self.activityIndicator.isHidden = false
-        self.progress.isHidden = true
-        self.duration.isHidden = true
-        self.currentTime.isHidden = true
+        DispatchQueue.main.async {
+            self.activityIndicator.isHidden = false
+            self.progress.isHidden = true
+            self.duration.isHidden = true
+            self.currentTime.isHidden = true
+        }
     }
     
     func updateSpeedLabel() {
@@ -312,13 +360,5 @@ class MediaPlayerViewController: PVViewController {
 extension MediaPlayerViewController:ClipsListDelegate {
     func didSelectClip(clip: MediaRef) {
         //Change the player data and info to the passed in clip
-    }
-}
-
-extension MediaPlayerViewController:PVMediaPlayerDelegate {
-    func didFinishPlaying() {
-        DispatchQueue.main.async {
-            self.navigationController?.popViewController(animated: true)
-        }
     }
 }

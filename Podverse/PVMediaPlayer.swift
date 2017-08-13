@@ -12,6 +12,11 @@ import MediaPlayer
 import CoreData
 import UIKit
 
+extension Notification.Name {
+    static let playerReadyToPlay = Notification.Name("playerReadyToPlay")
+    static let playerIsLoading = Notification.Name("playerIsLoading")
+}
+
 enum PlayingSpeed {
     case quarter, half, threeQuarts, regular, timeAndQuarter, timeAndHalf, double, doubleAndHalf
     
@@ -62,28 +67,31 @@ enum PlayingSpeed {
     }
 }
 
-protocol PVMediaPlayerDelegate {
-    func didFinishPlaying()
-}
-
 protocol PVMediaPlayerUIDelegate {
     func mediaPlayerButtonStateChanged(showPlayerButton:Bool)
 }
 
-class PVMediaPlayer {
+class PVMediaPlayer: NSObject {
 
     static let shared = PVMediaPlayer()
     var avPlayer = AVPlayer()
-    var playerHistoryManager = PlayerHistory.manager
+    var boundaryObserver:Any?
     var docDirectoryURL: URL?
-    var currentlyPlayingItem:PlayerHistoryItem?
-
     var mediaPlayerIsPlaying = false
-    var delegate: PVMediaPlayerDelegate?
+    var nowPlayingClipStartTime: Int64?
+    var nowPlayingClipEndTime: Int64?
+    var nowPlayingItem:PlayerHistoryItem?
+    var nowPlayingPlaybackPosition = Int64(0)
     var playerButtonDelegate:PVMediaPlayerUIDelegate?
-    var boundaryObserver:AnyObject?
+    var playerHistoryManager = PlayerHistory.manager
+    let pvStreamer = PVStreamer.shared
+    var shouldAutoplayAlways: Bool = false
+    var shouldAutoplayOnce: Bool = false
+    var shouldStreamOnlyRange: Bool = false
 
-    init() {
+    override init() {
+        
+        super.init()
         
         // Enable the media player to continue playing in the background and on the lock screen
         do {
@@ -110,8 +118,6 @@ class PVMediaPlayer {
         
         NotificationCenter.default.addObserver(self, selector: #selector(headphonesWereUnplugged(notification:)), name: NSNotification.Name.AVAudioSessionRouteChange, object: AVAudioSession.sharedInstance())
         
-        NotificationCenter.default.addObserver(self, selector: #selector(playerDidFinishPlaying), name: NSNotification.Name.AVPlayerItemDidPlayToEndTime, object: avPlayer.currentItem)
-        
     }
     
     @objc func headphonesWereUnplugged(notification: Notification) {
@@ -131,28 +137,39 @@ class PVMediaPlayer {
         self.setPlayingInfo()
         
         if avPlayer.rate == 0 {
-            avPlayer.play()
-            mediaPlayerIsPlaying = true
+            play()
             return true
             
         } else {
-            saveCurrentTimeAsPlaybackPosition()
-            avPlayer.pause()
-            mediaPlayerIsPlaying = false
+            pause()
             return false
         }
 
     }
     
+    func play() {
+        avPlayer.play()
+        mediaPlayerIsPlaying = true
+        shouldAutoplayOnce = false
+    }
+    
+    func pause() {
+        saveCurrentTimeAsPlaybackPosition()
+        avPlayer.pause()
+        mediaPlayerIsPlaying = false
+    }
+    
     @objc func playerDidFinishPlaying() {
-        let moc = CoreDataHelper.createMOCForThread(threadType: .mainThread)
-        if let currentlyPlayingItem = playerHistoryManager.historyItems.first, let episodeMediaUrl = currentlyPlayingItem.episodeMediaUrl, let episode = Episode.episodeForMediaUrl(mediaUrlString: episodeMediaUrl, managedObjectContext: moc) {
-            PVDeleter.deleteEpisode(episodeId: episode.objectID, fileOnly: true, shouldCallNotificationMethod: true)
-            currentlyPlayingItem.hasReachedEnd = true
-            playerHistoryManager.addOrUpdateItem(item: currentlyPlayingItem)
-            
-            self.delegate?.didFinishPlaying()
+        
+        if !self.shouldStreamOnlyRange {
+            let moc = CoreDataHelper.createMOCForThread(threadType: .mainThread)
+            if let nowPlayingItem = playerHistoryManager.historyItems.first, let episodeMediaUrl = nowPlayingItem.episodeMediaUrl, let episode = Episode.episodeForMediaUrl(mediaUrlString: episodeMediaUrl, managedObjectContext: moc) {
+                PVDeleter.deleteEpisode(episodeId: episode.objectID, fileOnly: true, shouldCallNotificationMethod: true)
+                nowPlayingItem.hasReachedEnd = true
+                playerHistoryManager.addOrUpdateItem(item: nowPlayingItem)
+            }
         }
+        
     }
 
     func saveCurrentTimeAsPlaybackPosition() {
@@ -190,7 +207,7 @@ class PVMediaPlayer {
     
     func setPlayingInfo() {
         
-        guard let item =  currentlyPlayingItem else {
+        guard let item =  nowPlayingItem else {
             return
         }
         
@@ -222,52 +239,131 @@ class PVMediaPlayer {
     }
     
     func goToTime(seconds: Double) {
-        avPlayer.seek(to: CMTimeMakeWithSeconds(seconds, 1))
-    }
         
-    func loadPlayerHistoryItem(item: PlayerHistoryItem) {
-        currentlyPlayingItem = item
-        
-        if avPlayer.rate == 1 {
-            saveCurrentTimeAsPlaybackPosition()
+        var sec = Int64(seconds)
+        if self.shouldStreamOnlyRange {
+            if let time = self.nowPlayingClipStartTime {
+                sec = sec + time
+            }
         }
         
-        item.hasReachedEnd = false
-        
-        avPlayer.replaceCurrentItem(with: nil)
-        
-        let moc = CoreDataHelper.createMOCForThread(threadType: .mainThread)
-        
-        playerHistoryManager.addOrUpdateItem(item: item)
-        
-        if let episodeMediaUrl = item.episodeMediaUrl {
+        if self.shouldStreamOnlyRange && !self.pvStreamer.checkIfCurrentTimeIsWithinStreamRange(currentTime: Int(sec)) {
+            if let item = self.nowPlayingItem?.convertClipToEpisode() {
+                loadPlayerHistoryItem(item: item, startTime: Int64(sec))
+            }
             
-//            let episodesPredicate = NSPredicate(format: "mediaUrl == %@", episodeMediaUrl)
-//            if let episodes = CoreDataHelper.fetchEntities(className: "Episode", predicate: episodesPredicate, moc: moc) as? [Episode] {
-//                if let episode = episodes.first {
-//                    var URLs = FileManager().urls(for: FileManager.SearchPathDirectory.documentDirectory, in: FileManager.SearchPathDomainMask.userDomainMask)
-//                    self.docDirectoryURL = URLs[0]
-//                    
-//                    if let fileName = episode.fileName, let destinationUrl = self.docDirectoryURL?.appendingPathComponent(fileName) {
-//                        let playerItem = AVPlayerItem(url: destinationUrl)
-//                        avPlayer.replaceCurrentItem(with: playerItem)
-//                        
-//                        // Remember the downloaded episode loaded in media playervyer so if the app closes while the episode is playing or paused it can be reloaded on app launch.
-//                        UserDefaults.standard.set(episode.objectID.uriRepresentation(), forKey: kLastPlayingEpisodeURL)
-//                        
-//                    } else {
-//                        if let urlString = currentlyPlayingItem?.episodeMediaUrl, let url = NSURL(string: urlString) {
-//                            let playerItem = AVPlayerItem(url: url as URL)
-//                            avPlayer.replaceCurrentItem(with: playerItem)
-//                        }
-//                    }
-//                } else {
-                    PVStreamer.shared.prepareAsset(item: item)
-//                        let playerItem = AVPlayerItem(asset: asset)
-//                        avPlayer.replaceCurrentItem(with: playerItem)
-//                    }
-//                }
-//            }
+        } else if self.shouldStreamOnlyRange {
+            if let startTime = self.nowPlayingClipStartTime {
+                let adjustedCurrentTime = Int64(sec) - startTime
+                self.avPlayer.seek(to: CMTimeMakeWithSeconds(Float64(adjustedCurrentTime), 1))
+            }
+            
+        } else {
+            self.shouldStreamOnlyRange = false
+            self.avPlayer.seek(to: CMTimeMakeWithSeconds(Double(sec), 1))
+        }
+        
+    }
+        
+    func loadPlayerHistoryItem(item: PlayerHistoryItem, startTime: Int64? = nil) {
+
+        self.nowPlayingPlaybackPosition = startTime ?? item.startTime ?? Int64(0)
+        self.nowPlayingClipStartTime = item.startTime
+        self.nowPlayingClipEndTime = item.endTime
+        
+        // If the playerHistoryItem's episode is already playing in full, then only adjust the player position and set the clip end observer if available.
+        if self.nowPlayingItem?.episodeMediaUrl == item.episodeMediaUrl && !self.shouldStreamOnlyRange {
+            
+            self.nowPlayingItem = item
+            self.nowPlayingItem?.hasReachedEnd = false
+            
+            playerHistoryManager.addOrUpdateItem(item: self.nowPlayingItem)
+            
+            self.goToTime(seconds: Double(self.nowPlayingPlaybackPosition))
+            
+            if let endTime = nowPlayingClipEndTime {
+                self.boundaryObserver = self.avPlayer.addBoundaryTimeObserver(forTimes: [endTime as NSValue], queue: nil, using: {
+                    self.playOrPause()
+                    
+                    if let observer = self.boundaryObserver {
+                        self.avPlayer.removeTimeObserver(observer)
+                    }
+                })
+            }
+            
+        }
+        else {
+            
+            self.shouldStreamOnlyRange = item.isClip()
+            
+            DispatchQueue.main.async {
+                NotificationCenter.default.post(name: .playerIsLoading, object: nil, userInfo: nil)
+            }
+            
+            nowPlayingItem = item
+            nowPlayingItem?.hasReachedEnd = false
+            
+            playerHistoryManager.addOrUpdateItem(item: nowPlayingItem)
+            
+            if let observer = self.boundaryObserver {
+                self.avPlayer.removeTimeObserver(observer)
+            }
+            
+            avPlayer.currentItem?.removeObserver(self, forKeyPath: "status", context: nil)
+            avPlayer.replaceCurrentItem(with: nil)
+            
+            let moc = CoreDataHelper.createMOCForThread(threadType: .mainThread)
+            
+            if let episodeMediaUrlString = item.episodeMediaUrl, let episodeMediaUrl = URL(string: episodeMediaUrlString) {
+                
+                let episodesPredicate = NSPredicate(format: "mediaUrl == %@", episodeMediaUrlString)
+                
+                guard let episodes = CoreDataHelper.fetchEntities(className: "Episode", predicate: episodesPredicate, moc: moc) as? [Episode] else { return }
+                
+                // If the playerHistoryItems's episode is downloaded locally, then use it.
+                if episodes.count > 0 {
+                    self.shouldStreamOnlyRange = false
+                    
+                    if let episode = episodes.first {
+                        
+                        var URLs = FileManager().urls(for: FileManager.SearchPathDirectory.documentDirectory, in: FileManager.SearchPathDomainMask.userDomainMask)
+                        self.docDirectoryURL = URLs[0]
+                        
+                        if let fileName = episode.fileName, let destinationUrl = self.docDirectoryURL?.appendingPathComponent(fileName) {
+                            let playerItem = AVPlayerItem(url: destinationUrl)
+                            self.avPlayer.replaceCurrentItem(with: playerItem)
+                            self.avPlayer.currentItem?.addObserver(self, forKeyPath: "status", options: NSKeyValueObservingOptions(), context: nil)
+                        } else {
+                            if let urlString = nowPlayingItem?.episodeMediaUrl, let url = NSURL(string: urlString) {
+                                let playerItem = AVPlayerItem(url: url as URL)
+                                self.avPlayer.replaceCurrentItem(with: playerItem)
+                                self.avPlayer.currentItem?.addObserver(self, forKeyPath: "status", options: NSKeyValueObservingOptions(), context: nil)
+                            }
+                        }
+                        
+                    }
+                }
+                // Else if the playerHistoryItem is a clip, then remotely stream just the clip byte range.
+                else if self.shouldStreamOnlyRange {
+                    DispatchQueue.global().async {
+                        if let playerItem = self.pvStreamer.prepareAsset(item: item) {
+                            self.avPlayer.replaceCurrentItem(with: playerItem)
+                            self.avPlayer.currentItem?.addObserver(self, forKeyPath: "status", options: NSKeyValueObservingOptions(), context: nil)
+                        }
+                    }
+                }
+                // Else remotely stream the whole episode.
+                else {
+                    self.shouldStreamOnlyRange = false
+                    let playerItem = AVPlayerItem(url: episodeMediaUrl)
+                    self.avPlayer.replaceCurrentItem(with: playerItem)
+                    self.avPlayer.currentItem?.addObserver(self, forKeyPath: "status", options: NSKeyValueObservingOptions(), context: nil)
+                }
+                
+                NotificationCenter.default.addObserver(self, selector: #selector(playerDidFinishPlaying), name: NSNotification.Name.AVPlayerItemDidPlayToEndTime, object: avPlayer.currentItem)
+                
+            }
+            
         }
         
     }
@@ -291,4 +387,49 @@ class PVMediaPlayer {
 //            }
 //        }
     }
+    
+    
+    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
+        
+        if let currentItem = object as? AVPlayerItem {
+            
+            if currentItem.status == AVPlayerItemStatus.readyToPlay {
+                print("ready 2 play :D")
+                
+                DispatchQueue.main.async {
+                    NotificationCenter.default.post(name: .playerReadyToPlay, object: nil, userInfo: nil)
+                }
+                
+                if !self.shouldStreamOnlyRange {
+                    goToTime(seconds: Double(self.nowPlayingPlaybackPosition))
+
+                    if let time = self.nowPlayingClipEndTime {
+                        
+                        if let observer = self.boundaryObserver {
+                            self.avPlayer.removeTimeObserver(observer)
+                        }
+                        
+                        self.boundaryObserver = self.avPlayer.addBoundaryTimeObserver(forTimes: [time as NSValue], queue: nil, using: {
+                            self.playOrPause()
+                            if let observer = self.boundaryObserver {
+                                self.avPlayer.removeTimeObserver(observer)
+                            }
+                        })
+                    }
+                }
+                
+                // NOTE: no need to handle self.shouldStreamOnlyRange == true condition here, because the AVPlayerItemDidPlayToEndTime notification will handle it
+                
+                if self.shouldAutoplayOnce || self.shouldAutoplayAlways {
+                    self.play()
+                }
+                
+            } else if currentItem.status == AVPlayerItemStatus.failed {
+                print("errrrroorrrrr")
+            }
+            
+        }
+        
+    }
+    
 }

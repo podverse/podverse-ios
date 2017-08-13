@@ -63,10 +63,10 @@ class PVDeleter {
                 
                 DownloadingEpisodeList.removeDownloadingEpisodeWithMediaURL(mediaUrl: mediaUrl)
                 
-                if let currentlyPlayingItem = PVMediaPlayer.shared.currentlyPlayingItem {
-                    if mediaUrl == currentlyPlayingItem.episodeMediaUrl {
+                if let nowPlayingItem = PVMediaPlayer.shared.nowPlayingItem {
+                    if mediaUrl == nowPlayingItem.episodeMediaUrl {
                         PVMediaPlayer.shared.avPlayer.pause()
-                        PVMediaPlayer.shared.currentlyPlayingItem = nil
+                        PVMediaPlayer.shared.nowPlayingItem = nil
                     }
                 }
                 
@@ -79,9 +79,9 @@ class PVDeleter {
                     CoreDataHelper.deleteItemFromCoreData(deleteObjectID: episode.objectID, moc: moc)
                 }
                 
-                if var currentlyPlayingItem = PlayerHistory.manager.historyItems.first {
-                    currentlyPlayingItem.hasReachedEnd = true
-                    PlayerHistory.manager.addOrUpdateItem(item: currentlyPlayingItem)
+                if var nowPlayingItem = PlayerHistory.manager.historyItems.first {
+                    nowPlayingItem.hasReachedEnd = true
+                    PlayerHistory.manager.addOrUpdateItem(item: nowPlayingItem)
                 }
                 
                 moc.saveData() {

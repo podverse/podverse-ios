@@ -56,19 +56,21 @@ class PlayerHistory {
         return self.documentsDirectory().appendingFormat("/.plist")
     }
     
-    func addOrUpdateItem(item: PlayerHistoryItem) {
-
-        let previousIndex = historyItems.index(where: { (previousItem) -> Bool in // thanks sschuth https://stackoverflow.com/a/24069331/2608858
-            previousItem.episodeMediaUrl == item.episodeMediaUrl
-        })
+    func addOrUpdateItem(item: PlayerHistoryItem?) {
         
-        if let index = previousIndex {
-            historyItems[index] = item
-            historyItems.rearrange(from: index, to: 0)
-        } else {
-            historyItems.insert(item, at: 0)
+        if let item = item {
+            let previousIndex = historyItems.index(where: { (previousItem) -> Bool in // thanks sschuth https://stackoverflow.com/a/24069331/2608858
+                previousItem.episodeMediaUrl == item.episodeMediaUrl
+            })
+            
+            if let index = previousIndex {
+                historyItems[index] = item
+                historyItems.rearrange(from: index, to: 0)
+            } else {
+                historyItems.insert(item, at: 0)
+            }    
         }
-
+        
     }
     
     func convertEpisodeToPlayerHistoryItem(episode: Episode) -> PlayerHistoryItem {

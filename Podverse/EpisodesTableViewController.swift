@@ -70,8 +70,8 @@ class EpisodesTableViewController: PVViewController, UITableViewDataSource, UITa
             let episode = episodesArray[indexRow]
             if episode.fileName != nil {                
                 let playerHistoryItem = playerHistoryManager.convertEpisodeToPlayerHistoryItem(episode: episode)
-                pvMediaPlayer.loadPlayerHistoryItem(item: playerHistoryItem)
                 goToNowPlaying()
+                pvMediaPlayer.loadPlayerHistoryItem(item: playerHistoryItem, startTime: nil)
             } else {
 //                if reachability.hasInternetConnection() == false {
 //                    showInternetNeededAlert("Connect to WiFi or cellular data to download an episode.")
@@ -162,7 +162,7 @@ class EpisodesTableViewController: PVViewController, UITableViewDataSource, UITa
 
     override func goToNowPlaying (timeOffset: Int64 = 0) {
         if let mediaPlayerVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "MediaPlayerVC") as? MediaPlayerViewController {
-            mediaPlayerVC.shouldAutoplay = true
+            pvMediaPlayer.shouldAutoplayOnce = true
             self.navigationController?.pushViewController(mediaPlayerVC, animated: true)
         }
     }
@@ -176,8 +176,8 @@ class EpisodesTableViewController: PVViewController, UITableViewDataSource, UITa
         if episode.fileName != nil {
             episodeActions.addAction(UIAlertAction(title: "Play Episode", style: .default, handler: { action in
                 let playerHistoryItem = self.playerHistoryManager.convertEpisodeToPlayerHistoryItem(episode: episode)
-                self.pvMediaPlayer.loadPlayerHistoryItem(item: playerHistoryItem)
                 self.goToNowPlaying()
+                self.pvMediaPlayer.loadPlayerHistoryItem(item: playerHistoryItem)
             }))
         } else {
             episodeActions.addAction(UIAlertAction(title: "Download Episode", style: .default, handler: { action in
@@ -201,8 +201,8 @@ class EpisodesTableViewController: PVViewController, UITableViewDataSource, UITa
                 return
             }
             let playerHistoryItem = self.playerHistoryManager.convertEpisodeToPlayerHistoryItem(episode: episode)
-            self.pvMediaPlayer.loadPlayerHistoryItem(item: playerHistoryItem)
             self.goToNowPlaying()
+            self.pvMediaPlayer.loadPlayerHistoryItem(item: playerHistoryItem)
         }))
         
         episodeActions.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
@@ -219,7 +219,7 @@ class EpisodesTableViewController: PVViewController, UITableViewDataSource, UITa
         let deleteAction = UITableViewRowAction(style: .default, title: "Delete", handler: {action, indexpath in
             self.episodesArray.remove(at: indexPath.row)
             self.tableView.deleteRows(at: [indexPath], with: .fade)
-            if self.pvMediaPlayer.currentlyPlayingItem?.episodeMediaUrl == episodeToEdit.mediaUrl {
+            if self.pvMediaPlayer.nowPlayingItem?.episodeMediaUrl == episodeToEdit.mediaUrl {
                 self.tabBarController?.hidePlayerView()
             }
 
