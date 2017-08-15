@@ -45,7 +45,7 @@ class ClipsListContainerViewController: UIViewController {
     weak var delegate:ClipsListDelegate?
     let reachability = PVReachability.shared
     
-    var filterTypeSelected:ClipFilterTypes = .episode
+    var filterTypeSelected:ClipFilterTypes = .subscribed
     
     @IBAction func retryButtonTouched(_ sender: Any) {
         
@@ -107,7 +107,7 @@ class ClipsListContainerViewController: UIViewController {
             }
         }
         
-        filterType.setTitle("Episode\u{2304}", for: .normal)
+        filterType.setTitle("Subscribed\u{2304}", for: .normal)
     }
     
     func reloadClipData(mediaRefs: [MediaRef]? = nil) {

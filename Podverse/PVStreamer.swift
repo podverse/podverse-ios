@@ -218,9 +218,6 @@ class PVStreamer:NSObject {
         return didRespondFully
     }
     
-
-
-    
     func calcByteRangeOffset (metadataBytes: Int64, time: Int64?, duration: Int64, fileSize: Int64) -> Int64 {
         guard duration > Int64(0) else { return Int64(0) }
         
@@ -246,9 +243,7 @@ class PVStreamer:NSObject {
         for item in metadata {            
             // TODO: what's the swiftiest way to do this?
             if let commonKey = item.commonKey, let dataValue = item.dataValue {
-//                if commonKey == "title" || commonKey == "type" || commonKey == "albumName" ||  commonKey == "artist" || commonKey == "artwork" {
-                    metadataBytes += dataValue.count
-//                }
+                metadataBytes += dataValue.count
             }
         }
         
@@ -287,11 +282,6 @@ extension PVStreamer:AVAssetResourceLoaderDelegate {
     }
     
     func resourceLoader(_ resourceLoader: AVAssetResourceLoader, didCancel loadingRequest: AVAssetResourceLoadingRequest) {
-//        for (i, pendingRequest) in self.pendingRequests.enumerated() {
-//            if pendingRequest == pendingRequests[i] {
-//                pendingRequests.remove(at: i)
-//            }
-//        }
         pendingRequests = []
     }
     

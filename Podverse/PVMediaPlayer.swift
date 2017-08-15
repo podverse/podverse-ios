@@ -13,8 +13,9 @@ import CoreData
 import UIKit
 
 extension Notification.Name {
-    static let playerReadyToPlay = Notification.Name("playerReadyToPlay")
+    static let playerHasFinished = Notification.Name("playerHasFinished")
     static let playerIsLoading = Notification.Name("playerIsLoading")
+    static let playerReadyToPlay = Notification.Name("playerReadyToPlay")
 }
 
 enum PlayingSpeed {
@@ -138,6 +139,23 @@ class PVMediaPlayer: NSObject {
         
         if avPlayer.rate == 0 {
             play()
+            
+            // If only streaming a clip range, and the avPlayer is ready to play, but the player's current time is within 3 seconds of the end of the clip, then assume the player has finished playing the clip and trigger streaming the full episode remotely.
+            if self.shouldStreamOnlyRange == true && self.avPlayer.status.rawValue == 1 && self.avPlayer.currentItem?.status.rawValue == 1 {
+                
+                guard let item = self.nowPlayingItem else { return false }
+                guard let currentTime = self.avPlayer.currentItem?.currentTime() else { return false }
+                guard let startTime = item.startTime else { return false }
+                guard let endTime = item.endTime else { return false }
+                
+                let time = Int64(CMTimeGetSeconds(currentTime)) + startTime
+                
+                if time - 3 > endTime {
+                    loadPlayerHistoryItem(item: item, forceFullStream: true)
+                }
+                
+            }
+            
             return true
             
         } else {
@@ -168,6 +186,10 @@ class PVMediaPlayer: NSObject {
                 nowPlayingItem.hasReachedEnd = true
                 playerHistoryManager.addOrUpdateItem(item: nowPlayingItem)
             }
+        }
+        
+        DispatchQueue.main.async {
+            NotificationCenter.default.post(name: .playerHasFinished, object: nil, userInfo: nil)
         }
         
     }
@@ -279,7 +301,7 @@ class PVMediaPlayer: NSObject {
         
     }
         
-    func loadPlayerHistoryItem(item: PlayerHistoryItem, startTime: Int64? = nil) {
+    func loadPlayerHistoryItem(item: PlayerHistoryItem, startTime: Int64? = nil, forceFullStream: Bool = false) {
 
         self.nowPlayingPlaybackPosition = startTime ?? item.startTime ?? Int64(0)
         self.nowPlayingClipStartTime = item.startTime
@@ -358,7 +380,7 @@ class PVMediaPlayer: NSObject {
                     }
                 }
                 // Else if the playerHistoryItem is a clip, then remotely stream just the clip byte range.
-                else if self.shouldStreamOnlyRange {
+                else if self.shouldStreamOnlyRange && !forceFullStream {
                     DispatchQueue.global().async {
                         if let playerItem = self.pvStreamer.prepareAsset(item: item) {
                             self.avPlayer.replaceCurrentItem(with: playerItem)
@@ -431,8 +453,6 @@ class PVMediaPlayer: NSObject {
                         })
                     }
                 }
-                
-                // NOTE: no need to handle self.shouldStreamOnlyRange == true condition here, because the AVPlayerItemDidPlayToEndTime notification will handle it
                 
                 if self.shouldAutoplayOnce || self.shouldAutoplayAlways {
                     self.play()

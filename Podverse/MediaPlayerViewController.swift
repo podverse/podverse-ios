@@ -153,14 +153,21 @@ class MediaPlayerViewController: PVViewController {
         updateSpeedLabel()
     }
     
+    func pause() {
+        pvMediaPlayer.pause()
+        setPlayIcon()
+    }
+    
     fileprivate func setupNotificationListeners() {
-        NotificationCenter.default.addObserver(self, selector: #selector(setPlayerTimeInfo), name: .playerReadyToPlay, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(pause), name: .playerHasFinished, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(hideProgressBar), name: .playerIsLoading, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(setPlayerTimeInfo), name: .playerReadyToPlay, object: nil)
     }
     
     fileprivate func removeObservers() {
-        NotificationCenter.default.removeObserver(self, name: .playerReadyToPlay, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .playerHasFinished, object: nil)
         NotificationCenter.default.removeObserver(self, name: .playerIsLoading, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .playerReadyToPlay, object: nil)
     }
     
     fileprivate func setupContainerView() {
