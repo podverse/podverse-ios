@@ -323,6 +323,7 @@ class PVMediaPlayer: NSObject {
                     
                     if let observer = self.boundaryObserver {
                         self.avPlayer.removeTimeObserver(observer)
+                        self.boundaryObserver = nil
                     }
                 })
             }
@@ -343,6 +344,7 @@ class PVMediaPlayer: NSObject {
             
             if let observer = self.boundaryObserver {
                 self.avPlayer.removeTimeObserver(observer)
+                self.boundaryObserver = nil
             }
             
             avPlayer.currentItem?.removeObserver(self, forKeyPath: "status", context: nil)
@@ -380,7 +382,7 @@ class PVMediaPlayer: NSObject {
                     }
                 }
                 // Else if the playerHistoryItem is a clip, then remotely stream just the clip byte range.
-                else if self.shouldStreamOnlyRange && !forceFullStream {
+                else if self.shouldStreamOnlyRange && !forceFullStream && !doesNotSupportShouldStreamOnlyRange(urlString: episodeMediaUrlString) {
                     DispatchQueue.global().async {
                         if let playerItem = self.pvStreamer.prepareAsset(item: item) {
                             self.avPlayer.replaceCurrentItem(with: playerItem)
@@ -402,6 +404,22 @@ class PVMediaPlayer: NSObject {
             
         }
         
+    }
+    
+    // TODO: [MEDIUM] Sadly, m4a files apparently do not work with the current shouldStreamOnlyRange implementation. I believe this is because the m4a file encoding may contain extra blank bytes that the player does not know how to make sense of. I believe some people have resolved this issue by downloading the file to a local scratch pad THEN loading it in the player, but I don't think that will work for us because we don't want to wait for the full file to download before loading it in the player (we want to stream it in the player and start playing it asap).
+    // HOWEVER, the AVPlayer can handle m4a files just fine if we load them using the standard AVPlayerItem(url: Url) approach.
+    // I reproduced this issue by attempting to stream clips of The Jordan B. Peterson Podcast.
+    // Feed URL: https://www.blubrry.com/feeds/jordanbpeterson.xml
+    func doesNotSupportShouldStreamOnlyRange(urlString: String) -> Bool {
+        let urlNSString = NSString(string: urlString)
+        let unsupportedFileTypes = ["m4a"]
+        let fileType = urlNSString.pathExtension
+        
+        if unsupportedFileTypes.contains(fileType) {
+            return true
+        } else {
+            return false
+        }
     }
     
     @objc func playInterrupted(notification: NSNotification) {
@@ -443,12 +461,14 @@ class PVMediaPlayer: NSObject {
                         
                         if let observer = self.boundaryObserver {
                             self.avPlayer.removeTimeObserver(observer)
+                            self.boundaryObserver = nil
                         }
                         
                         self.boundaryObserver = self.avPlayer.addBoundaryTimeObserver(forTimes: [time as NSValue], queue: nil, using: {
                             self.playOrPause()
                             if let observer = self.boundaryObserver {
                                 self.avPlayer.removeTimeObserver(observer)
+                                self.boundaryObserver = nil
                             }
                         })
                     }

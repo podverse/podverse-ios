@@ -124,7 +124,7 @@ class PVStreamer:NSObject {
             
             let task = URLSession.shared.downloadTask(with: request) { (tempUrl, response, error) in
                 if let response = response as? HTTPURLResponse, error == nil {
-                    if let mimeType = response.mimeType, let unmanagedContentType = UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, mimeType as CFString, nil) {
+                    if let mimeType = response.mimeType, let unmanagedContentType = UTTypeCreatePreferredIdentifierForTag(kUTTagClassMIMEType, mimeType as CFString, nil) {
                         let cfContentType = unmanagedContentType.takeRetainedValue()
                         infoRequest.contentType = String(cfContentType)
                         infoRequest.isByteRangeAccessSupported = true
@@ -213,6 +213,7 @@ class PVStreamer:NSObject {
             numberOfBytesToRespondWith = Int64(dataRequest.requestedLength)
         }
         dataRequest.respond(with: self.mediaData.subdata(with: NSMakeRange(Int(startOffset), Int(numberOfBytesToRespondWith))))
+                
         let endOffset = startOffset + dataRequest.requestedLength
         let didRespondFully = mediaFileDataLength >= endOffset
         return didRespondFully
