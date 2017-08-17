@@ -98,13 +98,13 @@ class MediaPlayerViewController: PVViewController {
     }
 
     @IBAction func timeJumpBackward(_ sender: Any) {
-        let newTime = pvMediaPlayer.audioPlayer.progress
+        let newTime = pvMediaPlayer.audioPlayer.progress - 15
         pvMediaPlayer.audioPlayer.seek(toTime: newTime)
         updateCurrentTime(currentTime: newTime)
     }
     
     @IBAction func timeJumpForward(_ sender: Any) {
-        let newTime = pvMediaPlayer.audioPlayer.progress
+        let newTime = pvMediaPlayer.audioPlayer.progress + 15
         pvMediaPlayer.audioPlayer.seek(toTime: newTime)
         updateCurrentTime(currentTime: newTime)
     }
