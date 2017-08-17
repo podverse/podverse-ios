@@ -236,7 +236,7 @@ class PVMediaPlayer: NSObject {
         MPNowPlayingInfoCenter.default().nowPlayingInfo = nil
     }
     
-    func loadPlayerHistoryItem(item: PlayerHistoryItem, startTime: Int64? = nil, forceFullStream: Bool = false) {
+    func loadPlayerHistoryItem(item: PlayerHistoryItem, startTime: Int64? = nil) {
 
         self.nowPlayingItem = item
         self.nowPlayingItem?.hasReachedEnd = false
