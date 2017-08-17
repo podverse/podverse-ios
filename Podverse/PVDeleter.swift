@@ -15,7 +15,7 @@ extension Notification.Name {
     static let podcastDeleted = Notification.Name("podcastDeleted")
 }
 
-class PVDeleter {
+class PVDeleter: NSObject {
     
     static func deletePodcast(podcastId: NSManagedObjectID?, feedUrl: String? = nil) {
         let moc = CoreDataHelper.createMOCForThread(threadType: .privateThread)
@@ -45,6 +45,9 @@ class PVDeleter {
     }
     
     static func deleteEpisode(episodeId: NSManagedObjectID, fileOnly: Bool = false, shouldCallNotificationMethod: Bool = false) {
+        
+        let pvMediaPlayer = PVMediaPlayer.shared
+        
         DispatchQueue.global().async {
             let moc = CoreDataHelper.createMOCForThread(threadType: .privateThread)
             
@@ -63,10 +66,10 @@ class PVDeleter {
                 
                 DownloadingEpisodeList.removeDownloadingEpisodeWithMediaURL(mediaUrl: mediaUrl)
                 
-                if let nowPlayingItem = PVMediaPlayer.shared.nowPlayingItem {
+                if let nowPlayingItem = pvMediaPlayer.nowPlayingItem {
                     if mediaUrl == nowPlayingItem.episodeMediaUrl {
-                        PVMediaPlayer.shared.avPlayer.pause()
-                        PVMediaPlayer.shared.nowPlayingItem = nil
+                        pvMediaPlayer.audioPlayer.pause()
+                        pvMediaPlayer.nowPlayingItem = nil
                     }
                 }
                 

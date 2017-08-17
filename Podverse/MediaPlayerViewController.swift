@@ -9,6 +9,7 @@
 import UIKit
 import CoreData
 import AVFoundation
+import StreamingKit
 
 class MediaPlayerViewController: PVViewController {
 
@@ -19,7 +20,6 @@ class MediaPlayerViewController: PVViewController {
     weak var currentChildViewController: UIViewController?
     private let aboutClipsStoryboardId = "AboutPlayingItemVC"
     private let clipsListStoryBoardId = "ClipsListVC"
-    let pvStreamer = PVStreamer.shared
     
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     @IBOutlet weak var clipsContainerView: UIView!
@@ -46,11 +46,6 @@ class MediaPlayerViewController: PVViewController {
         
         setPlayerInfo()
         
-        // TODO: does this need an unowned self or something?
-        self.pvMediaPlayer.avPlayer.addPeriodicTimeObserver(forInterval: CMTimeMake(1, 1), queue: DispatchQueue.main) {[weak self] time in
-            self?.updateCurrentTime(currentTime: CMTimeGetSeconds(time))
-        }
-        
         self.tabBarController?.hidePlayerView()
         
         navigationController?.interactivePopGestureRecognizer?.isEnabled = false
@@ -59,12 +54,7 @@ class MediaPlayerViewController: PVViewController {
         
         activityIndicator.startAnimating()
         
-        if pvMediaPlayer.avPlayer.currentItem?.status == AVPlayerItemStatus.readyToPlay {
-            setPlayerTimeInfo()
-            showProgressBar()
-        } else {
-            hideProgressBar()
-        }
+        showProgressBar()
     }
     
     deinit {
@@ -92,12 +82,14 @@ class MediaPlayerViewController: PVViewController {
     }
     
     @IBAction func sliderAction(_ sender: UISlider) {
-        if let currentItem = pvMediaPlayer.avPlayer.currentItem {
-            let totalTime = CMTimeGetSeconds(currentItem.asset.duration)
-            var newTime = Double(sender.value) * totalTime
-            pvMediaPlayer.goToTime(seconds: newTime, timePercent: sender.value)
-            updateCurrentTime(currentTime: newTime)
-        }
+        
+        let duration = pvMediaPlayer.audioPlayer.duration
+        var newTime = Double(sender.value) * duration
+        
+        pvMediaPlayer.audioPlayer.seek(toTime: newTime)
+        
+        updateCurrentTime(currentTime: newTime)
+
     }
 
     @IBAction func play(_ sender: Any) {
@@ -106,19 +98,15 @@ class MediaPlayerViewController: PVViewController {
     }
 
     @IBAction func timeJumpBackward(_ sender: Any) {
-        if let currentItem = pvMediaPlayer.avPlayer.currentItem {
-            let newTime = CMTimeGetSeconds(currentItem.currentTime())
-            pvMediaPlayer.goToTime(seconds: newTime - 15)
-            updateCurrentTime(currentTime: newTime)
-        }
+        let newTime = pvMediaPlayer.audioPlayer.progress
+        pvMediaPlayer.audioPlayer.seek(toTime: newTime)
+        updateCurrentTime(currentTime: newTime)
     }
     
     @IBAction func timeJumpForward(_ sender: Any) {
-        if let currentItem = pvMediaPlayer.avPlayer.currentItem {
-            let newTime = CMTimeGetSeconds(currentItem.currentTime())
-            pvMediaPlayer.goToTime(seconds: newTime + 15)
-            updateCurrentTime(currentTime: newTime)
-        }
+        let newTime = pvMediaPlayer.audioPlayer.progress
+        pvMediaPlayer.audioPlayer.seek(toTime: newTime)
+        updateCurrentTime(currentTime: newTime)
     }
     
     @IBAction func changeSpeed(_ sender: Any) {
@@ -149,7 +137,8 @@ class MediaPlayerViewController: PVViewController {
             break
         }
         
-        pvMediaPlayer.avPlayer.rate = playerSpeedRate.speedVaue
+        pvMediaPlayer.audioPlayer.rate = playerSpeedRate.speedValue
+
         updateSpeedLabel()
     }
     
@@ -192,7 +181,7 @@ class MediaPlayerViewController: PVViewController {
     }
     
     func setPlayIcon() {
-        if pvMediaPlayer.avPlayer.rate == 0 {
+        if pvMediaPlayer.audioPlayer.rate == 0 {
             play.setImage(UIImage(named:"Play"), for: .normal)
         } else {
             play.setImage(UIImage(named:"Pause"), for: .normal)
@@ -212,56 +201,19 @@ class MediaPlayerViewController: PVViewController {
     
     // This method should only be called in the event of the AVPlayerItem "ready to play" notification.
     func setPlayerTimeInfo () {
-        if let playerItem = pvMediaPlayer.avPlayer.currentItem, let playerHistoryItem = pvMediaPlayer.nowPlayingItem {
-            
-            if pvMediaPlayer.shouldStreamOnlyRange == true {
-                
-                var startTime = Int64(0)
-                if let time = playerHistoryItem.startTime {
-                    startTime = time
-                }
-                
-                currentTime.text = Int64(startTime).toMediaPlayerString()
-                let totalTime = pvStreamer.currentFullDuration
-                duration.text = Int64(totalTime).toMediaPlayerString()
-                progress.value = Float(startTime) / Float(totalTime)
-                
-            } else {
-                
-                let playbackPosition = pvMediaPlayer.nowPlayingPlaybackPosition
-                currentTime.text = Int64(playbackPosition).toMediaPlayerString()
-                let totalTime = Int64(CMTimeGetSeconds(playerItem.asset.duration))
-                duration.text = Int64(totalTime).toMediaPlayerString()
-                progress.value = Float(playbackPosition) / Float(totalTime)
-                
-            }
-            
-            showProgressBar()
-            
-        }
+        let playbackPosition = pvMediaPlayer.audioPlayer.progress
+        currentTime.text = Int64(playbackPosition).toMediaPlayerString()
+        let dur = pvMediaPlayer.audioPlayer.duration
+        duration.text = Int64(dur).toMediaPlayerString()
+        progress.value = Float(playbackPosition / dur)
+
+        showProgressBar()
     }
 
     func updateCurrentTime(currentTime: Double) {
-        
-        if let currentItem = pvMediaPlayer.avPlayer.currentItem {
-            var adjustedSeconds = currentTime
-            var adjustedFullDuration = CMTimeGetSeconds(currentItem.duration)
-            if pvMediaPlayer.shouldStreamOnlyRange {
-                if let time = pvMediaPlayer.nowPlayingClipStartTime {
-                    adjustedSeconds = adjustedSeconds + Double(time)
-                }
-                adjustedFullDuration = Float64(pvStreamer.currentFullDuration)
-            }
-            
-            self.currentTime.text = Int64(adjustedSeconds).toMediaPlayerString()
-            
-            progress.value = Float(adjustedSeconds / adjustedFullDuration)
-        } else {
-            DispatchQueue.main.async {
-                self.navigationController?.popViewController(animated: true)
-            }
-        }
-        
+        let dur = pvMediaPlayer.audioPlayer.duration
+        self.currentTime.text = Int64(dur).toMediaPlayerString()
+        progress.value = Float(currentTime / dur)
     }
     
     func showProgressBar () {

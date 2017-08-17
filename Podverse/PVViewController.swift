@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import StreamingKit
 
 protocol TableViewHeightProtocol:class {
     func adjustTableView()
@@ -60,7 +61,7 @@ class PVViewController: UIViewController {
         tabbarVC.playerView.podcastImageView.image = Podcast.retrievePodcastImage(podcastImageURLString: currentItem.podcastImageUrl, feedURLString: currentItem.podcastFeedUrl) { (podcastImage) -> Void in
             tabbarVC.playerView.podcastImageView.image = podcastImage
         }
-        tabbarVC.playerView.isPlaying = self.pvMediaPlayer.mediaPlayerIsPlaying
+        tabbarVC.playerView.isPlaying = (pvMediaPlayer.audioPlayer.state == STKAudioPlayerState.playing)
         tabbarVC.showPlayerView()
     }
     

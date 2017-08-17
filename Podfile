@@ -12,6 +12,7 @@ target 'Podverse' do
   pod 'Auth0', '~> 1.6'
   pod 'ReachabilitySwift', '~> 3'
   pod 'p2.OAuth2', '3.0.3'
+  pod 'StreamingKit', :git => 'https://github.com/podverse/StreamingKit.git'
 
   target 'PodverseTests' do
     inherit! :search_paths
