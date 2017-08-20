@@ -12,10 +12,12 @@ import AVFoundation
 import StreamingKit
 
 class MediaPlayerViewController: PVViewController {
-
+    
+    let audioPlayer = PVMediaPlayer.shared.audioPlayer
+    var moveToOffset = false
     var playerSpeedRate:PlayingSpeed = .regular
     var timeOffset = Int64(0)
-    var moveToOffset = false
+    var timer: Timer?
     
     weak var currentChildViewController: UIViewController?
     private let aboutClipsStoryboardId = "AboutPlayingItemVC"
@@ -55,10 +57,16 @@ class MediaPlayerViewController: PVViewController {
         activityIndicator.startAnimating()
         
         showProgressBar()
+        
+        setupTimer()
     }
     
     deinit {
         removeObservers()
+        
+        if let timer = timer {
+            timer.invalidate()
+        }
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -82,14 +90,10 @@ class MediaPlayerViewController: PVViewController {
     }
     
     @IBAction func sliderAction(_ sender: UISlider) {
-        
-        let duration = pvMediaPlayer.audioPlayer.duration
+        let duration = audioPlayer.duration
         var newTime = Double(sender.value) * duration
-        
-        pvMediaPlayer.audioPlayer.seek(toTime: newTime)
-        
-        updateCurrentTime(currentTime: newTime)
-
+        audioPlayer.seek(toTime: newTime)
+        updateTime()
     }
 
     @IBAction func play(_ sender: Any) {
@@ -98,15 +102,21 @@ class MediaPlayerViewController: PVViewController {
     }
 
     @IBAction func timeJumpBackward(_ sender: Any) {
-        let newTime = pvMediaPlayer.audioPlayer.progress - 15
-        pvMediaPlayer.audioPlayer.seek(toTime: newTime)
-        updateCurrentTime(currentTime: newTime)
+        let newTime = audioPlayer.progress - 15
+        
+        if newTime >= 14 {
+            audioPlayer.seek(toTime: newTime)
+        } else {
+            audioPlayer.seek(toTime: 0)
+        }
+        
+        updateTime()
     }
     
     @IBAction func timeJumpForward(_ sender: Any) {
-        let newTime = pvMediaPlayer.audioPlayer.progress + 15
-        pvMediaPlayer.audioPlayer.seek(toTime: newTime)
-        updateCurrentTime(currentTime: newTime)
+        let newTime = audioPlayer.progress + 15
+        audioPlayer.seek(toTime: newTime)
+        updateTime()
     }
     
     @IBAction func changeSpeed(_ sender: Any) {
@@ -137,7 +147,7 @@ class MediaPlayerViewController: PVViewController {
             break
         }
         
-        pvMediaPlayer.audioPlayer.rate = playerSpeedRate.speedValue
+        audioPlayer.rate = playerSpeedRate.speedValue
 
         updateSpeedLabel()
     }
@@ -181,7 +191,7 @@ class MediaPlayerViewController: PVViewController {
     }
     
     func setPlayIcon() {
-        if pvMediaPlayer.audioPlayer.rate == 0 {
+        if audioPlayer.rate == 0 {
             play.setImage(UIImage(named:"Play"), for: .normal)
         } else {
             play.setImage(UIImage(named:"Pause"), for: .normal)
@@ -196,23 +206,30 @@ class MediaPlayerViewController: PVViewController {
             self.image.image = Podcast.retrievePodcastImage(podcastImageURLString: item.podcastImageUrl, feedURLString: item.podcastFeedUrl) { (podcastImage) -> Void in
                 self.image.image = podcastImage
             }
+            
+            duration.text = Int64(audioPlayer.duration).toMediaPlayerString()
         }
     }
     
     // This method should only be called in the event of the AVPlayerItem "ready to play" notification.
     func setPlayerTimeInfo () {
-        let playbackPosition = pvMediaPlayer.audioPlayer.progress
+        let playbackPosition = audioPlayer.progress
         currentTime.text = Int64(playbackPosition).toMediaPlayerString()
-        let dur = pvMediaPlayer.audioPlayer.duration
+        let dur = audioPlayer.duration
         duration.text = Int64(dur).toMediaPlayerString()
         progress.value = Float(playbackPosition / dur)
 
         showProgressBar()
     }
-
-    func updateCurrentTime(currentTime: Double) {
-        let dur = pvMediaPlayer.audioPlayer.duration
-        self.currentTime.text = Int64(dur).toMediaPlayerString()
+    
+    func setupTimer () {
+        timer = Timer.scheduledTimer(timeInterval: 0.25, target: self, selector: #selector(updateTime), userInfo: nil, repeats: true)
+    }
+    
+    func updateTime() {
+        let currentTime = audioPlayer.progress
+        self.currentTime.text = Int64(currentTime).toMediaPlayerString()
+        let dur = audioPlayer.duration
         progress.value = Float(currentTime / dur)
     }
     

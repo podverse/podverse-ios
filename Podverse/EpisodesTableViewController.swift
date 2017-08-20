@@ -71,7 +71,7 @@ class EpisodesTableViewController: PVViewController, UITableViewDataSource, UITa
             if episode.fileName != nil {                
                 let playerHistoryItem = playerHistoryManager.convertEpisodeToPlayerHistoryItem(episode: episode)
                 goToNowPlaying()
-                pvMediaPlayer.loadPlayerHistoryItem(item: playerHistoryItem, startTime: nil)
+                pvMediaPlayer.loadPlayerHistoryItem(item: playerHistoryItem)
             } else {
 //                if reachability.hasInternetConnection() == false {
 //                    showInternetNeededAlert("Connect to WiFi or cellular data to download an episode.")

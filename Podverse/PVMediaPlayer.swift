@@ -78,7 +78,7 @@ class PVMediaPlayer: NSObject {
     static let shared = PVMediaPlayer()
     
     var audioPlayer = STKAudioPlayer()
-    var boundaryObserver:Any?
+    var shouldEndAtTime: Int64?
     var nowPlayingItem:PlayerHistoryItem?
     var playerButtonDelegate:PVMediaPlayerUIDelegate?
     var playerHistoryManager = PlayerHistory.manager
@@ -110,10 +110,20 @@ class PVMediaPlayer: NSObject {
             print(error.localizedDescription)
         }
         
-        NotificationCenter.default.addObserver(self, selector: #selector(playInterrupted(notification:)), name: NSNotification.Name.AVAudioSessionInterruption, object: AVAudioSession.sharedInstance())
+        setupObservers()
         
-        NotificationCenter.default.addObserver(self, selector: #selector(headphonesWereUnplugged(notification:)), name: NSNotification.Name.AVAudioSessionRouteChange, object: AVAudioSession.sharedInstance())
-        
+    }
+    
+    deinit {
+        removeObservers()
+    }
+    
+    func setupObservers () {
+        self.addObserver(self, forKeyPath: #keyPath(audioPlayer.progress), options: .new, context: nil)
+    }
+    
+    func removeObservers () {
+        self.removeObserver(self, forKeyPath: #keyPath(audioPlayer.progress))
     }
     
     @objc func headphonesWereUnplugged(notification: Notification) {
@@ -236,7 +246,7 @@ class PVMediaPlayer: NSObject {
         MPNowPlayingInfoCenter.default().nowPlayingInfo = nil
     }
     
-    func loadPlayerHistoryItem(item: PlayerHistoryItem, startTime: Int64? = nil) {
+    func loadPlayerHistoryItem(item: PlayerHistoryItem) {
 
         self.nowPlayingItem = item
         self.nowPlayingItem?.hasReachedEnd = false
@@ -283,6 +293,21 @@ class PVMediaPlayer: NSObject {
                 self.audioPlayer.queue(dataSource, withQueueItemId: episodeMediaUrlString as NSObject)
             }
             
+            if let startTime = item.startTime {
+                self.audioPlayer.seek(toTime: Double(startTime))
+            }
+            
+            if let endTime = item.endTime {
+                self.shouldEndAtTime = endTime
+            }
+        }
+        
+    }
+    
+    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
+        
+        if (keyPath == "progress") {
+            print("progress")
         }
         
     }
