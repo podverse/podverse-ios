@@ -15,8 +15,6 @@ import StreamingKit
 
 extension Notification.Name {
     static let playerHasFinished = Notification.Name("playerHasFinished")
-    static let playerIsLoading = Notification.Name("playerIsLoading")
-    static let playerReadyToPlay = Notification.Name("playerReadyToPlay")
 }
 
 enum PlayingSpeed {
@@ -78,12 +76,14 @@ class PVMediaPlayer: NSObject {
     static let shared = PVMediaPlayer()
     
     var audioPlayer = STKAudioPlayer()
-    var shouldEndAtTime: Int64?
+    var clipTimer: Timer?
     var nowPlayingItem:PlayerHistoryItem?
     var playerButtonDelegate:PVMediaPlayerUIDelegate?
     var playerHistoryManager = PlayerHistory.manager
     var shouldAutoplayAlways: Bool = false
     var shouldAutoplayOnce: Bool = false
+    var shouldSetupClip: Bool = false
+    var shouldStopAtEndTime: Int64 = 0
 
     override init() {
         
@@ -110,20 +110,13 @@ class PVMediaPlayer: NSObject {
             print(error.localizedDescription)
         }
         
-        setupObservers()
-        
+        addObservers()
+        startClipTimer()
     }
     
     deinit {
         removeObservers()
-    }
-    
-    func setupObservers () {
-        self.addObserver(self, forKeyPath: #keyPath(audioPlayer.progress), options: .new, context: nil)
-    }
-    
-    func removeObservers () {
-        self.removeObserver(self, forKeyPath: #keyPath(audioPlayer.progress))
+        removeClipTimer()
     }
     
     @objc func headphonesWereUnplugged(notification: Notification) {
@@ -135,6 +128,41 @@ class PVMediaPlayer: NSObject {
                 }
             }
         }
+    }
+    
+    private func startClipTimer () {
+        self.clipTimer = Timer.scheduledTimer(timeInterval: 0.25, target: self, selector: #selector(stopAtEndTime), userInfo: nil, repeats: true)
+    }
+    
+    private func removeClipTimer () {
+        if let timer = self.clipTimer {
+            timer.invalidate()
+        }
+    }
+    
+    fileprivate func addObservers() {
+        self.addObserver(self, forKeyPath: #keyPath(audioPlayer.state), options: [.new], context: nil)
+    }
+    
+    fileprivate func removeObservers() {
+        self.removeObserver(self, forKeyPath: #keyPath(audioPlayer.state))
+    }
+    
+    @objc private func stopAtEndTime() {
+        
+        if self.shouldStopAtEndTime > 0 {
+            if let item = self.nowPlayingItem, let endTime = item.endTime {
+                if endTime > 0 && Int64(self.audioPlayer.progress) > endTime {
+                    self.shouldStopAtEndTime = 0
+                    self.audioPlayer.pause()
+                    
+                    if self.shouldAutoplayAlways {
+                        print("should autoplay to the next clip")
+                    }
+                }
+            }
+        }
+        
     }
     
     // TODO: should this be public here or not?
@@ -261,27 +289,22 @@ class PVMediaPlayer: NSObject {
             
             guard let episodes = CoreDataHelper.fetchEntities(className: "Episode", predicate: episodesPredicate, moc: moc) as? [Episode] else { return }
             
+            self.audioPlayer.pause()
+ 
             // If the playerHistoryItems's episode is downloaded locally, then use it.
             if episodes.count > 0 {
                 
                 if let episode = episodes.first {
-                    
                     var Urls = FileManager().urls(for: FileManager.SearchPathDirectory.documentDirectory, in: FileManager.SearchPathDomainMask.userDomainMask)
                     let docDirectoryUrl = Urls[0]
                     
                     if let fileName = episode.fileName {
-                        
                         let destinationUrl = docDirectoryUrl.appendingPathComponent(fileName)
-                        
                         let dataSource = STKAudioPlayer.dataSource(from: destinationUrl)
-                        
-                        self.audioPlayer.queue(dataSource, withQueueItemId: episodeMediaUrlString as NSObject)
-                        
+                        self.audioPlayer.play(dataSource)
                     } else {
-
                         let dataSource = STKAudioPlayer.dataSource(from: episodeMediaUrl)
-                        
-                        self.audioPlayer.queue(dataSource, withQueueItemId: episodeMediaUrlString as NSObject)
+                        self.audioPlayer.play(dataSource)
                     }
                 }
             }
@@ -289,25 +312,13 @@ class PVMediaPlayer: NSObject {
             // Else remotely stream the whole episode.
             else {
                 let dataSource = STKAudioPlayer.dataSource(from: episodeMediaUrl)
-                
-                self.audioPlayer.queue(dataSource, withQueueItemId: episodeMediaUrlString as NSObject)
+                self.audioPlayer.play(dataSource)
             }
             
-            if let startTime = item.startTime {
-                self.audioPlayer.seek(toTime: Double(startTime))
+            if let _ = item.startTime {
+                self.shouldSetupClip = true
             }
-            
-            if let endTime = item.endTime {
-                self.shouldEndAtTime = endTime
-            }
-        }
-        
-    }
-    
-    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
-        
-        if (keyPath == "progress") {
-            print("progress")
+
         }
         
     }
@@ -330,6 +341,24 @@ class PVMediaPlayer: NSObject {
 //                    break
 //            }
 //        }
+    }
+    
+    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
+        if let keyPath = keyPath, let item = self.nowPlayingItem {
+            if keyPath == #keyPath(audioPlayer.state) {
+                if self.audioPlayer.duration > 0 && self.shouldSetupClip == true {
+                    if let startTime = item.startTime {
+                        self.audioPlayer.seek(toTime: Double(startTime))
+                    }
+                    
+                    if let endTime = item.endTime {
+                        self.shouldStopAtEndTime = endTime
+                    }
+                    
+                    self.shouldSetupClip = false
+                }
+            }
+        }
     }
     
 }

@@ -148,17 +148,15 @@ extension ClipsTableViewController:UITableViewDelegate, UITableViewDataSource {
         let playerHistoryItem = self.playerHistoryManager.convertMediaRefToPlayerHistoryItem(mediaRef: clip)
         
         if let startTime = clip.startTime {
-            self.goToNowPlaying(timeOffset: startTime)
+            self.goToNowPlaying()
             self.pvMediaPlayer.loadPlayerHistoryItem(item: playerHistoryItem)
         }
         
     }
     
-    override func goToNowPlaying (timeOffset: Int64 = 0) {
+    override func goToNowPlaying () {
         if let mediaPlayerVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "MediaPlayerVC") as? MediaPlayerViewController {
             pvMediaPlayer.shouldAutoplayOnce = true
-            mediaPlayerVC.timeOffset = timeOffset
-            mediaPlayerVC.moveToOffset = true
             self.navigationController?.pushViewController(mediaPlayerVC, animated: true)
         }
     }

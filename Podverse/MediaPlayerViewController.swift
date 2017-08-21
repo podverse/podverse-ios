@@ -14,9 +14,7 @@ import StreamingKit
 class MediaPlayerViewController: PVViewController {
     
     let audioPlayer = PVMediaPlayer.shared.audioPlayer
-    var moveToOffset = false
     var playerSpeedRate:PlayingSpeed = .regular
-    var timeOffset = Int64(0)
     var timer: Timer?
     
     weak var currentChildViewController: UIViewController?
@@ -46,34 +44,27 @@ class MediaPlayerViewController: PVViewController {
 
         self.progress.isContinuous = false
         
-        setPlayerInfo()
+        populatePlayerInfo()
         
         self.tabBarController?.hidePlayerView()
         
         navigationController?.interactivePopGestureRecognizer?.isEnabled = false
         
-        setupNotificationListeners()
+        addObservers()
         
         activityIndicator.startAnimating()
-        
-        showProgressBar()
         
         setupTimer()
     }
     
     deinit {
         removeObservers()
-        
-        if let timer = timer {
-            timer.invalidate()
-        }
     }
     
-    override func viewDidAppear(_ animated: Bool) {
-        setPlayIcon()
+    override func viewWillAppear(_ animated: Bool) {
+        togglePlayIcon()
+        updateTime()
     }
-    
-    override func viewWillAppear(_ animated: Bool) { /* Intentionally left blank so super won't get called */ }
     
     override func viewWillDisappear(_ animated: Bool) {
         navigationController?.interactivePopGestureRecognizer?.isEnabled = true
@@ -98,7 +89,6 @@ class MediaPlayerViewController: PVViewController {
 
     @IBAction func play(_ sender: Any) {
         pvMediaPlayer.playOrPause()
-        setPlayIcon()
     }
 
     @IBAction func timeJumpBackward(_ sender: Any) {
@@ -154,21 +144,27 @@ class MediaPlayerViewController: PVViewController {
     
     func pause() {
         pvMediaPlayer.pause()
-        setPlayIcon()
     }
     
-    fileprivate func setupNotificationListeners() {
+    fileprivate func addObservers() {
         NotificationCenter.default.addObserver(self, selector: #selector(pause), name: .playerHasFinished, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(hideProgressBar), name: .playerIsLoading, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(setPlayerTimeInfo), name: .playerReadyToPlay, object: nil)
+        self.addObserver(self, forKeyPath: #keyPath(audioPlayer.state), options: [.new, .old], context: nil)
     }
     
     fileprivate func removeObservers() {
         NotificationCenter.default.removeObserver(self, name: .playerHasFinished, object: nil)
-        NotificationCenter.default.removeObserver(self, name: .playerIsLoading, object: nil)
-        NotificationCenter.default.removeObserver(self, name: .playerReadyToPlay, object: nil)
+        self.removeObserver(self, forKeyPath: #keyPath(audioPlayer.state))
     }
     
+    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
+        if let keyPath = keyPath {
+            if keyPath == #keyPath(audioPlayer.state) {
+                self.togglePlayIcon()
+                self.updateTime()
+            }
+        }
+    }
+        
     fileprivate func setupContainerView() {
         if let currentVC = self.storyboard?.instantiateViewController(withIdentifier: self.aboutClipsStoryboardId) {
             self.currentChildViewController = currentVC
@@ -190,15 +186,24 @@ class MediaPlayerViewController: PVViewController {
         self.pageControl.currentPage = 0
     }
     
-    func setPlayIcon() {
-        if audioPlayer.rate == 0 {
-            play.setImage(UIImage(named:"Play"), for: .normal)
-        } else {
-            play.setImage(UIImage(named:"Pause"), for: .normal)
+    private func togglePlayIcon() {
+        DispatchQueue.main.async {
+            if self.audioPlayer.state == STKAudioPlayerState.buffering {
+                self.activityIndicator.isHidden = false
+                self.play.isHidden = true
+            } else if self.audioPlayer.state == STKAudioPlayerState.playing {
+                self.activityIndicator.isHidden = true
+                self.play.setImage(UIImage(named:"Pause"), for: .normal)
+                self.play.isHidden = false
+            } else {
+                self.activityIndicator.isHidden = true
+                self.play.setImage(UIImage(named:"Play"), for: .normal)
+                self.play.isHidden = false
+            }
         }
     }
     
-    func setPlayerInfo() {
+    private func populatePlayerInfo() {
         if let item = pvMediaPlayer.nowPlayingItem {
             podcastTitle.text = item.podcastTitle
             episodeTitle.text = item.episodeTitle
@@ -211,43 +216,28 @@ class MediaPlayerViewController: PVViewController {
         }
     }
     
-    // This method should only be called in the event of the AVPlayerItem "ready to play" notification.
-    func setPlayerTimeInfo () {
-        let playbackPosition = audioPlayer.progress
-        currentTime.text = Int64(playbackPosition).toMediaPlayerString()
-        let dur = audioPlayer.duration
-        duration.text = Int64(dur).toMediaPlayerString()
-        progress.value = Float(playbackPosition / dur)
-
-        showProgressBar()
-    }
-    
-    func setupTimer () {
-        timer = Timer.scheduledTimer(timeInterval: 0.25, target: self, selector: #selector(updateTime), userInfo: nil, repeats: true)
-    }
-    
-    func updateTime() {
-        let currentTime = audioPlayer.progress
-        self.currentTime.text = Int64(currentTime).toMediaPlayerString()
-        let dur = audioPlayer.duration
-        progress.value = Float(currentTime / dur)
-    }
-    
-    func showProgressBar () {
+    @objc private func updateTime () {
         DispatchQueue.main.async {
-            self.activityIndicator.isHidden = true
-            self.progress.isHidden = false
-            self.duration.isHidden = false
-            self.currentTime.isHidden = false
+            if self.audioPlayer.state == STKAudioPlayerState.buffering {
+                self.currentTime.text = "--:--"
+                self.duration.text = "--:--"
+            } else {
+                let playbackPosition = self.audioPlayer.progress
+                self.currentTime.text = Int64(playbackPosition).toMediaPlayerString()
+                let dur = self.audioPlayer.duration
+                self.duration.text = Int64(dur).toMediaPlayerString()
+                self.progress.value = Float(playbackPosition / dur)
+            }
         }
     }
     
-    func hideProgressBar () {
-        DispatchQueue.main.async {
-            self.activityIndicator.isHidden = false
-            self.progress.isHidden = true
-            self.duration.isHidden = true
-            self.currentTime.isHidden = true
+    private func setupTimer () {
+        timer = Timer.scheduledTimer(timeInterval: 0.25, target: self, selector: #selector(updateTime), userInfo: nil, repeats: true)
+    }
+    
+    private func removeTimer () {
+        if let timer = timer {
+            timer.invalidate()
         }
     }
     

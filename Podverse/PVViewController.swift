@@ -26,7 +26,7 @@ class PVViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.navigationItem.backBarButtonItem = UIBarButtonItem(title:"", style:.plain, target:nil, action:nil)
-        setupNotificationListeners()
+        addObservers()
         PVViewController.delegate = self
     }
     
@@ -39,34 +39,52 @@ class PVViewController: UIViewController {
         removeObservers()
     }
     
-    fileprivate func setupNotificationListeners() {
+    fileprivate func addObservers() {
         NotificationCenter.default.addObserver(self, selector: #selector(self.episodeDeleted(_:)), name: .episodeDeleted, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(self.podcastDeleted(_:)), name: .podcastDeleted, object: nil)
+        self.addObserver(self, forKeyPath: #keyPath(pvMediaPlayer.audioPlayer.state), options: [.new, .old], context: nil)
     }
     
     fileprivate func removeObservers() {
         NotificationCenter.default.removeObserver(self, name: .episodeDeleted, object: nil)
         NotificationCenter.default.removeObserver(self, name: .podcastDeleted, object: nil)
+        self.removeObserver(self, forKeyPath: #keyPath(pvMediaPlayer.audioPlayer.state))
     }
-    
     
     func loadNowPlayingBarData() {
-        guard let currentItem = playerHistoryManager.historyItems.first, let tabbarVC = self.tabBarController, PVMediaPlayer.shared.nowPlayingItem != nil && currentItem.hasReachedEnd != true else {
-            self.tabBarController?.hidePlayerView()
-            return
+        DispatchQueue.main.async {
+            guard let tabbarVC = self.tabBarController else { return }
+            self.updateNowPlayingBarData()
+            tabbarVC.showPlayerView()
         }
-        
-        tabbarVC.playerView.podcastTitleLabel.text = currentItem.podcastTitle
-        tabbarVC.playerView.episodeTitle.text = currentItem.episodeTitle
-        tabbarVC.playerView.podcastImageView.image = Podcast.retrievePodcastImage(podcastImageURLString: currentItem.podcastImageUrl, feedURLString: currentItem.podcastFeedUrl) { (podcastImage) -> Void in
-            tabbarVC.playerView.podcastImageView.image = podcastImage
-        }
-        tabbarVC.playerView.isPlaying = (pvMediaPlayer.audioPlayer.state == STKAudioPlayerState.playing)
-        tabbarVC.showPlayerView()
     }
     
-    func goToNowPlaying(timeOffset: Int64 = 0) {
+    func updateNowPlayingBarData() {
+        DispatchQueue.main.async {
+            guard let currentItem = self.playerHistoryManager.historyItems.first, let tabbarVC = self.tabBarController, PVMediaPlayer.shared.nowPlayingItem != nil && currentItem.hasReachedEnd != true else {
+                self.tabBarController?.hidePlayerView()
+                return
+            }
+            
+            tabbarVC.playerView.podcastTitleLabel.text = currentItem.podcastTitle
+            tabbarVC.playerView.episodeTitle.text = currentItem.episodeTitle
+            tabbarVC.playerView.podcastImageView.image = Podcast.retrievePodcastImage(podcastImageURLString: currentItem.podcastImageUrl, feedURLString: currentItem.podcastFeedUrl) { (podcastImage) -> Void in
+                tabbarVC.playerView.podcastImageView.image = podcastImage
+            }
+            tabbarVC.playerView.isPlaying = (self.pvMediaPlayer.audioPlayer.state == STKAudioPlayerState.playing)
+        }
+    }
+    
+    func goToNowPlaying() {
         self.tabBarController?.goToMediaPlayer()
+    }
+    
+    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
+        if let keyPath = keyPath {
+            if keyPath == #keyPath(pvMediaPlayer.audioPlayer.state) {
+                updateNowPlayingBarData()
+            }
+        }
     }
 }
 

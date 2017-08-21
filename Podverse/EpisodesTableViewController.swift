@@ -160,7 +160,7 @@ class EpisodesTableViewController: PVViewController, UITableViewDataSource, UITa
         return 120
     }
 
-    override func goToNowPlaying (timeOffset: Int64 = 0) {
+    override func goToNowPlaying () {
         if let mediaPlayerVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "MediaPlayerVC") as? MediaPlayerViewController {
             pvMediaPlayer.shouldAutoplayOnce = true
             self.navigationController?.pushViewController(mediaPlayerVC, animated: true)
