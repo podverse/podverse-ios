@@ -9,53 +9,30 @@
 import Foundation
 import CoreData
 
-class Playlist:NSManagedObject {
+class Playlist {
     
-    @NSManaged var id:String?
-    @NSManaged var podverseURL: String?
+    var id: String?
+    var title: String?
+    var slug: String?
+    var ownerId: String?
+    var ownerName: String?
+    var dateCreated: String?
+    var lastUpdated: String?
+    var isMyClips: Bool = false
     
-    @NSManaged var ownerId:String
-    @NSManaged var ownerName:String?
-    
-    @NSManaged var title: String?
-    
-    @NSManaged var dateCreated: NSDate?
-    @NSManaged var lastUpdated: NSDate?
-    
-    @NSManaged var sharePermission: String?
-    
-    @NSManaged var isMyEpisodes: Bool
-    @NSManaged var isMyClips: Bool
-    
-    @NSManaged var episodes: Set<Episode>?
-    
-    var allItems: [Any] {
-        get {
-            var allItemsArray: [Any] = []
-//            if let episodes = episodes {
-//                for episode in episodes {
-//                    allItemsArray.append(episode)
-//                }
-//            }
-//            if let clips = clips {
-//                for clip in clips {
-//                    allItemsArray.append(clip)
-//                }
-//            }
+    static func retrievePlaylistsFromServer() {
+        
+        if let url = URL(string: "https://podverse.fm/api/user/playlists") {
+            var request = URLRequest(url: url, cachePolicy: NSURLRequest.CachePolicy.reloadIgnoringLocalAndRemoteCacheData, timeoutInterval: 60)
+            request.httpMethod = "POST"
             
-            return allItemsArray
+            if let idToken = UserDefaults.standard.string(forKey: "idToken") {
+                request.setValue(idToken, forHTTPHeaderField: "authorization")
+            }
+            
+            
         }
+        
     }
     
-    func removePlaylistItem(value: Any) {
-//        if let episode = value as? Episode {
-//            removeEpisodeObject(episode)
-//        }
-//        else if let clip = value as? Clip {
-//            removeClipObject(clip)
-//        }
-//        else {
-//            print("Object not a playlist item")
-//        }
-    }
 }

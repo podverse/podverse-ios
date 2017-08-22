@@ -10,6 +10,8 @@ import UIKit
 
 class PlaylistsTableViewController: PVViewController {
 
+    @IBOutlet weak var tableView: UITableView!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
     }
@@ -19,7 +21,6 @@ class PlaylistsTableViewController: PVViewController {
         // Dispose of any resources that can be recreated.
     }
     
-
     /*
     // MARK: - Navigation
 
