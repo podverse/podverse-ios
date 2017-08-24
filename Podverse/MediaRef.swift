@@ -53,8 +53,8 @@ class MediaRef {
                         var mediaRefs = [MediaRef]()
                         
                         if let responseJSON = try JSONSerialization.jsonObject(with: data, options: []) as? [String:Any] {
-                            if let clips = responseJSON["data"] as? [[String:Any]] {
-                                for item in clips {
+                            if let mediaRefsJSON = responseJSON["data"] as? [[String:Any]] {
+                                for item in mediaRefsJSON {
                                     let mediaRef = MediaRef()
                                     mediaRef.title = item["title"] as? String
                                     mediaRef.startTime = item["startTime"] as? Int64
@@ -81,6 +81,7 @@ class MediaRef {
                             completion(mediaRefs)
                         }
                     } catch {
+                        print(error)
                         print("Error")
                     }
                 }

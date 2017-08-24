@@ -32,7 +32,7 @@ class ClipsTableViewController: PVViewController {
         activityIndicator.hidesWhenStopped = true
         showIndicator()
         
-        tableView.rowHeight = UITableViewAutomaticDimension
+        self.tableView.rowHeight = UITableViewAutomaticDimension
         
         MediaRef.retrieveMediaRefsFromServer() { (mediaRefs) -> Void in
             self.reloadClipData(mediaRefs: mediaRefs)

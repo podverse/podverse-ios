@@ -24,6 +24,8 @@
 		30A0A4941F1AD6A500242F85 /* NowPlayingBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30A0A4931F1AD6A500242F85 /* NowPlayingBar.swift */; };
 		30A0A4961F1ADAA200242F85 /* NowPlayingBar.xib in Resources */ = {isa = PBXBuildFile; fileRef = 30A0A4951F1ADAA200242F85 /* NowPlayingBar.xib */; };
 		30A56B1A1F4C00DB007513F6 /* PlaylistTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30A56B191F4C00DB007513F6 /* PlaylistTableViewCell.swift */; };
+		30A56B1C1F4EB575007513F6 /* PlaylistDetailTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30A56B1B1F4EB575007513F6 /* PlaylistDetailTableViewCell.swift */; };
+		30A56B1E1F4EB6FC007513F6 /* PlaylistDetailTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30A56B1D1F4EB6FC007513F6 /* PlaylistDetailTableViewController.swift */; };
 		30A575661EBECFF90088CCA6 /* EpisodesTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30A575651EBECFF90088CCA6 /* EpisodesTableViewController.swift */; };
 		30A575681EBED8360088CCA6 /* EpisodeTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30A575671EBED8360088CCA6 /* EpisodeTableViewCell.swift */; };
 		30B427F21EBE4CB100BAD942 /* PVSubscriber.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30B427F11EBE4CB100BAD942 /* PVSubscriber.swift */; };
@@ -119,6 +121,8 @@
 		30A0A4931F1AD6A500242F85 /* NowPlayingBar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NowPlayingBar.swift; sourceTree = "<group>"; };
 		30A0A4951F1ADAA200242F85 /* NowPlayingBar.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = NowPlayingBar.xib; sourceTree = "<group>"; };
 		30A56B191F4C00DB007513F6 /* PlaylistTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlaylistTableViewCell.swift; sourceTree = "<group>"; };
+		30A56B1B1F4EB575007513F6 /* PlaylistDetailTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlaylistDetailTableViewCell.swift; sourceTree = "<group>"; };
+		30A56B1D1F4EB6FC007513F6 /* PlaylistDetailTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlaylistDetailTableViewController.swift; sourceTree = "<group>"; };
 		30A575651EBECFF90088CCA6 /* EpisodesTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EpisodesTableViewController.swift; sourceTree = "<group>"; };
 		30A575671EBED8360088CCA6 /* EpisodeTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EpisodeTableViewCell.swift; sourceTree = "<group>"; };
 		30B427F11EBE4CB100BAD942 /* PVSubscriber.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PVSubscriber.swift; sourceTree = "<group>"; };
@@ -254,6 +258,7 @@
 				E7B2A5A71E16246B00AAE036 /* LoginViewController.swift */,
 				30EB67771ECCAB2800C5AB80 /* MediaPlayerViewController.swift */,
 				E70E4A221E03907A003CEC64 /* MoreTableViewController.swift */,
+				30A56B1D1F4EB6FC007513F6 /* PlaylistDetailTableViewController.swift */,
 				E70E4A1C1E038FC6003CEC64 /* PlaylistsTableViewController.swift */,
 				E70E4A191E038F8F003CEC64 /* PodcastsTableViewController.swift */,
 				30026D8C1F0B328000043D79 /* SettingsViewController.swift */,
@@ -386,6 +391,7 @@
 				30026D8E1F0C2A6000043D79 /* DownloadTableViewCell.swift */,
 				30A575671EBED8360088CCA6 /* EpisodeTableViewCell.swift */,
 				30A56B191F4C00DB007513F6 /* PlaylistTableViewCell.swift */,
+				30A56B1B1F4EB575007513F6 /* PlaylistDetailTableViewCell.swift */,
 				E7B2A5A31E12CC5A00AAE036 /* PodcastTableViewCell.swift */,
 				30DBD4D81F11F42B00A431E6 /* PodcastSearchResultTableViewCell.swift */,
 			);
@@ -782,6 +788,7 @@
 				30A575661EBECFF90088CCA6 /* EpisodesTableViewController.swift in Sources */,
 				E75302881E072F160007B6F7 /* FeedItem.swift in Sources */,
 				30DBD4D31F11B05900A431E6 /* OAuth2RetryHandler.swift in Sources */,
+				30A56B1C1F4EB575007513F6 /* PlaylistDetailTableViewCell.swift in Sources */,
 				30A56B1A1F4C00DB007513F6 /* PlaylistTableViewCell.swift in Sources */,
 				E7299F121F19368400AB3168 /* AboutPlayingItemViewController.swift in Sources */,
 				30026D8B1F0B322000043D79 /* AboutViewController.swift in Sources */,
@@ -792,6 +799,7 @@
 				E76C49C61E0F8DFE00F81217 /* PVDownloader.swift in Sources */,
 				E70E4A1D1E038FC6003CEC64 /* PlaylistsTableViewController.swift in Sources */,
 				E75302861E072F160007B6F7 /* FeedChannel.swift in Sources */,
+				30A56B1E1F4EB6FC007513F6 /* PlaylistDetailTableViewController.swift in Sources */,
 				3051488B1ED27251009BC839 /* PlayerHistoryItem.swift in Sources */,
 				E7B2A5A11E123E9900AAE036 /* PVAuth.swift in Sources */,
 				E753028B1E072F160007B6F7 /* String+RemoveHTMLCharacters.swift in Sources */,
