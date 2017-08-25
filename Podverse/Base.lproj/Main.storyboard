@@ -1305,7 +1305,7 @@
                             <constraint firstAttribute="trailing" secondItem="gzl-WT-wig" secondAttribute="trailing" id="wPA-ZK-EOb"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" id="gll-NB-RZL"/>
+                    <navigationItem key="navigationItem" title="My Playlists" id="gll-NB-RZL"/>
                     <connections>
                         <outlet property="activityIndicator" destination="DX8-Vg-cVl" id="YOT-Qb-kjl"/>
                         <outlet property="loadingView" destination="gzl-WT-wig" id="GTQ-3v-GQr"/>
@@ -1319,10 +1319,10 @@
             </objects>
             <point key="canvasLocation" x="789.60000000000002" y="-313.49325337331339"/>
         </scene>
-        <!--Playlist Detail Table View Controller-->
+        <!--Playlist-->
         <scene sceneID="wn5-G0-Efr">
             <objects>
-                <viewController automaticallyAdjustsScrollViewInsets="NO" id="5wc-DY-Nr3" customClass="PlaylistDetailTableViewController" customModule="Podverse" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController title="Playlist" automaticallyAdjustsScrollViewInsets="NO" id="5wc-DY-Nr3" customClass="PlaylistDetailTableViewController" customModule="Podverse" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="Nbh-VK-ZQp"/>
                         <viewControllerLayoutGuide type="bottom" id="tQ2-Q5-Tl2"/>
