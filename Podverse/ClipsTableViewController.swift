@@ -133,12 +133,8 @@ extension ClipsTableViewController:UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let clip = clipsArray[indexPath.row]
         let playerHistoryItem = self.playerHistoryManager.convertMediaRefToPlayerHistoryItem(mediaRef: clip)
-        
-        if let startTime = clip.startTime {
-            self.goToNowPlaying()
-            self.pvMediaPlayer.loadPlayerHistoryItem(item: playerHistoryItem)
-        }
-        
+        self.goToNowPlaying()
+        self.pvMediaPlayer.loadPlayerHistoryItem(item: playerHistoryItem)
     }
     
     override func goToNowPlaying () {

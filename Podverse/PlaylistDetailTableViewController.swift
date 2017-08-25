@@ -144,7 +144,10 @@ extension PlaylistDetailTableViewController:UITableViewDelegate, UITableViewData
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        print("selected mediaRef")
+        let mediaRef = mediaRefsArray[indexPath.row]
+        let playerHistoryItem = self.playerHistoryManager.convertMediaRefToPlayerHistoryItem(mediaRef: mediaRef)
+        self.goToNowPlaying()
+        self.pvMediaPlayer.loadPlayerHistoryItem(item: playerHistoryItem)
     }
     
 }
