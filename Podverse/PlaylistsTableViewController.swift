@@ -109,14 +109,24 @@ extension PlaylistsTableViewController:UITableViewDelegate, UITableViewDataSourc
         cell.title?.text = playlist.title
         
         if let lastUpdated = playlist.lastUpdated {
-            cell.lastUpdated?.text = playlist.lastUpdated?.toShortFormatString()
+            cell.lastUpdated?.text = lastUpdated.toShortFormatString()
         }
         
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        print("selected playlist")
+        self.performSegue(withIdentifier: "Show Playlist", sender: nil)
+        self.tableView.deselectRow(at: indexPath, animated: true)
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if let index = self.tableView.indexPathForSelectedRow {
+            if segue.identifier == "Show Playlist" {
+                let playlistDetailTableViewController = segue.destination as! PlaylistDetailTableViewController
+                playlistDetailTableViewController.playlistId = self.playlistsArray[index.row].id
+            }
+        }
     }
     
 }

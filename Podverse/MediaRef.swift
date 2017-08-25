@@ -20,6 +20,29 @@ class MediaRef {
     var podcastFeedUrl: String?
     var podcastImageUrl: String?
     
+    static func jsonToMediaRef(item: [String:Any]) -> MediaRef {
+
+        let mediaRef = MediaRef()
+        mediaRef.title = item["title"] as? String
+        mediaRef.startTime = item["startTime"] as? Int64
+        mediaRef.endTime = item["endTime"] as? Int64
+        
+        mediaRef.episodeTitle = item["episodeTitle"] as? String
+        mediaRef.episodeMediaUrl = item["episodeMediaURL"] as? String
+        mediaRef.episodeSummary = item["episodeSummary"] as? String
+        
+        mediaRef.podcastTitle = item["podcastTitle"] as? String
+        mediaRef.podcastFeedUrl = item["podcastFeedURL"] as? String
+        mediaRef.podcastImageUrl = item["podcastImageURL"] as? String
+        
+        if let episodePubDate = item["episodePubDate"] as? String {
+            mediaRef.episodePubDate = episodePubDate.toServerDate()
+        }
+        
+        return mediaRef
+        
+    }
+    
     static func retrieveMediaRefsFromServer(episodeMediaUrl: String? = nil, podcastFeedUrl: String? = nil, onlySubscribed: Bool? = nil, completion: @escaping (_ mediaRefs:[MediaRef]?) -> Void) {
         if let url = URL(string: "https://podverse.fm/api/clips") {
             var request = URLRequest(url: url, cachePolicy: NSURLRequest.CachePolicy.reloadIgnoringLocalAndRemoteCacheData, timeoutInterval: 60)
@@ -55,23 +78,7 @@ class MediaRef {
                         if let responseJSON = try JSONSerialization.jsonObject(with: data, options: []) as? [String:Any] {
                             if let mediaRefsJSON = responseJSON["data"] as? [[String:Any]] {
                                 for item in mediaRefsJSON {
-                                    let mediaRef = MediaRef()
-                                    mediaRef.title = item["title"] as? String
-                                    mediaRef.startTime = item["startTime"] as? Int64
-                                    mediaRef.endTime = item["endTime"] as? Int64
-                                    
-                                    mediaRef.episodeTitle = item["episodeTitle"] as? String
-                                    mediaRef.episodeMediaUrl = item["episodeMediaURL"] as? String
-                                    mediaRef.episodeSummary = item["episodeSummary"] as? String
-                                    
-                                    mediaRef.podcastTitle = item["podcastTitle"] as? String
-                                    mediaRef.podcastFeedUrl = item["podcastFeedURL"] as? String
-                                    mediaRef.podcastImageUrl = item["podcastImageURL"] as? String
-                                    
-                                    if let episodePubDate = item["episodePubDate"] as? String {
-                                        mediaRef.episodePubDate = episodePubDate.toServerDate()
-                                    }
-                                    
+                                    let mediaRef = jsonToMediaRef(item: item)
                                     mediaRefs.append(mediaRef)
                                 }
                             }
@@ -80,6 +87,7 @@ class MediaRef {
                         DispatchQueue.main.async {
                             completion(mediaRefs)
                         }
+                        
                     } catch {
                         print(error)
                         print("Error")
@@ -88,6 +96,7 @@ class MediaRef {
             }
             
             task.resume()
+            
         }
     }
 }

@@ -1312,7 +1312,7 @@
                         <outlet property="retryButton" destination="bH0-RR-ruT" id="ptE-eH-l3S"/>
                         <outlet property="statusMessage" destination="jfH-97-cuD" id="kyl-1j-q6Z"/>
                         <outlet property="tableView" destination="XS3-BK-jNT" id="zTe-KK-Qrb"/>
-                        <segue destination="5wc-DY-Nr3" kind="show" id="ZVj-f0-Old"/>
+                        <segue destination="5wc-DY-Nr3" kind="show" identifier="Show Playlist" id="ZVj-f0-Old"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="I2t-g2-vF9" userLabel="First Responder" sceneMemberID="firstResponder"/>

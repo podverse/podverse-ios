@@ -11,6 +11,7 @@ import UIKit
 class PlaylistDetailTableViewController: PVViewController {
     
     var playlist: Playlist?
+    var playlistId: String?
     var mediaRefsArray = [MediaRef]()
     let reachability = PVReachability.shared
     
@@ -22,9 +23,13 @@ class PlaylistDetailTableViewController: PVViewController {
     
     @IBAction func retryButtonTouched(_ sender: Any) {
         showIndicator()
-//        Playlist.retrievePlaylistFromServer() { (playlist) -> Void in
-//            self.reloadPlaylistData(playlist: playlist)
-//        }
+        
+        if let id = self.playlistId {
+            Playlist.retrievePlaylistFromServer(id: id) { (playlist) -> Void in
+                self.reloadPlaylistData(playlist: playlist)
+            }
+        }
+        
     }
     
     override func viewDidLoad() {
@@ -35,9 +40,11 @@ class PlaylistDetailTableViewController: PVViewController {
         
         self.tableView.rowHeight = UITableViewAutomaticDimension
         
-//        Playlist.retrievePlaylistFromServer() { (playlist) -> Void in
-//            self.reloadPlaylistData(playlist: playlist)
-//        }
+        if let id = self.playlistId {
+            Playlist.retrievePlaylistFromServer(id: id) { (playlist) -> Void in
+                self.reloadPlaylistData(playlist: playlist)
+            }
+        }
 
     }
     
