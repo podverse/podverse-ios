@@ -111,19 +111,7 @@ extension ClipsTableViewController:UITableViewDelegate, UITableViewDataSource {
         cell.episodeTitle?.text = clip.episodeTitle
         cell.clipTitle?.text = clip.title
         
-        var time: String?
-        
-        if let startTime = clip.startTime {
-            if let endTime = clip.endTime {
-                if endTime > 0 {
-                    time = startTime.toMediaPlayerString() + " to " + endTime.toMediaPlayerString()
-                }
-            } else {
-                time = "Starts:" + startTime.toMediaPlayerString()
-            }
-        }
-        
-        if let time = time {
+        if let time = clip.readableStartAndEndTime() {
             cell.time?.text = time
         }
         
@@ -138,7 +126,6 @@ extension ClipsTableViewController:UITableViewDelegate, UITableViewDataSource {
                 }
             }
         }
-
         
         return cell
     }

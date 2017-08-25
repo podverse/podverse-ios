@@ -16,7 +16,10 @@ class PlaylistDetailTableViewController: PVViewController {
     let reachability = PVReachability.shared
     
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
+    @IBOutlet weak var itemCount: UILabel!
+    @IBOutlet weak var lastUpdated: UILabel!
     @IBOutlet weak var loadingView: UIView!
+    @IBOutlet weak var playlistTitle: UILabel!
     @IBOutlet weak var retryButton: UIButton!
     @IBOutlet weak var statusMessage: UILabel!
     @IBOutlet weak var tableView: UITableView!
@@ -53,15 +56,13 @@ class PlaylistDetailTableViewController: PVViewController {
             self.showStatusMessage(message: "You must connect to the internet to load this playlist.")
             return
         }
-
-//        guard let mArray = mediaRefs, mArray.count > 0 else {
-//            self.showStatusMessage(message: "No playlist items available")
-//            return
-//        }
-//        
-//        for mediaRef in mArray {
-//            self.mediaRefsArray.append(mediaRef)
-//        }
+        
+        if let playlist = playlist {
+            self.itemCount.text = "Items: ###"
+            self.lastUpdated.text = playlist.lastUpdated?.toShortFormatString()
+            self.playlistTitle.text = playlist.title
+            self.mediaRefsArray = playlist.mediaRefs
+        }
         
         self.showPlaylistView()
         self.tableView.reloadData()
@@ -110,19 +111,34 @@ extension PlaylistDetailTableViewController:UITableViewDelegate, UITableViewData
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 0
-//        return self.playlistsArray.count
+        return self.mediaRefsArray.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-//        let playlist = self.playlistsArray[indexPath.row]
+        let mediaRef = self.mediaRefsArray[indexPath.row]
         let cell = self.tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! PlaylistDetailTableViewCell
+
+        cell.episodeTitle.text = mediaRef.episodeTitle
+        cell.podcastTitle.text = mediaRef.podcastTitle
+        cell.pubDate.text = mediaRef.episodePubDate?.toShortFormatString()
         
-//        cell.title?.text = playlist.title
-//        
-//        if let lastUpdated = playlist.lastUpdated {
-//            cell.lastUpdated?.text = playlist.lastUpdated?.toShortFormatString()
-//        }
+        Podcast.retrievePodcastImage(podcastImageURLString: mediaRef.podcastImageUrl) { (podcastImage) -> Void in
+            DispatchQueue.main.async {
+                if let visibleRows = self.tableView.indexPathsForVisibleRows, visibleRows.contains(indexPath), let existingCell = self.tableView.cellForRow(at: indexPath) as? PlaylistDetailTableViewCell, let podcastImage = podcastImage {
+                    existingCell.podcastImage?.image = podcastImage
+                }
+            }
+        }
+        
+        if mediaRef.isClip() {
+            cell.clipTitle.text = mediaRef.readableClipTitle()
+            if let time = mediaRef.readableStartAndEndTime() {
+                cell.time.text = time
+            }
+        } else {
+            cell.time.text = "--:--"
+            cell.clipTitle.text = "Full Episode"
+        }
         
         return cell
     }

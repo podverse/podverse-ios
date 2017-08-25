@@ -16,5 +16,5 @@ class PlaylistDetailTableViewCell: UITableViewCell {
     @IBOutlet weak var podcastTitle: UILabel!
     @IBOutlet weak var pubDate: UILabel!
     @IBOutlet weak var time: UILabel!
-    
+
 }

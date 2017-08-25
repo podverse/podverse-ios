@@ -99,4 +99,43 @@ class MediaRef {
             
         }
     }
+    
+    func isClip() -> Bool {
+        
+        if let startTime = self.startTime {
+            if startTime > 0 {
+                return true
+            }
+        } else if let endTime = self.endTime {
+            if endTime > 0 {
+                return true
+            }
+        }
+        
+        return false
+    }
+    
+    func readableStartAndEndTime() -> String? {
+        var time: String?
+        
+        if let startTime = self.startTime {
+            if let endTime = self.endTime {
+                if endTime > 0 {
+                    time = startTime.toMediaPlayerString() + " to " + endTime.toMediaPlayerString()
+                }
+            } else {
+                time = "Starts:" + startTime.toMediaPlayerString()
+            }
+        }
+        
+        return time
+    }
+    
+    func readableClipTitle() -> String {
+        if let title = self.title {
+            return title
+        } else {
+            return "(untitled clip)"
+        }
+    }
 }
