@@ -989,9 +989,79 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="66V-Ai-gzL">
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="F9t-nA-9Hi">
+                                <rect key="frame" x="0.0" y="102" width="375" height="565"/>
+                                <subviews>
+                                    <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="dRN-cx-HlK">
+                                        <rect key="frame" x="169" y="264" width="37" height="37"/>
+                                        <color key="color" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                                    </activityIndicatorView>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Status Message" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Pes-Xb-Jkk">
+                                        <rect key="frame" x="126" y="272" width="122.5" height="21"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="uoG-WN-RgW">
+                                        <rect key="frame" x="169" y="317" width="37" height="30"/>
+                                        <state key="normal" title="Retry"/>
+                                        <connections>
+                                            <action selector="retryButtonTouched:" destination="KLO-yl-1MA" eventType="touchUpInside" id="9bg-A8-6bl"/>
+                                            <action selector="retryButtonTouched:" destination="PTS-x4-uBx" eventType="touchUpInside" id="Juk-mm-zC4"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstItem="Pes-Xb-Jkk" firstAttribute="centerX" secondItem="F9t-nA-9Hi" secondAttribute="centerX" id="11M-Uz-CIB"/>
+                                    <constraint firstItem="uoG-WN-RgW" firstAttribute="centerX" secondItem="F9t-nA-9Hi" secondAttribute="centerX" id="6no-yU-7Wl"/>
+                                    <constraint firstItem="dRN-cx-HlK" firstAttribute="centerY" secondItem="F9t-nA-9Hi" secondAttribute="centerY" id="Nwf-yF-hTM"/>
+                                    <constraint firstItem="dRN-cx-HlK" firstAttribute="centerX" secondItem="F9t-nA-9Hi" secondAttribute="centerX" id="OcJ-9g-RgV"/>
+                                    <constraint firstItem="uoG-WN-RgW" firstAttribute="top" secondItem="dRN-cx-HlK" secondAttribute="bottom" constant="16" id="VQB-My-fYR"/>
+                                    <constraint firstItem="Pes-Xb-Jkk" firstAttribute="centerY" secondItem="F9t-nA-9Hi" secondAttribute="centerY" id="j9M-MF-IGW"/>
+                                </constraints>
+                            </view>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="70" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="66V-Ai-gzL">
                                 <rect key="frame" x="0.0" y="102" width="375" height="565"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <prototypes>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="cell" rowHeight="58" id="ErB-IN-wFF" customClass="PlaylistTableViewCell" customModule="Podverse" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="28" width="375" height="58"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="ErB-IN-wFF" id="wkE-Ny-jYj">
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="58"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Playlist Title" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vs9-jP-EpM">
+                                                    <rect key="frame" x="8" y="8" width="359" height="18"/>
+                                                    <fontDescription key="fontDescription" type="system" weight="medium" pointSize="15"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Items: #" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="q1x-t5-Yrq">
+                                                    <rect key="frame" x="8" y="33" width="49" height="16"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="q1x-t5-Yrq" firstAttribute="top" secondItem="vs9-jP-EpM" secondAttribute="bottom" constant="7" id="41R-L2-e3H"/>
+                                                <constraint firstItem="q1x-t5-Yrq" firstAttribute="leading" secondItem="wkE-Ny-jYj" secondAttribute="leading" constant="8" id="E6i-KU-16m"/>
+                                                <constraint firstItem="vs9-jP-EpM" firstAttribute="trailing" secondItem="wkE-Ny-jYj" secondAttribute="trailingMargin" id="EJg-qD-zEl"/>
+                                                <constraint firstItem="vs9-jP-EpM" firstAttribute="top" secondItem="wkE-Ny-jYj" secondAttribute="topMargin" id="PnD-pf-n2k"/>
+                                                <constraint firstItem="vs9-jP-EpM" firstAttribute="leading" secondItem="wkE-Ny-jYj" secondAttribute="leadingMargin" id="zZC-wh-OzE"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                        <connections>
+                                            <outlet property="itemsTotal" destination="q1x-t5-Yrq" id="kVJ-fd-M7W"/>
+                                            <outlet property="title" destination="vs9-jP-EpM" id="fe5-MD-2Ll"/>
+                                        </connections>
+                                    </tableViewCell>
+                                </prototypes>
+                                <connections>
+                                    <outlet property="dataSource" destination="KLO-yl-1MA" id="Ejk-aO-Dzl"/>
+                                    <outlet property="delegate" destination="KLO-yl-1MA" id="J4L-cV-IVb"/>
+                                </connections>
                             </tableView>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="YxU-HH-uyR">
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="102"/>
@@ -1056,21 +1126,29 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstItem="F9t-nA-9Hi" firstAttribute="leading" secondItem="W4W-vk-HYH" secondAttribute="leading" id="4bV-ws-YLP"/>
+                            <constraint firstItem="6QQ-Tb-qli" firstAttribute="top" secondItem="F9t-nA-9Hi" secondAttribute="bottom" id="6Mx-Xi-ttT"/>
+                            <constraint firstAttribute="trailing" secondItem="F9t-nA-9Hi" secondAttribute="trailing" id="Cab-ru-oG7"/>
                             <constraint firstItem="YxU-HH-uyR" firstAttribute="leading" secondItem="W4W-vk-HYH" secondAttribute="leading" id="INB-js-K12"/>
                             <constraint firstAttribute="trailing" secondItem="66V-Ai-gzL" secondAttribute="trailing" id="Q1n-Nv-9YA"/>
                             <constraint firstItem="66V-Ai-gzL" firstAttribute="leading" secondItem="W4W-vk-HYH" secondAttribute="leading" id="Wh9-iB-20Y"/>
                             <constraint firstItem="6QQ-Tb-qli" firstAttribute="top" secondItem="66V-Ai-gzL" secondAttribute="bottom" id="eAn-vc-NcZ"/>
                             <constraint firstItem="66V-Ai-gzL" firstAttribute="top" secondItem="YxU-HH-uyR" secondAttribute="bottom" id="o3q-Hb-gbA"/>
                             <constraint firstAttribute="trailing" secondItem="YxU-HH-uyR" secondAttribute="trailing" id="tjw-bL-Npf"/>
+                            <constraint firstItem="F9t-nA-9Hi" firstAttribute="top" secondItem="YxU-HH-uyR" secondAttribute="bottom" id="y03-mD-xyW"/>
                             <constraint firstItem="YxU-HH-uyR" firstAttribute="top" secondItem="W4W-vk-HYH" secondAttribute="top" id="y34-kh-fyF"/>
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="activityIndicator" destination="dRN-cx-HlK" id="e32-FE-90g"/>
                         <outlet property="clipTitle" destination="Eb3-EQ-haI" id="Rzf-KA-Jma"/>
                         <outlet property="episodePubDate" destination="Qln-nW-afb" id="OOg-tm-0QB"/>
                         <outlet property="episodeTitle" destination="VSV-X3-F3R" id="Mdj-hw-9yd"/>
+                        <outlet property="loadingView" destination="F9t-nA-9Hi" id="9Ah-GR-qdr"/>
                         <outlet property="podcastImage" destination="Qof-lo-qVg" id="Nfl-FD-5rT"/>
                         <outlet property="podcastTitle" destination="oPA-Sq-KsM" id="Yqh-q5-GMn"/>
+                        <outlet property="retryButton" destination="uoG-WN-RgW" id="mjp-2d-tim"/>
+                        <outlet property="statusMessage" destination="Pes-Xb-Jkk" id="Zwy-w6-CLS"/>
                         <outlet property="tableView" destination="66V-Ai-gzL" id="zSh-hF-Aay"/>
                         <outlet property="time" destination="cUO-fQ-0ot" id="AZV-uT-kSD"/>
                     </connections>
@@ -1375,7 +1453,7 @@
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Playlist Title" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xSk-VN-UDn">
                                                     <rect key="frame" x="8" y="8" width="359" height="18"/>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                                    <fontDescription key="fontDescription" type="system" weight="medium" pointSize="15"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>

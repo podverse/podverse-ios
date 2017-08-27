@@ -91,11 +91,11 @@ class PlaylistsTableViewController: PVViewController {
 extension PlaylistsTableViewController:UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 60
+        return 58
     }
     
     func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 60
+        return 58
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {

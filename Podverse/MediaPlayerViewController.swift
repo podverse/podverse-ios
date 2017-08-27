@@ -15,6 +15,7 @@ class MediaPlayerViewController: PVViewController {
     
     let audioPlayer = PVMediaPlayer.shared.audioPlayer
     var playerSpeedRate:PlayingSpeed = .regular
+    let reachability = PVReachability.shared
     var timer: Timer?
     
     weak var currentChildViewController: UIViewController?
@@ -246,6 +247,12 @@ class MediaPlayerViewController: PVViewController {
     }
     
     func showAddToPlaylist() {
+        
+        if self.reachability.hasInternetConnection() == false {
+            self.showInternetNeededAlertWithDesciription(message: "You must be connected to the internet to add to playlists.")
+            return
+        }
+        
         self.navigationItem.backBarButtonItem = UIBarButtonItem(title:"Player", style:.plain, target:nil, action:nil)
         
         let addToPlaylistActions = UIAlertController(title: "Add to Playlist", message: "", preferredStyle: UIAlertControllerStyle.actionSheet)
@@ -261,11 +268,19 @@ class MediaPlayerViewController: PVViewController {
         addToPlaylistActions.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
         
         self.present(addToPlaylistActions, animated: true, completion: nil)
+        
     }
     
     func showMakeClip() {
+        
+        if self.reachability.hasInternetConnection() == false {
+            self.showInternetNeededAlertWithDesciription(message: "You must be connected to the internet to make clips.")
+            return
+        }
+        
         self.navigationItem.backBarButtonItem = UIBarButtonItem(title:"Player", style:.plain, target:nil, action:nil)
         self.performSegue(withIdentifier: "Show Make Clip", sender: self)
+        
     }
     
     func showShareMenu() {
