@@ -977,6 +977,126 @@
             </objects>
             <point key="canvasLocation" x="1680.8" y="-1876.0119940029986"/>
         </scene>
+        <!--Add to Playlist-->
+        <scene sceneID="c2V-Ab-4WN">
+            <objects>
+                <viewController title="Add to Playlist" automaticallyAdjustsScrollViewInsets="NO" id="KLO-yl-1MA" customClass="AddToPlaylistViewController" customModule="Podverse" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="Vzp-Tq-YQi"/>
+                        <viewControllerLayoutGuide type="bottom" id="6QQ-Tb-qli"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="W4W-vk-HYH">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="66V-Ai-gzL">
+                                <rect key="frame" x="0.0" y="102" width="375" height="565"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            </tableView>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="YxU-HH-uyR">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="102"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Episode Title" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="VSV-X3-F3R">
+                                        <rect key="frame" x="52" y="28" width="315" height="16"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                                        <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Podcast Title" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="oPA-Sq-KsM">
+                                        <rect key="frame" x="52" y="8" width="315" height="16"/>
+                                        <fontDescription key="fontDescription" type="system" weight="medium" pointSize="13"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Qof-lo-qVg">
+                                        <rect key="frame" x="8" y="8" width="36" height="36"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="36" id="03i-ah-jIL"/>
+                                            <constraint firstAttribute="height" constant="36" id="onB-wY-5UA"/>
+                                        </constraints>
+                                    </imageView>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Clip Title" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Eb3-EQ-haI">
+                                        <rect key="frame" x="8" y="52" width="359" height="18"/>
+                                        <fontDescription key="fontDescription" type="system" weight="medium" pointSize="15"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Time" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cUO-fQ-0ot">
+                                        <rect key="frame" x="8" y="78" width="30" height="16"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                                        <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Pub Date" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Qln-nW-afb">
+                                        <rect key="frame" x="311" y="78" width="56" height="16"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                                        <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstAttribute="trailing" secondItem="Eb3-EQ-haI" secondAttribute="trailing" constant="8" id="1QX-NF-Azx"/>
+                                    <constraint firstItem="oPA-Sq-KsM" firstAttribute="top" secondItem="YxU-HH-uyR" secondAttribute="top" constant="8" id="1bo-88-39M"/>
+                                    <constraint firstAttribute="trailing" secondItem="Qln-nW-afb" secondAttribute="trailing" constant="8" id="8vR-bA-Miw"/>
+                                    <constraint firstItem="Qof-lo-qVg" firstAttribute="leading" secondItem="YxU-HH-uyR" secondAttribute="leading" constant="8" id="9Mo-0e-fEb"/>
+                                    <constraint firstItem="Eb3-EQ-haI" firstAttribute="leading" secondItem="YxU-HH-uyR" secondAttribute="leading" constant="8" id="9oF-r3-84X"/>
+                                    <constraint firstAttribute="height" constant="102" id="A0H-OE-OYl"/>
+                                    <constraint firstAttribute="trailing" secondItem="oPA-Sq-KsM" secondAttribute="trailing" constant="8" id="BlB-w5-W2v"/>
+                                    <constraint firstItem="Eb3-EQ-haI" firstAttribute="top" secondItem="Qof-lo-qVg" secondAttribute="bottom" constant="8" id="DKp-73-bg5"/>
+                                    <constraint firstItem="oPA-Sq-KsM" firstAttribute="leading" secondItem="Qof-lo-qVg" secondAttribute="trailing" constant="8" id="LHo-fd-uTE"/>
+                                    <constraint firstItem="Qof-lo-qVg" firstAttribute="top" secondItem="YxU-HH-uyR" secondAttribute="top" constant="8" id="Sn1-VI-kQD"/>
+                                    <constraint firstItem="VSV-X3-F3R" firstAttribute="leading" secondItem="Qof-lo-qVg" secondAttribute="trailing" constant="8" id="TQQ-yY-hmh"/>
+                                    <constraint firstItem="VSV-X3-F3R" firstAttribute="top" secondItem="oPA-Sq-KsM" secondAttribute="bottom" constant="4" id="afv-dL-yvv"/>
+                                    <constraint firstItem="Qln-nW-afb" firstAttribute="top" secondItem="Eb3-EQ-haI" secondAttribute="bottom" constant="8" id="dLR-p0-QHb"/>
+                                    <constraint firstItem="cUO-fQ-0ot" firstAttribute="leading" secondItem="YxU-HH-uyR" secondAttribute="leading" constant="8" id="hKg-Fe-agS"/>
+                                    <constraint firstItem="cUO-fQ-0ot" firstAttribute="top" secondItem="Eb3-EQ-haI" secondAttribute="bottom" constant="8" id="n2P-2y-leW"/>
+                                    <constraint firstAttribute="trailing" secondItem="VSV-X3-F3R" secondAttribute="trailing" constant="8" id="tPK-eW-Ajg"/>
+                                </constraints>
+                            </view>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="YxU-HH-uyR" firstAttribute="leading" secondItem="W4W-vk-HYH" secondAttribute="leading" id="INB-js-K12"/>
+                            <constraint firstAttribute="trailing" secondItem="66V-Ai-gzL" secondAttribute="trailing" id="Q1n-Nv-9YA"/>
+                            <constraint firstItem="66V-Ai-gzL" firstAttribute="leading" secondItem="W4W-vk-HYH" secondAttribute="leading" id="Wh9-iB-20Y"/>
+                            <constraint firstItem="6QQ-Tb-qli" firstAttribute="top" secondItem="66V-Ai-gzL" secondAttribute="bottom" id="eAn-vc-NcZ"/>
+                            <constraint firstItem="66V-Ai-gzL" firstAttribute="top" secondItem="YxU-HH-uyR" secondAttribute="bottom" id="o3q-Hb-gbA"/>
+                            <constraint firstAttribute="trailing" secondItem="YxU-HH-uyR" secondAttribute="trailing" id="tjw-bL-Npf"/>
+                            <constraint firstItem="YxU-HH-uyR" firstAttribute="top" secondItem="W4W-vk-HYH" secondAttribute="top" id="y34-kh-fyF"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="clipTitle" destination="Eb3-EQ-haI" id="Rzf-KA-Jma"/>
+                        <outlet property="episodePubDate" destination="Qln-nW-afb" id="OOg-tm-0QB"/>
+                        <outlet property="episodeTitle" destination="VSV-X3-F3R" id="Mdj-hw-9yd"/>
+                        <outlet property="podcastImage" destination="Qof-lo-qVg" id="Nfl-FD-5rT"/>
+                        <outlet property="podcastTitle" destination="oPA-Sq-KsM" id="Yqh-q5-GMn"/>
+                        <outlet property="tableView" destination="66V-Ai-gzL" id="zSh-hF-Aay"/>
+                        <outlet property="time" destination="cUO-fQ-0ot" id="AZV-uT-kSD"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="fGB-Qi-zBQ" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2221.5999999999999" y="-2670.3148425787108"/>
+        </scene>
+        <!--Make Clip-->
+        <scene sceneID="ze6-CL-MaB">
+            <objects>
+                <viewController title="Make Clip" id="zd7-Mp-9ff" customClass="MakeClipViewController" customModule="Podverse" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="z1p-4z-gR6"/>
+                        <viewControllerLayoutGuide type="bottom" id="rnE-wE-PbD"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="QbK-Pi-Mw9">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="lwi-OT-clR" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2980" y="-2670"/>
+        </scene>
         <!--Media Player View Controller-->
         <scene sceneID="UQ2-yh-9RT">
             <objects>
@@ -1190,6 +1310,8 @@
                         <outlet property="progress" destination="Yv3-Oc-a1n" id="6An-JE-nQb"/>
                         <outlet property="speed" destination="7Cr-KC-kdT" id="cbh-bz-Vwn"/>
                         <outlet property="view" destination="N8d-St-BhC" id="a5o-uf-OqS"/>
+                        <segue destination="KLO-yl-1MA" kind="show" identifier="Show Add to Playlist" id="nDQ-g4-4ny"/>
+                        <segue destination="zd7-Mp-9ff" kind="show" identifier="Show Make Clip" id="Dev-wo-Kx8"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="i6M-Yi-mpb" userLabel="First Responder" sceneMemberID="firstResponder"/>

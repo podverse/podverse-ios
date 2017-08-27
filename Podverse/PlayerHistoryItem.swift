@@ -116,4 +116,22 @@ class PlayerHistoryItem: NSObject, NSCoding {
         return self
     }
     
+    func readableStartAndEndTime() -> String? {
+        var time: String?
+        
+        if let startTime = self.startTime {
+            if let endTime = self.endTime {
+                if endTime > 0 {
+                    time = startTime.toMediaPlayerString() + " to " + endTime.toMediaPlayerString()
+                }
+            } else if startTime == 0 {
+                time = "--:--"
+            } else {
+                time = "Starts:" + startTime.toMediaPlayerString()
+            }
+        }
+        
+        return time
+    }
+    
 }

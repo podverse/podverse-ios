@@ -245,15 +245,30 @@ class MediaPlayerViewController: PVViewController {
         speed.setTitle(playerSpeedRate.speedText, for: .normal)
     }
     
-    func showShareMenu() {
-        return
+    func showAddToPlaylist() {
+        self.navigationItem.backBarButtonItem = UIBarButtonItem(title:"Player", style:.plain, target:nil, action:nil)
+        
+        let addToPlaylistActions = UIAlertController(title: "Add to Playlist", message: "", preferredStyle: UIAlertControllerStyle.actionSheet)
+        
+        addToPlaylistActions.addAction(UIAlertAction(title: "Full Episode", style: .default, handler: { action in
+            self.performSegue(withIdentifier: "Show Add to Playlist", sender: "Full Episode")
+        }))
+        
+        addToPlaylistActions.addAction(UIAlertAction(title: "Current Clip", style: .default, handler: { action in
+            self.performSegue(withIdentifier: "Show Add to Playlist", sender: "Current Clip")
+        }))
+        
+        addToPlaylistActions.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        
+        self.present(addToPlaylistActions, animated: true, completion: nil)
     }
     
     func showMakeClip() {
-        return
+        self.navigationItem.backBarButtonItem = UIBarButtonItem(title:"Player", style:.plain, target:nil, action:nil)
+        self.performSegue(withIdentifier: "Show Make Clip", sender: self)
     }
     
-    func showAddToPlaylist() {
+    func showShareMenu() {
         return
     }
     
@@ -322,6 +337,27 @@ class MediaPlayerViewController: PVViewController {
             newViewController.didMove(toParentViewController: self)
         })
     }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        
+        if segue.identifier == "Show Add to Playlist" {
+            
+            if let sender = sender as? String, let nowPlayingItem = playerHistoryManager.historyItems.first {
+                let addToPlaylistViewController = segue.destination as! AddToPlaylistViewController
+                
+                if sender == "Full Episode" {
+                    addToPlaylistViewController.shouldSaveFullEpisode = true
+                } else {
+                    addToPlaylistViewController.shouldSaveFullEpisode = false
+                }
+                
+                addToPlaylistViewController.playerHistoryItem = nowPlayingItem
+            }
+            
+        }
+        
+    }
+    
 }
 
 extension MediaPlayerViewController:ClipsListDelegate {
