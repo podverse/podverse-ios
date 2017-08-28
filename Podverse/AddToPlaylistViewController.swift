@@ -71,9 +71,42 @@ class AddToPlaylistViewController: UIViewController {
         self.activityIndicator.hidesWhenStopped = true
         showIndicator()
         
+        let new = UIBarButtonItem(title: "New", style: .plain, target: self, action: #selector(showCreatePlaylist))
+        self.navigationItem.rightBarButtonItem = new
+        
         Playlist.retrievePlaylistsFromServer() { (playlists) -> Void in
             self.reloadPlaylistData(playlists: playlists)
         }
+        
+    }
+    
+    func showCreatePlaylist() {
+        
+        if self.reachability.hasInternetConnection() == false {
+            self.showStatusMessage(message: "You must connect to the internet to create a playlist.")
+            return
+        }
+
+        let createPlaylist = UIAlertController(title: "New Playlist", message: "Playlists are visible to anyone with link.", preferredStyle: UIAlertControllerStyle.alert)
+        
+        createPlaylist.addTextField(configurationHandler: {(textField: UITextField!) in
+            textField.placeholder = "Title of playlist"
+        })
+        
+        createPlaylist.addAction(UIAlertAction(title: "Cancel", style: .default, handler: nil))
+        
+        createPlaylist.addAction(UIAlertAction(title: "Add", style: .default, handler: { (action: UIAlertAction!) in
+            if let textField = createPlaylist.textFields?[0], let text = textField.text {
+                Playlist.createPlaylist(title: text) { playlist in
+                    if let playlist = playlist {
+                        self.playlistsArray.append(playlist)
+                        self.tableView.reloadData()
+                    }
+                }
+            }
+        }))
+        
+        self.present(createPlaylist, animated: true, completion: nil)
         
     }
     

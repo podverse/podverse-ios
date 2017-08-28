@@ -150,4 +150,67 @@ class Playlist {
         
     }
     
+    static func createPlaylist (title: String?, completion: @escaping (_ playlist: Playlist?) -> Void) {
+        
+        if let url = URL(string: "http://localhost:8080/playlists/") {
+            
+            var request = URLRequest(url: url, cachePolicy: NSURLRequest.CachePolicy.reloadIgnoringLocalAndRemoteCacheData, timeoutInterval: 60)
+            request.httpMethod = "POST"
+            
+            guard let idToken = UserDefaults.standard.string(forKey: "idToken") else {
+                DispatchQueue.main.async {
+                    completion(nil)
+                }
+                return
+            }
+            
+            request.setValue(idToken, forHTTPHeaderField: "authorization")
+            
+            var postString = ""
+            
+            if let title = title {
+                postString += "title=" + title
+            }
+            
+            if let userName = UserDefaults.standard.string(forKey: "userName") {
+                postString += "&userName=" + userName
+            }
+            
+            request.httpBody = postString.data(using: .utf8)
+            
+            let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                
+                guard error == nil else {
+                    DispatchQueue.main.async {
+                        completion(nil)
+                    }
+                    return
+                }
+                
+                if let data = data {
+                    do {
+                        let playlist: Playlist?
+                        
+                        if let item = try JSONSerialization.jsonObject(with: data, options: []) as? [String:Any] {
+                            playlist = jsonToPlaylist(item: item)
+                            
+                            DispatchQueue.main.async {
+                                completion(playlist)
+                            }
+                            
+                        }
+                    } catch {
+                        print(error)
+                        print("Error")
+                    }
+                }
+                
+            }
+            
+            task.resume()
+            
+        }
+
+    }
+    
 }
