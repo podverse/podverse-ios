@@ -9,7 +9,8 @@
 import UIKit
 
 class PlayerHistoryItem: NSObject, NSCoding {
-
+    
+    let mediaRefId: String?
     let podcastFeedUrl: String?
     let podcastTitle: String?
     let podcastImageUrl: String?
@@ -28,7 +29,8 @@ class PlayerHistoryItem: NSObject, NSCoding {
     var lastPlaybackPosition: Int64?
     var lastUpdated: Date?
     
-    required init(podcastFeedUrl:String? = nil, podcastTitle:String? = nil, podcastImageUrl:String? = nil, episodeDuration: Int64? = nil, episodeMediaUrl:String? = nil, episodeTitle:String? = nil, episodeImageUrl:String? = nil, episodeSummary:String? = nil, episodePubDate:Date? = nil, startTime:Int64? = nil, endTime:Int64? = nil, clipTitle:String? = nil, ownerName:String? = nil, ownerId:String? = nil, hasReachedEnd:Bool, lastPlaybackPosition:Int64? = 0, lastUpdated:Date? = nil) {
+    required init(mediaRefId:String? = nil, podcastFeedUrl:String? = nil, podcastTitle:String? = nil, podcastImageUrl:String? = nil, episodeDuration: Int64? = nil, episodeMediaUrl:String? = nil, episodeTitle:String? = nil, episodeImageUrl:String? = nil, episodeSummary:String? = nil, episodePubDate:Date? = nil, startTime:Int64? = nil, endTime:Int64? = nil, clipTitle:String? = nil, ownerName:String? = nil, ownerId:String? = nil, hasReachedEnd:Bool, lastPlaybackPosition:Int64? = 0, lastUpdated:Date? = nil) {
+        self.mediaRefId = mediaRefId
         self.podcastFeedUrl = podcastFeedUrl
         self.podcastTitle = podcastTitle
         self.podcastImageUrl = podcastImageUrl
@@ -49,6 +51,7 @@ class PlayerHistoryItem: NSObject, NSCoding {
     }
     
     required init(coder decoder: NSCoder) {
+        self.mediaRefId = decoder.decodeObject(forKey: "mediaRefId") as? String
         self.podcastFeedUrl = decoder.decodeObject(forKey: "podcastFeedUrl") as? String
         self.podcastTitle = decoder.decodeObject(forKey: "podcastTitle") as? String
         self.podcastImageUrl = decoder.decodeObject(forKey: "podcastImageUrl") as? String
@@ -69,6 +72,7 @@ class PlayerHistoryItem: NSObject, NSCoding {
     }
     
     func encode(with coder: NSCoder) {
+        coder.encode(mediaRefId, forKey: "mediaRefId")
         coder.encode(podcastFeedUrl, forKey:"podcastFeedUrl")
         coder.encode(podcastTitle, forKey:"podcastTitle")
         coder.encode(podcastImageUrl, forKey:"podcastImageUrl")
