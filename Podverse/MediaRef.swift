@@ -9,6 +9,7 @@
 import Foundation
 
 class MediaRef {
+    var id: String?
     var title: String?
     var startTime: Int64?
     var endTime: Int64?
@@ -23,6 +24,8 @@ class MediaRef {
     static func jsonToMediaRef(item: [String:Any]) -> MediaRef {
 
         let mediaRef = MediaRef()
+        
+        mediaRef.id = item["id"] as? String
         mediaRef.title = item["title"] as? String
         mediaRef.startTime = item["startTime"] as? Int64
         mediaRef.endTime = item["endTime"] as? Int64
@@ -44,7 +47,7 @@ class MediaRef {
     }
     
     static func retrieveMediaRefsFromServer(episodeMediaUrl: String? = nil, podcastFeedUrl: String? = nil, onlySubscribed: Bool? = nil, completion: @escaping (_ mediaRefs:[MediaRef]?) -> Void) {
-        if let url = URL(string: "https://podverse.fm/api/clips") {
+        if let url = URL(string: "http://localhost:8080/api/clips") {
             var request = URLRequest(url: url, cachePolicy: NSURLRequest.CachePolicy.reloadIgnoringLocalAndRemoteCacheData, timeoutInterval: 60)
             request.httpMethod = "POST"
             
@@ -140,4 +143,79 @@ class MediaRef {
             return "(untitled clip)"
         }
     }
+    
+    // :(
+    static func convertPlayerHistoryItemToMediaRefPostString(item: PlayerHistoryItem, shouldSaveFullEpisode: Bool = false) -> String {
+        
+        var postString = ""
+        
+        if shouldSaveFullEpisode {
+            if let episodeMediaUrl = item.episodeMediaUrl {
+                postString += "mediaRefId=" + "episode_" + episodeMediaUrl + "&"
+            }
+        } else {
+            if let mediaRefId = item.mediaRefId {
+                postString += "mediaRefId=" + mediaRefId + "&"
+            }
+        }
+        
+        if let podcastFeedUrl = item.podcastFeedUrl {
+            postString += "podcastFeedURL=" + podcastFeedUrl + "&"
+        }
+        
+        if let podcastTitle = item.podcastTitle {
+            postString += "podcastTitle=" + podcastTitle + "&"
+        }
+        
+        if let podcastImageUrl = item.podcastImageUrl {
+            postString += "podcastImageURL=" + podcastImageUrl + "&"
+        }
+        
+        if let episodeDuration = item.episodeDuration {
+            postString += "episodeDuration=" + String(episodeDuration) + "&"
+        }
+        
+        if let episodeImageUrl = item.episodeImageUrl {
+            postString += "episodeImageURL=" + episodeImageUrl + "&"
+        }
+        
+        if let episodeMediaUrl = item.episodeMediaUrl {
+            postString += "episodeMediaURL=" + episodeMediaUrl + "&"
+        }
+        
+        if let episodePubDate = item.episodePubDate {
+            postString += "episodePubDate=" + episodePubDate.toString() + "&"
+        }
+        
+        if let episodeSummary = item.episodeSummary {
+            postString += "episodeSummary=" + episodeSummary + "&"
+        }
+        
+        if let episodeTitle = item.episodeTitle {
+            postString += "episodeTitle=" + episodeTitle + "&"
+        }
+        
+        if let startTime = item.startTime {
+            postString += "startTime=" + String(startTime) + "&"
+        }
+        
+        if let endTime = item.endTime {
+            postString += "endTime=" + String(endTime) + "&"
+        }
+        
+        if let clipTitle = item.clipTitle {
+            postString += "clipTitle=" + clipTitle + "&"
+        }
+        
+        if let ownerName = item.ownerName {
+            postString += "ownerName=" + ownerName + "&"
+        }
+        
+        if let ownerId = item.ownerId {
+            postString += "ownerId=" + ownerId + "&"
+        }
+        
+        return postString
+    }
+
 }

@@ -90,6 +90,7 @@ class PlayerHistory {
     
     func convertMediaRefToPlayerHistoryItem(mediaRef: MediaRef) -> PlayerHistoryItem {
         let playerHistoryItem = PlayerHistoryItem(
+            mediaRefId: mediaRef.id,
             podcastFeedUrl: mediaRef.podcastFeedUrl,
             podcastTitle: mediaRef.podcastTitle,
             podcastImageUrl: mediaRef.podcastImageUrl,

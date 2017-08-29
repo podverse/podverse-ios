@@ -214,7 +214,7 @@ class Playlist {
     }
     
     // TODO: addToPlaylist and removeFromPlaylist are identical except the urlString. How can we rewrite/consolidate them?
-    static func addToPlaylist(playlistId: String, mediaRefId: String, completion: @escaping (_ itemCount: String?) -> Void) {
+    static func addToPlaylist(playlistId: String, item: PlayerHistoryItem, shouldSaveFullEpisode: Bool = false, completion: @escaping (_ itemCount: Int?) -> Void) {
         
         let urlString = "http://localhost:8080/playlists/" + playlistId + "/addItem"
         
@@ -227,9 +227,7 @@ class Playlist {
                 request.setValue(idToken, forHTTPHeaderField: "authorization")
             }
             
-            var postString = ""
-            
-            postString += "mediaRefId=" + mediaRefId
+            let postString = MediaRef.convertPlayerHistoryItemToMediaRefPostString(item: item, shouldSaveFullEpisode: shouldSaveFullEpisode)
             
             request.httpBody = postString.data(using: .utf8)
             
@@ -244,7 +242,7 @@ class Playlist {
                 
                 if let data = data {
                     do {
-                        if let itemCount = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as? String {
+                        if let itemCount = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as? Int {
                             DispatchQueue.main.async {
                                 completion(itemCount)
                             }
@@ -278,9 +276,7 @@ class Playlist {
                 request.setValue(idToken, forHTTPHeaderField: "authorization")
             }
             
-            var postString = ""
-            
-            postString += "mediaRefId=" + mediaRefId
+            var postString = "mediaRefId=" + mediaRefId
             
             let task = URLSession.shared.dataTask(with: request) { data, response, error in
                 

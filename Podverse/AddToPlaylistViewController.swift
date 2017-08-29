@@ -195,20 +195,14 @@ extension AddToPlaylistViewController:UITableViewDelegate, UITableViewDataSource
         
         if let item = self.playerHistoryItem {
             
-            var mediaRefId = ""
-            
-            if let id = item.mediaRefId {
-                mediaRefId = id
-            } else {
-                if let episodeMediaUrl = item.episodeMediaUrl {
-                    mediaRefId = "episode_" + episodeMediaUrl
-                }
-            }
-            
             if let playlistId = playlist.id {
-                Playlist.addToPlaylist(playlistId: playlistId, mediaRefId: mediaRefId) { itemCount in
+                Playlist.addToPlaylist(playlistId: playlistId, item: item, shouldSaveFullEpisode: shouldSaveFullEpisode) { itemCount in
                     if let cell = self.tableView.cellForRow(at: indexPath) as? PlaylistTableViewCell {
-                        cell.itemsTotal.text = "Items: " + String(describing: itemCount)
+                        
+                        if let itemCount = itemCount {
+                            cell.itemsTotal.text = "Items: " + String(describing: itemCount)
+                        }
+                        
                     }
                 }
             }

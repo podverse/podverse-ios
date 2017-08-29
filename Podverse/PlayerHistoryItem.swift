@@ -10,7 +10,7 @@ import UIKit
 
 class PlayerHistoryItem: NSObject, NSCoding {
     
-    let mediaRefId: String?
+    var mediaRefId: String?
     let podcastFeedUrl: String?
     let podcastTitle: String?
     let podcastImageUrl: String?
