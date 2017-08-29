@@ -284,7 +284,37 @@ class MediaPlayerViewController: PVViewController {
     }
     
     func showShareMenu() {
-        return
+        
+        let shareActions = UIAlertController(title: "Share", message: "What do you want to share?", preferredStyle: UIAlertControllerStyle.actionSheet)
+        
+        shareActions.addAction(UIAlertAction(title: "Episode Link", style: .default, handler: { action in
+            if let item = self.playerHistoryManager.historyItems.first, let episodeMediaUrl = item.episodeMediaUrl {
+                let episodeUrlItem = ["http://localhost:8080/episodes/alias?mediaURL=" + episodeMediaUrl]
+                let activityViewController = UIActivityViewController(activityItems: episodeUrlItem, applicationActivities: nil)
+                activityViewController.popoverPresentationController?.sourceView = self.view
+                self.present(activityViewController, animated: true, completion: nil)
+            }
+        }))
+        
+        shareActions.addAction(UIAlertAction(title: "Current Clip Link", style: .default, handler: { action in
+            if let item = self.playerHistoryManager.historyItems.first, let mediaRefId = item.mediaRefId {
+                let mediaRefUrlItem = ["http://localhost:8080/clips/" + mediaRefId]
+                let activityViewController = UIActivityViewController(activityItems: mediaRefUrlItem, applicationActivities: nil)
+                activityViewController.popoverPresentationController?.sourceView = self.view
+                self.present(activityViewController, animated: true, completion: nil)
+            }
+        }))
+        
+        if let item = self.playerHistoryManager.historyItems.first {
+            if item.mediaRefId == nil {
+                shareActions.actions[1].isEnabled = false
+            }
+        }
+        
+        shareActions.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        
+        self.present(shareActions, animated: true, completion: nil)
+        
     }
     
     func showAboutView() {
