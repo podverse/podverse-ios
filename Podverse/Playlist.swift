@@ -278,6 +278,8 @@ class Playlist {
             
             var postString = "mediaRefId=" + mediaRefId
             
+            request.httpBody = postString.data(using: .utf8)
+            
             let task = URLSession.shared.dataTask(with: request) { data, response, error in
                 
                 guard error == nil else {
