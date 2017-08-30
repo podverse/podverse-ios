@@ -296,7 +296,7 @@ class MediaPlayerViewController: PVViewController {
             }
         }))
         
-        shareActions.addAction(UIAlertAction(title: "Current Clip Link", style: .default, handler: { action in
+        shareActions.addAction(UIAlertAction(title: "Clip Link", style: .default, handler: { action in
             if let item = self.playerHistoryManager.historyItems.first, let mediaRefId = item.mediaRefId {
                 let mediaRefUrlItem = ["http://localhost:8080/clips/" + mediaRefId]
                 let activityViewController = UIActivityViewController(activityItems: mediaRefUrlItem, applicationActivities: nil)
