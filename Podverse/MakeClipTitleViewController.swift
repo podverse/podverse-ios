@@ -8,7 +8,7 @@
 
 import UIKit
 
-class MakeClipTitleViewController: UIViewController, UITextFieldDelegate {
+class MakeClipTitleViewController: UIViewController, UITextViewDelegate {
 
     var endTime: Int?
     var playerHistoryItem: PlayerHistoryItem?
@@ -22,6 +22,14 @@ class MakeClipTitleViewController: UIViewController, UITextFieldDelegate {
     @IBOutlet weak var saveButton: UIButton!
     @IBOutlet weak var startTimeLabel: UILabel!
     @IBOutlet weak var titleInput: UITextView!
+    
+    func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
+        if (text == "\n") {
+            textView.resignFirstResponder()
+            return false
+        }
+        return true
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -52,14 +60,9 @@ class MakeClipTitleViewController: UIViewController, UITextFieldDelegate {
             } else {
                 self.duration.text = "Duration:"
             }
-            
         }
         
     }
     
-    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        self.view.endEditing(true)
-        return false
-    }
-
+    
 }
