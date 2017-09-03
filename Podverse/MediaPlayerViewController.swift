@@ -6,10 +6,10 @@
 //  Copyright © 2017 Podverse LLC. All rights reserved.
 //
 
-import UIKit
-import CoreData
 import AVFoundation
+import CoreData
 import StreamingKit
+import UIKit
 
 class MediaPlayerViewController: PVViewController {
     
@@ -53,13 +53,14 @@ class MediaPlayerViewController: PVViewController {
         
         addObservers()
         
-        activityIndicator.startAnimating()
+        self.activityIndicator.startAnimating()
         
         setupTimer()
     }
     
     deinit {
         removeObservers()
+        removeTimer()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -83,7 +84,7 @@ class MediaPlayerViewController: PVViewController {
     
     @IBAction func sliderAction(_ sender: UISlider) {
         let duration = audioPlayer.duration
-        var newTime = Double(sender.value) * duration
+        let newTime = Double(sender.value) * duration
         audioPlayer.seek(toTime: newTime)
         updateTime()
     }
@@ -279,7 +280,7 @@ class MediaPlayerViewController: PVViewController {
         }
         
         self.navigationItem.backBarButtonItem = UIBarButtonItem(title:"Player", style:.plain, target:nil, action:nil)
-        self.performSegue(withIdentifier: "Show Make Clip", sender: self)
+        self.performSegue(withIdentifier: "Show Make Clip Time", sender: self)
         
     }
     
@@ -397,6 +398,14 @@ class MediaPlayerViewController: PVViewController {
                 }
                 
                 addToPlaylistViewController.playerHistoryItem = nowPlayingItem
+            }
+            
+        } else if segue.identifier == "Show Make Clip Time" {
+            
+            if let nowPlayingItem = playerHistoryManager.historyItems.first {
+                let makeClipTimeViewController = segue.destination as! MakeClipTimeViewController
+                makeClipTimeViewController.playerHistoryItem = nowPlayingItem
+                makeClipTimeViewController.startTime = Int(self.audioPlayer.progress)
             }
             
         }
