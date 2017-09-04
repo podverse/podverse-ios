@@ -32,6 +32,8 @@ class ClipsTableViewController: PVViewController {
         activityIndicator.hidesWhenStopped = true
         showIndicator()
         
+        tableView.rowHeight = UITableViewAutomaticDimension
+        
         MediaRef.retrieveMediaRefsFromServer() { (mediaRefs) -> Void in
             self.reloadClipData(mediaRefs: mediaRefs)
         }
@@ -89,7 +91,11 @@ class ClipsTableViewController: PVViewController {
 
 extension ClipsTableViewController:UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 120
+        return UITableViewAutomaticDimension
+    }
+    
+    func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
+        return UITableViewAutomaticDimension
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -125,18 +131,12 @@ extension ClipsTableViewController:UITableViewDelegate, UITableViewDataSource {
             cell.episodePubDate?.text = episodePubDate.toShortFormatString()
         }
         
-        DispatchQueue.global().async {
-            var cellImage:UIImage?
-            // TODO: remotely retrieve cell image, if it isn't saved with a podcast locally
-            cellImage = UIImage(named: "PodverseIcon")
-
-            DispatchQueue.main.async {
-                if let visibleRows = self.tableView.indexPathsForVisibleRows, visibleRows.contains(indexPath) {
-                    let existingCell = self.tableView.cellForRow(at: indexPath) as! ClipTableViewCell
-                    existingCell.podcastImage.image = cellImage
-                }
+        Podcast.retrievePodcastImage(podcastImageURLString: clip.podcastImageUrl) { (podcastImage) -> Void in
+            if let visibleRows = self.tableView.indexPathsForVisibleRows, visibleRows.contains(indexPath), let existingCell = self.tableView.cellForRow(at: indexPath) as? ClipTableViewCell, let podcastImage = podcastImage {
+                existingCell.podcastImage?.image = podcastImage
             }
         }
+
         
         return cell
     }

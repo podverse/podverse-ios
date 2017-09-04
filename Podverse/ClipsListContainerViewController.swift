@@ -12,6 +12,23 @@ protocol ClipsListDelegate:class {
     func didSelectClip(clip:MediaRef)
 }
 
+enum ClipFilterTypes {
+    case episode, podcast, subscribed
+    
+    var text:String {
+        get {
+            switch self {
+            case .episode:
+                return "Episode"
+            case .podcast:
+                return "Podcast"
+            case .subscribed:
+                return "Subscribed"
+            }
+        }
+    }
+}
+
 class ClipsListContainerViewController: UIViewController {
 
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
@@ -27,7 +44,9 @@ class ClipsListContainerViewController: UIViewController {
     var clipsArray = [MediaRef]()
     weak var delegate:ClipsListDelegate?
     let reachability = PVReachability.shared
-        
+    
+    var filterTypeSelected:ClipFilterTypes = .episode
+    
     @IBAction func retryButtonTouched(_ sender: Any) {
         
     }
@@ -42,6 +61,7 @@ class ClipsListContainerViewController: UIViewController {
                 }
             }
             self.filterType.setTitle("Episode\u{2304}", for: .normal)
+            self.filterTypeSelected = .episode
         }))
         
         alert.addAction(UIAlertAction(title: "Podcast", style: .default, handler: { action in
@@ -51,6 +71,7 @@ class ClipsListContainerViewController: UIViewController {
                 }
             }
             self.filterType.setTitle("Podcast\u{2304}", for: .normal)
+            self.filterTypeSelected = .podcast
         }))
         
         alert.addAction(UIAlertAction(title: "Subscribed", style: .default, handler: { action in
@@ -60,6 +81,7 @@ class ClipsListContainerViewController: UIViewController {
                 }
             }
             self.filterType.setTitle("Subscribed\u{2304}", for: .normal)
+            self.filterTypeSelected = .subscribed
         }))
         
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
@@ -76,6 +98,8 @@ class ClipsListContainerViewController: UIViewController {
         
         activityIndicator.hidesWhenStopped = true
         showIndicator()
+        
+        tableView.rowHeight = UITableViewAutomaticDimension
         
         if let item = pvMediaPlayer.currentlyPlayingItem {
             MediaRef.retrieveMediaRefsFromServer(episodeMediaUrl: item.episodeMediaUrl, podcastFeedUrl: nil) { (mediaRefs) -> Void in
@@ -142,29 +166,57 @@ extension ClipsListContainerViewController:UITableViewDelegate, UITableViewDataS
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 100
+        return UITableViewAutomaticDimension
+    }
+    
+    func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
+        return UITableViewAutomaticDimension
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-
-        let cell = tableView.dequeueReusableCell(withIdentifier: "mediaPlayerClipCell", for:indexPath) as! MediaPlayerClipTableViewCell
         
-        cell.contentView.layoutMargins.top = 16
-        cell.contentView.layoutMargins.bottom = 16
+        //if filterTypeSelected == .episode {
+            
+        //} else if filterTypeSelected == .podcast {
+            
+        //} else {
+            
+        //}
         
         let clip = clipsArray[indexPath.row]
         
-        if let title = clip.title {
-            cell.clipTitle.text = title
-        }
+        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! ClipTableViewCell
+        
+        cell.podcastTitle?.text = clip.podcastTitle
+        cell.episodeTitle?.text = clip.episodeTitle
+        cell.clipTitle?.text = clip.title
+        
+        var time: String?
         
         if let startTime = clip.startTime {
-            cell.startTime.text = startTime.toMediaPlayerString()
+            if let endTime = clip.endTime {
+                if endTime > 0 {
+                    time = startTime.toMediaPlayerString() + " to " + endTime.toMediaPlayerString()
+                }
+            } else {
+                time = "Starts:" + startTime.toMediaPlayerString()
+            }
         }
         
-        if let endTime = clip.endTime {
-            cell.endTime.text = endTime.toMediaPlayerString()
+        if let time = time {
+            cell.time?.text = time
         }
+        
+        if let episodePubDate = clip.episodePubDate {
+            cell.episodePubDate?.text = episodePubDate.toShortFormatString()
+        }
+        
+        Podcast.retrievePodcastImage(podcastImageURLString: clip.podcastImageUrl) { (podcastImage) -> Void in
+            if let visibleRows = self.tableView.indexPathsForVisibleRows, visibleRows.contains(indexPath), let existingCell = self.tableView.cellForRow(at: indexPath) as? ClipTableViewCell, let podcastImage = podcastImage {
+                    existingCell.podcastImage?.image = podcastImage
+            }
+        }
+        
         
         return cell
 

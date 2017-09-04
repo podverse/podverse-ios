@@ -54,7 +54,6 @@
 		E79515F41E03853500382BF8 /* PodverseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E79515F31E03853500382BF8 /* PodverseTests.swift */; };
 		E79515FF1E03853500382BF8 /* PodverseUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E79515FE1E03853500382BF8 /* PodverseUITests.swift */; };
 		E7AD9A981EDDF7160093F051 /* ClipsListContainerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7AD9A971EDDF7160093F051 /* ClipsListContainerViewController.swift */; };
-		E7AD9A9C1EDDFEAD0093F051 /* MediaPlayerClipTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7AD9A9B1EDDFEAD0093F051 /* MediaPlayerClipTableViewCell.swift */; };
 		E7B2A5971E11F95C00AAE036 /* PVMediaPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7B2A5961E11F95C00AAE036 /* PVMediaPlayer.swift */; };
 		E7B2A5991E12103D00AAE036 /* PVClipStreamer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7B2A5981E12103D00AAE036 /* PVClipStreamer.swift */; };
 		E7B2A59B1E12111500AAE036 /* URL+RemoteSize.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7B2A59A1E12111500AAE036 /* URL+RemoteSize.swift */; };
@@ -161,7 +160,6 @@
 		E79515FE1E03853500382BF8 /* PodverseUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = PodverseUITests.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		E79516001E03853500382BF8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		E7AD9A971EDDF7160093F051 /* ClipsListContainerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClipsListContainerViewController.swift; sourceTree = "<group>"; };
-		E7AD9A9B1EDDFEAD0093F051 /* MediaPlayerClipTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MediaPlayerClipTableViewCell.swift; sourceTree = "<group>"; };
 		E7B2A5961E11F95C00AAE036 /* PVMediaPlayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PVMediaPlayer.swift; sourceTree = "<group>"; };
 		E7B2A5981E12103D00AAE036 /* PVClipStreamer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PVClipStreamer.swift; sourceTree = "<group>"; };
 		E7B2A59A1E12111500AAE036 /* URL+RemoteSize.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "URL+RemoteSize.swift"; sourceTree = "<group>"; };
@@ -383,7 +381,6 @@
 				3097AA8E1EE7C1D500AD0ED0 /* ClipTableViewCell.swift */,
 				30026D8E1F0C2A6000043D79 /* DownloadTableViewCell.swift */,
 				30A575671EBED8360088CCA6 /* EpisodeTableViewCell.swift */,
-				E7AD9A9B1EDDFEAD0093F051 /* MediaPlayerClipTableViewCell.swift */,
 				E7B2A5A31E12CC5A00AAE036 /* PodcastTableViewCell.swift */,
 				30DBD4D81F11F42B00A431E6 /* PodcastSearchResultTableViewCell.swift */,
 			);
@@ -753,7 +750,6 @@
 				30026D8F1F0C2A6000043D79 /* DownloadTableViewCell.swift in Sources */,
 				E7D25BC41E0F13D300B60368 /* Podcast.swift in Sources */,
 				E753028C1E072F160007B6F7 /* String+Utilities.swift in Sources */,
-				E7AD9A9C1EDDFEAD0093F051 /* MediaPlayerClipTableViewCell.swift in Sources */,
 				E70E4A1F1E039047003CEC64 /* FindTableViewController.swift in Sources */,
 				E7B2A5991E12103D00AAE036 /* PVClipStreamer.swift in Sources */,
 				E7D25BC21E0F118C00B60368 /* PVFeedParser.swift in Sources */,
