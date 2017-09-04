@@ -52,7 +52,7 @@ extension MoreTableViewController:UITableViewDelegate, UITableViewDataSource {
         
         switch indexPath.row {
         case 0:
-            performSegue(withIdentifier: "Show Downlolads", sender: nil)
+            performSegue(withIdentifier: "Show Downloads", sender: nil)
         case 1:
             if let url = URL(string: "https://podverse.fm/about") {
                 UIApplication.shared.openURL(url)
