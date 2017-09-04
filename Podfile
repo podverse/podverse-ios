@@ -8,8 +8,8 @@ target 'Podverse' do
 
   # Pods for Podverse
   pod 'Alamofire', '~> 4.0'
-  pod 'Lock', '~> 1.26'
-  pod 'Auth0', '~> 1.0'
+  pod 'Lock', '~> 2.3'
+  pod 'Auth0', '~> 1.6'
   pod 'ReachabilitySwift', '~> 3'
   pod 'p2.OAuth2', '3.0.3'
 
