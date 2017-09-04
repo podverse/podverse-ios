@@ -14,7 +14,7 @@ class AboutPlayingItemViewController: UIViewController, UIWebViewDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        if let summary = PVMediaPlayer.shared.currentlyPlayingItem?.episodeSummary {
+        if let summary = PVMediaPlayer.shared.nowPlayingItem?.episodeSummary {
             self.webView.loadHTMLString(summary.formatHtmlString(), baseURL: nil)
         }
         self.view.backgroundColor = UIColor.black

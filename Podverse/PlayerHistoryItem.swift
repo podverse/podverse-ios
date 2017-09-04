@@ -13,39 +13,37 @@ class PlayerHistoryItem: NSObject, NSCoding {
     let podcastFeedUrl: String?
     let podcastTitle: String?
     let podcastImageUrl: String?
-    let episodeMediaUrl: String?
-    let episodeTitle: String?
+    let episodeDuration: Int64?
     let episodeImageUrl: String?
-    let episodeSummary: String?
-    let episodeDuration: NSNumber?
+    let episodeMediaUrl: String?
     let episodePubDate: Date?
-    let startTime: NSNumber?     // If startTime and endTime = 0, then item is a clip, else it is an episode
-    let endTime: NSNumber?
-    let clipTitle: String?
-    let clipDescription: String?
-    let ownerName: String?
-    let ownerId: String?
-    var wasDeleted: Bool?
-    let lastPlaybackPosition: NSNumber?
-    let lastUpdated: Date?
+    let episodeSummary: String?
+    let episodeTitle: String?
+    var startTime: Int64?     // If startTime and endTime = 0, then item is a clip, else it is an episode
+    var endTime: Int64?
+    var clipTitle: String?
+    var ownerName: String?
+    var ownerId: String?
+    var hasReachedEnd: Bool?
+    var lastPlaybackPosition: Int64?
+    var lastUpdated: Date?
     
-    required init(podcastFeedUrl:String? = nil, podcastTitle:String? = nil, podcastImageUrl:String? = nil, episodeMediaUrl:String? = nil, episodeTitle:String? = nil, episodeImageUrl:String? = nil, episodeSummary:String? = nil, episodeDuration:NSNumber? = nil, episodePubDate:Date? = nil, startTime:NSNumber? = nil, endTime:NSNumber? = nil, clipTitle:String? = nil, clipDescription:String? = nil, ownerName:String? = nil, ownerId:String? = nil, wasDeleted:Bool, lastPlaybackPosition:NSNumber? = 0, lastUpdated:Date? = nil) {
+    required init(podcastFeedUrl:String? = nil, podcastTitle:String? = nil, podcastImageUrl:String? = nil, episodeDuration: Int64? = nil, episodeMediaUrl:String? = nil, episodeTitle:String? = nil, episodeImageUrl:String? = nil, episodeSummary:String? = nil, episodePubDate:Date? = nil, startTime:Int64? = nil, endTime:Int64? = nil, clipTitle:String? = nil, ownerName:String? = nil, ownerId:String? = nil, hasReachedEnd:Bool, lastPlaybackPosition:Int64? = 0, lastUpdated:Date? = nil) {
         self.podcastFeedUrl = podcastFeedUrl
         self.podcastTitle = podcastTitle
         self.podcastImageUrl = podcastImageUrl
-        self.episodeMediaUrl = episodeMediaUrl
-        self.episodeTitle = episodeTitle
-        self.episodeImageUrl = episodeImageUrl
-        self.episodeSummary = episodeSummary
         self.episodeDuration = episodeDuration
+        self.episodeMediaUrl = episodeMediaUrl
+        self.episodeImageUrl = episodeImageUrl
         self.episodePubDate = episodePubDate
+        self.episodeSummary = episodeSummary
+        self.episodeTitle = episodeTitle
         self.startTime = startTime
         self.endTime = endTime
         self.clipTitle = clipTitle
-        self.clipDescription = clipDescription
         self.ownerName = ownerName
         self.ownerId = ownerId
-        self.wasDeleted = wasDeleted
+        self.hasReachedEnd = hasReachedEnd
         self.lastPlaybackPosition = lastPlaybackPosition
         self.lastUpdated = lastUpdated
     }
@@ -54,20 +52,19 @@ class PlayerHistoryItem: NSObject, NSCoding {
         self.podcastFeedUrl = decoder.decodeObject(forKey: "podcastFeedUrl") as? String
         self.podcastTitle = decoder.decodeObject(forKey: "podcastTitle") as? String
         self.podcastImageUrl = decoder.decodeObject(forKey: "podcastImageUrl") as? String
-        self.episodeMediaUrl = decoder.decodeObject(forKey: "episodeMediaUrl") as? String
-        self.episodeTitle = decoder.decodeObject(forKey: "episodeTitle") as? String
+        self.episodeDuration = decoder.decodeObject(forKey: "episodeDuration") as? Int64
         self.episodeImageUrl = decoder.decodeObject(forKey: "episodeImageUrl") as? String
+        self.episodeMediaUrl = decoder.decodeObject(forKey: "episodeMediaUrl") as? String
         self.episodeSummary = decoder.decodeObject(forKey: "episodeSummary") as? String
-        self.episodeDuration = decoder.decodeObject(forKey: "episodeDuration") as? NSNumber
         self.episodePubDate = decoder.decodeObject(forKey: "episodePubDate") as? Date
-        self.startTime = decoder.decodeObject(forKey: "startTime") as? NSNumber ?? 0
-        self.endTime = decoder.decodeObject(forKey: "endTime") as? NSNumber
+        self.episodeTitle = decoder.decodeObject(forKey: "episodeTitle") as? String
+        self.startTime = decoder.decodeObject(forKey: "startTime") as? Int64 ?? 0
+        self.endTime = decoder.decodeObject(forKey: "endTime") as? Int64
         self.clipTitle = decoder.decodeObject(forKey: "clipTitle") as? String
-        self.clipDescription = decoder.decodeObject(forKey: "clipDescription") as? String
         self.ownerName = decoder.decodeObject(forKey: "ownerName") as? String
         self.ownerId = decoder.decodeObject(forKey: "ownerId") as? String
-        self.wasDeleted = decoder.decodeObject(forKey: "wasDeleted") as? Bool
-        self.lastPlaybackPosition = decoder.decodeObject(forKey: "lastPlaybackPosition") as? NSNumber
+        self.hasReachedEnd = decoder.decodeObject(forKey: "hasReachedEnd") as? Bool
+        self.lastPlaybackPosition = decoder.decodeObject(forKey: "lastPlaybackPosition") as? Int64
         self.lastUpdated = decoder.decodeObject(forKey: "lastUpdated") as? Date
     }
     
@@ -75,21 +72,48 @@ class PlayerHistoryItem: NSObject, NSCoding {
         coder.encode(podcastFeedUrl, forKey:"podcastFeedUrl")
         coder.encode(podcastTitle, forKey:"podcastTitle")
         coder.encode(podcastImageUrl, forKey:"podcastImageUrl")
-        coder.encode(episodeMediaUrl, forKey:"episodeMediaUrl")
-        coder.encode(episodeTitle, forKey:"episodeTitle")
-        coder.encode(episodeImageUrl, forKey:"episodeImageUrl")
-        coder.encode(episodeSummary, forKey:"episodeSummary")
         coder.encode(episodeDuration, forKey:"episodeDuration")
+        coder.encode(episodeImageUrl, forKey:"episodeImageUrl")
+        coder.encode(episodeMediaUrl, forKey:"episodeMediaUrl")
         coder.encode(episodePubDate, forKey:"episodePubDate")
+        coder.encode(episodeSummary, forKey:"episodeSummary")
+        coder.encode(episodeTitle, forKey:"episodeTitle")
         coder.encode(startTime, forKey:"startTime")
         coder.encode(endTime, forKey:"endTime")
         coder.encode(clipTitle, forKey:"clipTitle")
-        coder.encode(clipDescription, forKey:"clipDescription")
         coder.encode(ownerName, forKey:"ownerName")
         coder.encode(ownerId, forKey:"ownerId")
-        coder.encode(wasDeleted, forKey:"wasDeleted")
+        coder.encode(hasReachedEnd, forKey:"hasReachedEnd")
         coder.encode(lastPlaybackPosition, forKey:"lastPlaybackPosition")
         coder.encode(lastUpdated, forKey:"lastUpdated")
+    }
+    
+    func isClip() -> Bool {
+        
+        if let startTime = self.startTime {
+            if startTime > 0 {
+                return true
+            }
+        } else if let endTime = self.endTime {
+            if endTime > 0 {
+                return true
+            }
+        }
+        
+        return false
+    }
+    
+    func convertClipToEpisode() -> PlayerHistoryItem {
+        self.clipTitle = nil
+        self.startTime = 0
+        self.endTime = nil
+        self.ownerName = nil
+        self.ownerId = nil
+        self.hasReachedEnd = false
+        self.lastPlaybackPosition = nil
+        self.lastUpdated = nil
+        
+        return self
     }
     
 }

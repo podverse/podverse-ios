@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12121" systemVersion="16F73" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="49e-Tb-3d3">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12121" systemVersion="16G29" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="49e-Tb-3d3">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
@@ -1063,6 +1063,9 @@
                                         <rect key="frame" x="273" y="60" width="47" height="30"/>
                                         <state key="normal" title="Device"/>
                                     </button>
+                                    <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="GzK-yD-80V">
+                                        <rect key="frame" x="169" y="12" width="37" height="37"/>
+                                    </activityIndicatorView>
                                 </subviews>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <constraints>
@@ -1072,11 +1075,13 @@
                                     <constraint firstItem="b1n-yz-gVu" firstAttribute="top" secondItem="xgo-aW-bmE" secondAttribute="top" constant="10" id="Bex-lS-muu"/>
                                     <constraint firstAttribute="trailing" secondItem="AAk-nK-md6" secondAttribute="trailing" constant="12" id="CWV-cK-oTS"/>
                                     <constraint firstItem="b1n-yz-gVu" firstAttribute="leading" secondItem="xgo-aW-bmE" secondAttribute="leading" constant="12" id="CwO-4M-Xuq"/>
+                                    <constraint firstItem="GzK-yD-80V" firstAttribute="centerX" secondItem="xgo-aW-bmE" secondAttribute="centerX" id="E6o-Qu-FxI"/>
                                     <constraint firstItem="AAk-nK-md6" firstAttribute="top" secondItem="xgo-aW-bmE" secondAttribute="top" constant="10" id="EVu-Qu-vHY"/>
                                     <constraint firstAttribute="trailing" secondItem="qsu-6Y-Pz9" secondAttribute="trailing" constant="55" id="GFe-Le-gxh"/>
                                     <constraint firstAttribute="bottom" secondItem="7Cr-KC-kdT" secondAttribute="bottom" constant="10" id="HHc-uS-Tqw"/>
                                     <constraint firstItem="mId-2b-yiM" firstAttribute="leading" secondItem="Ytt-PW-XUF" secondAttribute="trailing" constant="20" id="KHc-gD-J3m"/>
                                     <constraint firstAttribute="height" constant="100" id="Ted-1a-mff"/>
+                                    <constraint firstItem="GzK-yD-80V" firstAttribute="top" secondItem="xgo-aW-bmE" secondAttribute="top" constant="12" id="XGw-HI-hMb"/>
                                     <constraint firstAttribute="bottom" secondItem="qsu-6Y-Pz9" secondAttribute="bottom" constant="10" id="adO-a2-Un6"/>
                                     <constraint firstItem="Ytt-PW-XUF" firstAttribute="centerX" secondItem="xgo-aW-bmE" secondAttribute="centerX" id="gj5-1j-qlk"/>
                                     <constraint firstItem="xBK-no-JRj" firstAttribute="top" secondItem="xgo-aW-bmE" secondAttribute="top" constant="10" id="jbv-Dr-K9C"/>
@@ -1172,6 +1177,7 @@
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="activityIndicator" destination="GzK-yD-80V" id="2N6-SD-vWP"/>
                         <outlet property="clipsContainerView" destination="XV8-p8-n0p" id="IzA-zb-lBt"/>
                         <outlet property="currentTime" destination="uTA-rm-Ib9" id="APu-g9-5sk"/>
                         <outlet property="device" destination="qsu-6Y-Pz9" id="gA0-o7-2Iy"/>
@@ -1307,8 +1313,8 @@
                                     <outlet property="delegate" destination="PTS-x4-uBx" id="x2z-z9-ub1"/>
                                 </connections>
                             </tableView>
-                            <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="EiM-6C-YCB">
-                                <rect key="frame" x="8" y="253" width="359" height="599"/>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="EiM-6C-YCB">
+                                <rect key="frame" x="8" y="68" width="359" height="599"/>
                                 <subviews>
                                     <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="j2A-52-Vjl">
                                         <rect key="frame" x="161" y="281" width="37" height="37"/>

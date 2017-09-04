@@ -33,8 +33,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Load the last playerHistoryItem in the media player if the user didn't finish listening to it
         playerHistoryManager.loadData()
         if let previousItem = playerHistoryManager.historyItems.first {
-            if previousItem.wasDeleted != true {
-                pvMediaPlayer.loadPlayerHistoryItem(playerHistoryItem: previousItem)
+            if previousItem.hasReachedEnd != true {
+                pvMediaPlayer.loadPlayerHistoryItem(item: previousItem)
             }            
         }
         
@@ -58,8 +58,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func applicationWillTerminate(_ application: UIApplication) {
-        if PVMediaPlayer.shared.avPlayer.rate == 1 {
-            PVMediaPlayer.shared.saveCurrentTimeAsPlaybackPosition()
+        if pvMediaPlayer.audioPlayer.rate > 0.1 {
+            pvMediaPlayer.saveCurrentTimeAsPlaybackPosition()
         }
         
         UIApplication.shared.applicationIconBadgeNumber = 0
@@ -79,7 +79,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     override func remoteControlReceived(with event: UIEvent?) {
         if let evt = event {
-            PVMediaPlayer.shared.remoteControlReceivedWithEvent(event: evt)
+            pvMediaPlayer.remoteControlReceivedWithEvent(event: evt)
         }
     }
     
@@ -107,15 +107,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func skipBackwardEvent() {
-        if let currentItem = pvMediaPlayer.avPlayer.currentItem {
-            pvMediaPlayer.goToTime(seconds: CMTimeGetSeconds(currentItem.currentTime()) - 15)
-        }
+        pvMediaPlayer.audioPlayer.seek(toTime: pvMediaPlayer.audioPlayer.progress - 15)
     }
     
     func skipForwardEvent() {
-        if let currentItem = pvMediaPlayer.avPlayer.currentItem {
-            pvMediaPlayer.goToTime(seconds: CMTimeGetSeconds(currentItem.currentTime()) + 15)
-        }
+        pvMediaPlayer.audioPlayer.seek(toTime: pvMediaPlayer.audioPlayer.progress + 15)
     }
     
     func playOrPauseEvent() {

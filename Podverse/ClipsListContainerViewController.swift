@@ -45,7 +45,7 @@ class ClipsListContainerViewController: UIViewController {
     weak var delegate:ClipsListDelegate?
     let reachability = PVReachability.shared
     
-    var filterTypeSelected:ClipFilterTypes = .episode
+    var filterTypeSelected:ClipFilterTypes = .subscribed
     
     @IBAction func retryButtonTouched(_ sender: Any) {
         
@@ -55,7 +55,7 @@ class ClipsListContainerViewController: UIViewController {
         let alert = UIAlertController(title: "Clips From", message: nil, preferredStyle: .alert)
         
         alert.addAction(UIAlertAction(title: "Episode", style: .default, handler: { action in
-            if let item = self.pvMediaPlayer.currentlyPlayingItem {
+            if let item = self.pvMediaPlayer.nowPlayingItem {
                 MediaRef.retrieveMediaRefsFromServer(episodeMediaUrl: item.episodeMediaUrl, podcastFeedUrl: nil) { (mediaRefs) -> Void in
                     self.reloadClipData(mediaRefs: mediaRefs)
                 }
@@ -65,7 +65,7 @@ class ClipsListContainerViewController: UIViewController {
         }))
         
         alert.addAction(UIAlertAction(title: "Podcast", style: .default, handler: { action in
-            if let item = self.pvMediaPlayer.currentlyPlayingItem {
+            if let item = self.pvMediaPlayer.nowPlayingItem {
                 MediaRef.retrieveMediaRefsFromServer(episodeMediaUrl: nil, podcastFeedUrl: item.podcastFeedUrl) { (mediaRefs) -> Void in
                     self.reloadClipData(mediaRefs: mediaRefs)
                 }
@@ -75,7 +75,7 @@ class ClipsListContainerViewController: UIViewController {
         }))
         
         alert.addAction(UIAlertAction(title: "Subscribed", style: .default, handler: { action in
-            if let _ = self.pvMediaPlayer.currentlyPlayingItem {
+            if let _ = self.pvMediaPlayer.nowPlayingItem {
                 MediaRef.retrieveMediaRefsFromServer(episodeMediaUrl: nil, podcastFeedUrl: nil) { (mediaRefs) -> Void in
                     self.reloadClipData(mediaRefs: mediaRefs)
                 }
@@ -101,13 +101,13 @@ class ClipsListContainerViewController: UIViewController {
         
         tableView.rowHeight = UITableViewAutomaticDimension
         
-        if let item = pvMediaPlayer.currentlyPlayingItem {
+        if let item = pvMediaPlayer.nowPlayingItem {
             MediaRef.retrieveMediaRefsFromServer(episodeMediaUrl: item.episodeMediaUrl, podcastFeedUrl: nil) { (mediaRefs) -> Void in
                 self.reloadClipData(mediaRefs: mediaRefs)
             }
         }
         
-        filterType.setTitle("Episode\u{2304}", for: .normal)
+        filterType.setTitle("Subscribed\u{2304}", for: .normal)
     }
     
     func reloadClipData(mediaRefs: [MediaRef]? = nil) {

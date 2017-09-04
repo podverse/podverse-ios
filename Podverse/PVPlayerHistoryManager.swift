@@ -56,29 +56,54 @@ class PlayerHistory {
         return self.documentsDirectory().appendingFormat("/.plist")
     }
     
-    func addOrUpdateItem(item: PlayerHistoryItem) {
-
-        let previousIndex = historyItems.index(where: { (previousItem) -> Bool in // thanks sschuth https://stackoverflow.com/a/24069331/2608858
-            previousItem.episodeMediaUrl == item.episodeMediaUrl
-        })
+    func addOrUpdateItem(item: PlayerHistoryItem?) {
         
-        if let index = previousIndex {
-            historyItems[index] = item
-            historyItems.rearrange(from: index, to: 0)
-        } else {
-            historyItems.insert(item, at: 0)
+        if let item = item {
+            let previousIndex = historyItems.index(where: { (previousItem) -> Bool in // thanks sschuth https://stackoverflow.com/a/24069331/2608858
+                previousItem.episodeMediaUrl == item.episodeMediaUrl
+            })
+            
+            if let index = previousIndex {
+                historyItems[index] = item
+                historyItems.rearrange(from: index, to: 0)
+            } else {
+                historyItems.insert(item, at: 0)
+            }    
         }
-
+        
     }
     
     func convertEpisodeToPlayerHistoryItem(episode: Episode) -> PlayerHistoryItem {
-        let playerHistoryItem = PlayerHistoryItem(podcastFeedUrl: episode.podcast.feedUrl, podcastTitle: episode.podcast.title, podcastImageUrl: episode.podcast.imageUrl, episodeMediaUrl: episode.mediaUrl, episodeTitle: episode.title, episodeSummary: episode.summary, episodeDuration: episode.duration, episodePubDate: episode.pubDate, wasDeleted: false, lastPlaybackPosition: 0)
+        let playerHistoryItem = PlayerHistoryItem(
+            podcastFeedUrl: episode.podcast.feedUrl,
+            podcastTitle: episode.podcast.title,
+            podcastImageUrl: episode.podcast.imageUrl,
+            episodeMediaUrl: episode.mediaUrl,
+            episodeTitle: episode.title,
+            episodeSummary: episode.summary,
+            episodePubDate: episode.pubDate,
+            hasReachedEnd: false,
+            lastPlaybackPosition: 0)
         
         return playerHistoryItem
     }
     
-    func convertMediaRefToPlayerHistoryItem(mediaRef: MediaRef) {
+    func convertMediaRefToPlayerHistoryItem(mediaRef: MediaRef) -> PlayerHistoryItem {
+        let playerHistoryItem = PlayerHistoryItem(
+            podcastFeedUrl: mediaRef.podcastFeedUrl,
+            podcastTitle: mediaRef.podcastTitle,
+            podcastImageUrl: mediaRef.podcastImageUrl,
+            episodeMediaUrl: mediaRef.episodeMediaUrl,
+            episodeTitle: mediaRef.episodeTitle,
+            episodeSummary: mediaRef.episodeSummary,
+            episodePubDate: mediaRef.episodePubDate,
+            startTime: mediaRef.startTime,
+            endTime: mediaRef.endTime,
+            clipTitle: mediaRef.title,
+            hasReachedEnd: false,
+            lastPlaybackPosition: 0)
         
+        return playerHistoryItem
     }
     
     func checkIfPodcastWasLastPlayed(feedUrl: String) -> Bool {

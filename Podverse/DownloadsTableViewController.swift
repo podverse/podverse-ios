@@ -36,7 +36,7 @@ class DownloadsTableViewController: PVViewController {
     
     override func goToNowPlaying () {
         if let mediaPlayerVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "MediaPlayerVC") as? MediaPlayerViewController {
-            mediaPlayerVC.shouldAutoplay = true
+            pvMediaPlayer.shouldAutoplayOnce = true
             self.navigationController?.pushViewController(mediaPlayerVC, animated: true)
         }
     }
@@ -106,7 +106,7 @@ extension DownloadsTableViewController:UITableViewDelegate, UITableViewDataSourc
             if let mediaUrl = downloadingEpisode.mediaUrl {
                 let episode = CoreDataHelper.retrieveExistingOrCreateNewEpisode(mediaUrlString: mediaUrl, moc: moc)
                 let playerHistoryItem = playerHistoryManager.convertEpisodeToPlayerHistoryItem(episode: episode)
-                pvMediaPlayer.loadPlayerHistoryItem(playerHistoryItem: playerHistoryItem)
+                pvMediaPlayer.loadPlayerHistoryItem(item: playerHistoryItem)
                 goToNowPlaying()
             }
         } else {

@@ -15,7 +15,7 @@ extension Notification.Name {
     static let podcastDeleted = Notification.Name("podcastDeleted")
 }
 
-class PVDeleter {
+class PVDeleter: NSObject {
     
     static func deletePodcast(podcastId: NSManagedObjectID?, feedUrl: String? = nil) {
         let moc = CoreDataHelper.createMOCForThread(threadType: .privateThread)
@@ -45,6 +45,9 @@ class PVDeleter {
     }
     
     static func deleteEpisode(episodeId: NSManagedObjectID, fileOnly: Bool = false, shouldCallNotificationMethod: Bool = false) {
+        
+        let pvMediaPlayer = PVMediaPlayer.shared
+        
         DispatchQueue.global().async {
             let moc = CoreDataHelper.createMOCForThread(threadType: .privateThread)
             
@@ -63,10 +66,10 @@ class PVDeleter {
                 
                 DownloadingEpisodeList.removeDownloadingEpisodeWithMediaURL(mediaUrl: mediaUrl)
                 
-                if let currentlyPlayingItem = PVMediaPlayer.shared.currentlyPlayingItem {
-                    if mediaUrl == currentlyPlayingItem.episodeMediaUrl {
-                        PVMediaPlayer.shared.avPlayer.pause()
-                        PVMediaPlayer.shared.currentlyPlayingItem = nil
+                if let nowPlayingItem = pvMediaPlayer.nowPlayingItem {
+                    if mediaUrl == nowPlayingItem.episodeMediaUrl {
+                        pvMediaPlayer.audioPlayer.pause()
+                        pvMediaPlayer.nowPlayingItem = nil
                     }
                 }
                 
@@ -79,9 +82,9 @@ class PVDeleter {
                     CoreDataHelper.deleteItemFromCoreData(deleteObjectID: episode.objectID, moc: moc)
                 }
                 
-                if var currentlyPlayingItem = PlayerHistory.manager.historyItems.first {
-                    currentlyPlayingItem.wasDeleted = true
-                    PlayerHistory.manager.addOrUpdateItem(item: currentlyPlayingItem)
+                if var nowPlayingItem = PlayerHistory.manager.historyItems.first {
+                    nowPlayingItem.hasReachedEnd = true
+                    PlayerHistory.manager.addOrUpdateItem(item: nowPlayingItem)
                 }
                 
                 moc.saveData() {
