@@ -181,7 +181,7 @@ extension PVDownloader:URLSessionDelegate, URLSessionDownloadDelegate {
                     do {
                         try fileManager.removeItem(atPath: path)
                     } catch {
-                        print(error)
+                        print(error.localizedDescription)
                     }
                 }
             }
@@ -227,7 +227,7 @@ extension PVDownloader:URLSessionDelegate, URLSessionDownloadDelegate {
                     }
                 }
             } catch {
-                print(error)
+                print(error.localizedDescription)
             }
         }
     }

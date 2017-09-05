@@ -89,7 +89,7 @@ class MediaRef {
                         }
                         
                     } catch {
-                        print(error)
+                        print(error.localizedDescription)
                         print("Error")
                     }
                 }

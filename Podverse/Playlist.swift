@@ -84,7 +84,7 @@ class Playlist {
                         }
                         
                     } catch {
-                        print(error)
+                        print(error.localizedDescription)
                         print("Error")
                     }
                 }
@@ -135,7 +135,7 @@ class Playlist {
                         }
                         
                     } catch {
-                        print(error)
+                        print(error.localizedDescription)
                         print("Error")
                     }
                 }
