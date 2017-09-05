@@ -94,8 +94,7 @@ class MediaRef {
                         }
                         
                     } catch {
-                        print(error.localizedDescription)
-                        print("Error")
+                        print("Error: " + error.localizedDescription)
                     }
                 }
             }

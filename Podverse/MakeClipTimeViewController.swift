@@ -255,18 +255,10 @@ class MakeClipTimeViewController: UIViewController, UITextFieldDelegate {
         
         if segue.identifier == "Show Make Clip Title" {
             
-            if let playerHistoryItem = playerHistoryItem {
-                let makeClipTitleViewController = segue.destination as! MakeClipTitleViewController
+            if let playerHistoryItem = playerHistoryItem, let makeClipTitleViewController = segue.destination as? MakeClipTitleViewController {
                 makeClipTitleViewController.playerHistoryItem = playerHistoryItem
-                
-                if let startTime = self.startTime {
-                    makeClipTitleViewController.startTime = startTime
-                }
-                
-                if let endTime = self.endTime {
-                    makeClipTitleViewController.endTime = endTime
-                }
-                
+                makeClipTitleViewController.startTime = self.startTime
+                makeClipTitleViewController.endTime = self.endTime
             }
             
         }

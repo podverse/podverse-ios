@@ -388,9 +388,7 @@ class MediaPlayerViewController: PVViewController {
         
         if segue.identifier == "Show Add to Playlist" {
             
-            if let sender = sender as? String, let nowPlayingItem = playerHistoryManager.historyItems.first {
-                let addToPlaylistViewController = segue.destination as! AddToPlaylistViewController
-                
+            if let sender = sender as? String, let nowPlayingItem = playerHistoryManager.historyItems.first, let addToPlaylistViewController = segue.destination as? AddToPlaylistViewController {
                 if sender == "Full Episode" {
                     addToPlaylistViewController.shouldSaveFullEpisode = true
                 } else {
@@ -402,8 +400,7 @@ class MediaPlayerViewController: PVViewController {
             
         } else if segue.identifier == "Show Make Clip Time" {
             
-            if let nowPlayingItem = playerHistoryManager.historyItems.first {
-                let makeClipTimeViewController = segue.destination as! MakeClipTimeViewController
+            if let nowPlayingItem = playerHistoryManager.historyItems.first, let makeClipTimeViewController = segue.destination as? MakeClipTimeViewController {
                 makeClipTimeViewController.playerHistoryItem = nowPlayingItem
                 makeClipTimeViewController.startTime = Int(self.audioPlayer.progress)
             }

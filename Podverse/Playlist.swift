@@ -84,8 +84,7 @@ class Playlist {
                         }
                         
                     } catch {
-                        print(error.localizedDescription)
-                        print("Error")
+                        print("Error: " + error.localizedDescription)
                     }
                 }
                 
@@ -135,8 +134,7 @@ class Playlist {
                         }
                         
                     } catch {
-                        print(error.localizedDescription)
-                        print("Error")
+                        print("Error: " + error.localizedDescription)
                     }
                 }
                 
@@ -200,8 +198,7 @@ class Playlist {
                             
                         }
                     } catch {
-                        print(error)
-                        print("Error")
+                        print("Error: " + error.localizedDescription)
                     }
                 }
                 
@@ -248,7 +245,7 @@ class Playlist {
                             }
                         }
                     } catch {
-                        print(error)
+                        print(error.localizedDescription)
                         DispatchQueue.main.async {
                             completion(nil)
                         }
@@ -297,7 +294,7 @@ class Playlist {
                             }
                         }
                     } catch {
-                        print(error)
+                        print("Error: " + error.localizedDescription)
                         DispatchQueue.main.async {
                             completion(nil)
                         }
