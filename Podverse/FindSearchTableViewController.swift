@@ -146,7 +146,7 @@ extension FindSearchTableViewController: UISearchBarDelegate {
                 }
                 
                 if let error = serviceResponse.1 {
-                    print(error)
+                    print(error.localizedDescription)
                 }
                 
             }

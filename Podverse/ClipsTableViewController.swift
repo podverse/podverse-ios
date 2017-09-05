@@ -32,7 +32,7 @@ class ClipsTableViewController: PVViewController {
         activityIndicator.hidesWhenStopped = true
         showIndicator()
         
-        tableView.rowHeight = UITableViewAutomaticDimension
+        self.tableView.rowHeight = UITableViewAutomaticDimension
         
         MediaRef.retrieveMediaRefsFromServer() { (mediaRefs) -> Void in
             self.reloadClipData(mediaRefs: mediaRefs)
@@ -111,19 +111,7 @@ extension ClipsTableViewController:UITableViewDelegate, UITableViewDataSource {
         cell.episodeTitle?.text = clip.episodeTitle
         cell.clipTitle?.text = clip.title
         
-        var time: String?
-        
-        if let startTime = clip.startTime {
-            if let endTime = clip.endTime {
-                if endTime > 0 {
-                    time = startTime.toMediaPlayerString() + " to " + endTime.toMediaPlayerString()
-                }
-            } else {
-                time = "Starts:" + startTime.toMediaPlayerString()
-            }
-        }
-        
-        if let time = time {
+        if let time = clip.readableStartAndEndTime() {
             cell.time?.text = time
         }
         
@@ -136,7 +124,6 @@ extension ClipsTableViewController:UITableViewDelegate, UITableViewDataSource {
                 existingCell.podcastImage?.image = podcastImage
             }
         }
-
         
         return cell
     }
@@ -144,12 +131,8 @@ extension ClipsTableViewController:UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let clip = clipsArray[indexPath.row]
         let playerHistoryItem = self.playerHistoryManager.convertMediaRefToPlayerHistoryItem(mediaRef: clip)
-        
-        if let startTime = clip.startTime {
-            self.goToNowPlaying()
-            self.pvMediaPlayer.loadPlayerHistoryItem(item: playerHistoryItem)
-        }
-        
+        self.goToNowPlaying()
+        self.pvMediaPlayer.loadPlayerHistoryItem(item: playerHistoryItem)
     }
     
     override func goToNowPlaying () {

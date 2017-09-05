@@ -31,6 +31,10 @@ enum SharePermission:String {
     case isPrivate = "isPrivate", isSharableWithLink = "isSharableWithLink", isPublic = "isPublic"
 }
 
+let DEV_URL = "http://localhost:8080/api/"
+let PROD_URL = "https://podverse.fm/api/"
+let BASE_URL = DEV_URL
+
 let kNowPlayingTag = 100
 
 let kDownloadHasFinished  = "downloadHasFinished"
