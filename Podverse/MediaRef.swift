@@ -9,6 +9,7 @@
 import Foundation
 
 class MediaRef {
+    var id: String?
     var title: String?
     var startTime: Int64?
     var endTime: Int64?
@@ -23,6 +24,8 @@ class MediaRef {
     static func jsonToMediaRef(item: [String:Any]) -> MediaRef {
 
         let mediaRef = MediaRef()
+        
+        mediaRef.id = item["id"] as? String
         mediaRef.title = item["title"] as? String
         mediaRef.startTime = item["startTime"] as? Int64
         mediaRef.endTime = item["endTime"] as? Int64
@@ -44,7 +47,9 @@ class MediaRef {
     }
     
     static func retrieveMediaRefsFromServer(episodeMediaUrl: String? = nil, podcastFeedUrl: String? = nil, onlySubscribed: Bool? = nil, completion: @escaping (_ mediaRefs:[MediaRef]?) -> Void) {
-        if let url = URL(string: BASE_URL + "clips") {
+        
+        if let url = URL(string: BASE_URL + "api/clips") {
+            
             var request = URLRequest(url: url, cachePolicy: NSURLRequest.CachePolicy.reloadIgnoringLocalAndRemoteCacheData, timeoutInterval: 60)
             request.httpMethod = "POST"
             
@@ -89,8 +94,7 @@ class MediaRef {
                         }
                         
                     } catch {
-                        print(error.localizedDescription)
-                        print("Error")
+                        print("Error: " + error.localizedDescription)
                     }
                 }
             }
@@ -99,7 +103,7 @@ class MediaRef {
             
         }
     }
-    
+        
     func isClip() -> Bool {
         
         if let startTime = self.startTime {
@@ -123,6 +127,8 @@ class MediaRef {
                 if endTime > 0 {
                     time = startTime.toMediaPlayerString() + " to " + endTime.toMediaPlayerString()
                 }
+            } else if startTime == 0 {
+                time = "--:--"
             } else {
                 time = "Starts:" + startTime.toMediaPlayerString()
             }
@@ -138,4 +144,5 @@ class MediaRef {
             return "(untitled clip)"
         }
     }
+    
 }

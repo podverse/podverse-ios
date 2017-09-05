@@ -10,6 +10,7 @@ import Foundation
 import UIKit
 
 extension String {
+    
     func formatHtmlString() -> String {
         let style = "<style>* { color: #fff !important; font-size: 15px !important; font-family: -apple-system !important; font-weight: 400; !important; } body { margin: 16px 8px !important; padding: 0 !important; } a { color: #007aff !important; text-decoration: none !important; } p { margin-top: 0 !important; }</style>"
         return style + self
@@ -38,5 +39,5 @@ extension String {
     func encodePipeInString () -> String {
         return self.replacingOccurrences(of:"|", with:"%7C", options: .literal, range: nil)
     }
-
+        
 }

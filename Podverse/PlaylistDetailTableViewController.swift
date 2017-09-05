@@ -148,4 +148,27 @@ extension PlaylistDetailTableViewController:UITableViewDelegate, UITableViewData
         self.pvMediaPlayer.loadPlayerHistoryItem(item: playerHistoryItem)
     }
     
+    func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
+        let mediaRef = mediaRefsArray[indexPath.row]
+        
+        let deleteAction = UITableViewRowAction(style: .default, title: "Remove", handler: {action, indexpath in
+            
+            if self.reachability.hasInternetConnection() == false {
+                self.showStatusMessage(message: "You must connect to the internet to remove playlist items.")
+                return
+            }
+            
+            if let mediaRefId = mediaRef.id, let playlistId = self.playlistId {
+                self.mediaRefsArray.remove(at: indexPath.row)
+                self.tableView.deleteRows(at: [indexPath], with: .fade)
+                
+                // TODO: how do we make the completion block optional?
+                Playlist.removeFromPlaylist(playlistId: playlistId, mediaRefId: mediaRefId) {_ in }
+            }
+            
+        })
+        
+        return [deleteAction]
+    }
+    
 }

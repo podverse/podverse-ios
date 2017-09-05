@@ -28,7 +28,7 @@ class ExtendedFeedParser:FeedParser {
         else if self.currentPath == "/rss/channel/item/itunes:duration" {
             // if the : is present, then the duration is in hh:mm:ss
             if self.currentElementContent.contains(":") {
-                self.currentFeedItem?.duration = PVTimeHelper.convertServerDurationToNumber(durationString: self.currentElementContent);
+                self.currentFeedItem?.duration = PVTimeHelper.convertHMSStringToInt(hms: self.currentElementContent) as NSNumber;
             }
             // else the duration is an integer in seconds
             else {

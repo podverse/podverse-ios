@@ -9,7 +9,8 @@
 import UIKit
 
 class PlayerHistoryItem: NSObject, NSCoding {
-
+    
+    var mediaRefId: String?
     let podcastFeedUrl: String?
     let podcastTitle: String?
     let podcastImageUrl: String?
@@ -28,7 +29,8 @@ class PlayerHistoryItem: NSObject, NSCoding {
     var lastPlaybackPosition: Int64?
     var lastUpdated: Date?
     
-    required init(podcastFeedUrl:String? = nil, podcastTitle:String? = nil, podcastImageUrl:String? = nil, episodeDuration: Int64? = nil, episodeMediaUrl:String? = nil, episodeTitle:String? = nil, episodeImageUrl:String? = nil, episodeSummary:String? = nil, episodePubDate:Date? = nil, startTime:Int64? = nil, endTime:Int64? = nil, clipTitle:String? = nil, ownerName:String? = nil, ownerId:String? = nil, hasReachedEnd:Bool, lastPlaybackPosition:Int64? = 0, lastUpdated:Date? = nil) {
+    required init(mediaRefId:String? = nil, podcastFeedUrl:String? = nil, podcastTitle:String? = nil, podcastImageUrl:String? = nil, episodeDuration: Int64? = nil, episodeMediaUrl:String? = nil, episodeTitle:String? = nil, episodeImageUrl:String? = nil, episodeSummary:String? = nil, episodePubDate:Date? = nil, startTime:Int64? = nil, endTime:Int64? = nil, clipTitle:String? = nil, ownerName:String? = nil, ownerId:String? = nil, hasReachedEnd:Bool, lastPlaybackPosition:Int64? = 0, lastUpdated:Date? = nil) {
+        self.mediaRefId = mediaRefId
         self.podcastFeedUrl = podcastFeedUrl
         self.podcastTitle = podcastTitle
         self.podcastImageUrl = podcastImageUrl
@@ -49,6 +51,7 @@ class PlayerHistoryItem: NSObject, NSCoding {
     }
     
     required init(coder decoder: NSCoder) {
+        self.mediaRefId = decoder.decodeObject(forKey: "mediaRefId") as? String
         self.podcastFeedUrl = decoder.decodeObject(forKey: "podcastFeedUrl") as? String
         self.podcastTitle = decoder.decodeObject(forKey: "podcastTitle") as? String
         self.podcastImageUrl = decoder.decodeObject(forKey: "podcastImageUrl") as? String
@@ -69,6 +72,7 @@ class PlayerHistoryItem: NSObject, NSCoding {
     }
     
     func encode(with coder: NSCoder) {
+        coder.encode(mediaRefId, forKey: "mediaRefId")
         coder.encode(podcastFeedUrl, forKey:"podcastFeedUrl")
         coder.encode(podcastTitle, forKey:"podcastTitle")
         coder.encode(podcastImageUrl, forKey:"podcastImageUrl")
@@ -114,6 +118,152 @@ class PlayerHistoryItem: NSObject, NSCoding {
         self.lastUpdated = nil
         
         return self
+    }
+    
+    func readableStartAndEndTime() -> String? {
+        var time: String?
+        
+        if let startTime = self.startTime {
+            if let endTime = self.endTime {
+                if endTime > 0 {
+                    time = startTime.toMediaPlayerString() + " to " + endTime.toMediaPlayerString()
+                }
+            } else if startTime == 0 {
+                time = "--:--"
+            } else {
+                time = "Starts:" + startTime.toMediaPlayerString()
+            }
+        }
+        
+        return time
+    }
+    
+    func convertToMediaRefPostString(shouldSaveFullEpisode: Bool = false) -> String {
+        
+        var postString = ""
+        
+        if shouldSaveFullEpisode {
+            if let episodeMediaUrl = self.episodeMediaUrl {
+                postString += "mediaRefId=" + "episode_" + episodeMediaUrl + "&"
+            }
+        } else {
+            if let mediaRefId = self.mediaRefId {
+                postString += "mediaRefId=" + mediaRefId + "&"
+            }
+        }
+        
+        if let podcastFeedUrl = self.podcastFeedUrl {
+            postString += "podcastFeedURL=" + podcastFeedUrl + "&"
+        }
+        
+        if let podcastTitle = self.podcastTitle {
+            postString += "podcastTitle=" + podcastTitle + "&"
+        }
+        
+        if let podcastImageUrl = self.podcastImageUrl {
+            postString += "podcastImageURL=" + podcastImageUrl + "&"
+        }
+        
+        if let episodeDuration = self.episodeDuration {
+            postString += "episodeDuration=" + String(episodeDuration) + "&"
+        }
+        
+        if let episodeImageUrl = self.episodeImageUrl {
+            postString += "episodeImageURL=" + episodeImageUrl + "&"
+        }
+        
+        if let episodeMediaUrl = self.episodeMediaUrl {
+            postString += "episodeMediaURL=" + episodeMediaUrl + "&"
+        }
+        
+        if let episodePubDate = self.episodePubDate {
+            postString += "episodePubDate=" + episodePubDate.toString() + "&"
+        }
+        
+        if let episodeSummary = self.episodeSummary {
+            postString += "episodeSummary=" + episodeSummary + "&"
+        }
+        
+        if let episodeTitle = self.episodeTitle {
+            postString += "episodeTitle=" + episodeTitle + "&"
+        }
+        
+        if let startTime = self.startTime {
+            postString += "startTime=" + String(startTime) + "&"
+        }
+        
+        if let endTime = self.endTime {
+            postString += "endTime=" + String(endTime) + "&"
+        }
+        
+        if let clipTitle = self.clipTitle {
+            postString += "title=" + clipTitle + "&"
+        }
+        
+        if let ownerName = self.ownerName {
+            postString += "ownerName=" + ownerName + "&"
+        }
+        
+        if let ownerId = self.ownerId {
+            postString += "ownerId=" + ownerId + "&"
+        }
+        
+        postString += "isPublic=true&"
+        
+        return postString
+    }
+    
+    func saveToServerAsMediaRef(completion: @escaping (_ mediaRef: MediaRef?) -> Void) {
+        
+        if let url = URL(string: BASE_URL + "clips/") {
+            
+            var request = URLRequest(url: url, cachePolicy: NSURLRequest.CachePolicy.reloadIgnoringLocalAndRemoteCacheData, timeoutInterval: 60)
+            request.httpMethod = "POST"
+            
+            if let idToken = UserDefaults.standard.string(forKey: "idToken") {
+                request.setValue(idToken, forHTTPHeaderField: "authorization")
+            }
+            
+            let postString = self.convertToMediaRefPostString()
+            
+            request.httpBody = postString.data(using: .utf8)
+            
+            let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                
+                guard error == nil else {
+                    DispatchQueue.main.async {
+                        completion(nil)
+                    }
+                    return
+                }
+                
+                if let data = data {
+                    do {
+                        let mediaRef: MediaRef?
+                        
+                        if let item = try JSONSerialization.jsonObject(with: data, options: []) as? [String:Any] {
+                            mediaRef = MediaRef.jsonToMediaRef(item: item)
+                            
+                            DispatchQueue.main.async {
+                                completion(mediaRef)
+                            }
+                        }
+                    } catch {
+                        print("Error: " + error.localizedDescription)
+                    }
+                }
+                
+            }
+            
+            task.resume()
+            
+        }
+        
+    }
+    
+    func copyPlayerHistoryItem() -> PlayerHistoryItem {
+        let copy = PlayerHistoryItem(mediaRefId: mediaRefId, podcastFeedUrl: podcastFeedUrl, podcastTitle: podcastTitle, podcastImageUrl: podcastImageUrl, episodeDuration: episodeDuration, episodeMediaUrl: episodeMediaUrl, episodeTitle: episodeTitle, episodeImageUrl: episodeImageUrl, episodeSummary: episodeSummary, episodePubDate: episodePubDate, startTime: startTime, endTime: endTime, clipTitle: clipTitle, ownerName: ownerName, ownerId: ownerId, hasReachedEnd: false, lastPlaybackPosition: lastPlaybackPosition, lastUpdated: lastUpdated)
+        return copy
     }
     
 }

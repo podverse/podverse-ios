@@ -6,15 +6,16 @@
 //  Copyright © 2017 Podverse LLC. All rights reserved.
 //
 
-import UIKit
-import CoreData
 import AVFoundation
+import CoreData
 import StreamingKit
+import UIKit
 
 class MediaPlayerViewController: PVViewController {
     
     let audioPlayer = PVMediaPlayer.shared.audioPlayer
     var playerSpeedRate:PlayingSpeed = .regular
+    let reachability = PVReachability.shared
     var timer: Timer?
     
     weak var currentChildViewController: UIViewController?
@@ -52,13 +53,14 @@ class MediaPlayerViewController: PVViewController {
         
         addObservers()
         
-        activityIndicator.startAnimating()
+        self.activityIndicator.startAnimating()
         
         setupTimer()
     }
     
     deinit {
         removeObservers()
+        removeTimer()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -82,7 +84,7 @@ class MediaPlayerViewController: PVViewController {
     
     @IBAction func sliderAction(_ sender: UISlider) {
         let duration = audioPlayer.duration
-        var newTime = Double(sender.value) * duration
+        let newTime = Double(sender.value) * duration
         audioPlayer.seek(toTime: newTime)
         updateTime()
     }
@@ -245,16 +247,75 @@ class MediaPlayerViewController: PVViewController {
         speed.setTitle(playerSpeedRate.speedText, for: .normal)
     }
     
-    func showShareMenu() {
-        return
+    func showAddToPlaylist() {
+        
+        if self.reachability.hasInternetConnection() == false {
+            self.showInternetNeededAlertWithDesciription(message: "You must be connected to the internet to add to playlists.")
+            return
+        }
+        
+        self.navigationItem.backBarButtonItem = UIBarButtonItem(title:"Player", style:.plain, target:nil, action:nil)
+        
+        let addToPlaylistActions = UIAlertController(title: "Add to Playlist", message: "", preferredStyle: UIAlertControllerStyle.actionSheet)
+        
+        addToPlaylistActions.addAction(UIAlertAction(title: "Full Episode", style: .default, handler: { action in
+            self.performSegue(withIdentifier: "Show Add to Playlist", sender: "Full Episode")
+        }))
+        
+        addToPlaylistActions.addAction(UIAlertAction(title: "Current Clip", style: .default, handler: { action in
+            self.performSegue(withIdentifier: "Show Add to Playlist", sender: "Current Clip")
+        }))
+        
+        addToPlaylistActions.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        
+        self.present(addToPlaylistActions, animated: true, completion: nil)
+        
     }
     
     func showMakeClip() {
-        return
+        
+        if self.reachability.hasInternetConnection() == false {
+            self.showInternetNeededAlertWithDesciription(message: "You must be connected to the internet to make clips.")
+            return
+        }
+        
+        self.navigationItem.backBarButtonItem = UIBarButtonItem(title:"Player", style:.plain, target:nil, action:nil)
+        self.performSegue(withIdentifier: "Show Make Clip Time", sender: self)
+        
     }
     
-    func showAddToPlaylist() {
-        return
+    func showShareMenu() {
+        
+        let shareActions = UIAlertController(title: "Share", message: "What do you want to share?", preferredStyle: UIAlertControllerStyle.actionSheet)
+        
+        shareActions.addAction(UIAlertAction(title: "Episode Link", style: .default, handler: { action in
+            if let item = self.playerHistoryManager.historyItems.first, let episodeMediaUrl = item.episodeMediaUrl {
+                let episodeUrlItem = [BASE_URL + "episodes/alias?mediaURL=" + episodeMediaUrl]
+                let activityViewController = UIActivityViewController(activityItems: episodeUrlItem, applicationActivities: nil)
+                activityViewController.popoverPresentationController?.sourceView = self.view
+                self.present(activityViewController, animated: true, completion: nil)
+            }
+        }))
+        
+        shareActions.addAction(UIAlertAction(title: "Clip Link", style: .default, handler: { action in
+            if let item = self.playerHistoryManager.historyItems.first, let mediaRefId = item.mediaRefId {
+                let mediaRefUrlItem = [BASE_URL + "clips/" + mediaRefId]
+                let activityViewController = UIActivityViewController(activityItems: mediaRefUrlItem, applicationActivities: nil)
+                activityViewController.popoverPresentationController?.sourceView = self.view
+                self.present(activityViewController, animated: true, completion: nil)
+            }
+        }))
+        
+        if let item = self.playerHistoryManager.historyItems.first {
+            if item.mediaRefId == nil {
+                shareActions.actions[1].isEnabled = false
+            }
+        }
+        
+        shareActions.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        
+        self.present(shareActions, animated: true, completion: nil)
+        
     }
     
     func showAboutView() {
@@ -322,6 +383,32 @@ class MediaPlayerViewController: PVViewController {
             newViewController.didMove(toParentViewController: self)
         })
     }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        
+        if segue.identifier == "Show Add to Playlist" {
+            
+            if let sender = sender as? String, let nowPlayingItem = playerHistoryManager.historyItems.first, let addToPlaylistViewController = segue.destination as? AddToPlaylistViewController {
+                if sender == "Full Episode" {
+                    addToPlaylistViewController.shouldSaveFullEpisode = true
+                } else {
+                    addToPlaylistViewController.shouldSaveFullEpisode = false
+                }
+                
+                addToPlaylistViewController.playerHistoryItem = nowPlayingItem
+            }
+            
+        } else if segue.identifier == "Show Make Clip Time" {
+            
+            if let nowPlayingItem = playerHistoryManager.historyItems.first, let makeClipTimeViewController = segue.destination as? MakeClipTimeViewController {
+                makeClipTimeViewController.playerHistoryItem = nowPlayingItem
+                makeClipTimeViewController.startTime = Int(self.audioPlayer.progress)
+            }
+            
+        }
+        
+    }
+    
 }
 
 extension MediaPlayerViewController:ClipsListDelegate {
