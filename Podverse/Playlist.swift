@@ -53,7 +53,7 @@ class Playlist {
     
     static func retrievePlaylistFromServer(id: String, completion: @escaping (_ playlist: Playlist?) -> Void) {
         
-        if let url = URL(string: "http://localhost:8080/api/playlist") {
+        if let url = URL(string: BASE_URL + "playlist") {
             var request = URLRequest(url: url, cachePolicy: NSURLRequest.CachePolicy.reloadIgnoringLocalAndRemoteCacheData, timeoutInterval: 60)
             
             request.httpMethod = "POST"
@@ -99,7 +99,7 @@ class Playlist {
     
     static func retrievePlaylistsFromServer(completion: @escaping (_ playlists: [Playlist]?) -> Void) {
         
-        if let url = URL(string: "http://localhost:8080/api/user/playlists") {
+        if let url = URL(string: BASE_URL + "user/playlists") {
             var request = URLRequest(url: url, cachePolicy: NSURLRequest.CachePolicy.reloadIgnoringLocalAndRemoteCacheData, timeoutInterval: 60)
             request.httpMethod = "POST"
             
