@@ -13,6 +13,7 @@ class MakeClipTimeViewController: UIViewController, UITextFieldDelegate {
     
     let audioPlayer = PVMediaPlayer.shared.audioPlayer
     var endTime: Int?
+    var endTimePreview: Int?
     var playerHistoryItem: PlayerHistoryItem?
     let pvMediaPlayer = PVMediaPlayer.shared
     var startTime: Int?
@@ -31,18 +32,31 @@ class MakeClipTimeViewController: UIViewController, UITextFieldDelegate {
     @IBOutlet weak var startTimeInput: UITextField!
     
     @IBAction func sliderAction(_ sender: UISlider) {
-        let duration = audioPlayer.duration
+        let duration = self.audioPlayer.duration
         let newTime = Double(sender.value) * duration
-        audioPlayer.seek(toTime: newTime)
+        self.audioPlayer.seek(toTime: newTime)
         updateTime()
     }
     
     @IBAction func startTimePreview(_ sender: Any) {
-        print("start time preview")
+        if let startTime = self.startTime {
+            self.audioPlayer.seek(toTime: Double(startTime))
+            self.pvMediaPlayer.play()
+        }
     }
     
     @IBAction func endTimePreview(_ sender: Any) {
-        print("end time preview")
+        if let endTime = self.endTime {
+            self.endTimePreview = endTime
+            
+            if endTime < 3 {
+                self.audioPlayer.seek(toTime: 0)
+            } else {
+                self.audioPlayer.seek(toTime: Double(endTime) - 3)
+            }
+            
+            self.pvMediaPlayer.play()
+        }
     }
     
     @IBAction func play(_ sender: Any) {
@@ -168,6 +182,13 @@ class MakeClipTimeViewController: UIViewController, UITextFieldDelegate {
             let dur = self.audioPlayer.duration
             self.duration.text = Int64(dur).toMediaPlayerString()
             self.progress.value = Float(playbackPosition / dur)
+            
+            if let endTimePreview = self.endTimePreview {
+                if Int(self.audioPlayer.progress) >= endTimePreview {
+                    self.pvMediaPlayer.pause()
+                    self.endTimePreview = nil
+                }
+            }
         }
     }
     
