@@ -1515,6 +1515,7 @@
                                 <state key="normal" title="Save"/>
                                 <connections>
                                     <action selector="nextButtonTouched:" destination="zd7-Mp-9ff" eventType="touchUpInside" id="adg-2S-rbw"/>
+                                    <action selector="save:" destination="6q8-r6-4oY" eventType="touchUpInside" id="d55-vi-qCu"/>
                                 </connections>
                             </button>
                         </subviews>
@@ -1554,7 +1555,6 @@
                         <outlet property="episodeTitle" destination="veg-P6-cCB" id="KhE-xo-3ZS"/>
                         <outlet property="podcastImage" destination="Fcn-cf-piO" id="ZGY-xT-nwd"/>
                         <outlet property="podcastTitle" destination="WDK-kh-3Cu" id="17X-eM-MC4"/>
-                        <outlet property="saveButton" destination="fN9-xq-qeN" id="3Sq-Ig-LWu"/>
                         <outlet property="startTimeLabel" destination="gBF-XM-3gh" id="O5v-fO-BU0"/>
                         <outlet property="titleInput" destination="EqC-MT-BIo" id="LGy-zx-gDp"/>
                     </connections>

@@ -19,7 +19,6 @@ class MakeClipTitleViewController: UIViewController, UITextViewDelegate {
     @IBOutlet weak var episodeTitle: UILabel!
     @IBOutlet weak var podcastImage: UIImageView!
     @IBOutlet weak var podcastTitle: UILabel!
-    @IBOutlet weak var saveButton: UIButton!
     @IBOutlet weak var startTimeLabel: UILabel!
     @IBOutlet weak var titleInput: UITextView!
     
@@ -29,6 +28,30 @@ class MakeClipTitleViewController: UIViewController, UITextViewDelegate {
             return false
         }
         return true
+    }
+    
+    @IBAction func save(_ sender: Any) {
+        
+        if let mediaRefItem = self.playerHistoryItem?.copyPlayerHistoryItem() {
+            
+            if let startTime = self.startTime {
+                mediaRefItem.startTime = Int64(startTime)
+            }
+            
+            if let endTime = self.endTime {
+                mediaRefItem.endTime = Int64(endTime)
+            }
+            
+            if let title = self.titleInput.text {
+                mediaRefItem.clipTitle = title
+            }
+            
+            mediaRefItem.saveToServerAsMediaRef() { mediaRef in
+                print("hello")
+            }
+            
+        }
+        
     }
     
     override func viewDidLoad() {

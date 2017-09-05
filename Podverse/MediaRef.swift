@@ -104,7 +104,7 @@ class MediaRef {
             
         }
     }
-    
+        
     func isClip() -> Bool {
         
         if let startTime = self.startTime {

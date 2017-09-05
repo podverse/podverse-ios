@@ -197,7 +197,7 @@ class PlayerHistoryItem: NSObject, NSCoding {
         }
         
         if let clipTitle = self.clipTitle {
-            postString += "clipTitle=" + clipTitle + "&"
+            postString += "title=" + clipTitle + "&"
         }
         
         if let ownerName = self.ownerName {
@@ -208,8 +208,63 @@ class PlayerHistoryItem: NSObject, NSCoding {
             postString += "ownerId=" + ownerId + "&"
         }
         
+        postString += "isPublic=true&"
+        
         return postString
     }
-
+    
+    func saveToServerAsMediaRef(completion: @escaping (_ mediaRef: MediaRef?) -> Void) {
+        
+        if let url = URL(string: BASE_URL + "clips/") {
+            
+            var request = URLRequest(url: url, cachePolicy: NSURLRequest.CachePolicy.reloadIgnoringLocalAndRemoteCacheData, timeoutInterval: 60)
+            request.httpMethod = "POST"
+            
+            if let idToken = UserDefaults.standard.string(forKey: "idToken") {
+                request.setValue(idToken, forHTTPHeaderField: "authorization")
+            }
+            
+            let postString = self.convertToMediaRefPostString()
+            
+            request.httpBody = postString.data(using: .utf8)
+            
+            let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                
+                guard error == nil else {
+                    DispatchQueue.main.async {
+                        completion(nil)
+                    }
+                    return
+                }
+                
+                if let data = data {
+                    do {
+                        let mediaRef: MediaRef?
+                        
+                        if let item = try JSONSerialization.jsonObject(with: data, options: []) as? [String:Any] {
+                            mediaRef = MediaRef.jsonToMediaRef(item: item)
+                            
+                            DispatchQueue.main.async {
+                                completion(mediaRef)
+                            }
+                        }
+                    } catch {
+                        print(error.localizedDescription)
+                        print("Error")
+                    }
+                }
+                
+            }
+            
+            task.resume()
+            
+        }
+        
+    }
+    
+    func copyPlayerHistoryItem() -> PlayerHistoryItem {
+        let copy = PlayerHistoryItem(mediaRefId: mediaRefId, podcastFeedUrl: podcastFeedUrl, podcastTitle: podcastTitle, podcastImageUrl: podcastImageUrl, episodeDuration: episodeDuration, episodeMediaUrl: episodeMediaUrl, episodeTitle: episodeTitle, episodeImageUrl: episodeImageUrl, episodeSummary: episodeSummary, episodePubDate: episodePubDate, startTime: startTime, endTime: endTime, clipTitle: clipTitle, ownerName: ownerName, ownerId: ownerId, hasReachedEnd: false, lastPlaybackPosition: lastPlaybackPosition, lastUpdated: lastUpdated)
+        return copy
+    }
     
 }
