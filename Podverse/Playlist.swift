@@ -53,7 +53,7 @@ class Playlist {
     
     static func retrievePlaylistFromServer(id: String, completion: @escaping (_ playlist: Playlist?) -> Void) {
         
-        if let url = URL(string: BASE_URL + "playlist") {
+        if let url = URL(string: BASE_URL + "api/playlist") {
             var request = URLRequest(url: url, cachePolicy: NSURLRequest.CachePolicy.reloadIgnoringLocalAndRemoteCacheData, timeoutInterval: 60)
             
             request.httpMethod = "POST"
@@ -99,7 +99,7 @@ class Playlist {
     
     static func retrievePlaylistsFromServer(completion: @escaping (_ playlists: [Playlist]?) -> Void) {
         
-        if let url = URL(string: BASE_URL + "user/playlists") {
+        if let url = URL(string: BASE_URL + "api/user/playlists") {
             var request = URLRequest(url: url, cachePolicy: NSURLRequest.CachePolicy.reloadIgnoringLocalAndRemoteCacheData, timeoutInterval: 60)
             request.httpMethod = "POST"
             
@@ -152,7 +152,7 @@ class Playlist {
     
     static func createPlaylist (title: String?, completion: @escaping (_ playlist: Playlist?) -> Void) {
         
-        if let url = URL(string: "http://localhost:8080/playlists/") {
+        if let url = URL(string: BASE_URL + "playlists/") {
             
             var request = URLRequest(url: url, cachePolicy: NSURLRequest.CachePolicy.reloadIgnoringLocalAndRemoteCacheData, timeoutInterval: 60)
             request.httpMethod = "POST"
@@ -216,7 +216,7 @@ class Playlist {
     // TODO: addToPlaylist and removeFromPlaylist are identical except the urlString. How can we rewrite/consolidate them?
     static func addToPlaylist(playlistId: String, item: PlayerHistoryItem, shouldSaveFullEpisode: Bool = false, completion: @escaping (_ itemCount: Int?) -> Void) {
         
-        let urlString = "http://localhost:8080/playlists/" + playlistId + "/addItem"
+        let urlString = BASE_URL + "playlists/" + playlistId + "/addItem"
         
         if let url = URL(string: urlString) {
             
@@ -227,7 +227,7 @@ class Playlist {
                 request.setValue(idToken, forHTTPHeaderField: "authorization")
             }
             
-            let postString = MediaRef.convertPlayerHistoryItemToMediaRefPostString(item: item, shouldSaveFullEpisode: shouldSaveFullEpisode)
+            let postString = item.convertToMediaRefPostString(shouldSaveFullEpisode: shouldSaveFullEpisode)
             
             request.httpBody = postString.data(using: .utf8)
             
@@ -265,7 +265,7 @@ class Playlist {
     // TODO: addToPlaylist and removeFromPlaylist are identical except the urlString. How can we rewrite/consolidate them?
     static func removeFromPlaylist(playlistId: String, mediaRefId: String, completion: @escaping (_ itemCount: Int?) -> Void) {
         
-        let urlString = "http://localhost:8080/playlists/" + playlistId + "/removeItem"
+        let urlString = BASE_URL + "playlists/" + playlistId + "/removeItem"
         
         if let url = URL(string: urlString) {
             

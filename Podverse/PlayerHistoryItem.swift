@@ -138,4 +138,78 @@ class PlayerHistoryItem: NSObject, NSCoding {
         return time
     }
     
+    func convertToMediaRefPostString(shouldSaveFullEpisode: Bool = false) -> String {
+        
+        var postString = ""
+        
+        if shouldSaveFullEpisode {
+            if let episodeMediaUrl = self.episodeMediaUrl {
+                postString += "mediaRefId=" + "episode_" + episodeMediaUrl + "&"
+            }
+        } else {
+            if let mediaRefId = self.mediaRefId {
+                postString += "mediaRefId=" + mediaRefId + "&"
+            }
+        }
+        
+        if let podcastFeedUrl = self.podcastFeedUrl {
+            postString += "podcastFeedURL=" + podcastFeedUrl + "&"
+        }
+        
+        if let podcastTitle = self.podcastTitle {
+            postString += "podcastTitle=" + podcastTitle + "&"
+        }
+        
+        if let podcastImageUrl = self.podcastImageUrl {
+            postString += "podcastImageURL=" + podcastImageUrl + "&"
+        }
+        
+        if let episodeDuration = self.episodeDuration {
+            postString += "episodeDuration=" + String(episodeDuration) + "&"
+        }
+        
+        if let episodeImageUrl = self.episodeImageUrl {
+            postString += "episodeImageURL=" + episodeImageUrl + "&"
+        }
+        
+        if let episodeMediaUrl = self.episodeMediaUrl {
+            postString += "episodeMediaURL=" + episodeMediaUrl + "&"
+        }
+        
+        if let episodePubDate = self.episodePubDate {
+            postString += "episodePubDate=" + episodePubDate.toString() + "&"
+        }
+        
+        if let episodeSummary = self.episodeSummary {
+            postString += "episodeSummary=" + episodeSummary + "&"
+        }
+        
+        if let episodeTitle = self.episodeTitle {
+            postString += "episodeTitle=" + episodeTitle + "&"
+        }
+        
+        if let startTime = self.startTime {
+            postString += "startTime=" + String(startTime) + "&"
+        }
+        
+        if let endTime = self.endTime {
+            postString += "endTime=" + String(endTime) + "&"
+        }
+        
+        if let clipTitle = self.clipTitle {
+            postString += "clipTitle=" + clipTitle + "&"
+        }
+        
+        if let ownerName = self.ownerName {
+            postString += "ownerName=" + ownerName + "&"
+        }
+        
+        if let ownerId = self.ownerId {
+            postString += "ownerId=" + ownerId + "&"
+        }
+        
+        return postString
+    }
+
+    
 }

@@ -54,7 +54,7 @@ extension MoreTableViewController:UITableViewDelegate, UITableViewDataSource {
         case 0:
             performSegue(withIdentifier: "Show Downloads", sender: nil)
         case 1:
-            if let url = URL(string: "http://localhost:8080/about") {
+            if let url = URL(string: BASE_URL + "about") {
                 UIApplication.shared.openURL(url)
             }
         case 2:

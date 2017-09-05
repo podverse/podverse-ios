@@ -290,7 +290,7 @@ class MediaPlayerViewController: PVViewController {
         
         shareActions.addAction(UIAlertAction(title: "Episode Link", style: .default, handler: { action in
             if let item = self.playerHistoryManager.historyItems.first, let episodeMediaUrl = item.episodeMediaUrl {
-                let episodeUrlItem = ["http://localhost:8080/episodes/alias?mediaURL=" + episodeMediaUrl]
+                let episodeUrlItem = [BASE_URL + "episodes/alias?mediaURL=" + episodeMediaUrl]
                 let activityViewController = UIActivityViewController(activityItems: episodeUrlItem, applicationActivities: nil)
                 activityViewController.popoverPresentationController?.sourceView = self.view
                 self.present(activityViewController, animated: true, completion: nil)
@@ -299,7 +299,7 @@ class MediaPlayerViewController: PVViewController {
         
         shareActions.addAction(UIAlertAction(title: "Clip Link", style: .default, handler: { action in
             if let item = self.playerHistoryManager.historyItems.first, let mediaRefId = item.mediaRefId {
-                let mediaRefUrlItem = ["http://localhost:8080/clips/" + mediaRefId]
+                let mediaRefUrlItem = [BASE_URL + "clips/" + mediaRefId]
                 let activityViewController = UIActivityViewController(activityItems: mediaRefUrlItem, applicationActivities: nil)
                 activityViewController.popoverPresentationController?.sourceView = self.view
                 self.present(activityViewController, animated: true, completion: nil)
