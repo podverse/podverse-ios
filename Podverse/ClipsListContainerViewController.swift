@@ -12,7 +12,7 @@ protocol ClipsListDelegate:class {
     func didSelectClip(clip:MediaRef)
 }
 
-enum ClipFilterTypes {
+enum ClipFilterType {
     case episode, podcast, subscribed
     
     var text:String {
@@ -45,7 +45,7 @@ class ClipsListContainerViewController: UIViewController {
     weak var delegate:ClipsListDelegate?
     let reachability = PVReachability.shared
     
-    var filterTypeSelected:ClipFilterTypes = .subscribed
+    var filterTypeSelected:ClipFilterType = .subscribed
     
     @IBAction func retryButtonTouched(_ sender: Any) {
         

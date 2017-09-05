@@ -130,7 +130,7 @@ class CoreDataHelper {
             do {
                 return try moc.fetch(fetchRequest)
             } catch {
-                print(error)
+                print(error.localizedDescription)
             }
         }
         
@@ -151,7 +151,7 @@ class CoreDataHelper {
             do {
                 return try moc.fetch(fetchRequest).first
             } catch {
-                print(error)
+                print(error.localizedDescription)
             }
         }
         
@@ -162,7 +162,7 @@ class CoreDataHelper {
         do {
             return try moc.existingObject(with: objectId)
         } catch {
-            print(error)
+            print(error.localizedDescription)
         }
         
         return nil

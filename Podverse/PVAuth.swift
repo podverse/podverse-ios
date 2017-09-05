@@ -51,7 +51,7 @@ class PVAuth: NSObject {
                             self.populateUserInfoWith(idToken: idToken, userId: profile.sub, userName: profile.nickname)
                         case .failure(let error):
                             self.populateUserInfoWith(idToken: idToken, userId: nil, userName: nil)
-                            print(error)
+                            print(error.localizedDescription)
                         }
                         
                         completion?()
@@ -76,7 +76,7 @@ class PVAuth: NSObject {
                         let nickname = user["nickname"] as? String
                         self.populateUserInfoWith(idToken: idToken, userId: userId, userName: nickname)
                     case .failure(let error):
-                        print(error)
+                        print(error.localizedDescription)
                     }
                 }
             

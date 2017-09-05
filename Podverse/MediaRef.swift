@@ -47,7 +47,9 @@ class MediaRef {
     }
     
     static func retrieveMediaRefsFromServer(episodeMediaUrl: String? = nil, podcastFeedUrl: String? = nil, onlySubscribed: Bool? = nil, completion: @escaping (_ mediaRefs:[MediaRef]?) -> Void) {
-        if let url = URL(string: "http://localhost:8080/api/clips") {
+        
+        if let url = URL(string: BASE_URL + "clips") {
+            
             var request = URLRequest(url: url, cachePolicy: NSURLRequest.CachePolicy.reloadIgnoringLocalAndRemoteCacheData, timeoutInterval: 60)
             request.httpMethod = "POST"
             
@@ -92,7 +94,7 @@ class MediaRef {
                         }
                         
                     } catch {
-                        print(error)
+                        print(error.localizedDescription)
                         print("Error")
                     }
                 }
