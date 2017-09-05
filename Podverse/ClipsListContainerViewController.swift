@@ -102,7 +102,7 @@ class ClipsListContainerViewController: UIViewController {
         tableView.rowHeight = UITableViewAutomaticDimension
         
         if let item = pvMediaPlayer.nowPlayingItem {
-            MediaRef.retrieveMediaRefsFromServer(episodeMediaUrl: item.episodeMediaUrl, podcastFeedUrl: nil) { (mediaRefs) -> Void in
+            MediaRef.retrieveMediaRefsFromServer() { (mediaRefs) -> Void in
                 self.reloadClipData(mediaRefs: mediaRefs)
             }
         }

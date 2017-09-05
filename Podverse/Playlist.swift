@@ -150,4 +150,165 @@ class Playlist {
         
     }
     
+    static func createPlaylist (title: String?, completion: @escaping (_ playlist: Playlist?) -> Void) {
+        
+        if let url = URL(string: "http://localhost:8080/playlists/") {
+            
+            var request = URLRequest(url: url, cachePolicy: NSURLRequest.CachePolicy.reloadIgnoringLocalAndRemoteCacheData, timeoutInterval: 60)
+            request.httpMethod = "POST"
+            
+            guard let idToken = UserDefaults.standard.string(forKey: "idToken") else {
+                DispatchQueue.main.async {
+                    completion(nil)
+                }
+                return
+            }
+            
+            request.setValue(idToken, forHTTPHeaderField: "authorization")
+            
+            var postString = ""
+            
+            if let title = title {
+                postString += "title=" + title
+            }
+            
+            if let userName = UserDefaults.standard.string(forKey: "userName") {
+                postString += "&userName=" + userName
+            }
+            
+            request.httpBody = postString.data(using: .utf8)
+            
+            let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                
+                guard error == nil else {
+                    DispatchQueue.main.async {
+                        completion(nil)
+                    }
+                    return
+                }
+                
+                if let data = data {
+                    do {
+                        let playlist: Playlist?
+                        
+                        if let item = try JSONSerialization.jsonObject(with: data, options: []) as? [String:Any] {
+                            playlist = jsonToPlaylist(item: item)
+                            
+                            DispatchQueue.main.async {
+                                completion(playlist)
+                            }
+                            
+                        }
+                    } catch {
+                        print(error)
+                        print("Error")
+                    }
+                }
+                
+            }
+            
+            task.resume()
+            
+        }
+
+    }
+    
+    // TODO: addToPlaylist and removeFromPlaylist are identical except the urlString. How can we rewrite/consolidate them?
+    static func addToPlaylist(playlistId: String, item: PlayerHistoryItem, shouldSaveFullEpisode: Bool = false, completion: @escaping (_ itemCount: Int?) -> Void) {
+        
+        let urlString = "http://localhost:8080/playlists/" + playlistId + "/addItem"
+        
+        if let url = URL(string: urlString) {
+            
+            var request = URLRequest(url: url, cachePolicy: NSURLRequest.CachePolicy.reloadIgnoringLocalAndRemoteCacheData, timeoutInterval: 60)
+            request.httpMethod = "POST"
+            
+            if let idToken = UserDefaults.standard.string(forKey: "idToken") {
+                request.setValue(idToken, forHTTPHeaderField: "authorization")
+            }
+            
+            let postString = MediaRef.convertPlayerHistoryItemToMediaRefPostString(item: item, shouldSaveFullEpisode: shouldSaveFullEpisode)
+            
+            request.httpBody = postString.data(using: .utf8)
+            
+            let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                
+                guard error == nil else {
+                    DispatchQueue.main.async {
+                        completion(nil)
+                    }
+                    return
+                }
+                
+                if let data = data {
+                    do {
+                        if let itemCount = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as? Int {
+                            DispatchQueue.main.async {
+                                completion(itemCount)
+                            }
+                        }
+                    } catch {
+                        print(error)
+                        DispatchQueue.main.async {
+                            completion(nil)
+                        }
+                    }
+                }
+            }
+            
+            task.resume()
+            
+        }
+        
+    }
+    
+    // TODO: addToPlaylist and removeFromPlaylist are identical except the urlString. How can we rewrite/consolidate them?
+    static func removeFromPlaylist(playlistId: String, mediaRefId: String, completion: @escaping (_ itemCount: Int?) -> Void) {
+        
+        let urlString = "http://localhost:8080/playlists/" + playlistId + "/removeItem"
+        
+        if let url = URL(string: urlString) {
+            
+            var request = URLRequest(url: url, cachePolicy: NSURLRequest.CachePolicy.reloadIgnoringLocalAndRemoteCacheData, timeoutInterval: 60)
+            request.httpMethod = "POST"
+            
+            if let idToken = UserDefaults.standard.string(forKey: "idToken") {
+                request.setValue(idToken, forHTTPHeaderField: "authorization")
+            }
+            
+            var postString = "mediaRefId=" + mediaRefId
+            
+            request.httpBody = postString.data(using: .utf8)
+            
+            let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                
+                guard error == nil else {
+                    DispatchQueue.main.async {
+                        completion(nil)
+                    }
+                    return
+                }
+                
+                if let data = data {
+                    do {
+                        if let itemCount = try JSONSerialization.jsonObject(with: data, options: []) as? Int {
+                            DispatchQueue.main.async {
+                                completion(itemCount)
+                            }
+                        }
+                    } catch {
+                        print(error)
+                        DispatchQueue.main.async {
+                            completion(nil)
+                        }
+                    }
+                }
+            }
+            
+            task.resume()
+            
+        }
+        
+    }
+    
 }

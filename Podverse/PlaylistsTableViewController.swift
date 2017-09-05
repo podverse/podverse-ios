@@ -91,11 +91,11 @@ class PlaylistsTableViewController: PVViewController {
 extension PlaylistsTableViewController:UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 60
+        return 58
     }
     
     func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 60
+        return 58
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -119,7 +119,7 @@ extension PlaylistsTableViewController:UITableViewDelegate, UITableViewDataSourc
         self.performSegue(withIdentifier: "Show Playlist", sender: nil)
         self.tableView.deselectRow(at: indexPath, animated: true)
     }
-    
+        
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if let index = self.tableView.indexPathForSelectedRow {
             if segue.identifier == "Show Playlist" {
