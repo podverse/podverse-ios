@@ -171,7 +171,7 @@ class EpisodesTableViewController: PVViewController, UITableViewDataSource, UITa
 
         let episode = episodesArray[indexPath.row]
         
-        let episodeActions = UIAlertController(title: "", message: "", preferredStyle: UIAlertControllerStyle.actionSheet)
+        let episodeActions = UIAlertController(title: "", message: "", preferredStyle: .actionSheet)
         
         if episode.fileName != nil {
             episodeActions.addAction(UIAlertAction(title: "Play Episode", style: .default, handler: { action in

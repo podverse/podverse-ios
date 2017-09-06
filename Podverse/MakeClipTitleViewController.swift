@@ -32,6 +32,8 @@ class MakeClipTitleViewController: UIViewController, UITextViewDelegate {
     
     @IBAction func save(_ sender: Any) {
         
+        self.view.endEditing(true)
+        
         if let mediaRefItem = self.playerHistoryItem?.copyPlayerHistoryItem() {
             
             if let startTime = self.startTime {
@@ -47,11 +49,40 @@ class MakeClipTitleViewController: UIViewController, UITextViewDelegate {
             }
             
             mediaRefItem.saveToServerAsMediaRef() { mediaRef in
-                print("hello")
+                if let id = mediaRef?.id {
+                    self.displayClipCreatedAlert(mediaRefId: id)
+                }
             }
             
         }
         
+    }
+    
+    private func displayClipCreatedAlert(mediaRefId: String) {
+        
+        let actions = UIAlertController(title: "Clip Created", message: BASE_URL + "clips/" + mediaRefId, preferredStyle: .actionSheet)
+        
+        actions.addAction(UIAlertAction(title: "Share", style: .default, handler: { action in
+            let clipUrlItem = [BASE_URL + "clips/" + mediaRefId]
+            let activity = UIActivityViewController(activityItems: clipUrlItem, applicationActivities: nil)
+            activity.popoverPresentationController?.sourceView = self.view
+            
+            activity.completionWithItemsHandler = { activity, success, items, error in
+                self.displayClipCreatedAlert(mediaRefId: mediaRefId)
+            }
+            
+            self.present(activity, animated: true, completion: nil)
+        }))
+        
+        actions.addAction(UIAlertAction(title: "Done", style: .cancel, handler: { action in
+            if var viewControllers = self.navigationController?.viewControllers {
+                viewControllers.removeLast(2)
+                self.navigationController?.setViewControllers(viewControllers, animated: true)
+            }
+        }))
+
+        self.present(actions, animated: true, completion: nil)
+
     }
     
     override func viewDidLoad() {

@@ -286,7 +286,7 @@ class MediaPlayerViewController: PVViewController {
     
     func showShareMenu() {
         
-        let shareActions = UIAlertController(title: "Share", message: "What do you want to share?", preferredStyle: UIAlertControllerStyle.actionSheet)
+        let shareActions = UIAlertController(title: "Share", message: "What do you want to share?", preferredStyle: .actionSheet)
         
         shareActions.addAction(UIAlertAction(title: "Episode Link", style: .default, handler: { action in
             if let item = self.playerHistoryManager.historyItems.first, let episodeMediaUrl = item.episodeMediaUrl {
