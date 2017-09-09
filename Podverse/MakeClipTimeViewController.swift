@@ -253,7 +253,7 @@ class MakeClipTimeViewController: UIViewController, UITextFieldDelegate {
     @IBAction func slidingRecognized(_ sender: Any) {
         if let pan = sender as? UIPanGestureRecognizer {
             let panPoint = pan.velocity(in: self.playbackControlView)
-            var newTime = (self.audioPlayer.progress + Double(panPoint.x / 10.0))
+            var newTime = (self.audioPlayer.progress + Double(panPoint.x / 140.0))
             
             if newTime <= 0 {
                 newTime = 0
