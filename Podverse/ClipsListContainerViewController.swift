@@ -98,10 +98,8 @@ class ClipsListContainerViewController: UIViewController {
         
         activityIndicator.hidesWhenStopped = true
         showIndicator()
-        
-        tableView.rowHeight = UITableViewAutomaticDimension
-        
-        if let item = pvMediaPlayer.nowPlayingItem {
+                
+        if pvMediaPlayer.nowPlayingItem != nil {
             MediaRef.retrieveMediaRefsFromServer() { (mediaRefs) -> Void in
                 self.reloadClipData(mediaRefs: mediaRefs)
             }
@@ -165,14 +163,6 @@ extension ClipsListContainerViewController:UITableViewDelegate, UITableViewDataS
         return clipsArray.count
     }
     
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return UITableViewAutomaticDimension
-    }
-    
-    func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
-        return UITableViewAutomaticDimension
-    }
-    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         //if filterTypeSelected == .episode {
@@ -185,7 +175,7 @@ extension ClipsListContainerViewController:UITableViewDelegate, UITableViewDataS
         
         let clip = clipsArray[indexPath.row]
         
-        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! ClipTableViewCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: "clipCell", for: indexPath) as! ClipTableViewCell
         
         cell.podcastTitle?.text = clip.podcastTitle
         cell.episodeTitle?.text = clip.episodeTitle

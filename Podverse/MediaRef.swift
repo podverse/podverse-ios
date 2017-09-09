@@ -70,6 +70,7 @@ class MediaRef {
             let task = URLSession.shared.dataTask(with: request) { data, response, error in
 
                 guard error == nil else {
+                    print("Error: \(error?.localizedDescription ?? "Unknown Error")")
                     DispatchQueue.main.async {
                         completion([])
                     }
