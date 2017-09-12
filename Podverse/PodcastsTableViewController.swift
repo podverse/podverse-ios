@@ -128,9 +128,7 @@ extension PodcastsTableViewController:UITableViewDelegate, UITableViewDataSource
         let episodes = podcast.episodes
         let episodesDownloaded = episodes.filter{ $0.fileName != nil }
         cell.totalEpisodes?.text = "\(episodesDownloaded.count) downloaded"
-        
-        cell.totalClips?.text = "123 clips"
-        
+                
         cell.lastPublishedDate?.text = ""
         if let lastPubDate = podcast.lastPubDate {
             //cell.lastPublishedDate?.text = PVUtility.formatDateToString(lastPubDate)

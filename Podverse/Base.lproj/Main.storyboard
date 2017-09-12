@@ -208,20 +208,14 @@
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Total Clips" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Igs-Xy-9hT">
-                                                    <rect key="frame" x="92" y="68" width="63.5" height="16"/>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="13"/>
-                                                    <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
-                                                    <nil key="highlightedColor"/>
-                                                </label>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Last Publish Date" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wxe-bv-W6i">
                                                     <rect key="frame" x="261" y="68" width="106" height="16"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="13"/>
                                                     <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Episodes downloaded / Episodes started" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="tvC-4n-69O">
-                                                    <rect key="frame" x="92" y="48" width="275" height="16"/>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Episodes downloaded" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="tvC-4n-69O">
+                                                    <rect key="frame" x="92" y="68" width="133" height="16"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="13"/>
                                                     <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                                     <nil key="highlightedColor"/>
@@ -229,24 +223,20 @@
                                             </subviews>
                                             <constraints>
                                                 <constraint firstItem="nHK-v5-PZN" firstAttribute="leading" secondItem="uk6-qB-t6M" secondAttribute="trailing" constant="8" id="1im-Zf-hBc"/>
-                                                <constraint firstItem="tvC-4n-69O" firstAttribute="leading" secondItem="uk6-qB-t6M" secondAttribute="trailing" constant="8" id="42e-r7-DZM"/>
-                                                <constraint firstItem="tvC-4n-69O" firstAttribute="trailing" secondItem="HcB-O2-XAh" secondAttribute="trailingMargin" id="5Np-r9-x5n"/>
                                                 <constraint firstItem="uk6-qB-t6M" firstAttribute="leading" secondItem="HcB-O2-XAh" secondAttribute="leadingMargin" id="BKt-Iz-OVa"/>
                                                 <constraint firstItem="nHK-v5-PZN" firstAttribute="top" secondItem="HcB-O2-XAh" secondAttribute="topMargin" id="K56-a6-kRx"/>
                                                 <constraint firstItem="uk6-qB-t6M" firstAttribute="top" secondItem="HcB-O2-XAh" secondAttribute="topMargin" id="Kct-Vg-tce"/>
                                                 <constraint firstAttribute="bottom" secondItem="wxe-bv-W6i" secondAttribute="bottom" constant="7.5" id="Lgx-Cz-VDK"/>
                                                 <constraint firstItem="nHK-v5-PZN" firstAttribute="trailing" secondItem="HcB-O2-XAh" secondAttribute="trailingMargin" id="M66-Ej-P5f"/>
                                                 <constraint firstAttribute="trailing" secondItem="wxe-bv-W6i" secondAttribute="trailing" constant="8" id="OxA-Ic-2Go"/>
-                                                <constraint firstAttribute="bottom" secondItem="Igs-Xy-9hT" secondAttribute="bottom" constant="7.5" id="PHV-hD-QL9"/>
-                                                <constraint firstAttribute="bottomMargin" secondItem="tvC-4n-69O" secondAttribute="bottom" constant="19.5" id="U9P-w4-poK"/>
-                                                <constraint firstItem="Igs-Xy-9hT" firstAttribute="leading" secondItem="uk6-qB-t6M" secondAttribute="trailing" constant="8" id="ald-zi-p8d"/>
+                                                <constraint firstItem="tvC-4n-69O" firstAttribute="leading" secondItem="uk6-qB-t6M" secondAttribute="trailing" constant="8" id="ZeE-0y-R8W"/>
+                                                <constraint firstItem="tvC-4n-69O" firstAttribute="bottom" secondItem="HcB-O2-XAh" secondAttribute="bottomMargin" id="yeZ-vf-McR"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                         <connections>
                                             <outlet property="lastPublishedDate" destination="wxe-bv-W6i" id="Zf3-02-uI8"/>
                                             <outlet property="pvImage" destination="uk6-qB-t6M" id="OFj-bF-fNQ"/>
                                             <outlet property="title" destination="nHK-v5-PZN" id="XaK-zi-Jwb"/>
-                                            <outlet property="totalClips" destination="Igs-Xy-9hT" id="nZw-8o-gvQ"/>
                                             <outlet property="totalEpisodes" destination="tvC-4n-69O" id="JAg-4S-Vpt"/>
                                         </connections>
                                     </tableViewCell>
