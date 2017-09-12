@@ -210,9 +210,7 @@ class MediaPlayerViewController: PVViewController {
             podcastTitle.text = item.podcastTitle
             episodeTitle.text = item.episodeTitle
             
-            self.image.image = Podcast.retrievePodcastImage(podcastImageURLString: item.podcastImageUrl, feedURLString: item.podcastFeedUrl) { (podcastImage) -> Void in
-                self.image.image = podcastImage
-            }
+            self.image.sd_setImage(with: URL(string: item.podcastImageUrl ?? ""), placeholderImage: #imageLiteral(resourceName: "PodverseIcon"))
             
             duration.text = Int64(audioPlayer.duration).toMediaPlayerString()
         }

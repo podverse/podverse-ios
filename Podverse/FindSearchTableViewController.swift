@@ -56,18 +56,13 @@ extension FindSearchTableViewController: UITableViewDataSource, UITableViewDeleg
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! PodcastSearchResultTableViewCell
         
-        let podcast = searchResults[indexPath.row]
+        let podcastSearchResult = searchResults[indexPath.row]
         
-        cell.title.text = podcast.title
-        cell.network.text = podcast.network
-        cell.categories.text = podcast.categories
+        cell.title.text = podcastSearchResult.title
+        cell.network.text = podcastSearchResult.network
+        cell.categories.text = podcastSearchResult.categories
 
-        Podcast.retrievePodcastImage(podcastImageURLString: podcast.imageUrl) { (podcastImage) -> Void in
-            if let visibleRows = self.tableView.indexPathsForVisibleRows, visibleRows.contains(indexPath), 
-               let existingCell = self.tableView.cellForRow(at: indexPath) as? PodcastSearchResultTableViewCell {
-                existingCell.pvImage.image = podcastImage
-            }
-        }
+        cell.pvImage.sd_setImage(with: URL(string: podcastSearchResult.imageUrl ?? ""), placeholderImage: #imageLiteral(resourceName: "PodverseIcon"))
         
         return cell
     }

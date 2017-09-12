@@ -119,11 +119,7 @@ extension ClipsTableViewController:UITableViewDelegate, UITableViewDataSource {
             cell.episodePubDate?.text = episodePubDate.toShortFormatString()
         }
         
-        Podcast.retrievePodcastImage(podcastImageURLString: clip.podcastImageUrl) { (podcastImage) -> Void in
-            if let visibleRows = self.tableView.indexPathsForVisibleRows, visibleRows.contains(indexPath), let existingCell = self.tableView.cellForRow(at: indexPath) as? ClipTableViewCell, let podcastImage = podcastImage {
-                existingCell.podcastImage?.image = podcastImage
-            }
-        }
+        cell.podcastImage.sd_setImage(with: URL(string: clip.podcastImageUrl ?? ""), placeholderImage: #imageLiteral(resourceName: "PodverseIcon"))
         
         return cell
     }

@@ -112,6 +112,7 @@ extension PVFeedParser:FeedParserDelegate {
                 
                 if podcast.imageData == nil {
                     podcast.imageData = try Data(contentsOf: itunesImageURL)
+                    podcast.imageUrl = podcast.itunesImageUrl
                 }
             }
             catch {

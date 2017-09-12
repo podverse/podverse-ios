@@ -8,6 +8,7 @@
 
 import UIKit
 import StreamingKit
+import SDWebImage
 
 protocol TableViewHeightProtocol:class {
     func adjustTableView()
@@ -68,9 +69,7 @@ class PVViewController: UIViewController {
             
             tabbarVC.playerView.podcastTitleLabel.text = currentItem.podcastTitle
             tabbarVC.playerView.episodeTitle.text = currentItem.episodeTitle
-            tabbarVC.playerView.podcastImageView.image = Podcast.retrievePodcastImage(podcastImageURLString: currentItem.podcastImageUrl, feedURLString: currentItem.podcastFeedUrl) { (podcastImage) -> Void in
-                tabbarVC.playerView.podcastImageView.image = podcastImage
-            }
+            tabbarVC.playerView.podcastImageView.sd_setImage(with: URL(string: currentItem.podcastImageUrl ?? ""), placeholderImage: #imageLiteral(resourceName: "PodverseIcon"))
             tabbarVC.playerView.isPlaying = (self.pvMediaPlayer.audioPlayer.state == STKAudioPlayerState.playing)
         }
     }

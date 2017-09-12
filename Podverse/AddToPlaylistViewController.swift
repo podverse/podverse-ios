@@ -58,14 +58,7 @@ class AddToPlaylistViewController: UIViewController {
                 self.episodePubDate.text = episodePubDate.toShortFormatString()
             }
             
-            Podcast.retrievePodcastImage(podcastImageURLString: item.podcastImageUrl) { (podcastImage) -> Void in
-                DispatchQueue.main.async {
-                    if let podcastImage = podcastImage {
-                        self.podcastImage.image = podcastImage
-                    }
-                }
-            }
-            
+            self.podcastImage.sd_setImage(with: URL(string: item.podcastImageUrl ?? ""), placeholderImage: #imageLiteral(resourceName: "PodverseIcon"))
         }
         
         self.activityIndicator.hidesWhenStopped = true
