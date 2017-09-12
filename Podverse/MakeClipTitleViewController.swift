@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import SDWebImage
 
 class MakeClipTitleViewController: UIViewController, UITextViewDelegate {
 
@@ -93,9 +94,7 @@ class MakeClipTitleViewController: UIViewController, UITextViewDelegate {
             self.podcastTitle.text = item.podcastTitle
             self.episodeTitle.text = item.episodeTitle
             
-            self.podcastImage.image = Podcast.retrievePodcastImage(podcastImageURLString: item.podcastImageUrl, feedURLString: item.podcastFeedUrl) { (podcastImage) -> Void in
-                self.podcastImage.image = podcastImage
-            }
+            self.podcastImage.sd_setImage(with: URL(string: item.podcastImageUrl ?? ""), placeholderImage: #imageLiteral(resourceName: "PodverseIcon"))
             
             if let startTime = self.startTime {
                 self.startTimeLabel.text = "Start: " + PVTimeHelper.convertIntToHMSString(time: startTime)

@@ -57,7 +57,7 @@ class Podcast: NSManagedObject {
      
      - Returns: The podcast image that was fetched (Discradable)
      */
-    @discardableResult static func retrievePodcastImage(podcastImageURLString:String? = nil, feedURLString:String? = nil, managedObjectID:NSManagedObjectID? = nil, completion:((_ podcastImage: UIImage?) -> Void)? = nil) -> UIImage? {
+    @discardableResult static func retrievePodcastImage(podcastImageURLString:String? = nil, feedURLString:String? = nil, managedObjectID:NSManagedObjectID? = nil) -> UIImage? {
         
         if let moid = managedObjectID {
             let image = Podcast.fetchPodcastImage(managedObjectId: moid)
@@ -68,14 +68,6 @@ class Podcast: NSManagedObject {
             if let image = Podcast.fetchPodcastImage(podcastFeedUrl: feedUrl) {
                 return image
             }
-        }
-        
-        if let imageUrlString = podcastImageURLString, let imageURL = URL(string:imageUrlString) {
-            Podcast.fetchPodcastImage(podcastImageUrl: imageURL, completion: { (image) in
-                DispatchQueue.main.async {
-                    completion?(image)
-                }
-            })
         }
         
         return UIImage(named: "PodverseIcon")
@@ -103,28 +95,5 @@ class Podcast: NSManagedObject {
         else {
             return nil
         }
-    }
-    
-    private static func fetchPodcastImage(podcastImageUrl: URL, completion: @escaping (_ podcastImage: UIImage?) -> Void) {
-        let session = URLSession(configuration: .default)
-        _ = session.dataTask(with: podcastImageUrl) { (data, response, error) in
-            DispatchQueue.main.async {
-                var cellImage:UIImage?
-
-                if let e = error {
-                    print("Error downloading picture: \(e)")
-                    cellImage = UIImage(named: "PodverseIcon")
-                } else {
-                    if let _ = response as? HTTPURLResponse, let imageData = data {
-                        cellImage = UIImage(data: imageData)
-                    } else {
-                        print("Couldn't get image response")
-                        cellImage = UIImage(named: "PodverseIcon")
-                    }
-                }
-                
-                completion(cellImage)
-            }
-        }.resume()
     }
 }
