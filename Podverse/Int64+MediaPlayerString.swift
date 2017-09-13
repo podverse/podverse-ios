@@ -28,4 +28,26 @@ extension Int64 {
         
         return timeString
     }
+    
+    func toDurationString() -> String {
+        let hours = self / 3600
+        let minutes = self / 60 % 60
+        let seconds = self % 60
+        
+        var timeString = ""
+        
+        if hours > 0 {
+            timeString += String(hours) + "h "
+        }
+        
+        if minutes > 0 {
+            timeString += String(minutes) + "m "
+        }
+        
+        if seconds > 0 {
+            timeString += String(seconds) + "s"
+        }
+        
+        return timeString.trimmingCharacters(in: .whitespaces)
+    }
 }
