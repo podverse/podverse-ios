@@ -167,10 +167,19 @@ class PVMediaPlayer: NSObject {
     
     // TODO: should this be public here or not?
     @objc @discardableResult public func playOrPause() -> Bool {
-
+                
         self.setPlayingInfo()
         
         let state = audioPlayer.state
+        
+        // NOTE: if nothing loaded in the player, but playOrPause was pressed, then attempt to load and play the file.
+        if checkIfNothingIsCurrentlyLoadedInPlayer() {
+            self.shouldAutoplayOnce = true
+            if let item = self.nowPlayingItem {
+                self.loadPlayerHistoryItem(item: item)
+            }
+            return true
+        }
         
         switch state {
         case STKAudioPlayerState.playing:
@@ -181,6 +190,16 @@ class PVMediaPlayer: NSObject {
             return false
         }
         
+    }
+    
+    func checkIfNothingIsCurrentlyLoadedInPlayer() -> Bool {
+        let state = audioPlayer.state
+        
+        if state == STKAudioPlayerState.disposed || state == STKAudioPlayerState.error || state == STKAudioPlayerState.stopped {
+            return true
+        } else {
+            return false
+        }
     }
     
     func play() {
@@ -280,6 +299,11 @@ class PVMediaPlayer: NSObject {
         self.nowPlayingItem?.hasReachedEnd = false
         
         playerHistoryManager.addOrUpdateItem(item: nowPlayingItem)
+        
+        // NOTE: calling audioPlayer.play will immediately start playback, so do not call it unless an autoplay flag is true
+        if !shouldAutoplayOnce && !shouldAutoplayAlways {
+            return
+        }
         
         let moc = CoreDataHelper.createMOCForThread(threadType: .mainThread)
         
