@@ -164,47 +164,68 @@ extension ClipsListContainerViewController:UITableViewDelegate, UITableViewDataS
         return clipsArray.count
     }
     
+    func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
+        return UITableViewAutomaticDimension
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return UITableViewAutomaticDimension
+    }
+    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        
-        //if filterTypeSelected == .episode {
-            
-        //} else if filterTypeSelected == .podcast {
-            
-        //} else {
-            
-        //}
         
         let clip = clipsArray[indexPath.row]
         
-        let cell = tableView.dequeueReusableCell(withIdentifier: "clipCell", for: indexPath) as! ClipTableViewCell
-        
-        cell.podcastTitle?.text = clip.podcastTitle
-        cell.episodeTitle?.text = clip.episodeTitle
-        cell.clipTitle?.text = clip.title
-        
-        var time: String?
-        
-        if let startTime = clip.startTime {
-            if let endTime = clip.endTime {
-                if endTime > 0 {
-                    time = startTime.toMediaPlayerString() + " to " + endTime.toMediaPlayerString()
-                }
-            } else {
-                time = "Starts:" + startTime.toMediaPlayerString()
+        if filterTypeSelected == .episode {
+            
+            let cell = tableView.dequeueReusableCell(withIdentifier: "clipEpisodeCell", for: indexPath) as! ClipEpisodeTableViewCell
+            
+            cell.clipTitle?.text = clip.title
+            
+            if let time = clip.readableStartAndEndTime() {
+                cell.time?.text = time
             }
+            
+            return cell
+            
+        } else if filterTypeSelected == .podcast {
+            
+            let cell = tableView.dequeueReusableCell(withIdentifier: "clipPodcastCell", for: indexPath) as! ClipPodcastTableViewCell
+            
+            cell.episodeTitle?.text = clip.episodeTitle
+            cell.clipTitle?.text = clip.title
+            
+            if let episodePubDate = clip.episodePubDate {
+                cell.episodePubDate?.text = episodePubDate.toShortFormatString()
+            }
+            
+            if let time = clip.readableStartAndEndTime() {
+                cell.time?.text = time
+            }
+            
+            return cell
+            
+        } else {
+            
+            let cell = tableView.dequeueReusableCell(withIdentifier: "clipCell", for: indexPath) as! ClipTableViewCell
+            
+            cell.podcastTitle?.text = clip.podcastTitle
+            cell.episodeTitle?.text = clip.episodeTitle
+            cell.podcastImage.sd_setImage(with: URL(string: clip.podcastImageUrl ?? ""), placeholderImage: #imageLiteral(resourceName: "PodverseIcon"))
+            cell.clipTitle?.text = clip.title
+            
+            
+            if let episodePubDate = clip.episodePubDate {
+                cell.episodePubDate?.text = episodePubDate.toShortFormatString()
+            }
+            
+            if let time = clip.readableStartAndEndTime() {
+                cell.time?.text = time
+            }
+            
+            return cell
+            
         }
-        
-        if let time = time {
-            cell.time?.text = time
-        }
-        
-        if let episodePubDate = clip.episodePubDate {
-            cell.episodePubDate?.text = episodePubDate.toShortFormatString()
-        }
-        
-        cell.podcastImage.sd_setImage(with: URL(string: clip.podcastImageUrl ?? ""), placeholderImage: #imageLiteral(resourceName: "PodverseIcon"))
-        
-        return cell
 
     }
     

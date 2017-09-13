@@ -146,4 +146,21 @@ class MediaRef {
         }
     }
     
+    func readableDuration() -> String? {
+        
+        if let startTime = self.startTime {
+            
+            if let endTime = self.endTime {
+                let duration = endTime - startTime
+                return duration.toDurationString()
+            } else {
+                return "until end"
+            }
+            
+        }
+        
+        return ""
+        
+    }
+    
 }
