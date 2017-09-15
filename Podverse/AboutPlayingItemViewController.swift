@@ -14,9 +14,31 @@ class AboutPlayingItemViewController: UIViewController, UIWebViewDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        if let summary = PVMediaPlayer.shared.nowPlayingItem?.episodeSummary {
-            self.webView.loadHTMLString(summary.formatHtmlString(), baseURL: nil)
+        
+        if let item = pvMediaPlayer.nowPlayingItem {
+            var text = ""
+            
+            if item.isClip() {
+                if let title = item.clipTitle {
+                    text += "<strong>" + title + "</strong>" + "<br><br>"
+                }
+                
+                if let time = item.readableStartAndEndTime() {
+                    text += time + "<br><br>"
+                }
+                
+                text += "<hr><br>"
+                
+                text += "<i>Episode Summary</i><br><br>"
+            }
+            
+            if let summary = item.episodeSummary {
+                text += summary
+            }
+            
+            self.webView.loadHTMLString(text.formatHtmlString(), baseURL: nil)
         }
+        
         self.view.backgroundColor = UIColor.black
         self.webView.layer.borderColor = UIColor.lightGray.cgColor
         self.webView.layer.borderWidth = 1.0
