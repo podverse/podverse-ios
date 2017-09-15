@@ -83,10 +83,11 @@ class MediaPlayerViewController: PVViewController {
     }
     
     @IBAction func sliderAction(_ sender: UISlider) {
-        let duration = audioPlayer.duration
-        let newTime = Double(sender.value) * duration
-        audioPlayer.seek(toTime: newTime)
-        updateTime()
+        if let duration = pvMediaPlayer.duration {
+            let newTime = Double(sender.value) * duration
+            audioPlayer.seek(toTime: newTime)
+            updateTime()
+        }
     }
 
     @IBAction func play(_ sender: Any) {
@@ -211,8 +212,9 @@ class MediaPlayerViewController: PVViewController {
             episodeTitle.text = item.episodeTitle
             
             self.image.sd_setImage(with: URL(string: item.podcastImageUrl ?? ""), placeholderImage: #imageLiteral(resourceName: "PodverseIcon"))
-            
-            duration.text = Int64(audioPlayer.duration).toMediaPlayerString()
+            if let dur = pvMediaPlayer.duration {
+                duration.text = Int64(audioPlayer.duration).toMediaPlayerString()
+            }
         }
     }
     
@@ -224,9 +226,11 @@ class MediaPlayerViewController: PVViewController {
             } else {
                 let playbackPosition = self.audioPlayer.progress
                 self.currentTime.text = Int64(playbackPosition).toMediaPlayerString()
-                let dur = self.audioPlayer.duration
-                self.duration.text = Int64(dur).toMediaPlayerString()
-                self.progress.value = Float(playbackPosition / dur)
+                
+                if let dur = self.pvMediaPlayer.duration {
+                    self.duration.text = Int64(dur).toMediaPlayerString()
+                    self.progress.value = Float(playbackPosition / dur)
+                }
             }
         }
     }

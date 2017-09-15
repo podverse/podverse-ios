@@ -77,6 +77,7 @@ class PVMediaPlayer: NSObject {
     
     var audioPlayer = STKAudioPlayer()
     var clipTimer: Timer?
+    var duration: Double?
     var nowPlayingItem:PlayerHistoryItem?
     var playerButtonDelegate:PVMediaPlayerUIDelegate?
     var playerHistoryManager = PlayerHistory.manager
@@ -167,30 +168,49 @@ class PVMediaPlayer: NSObject {
     
     // TODO: should this be public here or not?
     @objc @discardableResult public func playOrPause() -> Bool {
-
+                
         self.setPlayingInfo()
         
         let state = audioPlayer.state
         
+        // NOTE: if nothing loaded in the player, but playOrPause was pressed, then attempt to load and play the file.
+        if checkIfNothingIsCurrentlyLoadedInPlayer() {
+            self.shouldAutoplayOnce = true
+            if let item = self.nowPlayingItem {
+                self.loadPlayerHistoryItem(item: item)
+            }
+            return true
+        }
+        
         switch state {
         case STKAudioPlayerState.playing:
-            audioPlayer.pause()
+            self.audioPlayer.pause()
             return true
         default:
-            audioPlayer.resume()
+            self.audioPlayer.resume()
             return false
         }
         
     }
     
+    func checkIfNothingIsCurrentlyLoadedInPlayer() -> Bool {
+        let state = audioPlayer.state
+        
+        if state == STKAudioPlayerState.disposed || state == STKAudioPlayerState.error || state == STKAudioPlayerState.stopped {
+            return true
+        } else {
+            return false
+        }
+    }
+    
     func play() {
-        audioPlayer.resume()
-        shouldAutoplayOnce = false
+        self.audioPlayer.resume()
+        self.shouldAutoplayOnce = false
     }
     
     func pause() {
         saveCurrentTimeAsPlaybackPosition()
-        audioPlayer.pause()
+        self.audioPlayer.pause()
     }
     
     @objc func playerDidFinishPlaying() {
@@ -261,12 +281,10 @@ class PVMediaPlayer: NSObject {
             episodeTitle = eTitle
         }
         
-        let duration = self.audioPlayer.duration
-        
         let lastPlaybackCMTime = self.audioPlayer.progress
         lastPlaybackTime = NSNumber(value: lastPlaybackCMTime)
         
-        MPNowPlayingInfoCenter.default().nowPlayingInfo = [MPMediaItemPropertyArtist: podcastTitle, MPMediaItemPropertyTitle: episodeTitle, MPMediaItemPropertyPlaybackDuration: duration, MPNowPlayingInfoPropertyElapsedPlaybackTime: lastPlaybackTime, MPNowPlayingInfoPropertyPlaybackRate: rate]
+        MPNowPlayingInfoCenter.default().nowPlayingInfo = [MPMediaItemPropertyArtist: podcastTitle, MPMediaItemPropertyTitle: episodeTitle, MPMediaItemPropertyPlaybackDuration: self.duration, MPNowPlayingInfoPropertyElapsedPlaybackTime: lastPlaybackTime, MPNowPlayingInfoPropertyPlaybackRate: rate]
         
     }
     
@@ -274,22 +292,38 @@ class PVMediaPlayer: NSObject {
         MPNowPlayingInfoCenter.default().nowPlayingInfo = nil
     }
     
+    // This is only used when an episode/clip should appear loaded in the player, but it should not start streaming or playing. Since StreamingKit automatically plays a file as soon as you load it, this retrieveRemoteFileDuration method uses AVURLAsset to determine the duration of a remote media file if no stream is loaded.
+    func updateDuration(episodeMediaUrl: String?) {
+        if let episodeMediaUrl = episodeMediaUrl, let url = URL(string: episodeMediaUrl) {
+            let asset = AVURLAsset(url: url, options: nil)
+            self.duration = CMTimeGetSeconds(asset.duration)
+        } else {
+            self.duration = self.audioPlayer.duration
+        }
+    }
+    
     func loadPlayerHistoryItem(item: PlayerHistoryItem) {
-
+        
         self.nowPlayingItem = item
         self.nowPlayingItem?.hasReachedEnd = false
         
         playerHistoryManager.addOrUpdateItem(item: nowPlayingItem)
         
+        // NOTE: calling audioPlayer.play will immediately start playback, so do not call it unless an autoplay flag is true
+        if !shouldAutoplayOnce && !shouldAutoplayAlways {
+            updateDuration(episodeMediaUrl: item.episodeMediaUrl)
+            return
+        }
+        
         let moc = CoreDataHelper.createMOCForThread(threadType: .mainThread)
+        
+        self.audioPlayer.pause()
         
         if let episodeMediaUrlString = item.episodeMediaUrl, let episodeMediaUrl = URL(string: episodeMediaUrlString) {
             
             let episodesPredicate = NSPredicate(format: "mediaUrl == %@", episodeMediaUrlString)
             
             guard let episodes = CoreDataHelper.fetchEntities(className: "Episode", predicate: episodesPredicate, moc: moc) as? [Episode] else { return }
-            
-            self.audioPlayer.pause()
  
             // If the playerHistoryItems's episode is downloaded locally, then use it.
             if episodes.count > 0 {
@@ -346,17 +380,23 @@ class PVMediaPlayer: NSObject {
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
         if let keyPath = keyPath, let item = self.nowPlayingItem {
             if keyPath == #keyPath(audioPlayer.state) {
-                if self.audioPlayer.duration > 0 && self.shouldSetupClip == true {
-                    if let startTime = item.startTime {
-                        self.audioPlayer.seek(toTime: Double(startTime))
-                    }
+                
+                if self.audioPlayer.duration > 0 {
+                    updateDuration(episodeMediaUrl: nil)
                     
-                    if let endTime = item.endTime {
-                        self.shouldStopAtEndTime = endTime
+                    if self.shouldSetupClip == true {
+                        if let startTime = item.startTime {
+                            self.audioPlayer.seek(toTime: Double(startTime))
+                        }
+                        
+                        if let endTime = item.endTime {
+                            self.shouldStopAtEndTime = endTime
+                        }
+                        
+                        self.shouldSetupClip = false
                     }
-                    
-                    self.shouldSetupClip = false
                 }
+                
             }
         }
     }

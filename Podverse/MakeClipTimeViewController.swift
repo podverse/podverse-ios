@@ -32,10 +32,11 @@ class MakeClipTimeViewController: UIViewController, UITextFieldDelegate {
     @IBOutlet weak var startTimeInput: UITextField!
     
     @IBAction func sliderAction(_ sender: UISlider) {
-        let duration = self.audioPlayer.duration
-        let newTime = Double(sender.value) * duration
-        self.audioPlayer.seek(toTime: newTime)
-        updateTime()
+        if let duration = pvMediaPlayer.duration {
+            let newTime = Double(sender.value) * duration
+            self.audioPlayer.seek(toTime: newTime)
+            updateTime()
+        }
     }
     
     @IBAction func startTimePreview(_ sender: Any) {
@@ -155,7 +156,9 @@ class MakeClipTimeViewController: UIViewController, UITextFieldDelegate {
     }
     
     private func populatePlayerInfo() {
-        duration.text = Int64(audioPlayer.duration).toMediaPlayerString()
+        if let dur = pvMediaPlayer.duration {
+            duration.text = Int64(dur).toMediaPlayerString()
+        }
     }
     
     private func togglePlayIcon() {
@@ -179,9 +182,11 @@ class MakeClipTimeViewController: UIViewController, UITextFieldDelegate {
         DispatchQueue.main.async {
             let playbackPosition = self.audioPlayer.progress
             self.currentTime.text = Int64(playbackPosition).toMediaPlayerString()
-            let dur = self.audioPlayer.duration
-            self.duration.text = Int64(dur).toMediaPlayerString()
-            self.progress.value = Float(playbackPosition / dur)
+
+            if let dur = self.pvMediaPlayer.duration {
+                self.duration.text = Int64(dur).toMediaPlayerString()
+                self.progress.value = Float(playbackPosition / dur)
+            }
             
             if let endTimePreview = self.endTimePreview {
                 if Int(self.audioPlayer.progress) >= endTimePreview {
