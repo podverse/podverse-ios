@@ -67,6 +67,8 @@ let kMyEpisodesPlaylist = "My Episodes"
 
 let kUserId = "userId"
 
+let kAutoDownloadingFeedUrls = "autoDownloadingFeedUrls"
+
 let kInternetIsUnreachable = "internetIsUnreachable"
 
 let kWiFiIsUnreachable = "wiFiIsUnreachable"

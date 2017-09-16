@@ -3,23 +3,29 @@ import CoreData
 
 class EpisodesTableViewController: PVViewController, UITableViewDataSource, UITableViewDelegate {
     
+    var episodesArray = [Episode]()
+    let moc = CoreDataHelper.createMOCForThread(threadType: .privateThread)
+    let reachability = PVReachability.shared
+    var selectedPodcastID: NSManagedObjectID!
     var showAllEpisodes = false
     
-    let moc = CoreDataHelper.createMOCForThread(threadType: .privateThread)
-    
-    var selectedPodcastID: NSManagedObjectID!
-    
-    var episodesArray = [Episode]()
-    
-    let reachability = PVReachability.shared
-    
+    @IBOutlet weak var autoDownloadButton: UIButton!
+    @IBOutlet weak var bottomButton: UITableView!
+    @IBOutlet weak var headerImageView: UIImageView!
+    @IBOutlet weak var headerPodcastTitle: UILabel!
     @IBOutlet weak var tableView: UITableView!
     
-    @IBOutlet weak var headerPodcastTitle: UILabel!
-    
-    @IBOutlet weak var headerImageView: UIImageView!
-    
-    @IBOutlet weak var bottomButton: UITableView!
+    @IBAction func autoDownloadButtonTouched(_ sender: Any) {
+        if let podcast = CoreDataHelper.fetchEntityWithID(objectId: self.selectedPodcastID, moc: moc) as? Podcast {
+            if podcast.shouldAutoDownload() {
+                podcast.removeFromAutoDownloadList()
+                self.autoDownloadButton.setTitle("Auto DL OFF", for: .normal)
+            } else {
+                podcast.addToAutoDownloadList()
+                self.autoDownloadButton.setTitle("Auto DL ON", for: .normal)
+            }
+        }
+    }
     
     @IBAction func bottomButtonTouched(_ sender: Any) {
         showAllEpisodes = !showAllEpisodes
@@ -46,6 +52,12 @@ class EpisodesTableViewController: PVViewController, UITableViewDataSource, UITa
                 DispatchQueue.main.async {
                     self.headerImageView.image = cellImage
                 }
+            }
+            
+            if podcast.shouldAutoDownload() {
+                self.autoDownloadButton.setTitle("Auto DL ON", for: .normal)
+            } else {
+                self.autoDownloadButton.setTitle("Auto DL OFF", for: .normal)
             }
             
             if (!showAllEpisodes) {

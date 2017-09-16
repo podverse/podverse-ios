@@ -125,13 +125,19 @@ extension PodcastsTableViewController:UITableViewDelegate, UITableViewDataSource
         
         cell.title?.text = podcast.title
         
+        if podcast.shouldAutoDownload() {
+            cell.autoDownloadIndicator?.text = "Auto DL ON"
+        } else {
+            cell.autoDownloadIndicator?.text = "Auto DL OFF"
+        }
+        
         let episodes = podcast.episodes
         let episodesDownloaded = episodes.filter{ $0.fileName != nil }
         cell.totalEpisodes?.text = "\(episodesDownloaded.count) downloaded"
                 
         cell.lastPublishedDate?.text = ""
         if let lastPubDate = podcast.lastPubDate {
-            //cell.lastPublishedDate?.text = PVUtility.formatDateToString(lastPubDate)
+            cell.lastPublishedDate?.text = lastPubDate.toShortFormatString()
         }
         
         cell.pvImage.image = Podcast.retrievePodcastImage(managedObjectID: podcast.objectID)
