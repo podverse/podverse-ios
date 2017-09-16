@@ -9,20 +9,19 @@ class EpisodesTableViewController: PVViewController, UITableViewDataSource, UITa
     var selectedPodcastID: NSManagedObjectID!
     var showAllEpisodes = false
     
-    @IBOutlet weak var autoDownloadButton: UIButton!
+    @IBOutlet weak var autoDownloadLabel: UILabel!
+    @IBOutlet weak var autoDownloadSwitch: UISwitch!
     @IBOutlet weak var bottomButton: UITableView!
     @IBOutlet weak var headerImageView: UIImageView!
     @IBOutlet weak var headerPodcastTitle: UILabel!
     @IBOutlet weak var tableView: UITableView!
     
-    @IBAction func autoDownloadButtonTouched(_ sender: Any) {
+    @IBAction func autoDownloadSwitchTouched(_ sender: Any) {
         if let podcast = CoreDataHelper.fetchEntityWithID(objectId: self.selectedPodcastID, moc: moc) as? Podcast {
             if podcast.shouldAutoDownload() {
                 podcast.removeFromAutoDownloadList()
-                self.autoDownloadButton.setTitle("Auto DL OFF", for: .normal)
             } else {
                 podcast.addToAutoDownloadList()
-                self.autoDownloadButton.setTitle("Auto DL ON", for: .normal)
             }
         }
     }
@@ -55,9 +54,9 @@ class EpisodesTableViewController: PVViewController, UITableViewDataSource, UITa
             }
             
             if podcast.shouldAutoDownload() {
-                self.autoDownloadButton.setTitle("Auto DL ON", for: .normal)
+                self.autoDownloadSwitch.isOn = true
             } else {
-                self.autoDownloadButton.setTitle("Auto DL OFF", for: .normal)
+                self.autoDownloadSwitch.isOn = false
             }
             
             if (!showAllEpisodes) {

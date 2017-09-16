@@ -945,24 +945,29 @@
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="OJO-cg-T72">
-                                        <rect key="frame" x="280" y="62" width="87" height="30"/>
-                                        <fontDescription key="fontDescription" type="system" pointSize="15"/>
-                                        <state key="normal" title="Auto DL OFF">
-                                            <color key="titleColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                        </state>
+                                    <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="yez-rs-zzS">
+                                        <rect key="frame" x="318" y="53" width="51" height="31"/>
+                                        <color key="onTintColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <connections>
-                                            <action selector="autoDownloadButtonTouched:" destination="DYF-Bg-yz8" eventType="touchUpInside" id="OxT-eM-mS7"/>
+                                            <action selector="autoDownloadSwitchTouched:" destination="DYF-Bg-yz8" eventType="valueChanged" id="woQ-eS-PNl"/>
                                         </connections>
-                                    </button>
+                                    </switch>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Auto DL" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="TnX-z2-VIN">
+                                        <rect key="frame" x="255" y="59" width="55" height="18"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
                                 </subviews>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="92" id="D3u-CA-JcY"/>
+                                    <constraint firstAttribute="trailing" secondItem="yez-rs-zzS" secondAttribute="trailing" constant="8" id="MT3-Qo-UWs"/>
                                     <constraint firstItem="W2q-RV-W1m" firstAttribute="leading" secondItem="yDP-ef-HEq" secondAttribute="leading" constant="8" id="MZD-Pt-ALq"/>
-                                    <constraint firstAttribute="bottom" secondItem="OJO-cg-T72" secondAttribute="bottom" id="Na1-io-X12"/>
-                                    <constraint firstAttribute="trailing" secondItem="OJO-cg-T72" secondAttribute="trailing" constant="8" id="rSS-B8-DZf"/>
+                                    <constraint firstItem="yez-rs-zzS" firstAttribute="leading" secondItem="TnX-z2-VIN" secondAttribute="trailing" constant="8" id="a3y-Os-bRk"/>
+                                    <constraint firstAttribute="bottom" secondItem="TnX-z2-VIN" secondAttribute="bottom" constant="15" id="i9b-xS-j59"/>
                                     <constraint firstItem="W2q-RV-W1m" firstAttribute="top" secondItem="yDP-ef-HEq" secondAttribute="top" constant="8" id="x5u-2l-iaK"/>
+                                    <constraint firstAttribute="bottom" secondItem="yez-rs-zzS" secondAttribute="bottom" constant="8" id="ybe-Qm-G8b"/>
                                 </constraints>
                             </view>
                         </subviews>
@@ -978,7 +983,8 @@
                         </constraints>
                     </view>
                     <connections>
-                        <outlet property="autoDownloadButton" destination="OJO-cg-T72" id="B0H-3r-Ssf"/>
+                        <outlet property="autoDownloadLabel" destination="TnX-z2-VIN" id="jUQ-rY-nCP"/>
+                        <outlet property="autoDownloadSwitch" destination="yez-rs-zzS" id="u4r-5a-L2r"/>
                         <outlet property="bottomButton" destination="VOa-dX-ejH" id="akg-G5-uRs"/>
                         <outlet property="headerImageView" destination="W2q-RV-W1m" id="y4A-4E-KUw"/>
                         <outlet property="headerPodcastTitle" destination="4bn-tB-LUD" id="iII-EY-sLo"/>
