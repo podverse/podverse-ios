@@ -214,8 +214,14 @@
                                                     <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Episodes downloaded" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="tvC-4n-69O">
-                                                    <rect key="frame" x="92" y="68" width="133" height="16"/>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="# downloaded" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="tvC-4n-69O">
+                                                    <rect key="frame" x="92" y="68" width="86" height="16"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                                                    <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="AutoDL" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="H5L-K1-HNR">
+                                                    <rect key="frame" x="322" y="48" width="45" height="16"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="13"/>
                                                     <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                                     <nil key="highlightedColor"/>
@@ -223,17 +229,20 @@
                                             </subviews>
                                             <constraints>
                                                 <constraint firstItem="nHK-v5-PZN" firstAttribute="leading" secondItem="uk6-qB-t6M" secondAttribute="trailing" constant="8" id="1im-Zf-hBc"/>
+                                                <constraint firstItem="wxe-bv-W6i" firstAttribute="top" secondItem="H5L-K1-HNR" secondAttribute="bottom" constant="4" id="6j9-Sg-cZw"/>
                                                 <constraint firstItem="uk6-qB-t6M" firstAttribute="leading" secondItem="HcB-O2-XAh" secondAttribute="leadingMargin" id="BKt-Iz-OVa"/>
                                                 <constraint firstItem="nHK-v5-PZN" firstAttribute="top" secondItem="HcB-O2-XAh" secondAttribute="topMargin" id="K56-a6-kRx"/>
                                                 <constraint firstItem="uk6-qB-t6M" firstAttribute="top" secondItem="HcB-O2-XAh" secondAttribute="topMargin" id="Kct-Vg-tce"/>
                                                 <constraint firstAttribute="bottom" secondItem="wxe-bv-W6i" secondAttribute="bottom" constant="7.5" id="Lgx-Cz-VDK"/>
                                                 <constraint firstItem="nHK-v5-PZN" firstAttribute="trailing" secondItem="HcB-O2-XAh" secondAttribute="trailingMargin" id="M66-Ej-P5f"/>
+                                                <constraint firstItem="tvC-4n-69O" firstAttribute="leading" secondItem="uk6-qB-t6M" secondAttribute="trailing" constant="8" id="OMw-YE-Blr"/>
                                                 <constraint firstAttribute="trailing" secondItem="wxe-bv-W6i" secondAttribute="trailing" constant="8" id="OxA-Ic-2Go"/>
-                                                <constraint firstItem="tvC-4n-69O" firstAttribute="leading" secondItem="uk6-qB-t6M" secondAttribute="trailing" constant="8" id="ZeE-0y-R8W"/>
-                                                <constraint firstItem="tvC-4n-69O" firstAttribute="bottom" secondItem="HcB-O2-XAh" secondAttribute="bottomMargin" id="yeZ-vf-McR"/>
+                                                <constraint firstAttribute="trailingMargin" secondItem="H5L-K1-HNR" secondAttribute="trailing" id="oF3-3P-M4P"/>
+                                                <constraint firstItem="tvC-4n-69O" firstAttribute="bottom" secondItem="HcB-O2-XAh" secondAttribute="bottomMargin" id="oOk-62-zfb"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                         <connections>
+                                            <outlet property="autoDownloadIndicator" destination="H5L-K1-HNR" id="Gco-ms-1fQ"/>
                                             <outlet property="lastPublishedDate" destination="wxe-bv-W6i" id="Zf3-02-uI8"/>
                                             <outlet property="pvImage" destination="uk6-qB-t6M" id="OFj-bF-fNQ"/>
                                             <outlet property="title" destination="nHK-v5-PZN" id="XaK-zi-Jwb"/>
@@ -936,12 +945,29 @@
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
+                                    <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="yez-rs-zzS">
+                                        <rect key="frame" x="318" y="53" width="51" height="31"/>
+                                        <color key="onTintColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <connections>
+                                            <action selector="autoDownloadSwitchTouched:" destination="DYF-Bg-yz8" eventType="valueChanged" id="woQ-eS-PNl"/>
+                                        </connections>
+                                    </switch>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Auto DL" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="TnX-z2-VIN">
+                                        <rect key="frame" x="255" y="59" width="55" height="18"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
                                 </subviews>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="92" id="D3u-CA-JcY"/>
+                                    <constraint firstAttribute="trailing" secondItem="yez-rs-zzS" secondAttribute="trailing" constant="8" id="MT3-Qo-UWs"/>
                                     <constraint firstItem="W2q-RV-W1m" firstAttribute="leading" secondItem="yDP-ef-HEq" secondAttribute="leading" constant="8" id="MZD-Pt-ALq"/>
+                                    <constraint firstItem="yez-rs-zzS" firstAttribute="leading" secondItem="TnX-z2-VIN" secondAttribute="trailing" constant="8" id="a3y-Os-bRk"/>
+                                    <constraint firstAttribute="bottom" secondItem="TnX-z2-VIN" secondAttribute="bottom" constant="15" id="i9b-xS-j59"/>
                                     <constraint firstItem="W2q-RV-W1m" firstAttribute="top" secondItem="yDP-ef-HEq" secondAttribute="top" constant="8" id="x5u-2l-iaK"/>
+                                    <constraint firstAttribute="bottom" secondItem="yez-rs-zzS" secondAttribute="bottom" constant="8" id="ybe-Qm-G8b"/>
                                 </constraints>
                             </view>
                         </subviews>
@@ -957,6 +983,8 @@
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="autoDownloadLabel" destination="TnX-z2-VIN" id="jUQ-rY-nCP"/>
+                        <outlet property="autoDownloadSwitch" destination="yez-rs-zzS" id="u4r-5a-L2r"/>
                         <outlet property="bottomButton" destination="VOa-dX-ejH" id="akg-G5-uRs"/>
                         <outlet property="headerImageView" destination="W2q-RV-W1m" id="y4A-4E-KUw"/>
                         <outlet property="headerPodcastTitle" destination="4bn-tB-LUD" id="iII-EY-sLo"/>

@@ -204,7 +204,7 @@ extension PVFeedParser:FeedParserDelegate {
                     return
                 }
                 
-                if strongSelf.downloadMostRecentEpisode == true {
+                if strongSelf.downloadMostRecentEpisode == true && podcast.shouldAutoDownload() {
                     PVDownloader.shared.startDownloadingEpisode(episode: newEpisode)
                     strongSelf.downloadMostRecentEpisode = false
                 }
@@ -226,6 +226,7 @@ extension PVFeedParser:FeedParserDelegate {
                     PVDownloader.shared.startDownloadingEpisode(episode: latestEpisode)
                 }
             }
+            podcast.addToAutoDownloadList()
         }
         
         if let mostRecentEpisode = CoreDataHelper.fetchEntityWithMostRecentPubDate(className:"Episode", predicate: podcastPredicate, moc:moc) as? Episode {

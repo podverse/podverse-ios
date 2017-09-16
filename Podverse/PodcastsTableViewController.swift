@@ -10,7 +10,7 @@ import UIKit
 import CoreData
 import Lock
 
-class PodcastsTableViewController: PVViewController {
+class PodcastsTableViewController: PVViewController, AutoDownloadProtocol {
 
     @IBOutlet weak var tableView: UITableView!
     
@@ -72,6 +72,13 @@ class PodcastsTableViewController: PVViewController {
         
         self.tableView.reloadData()
     }
+    
+    func podcastAutodownloadChanged(feedUrl: String) {
+        if let index = self.subscribedPodcastsArray.index(where: {$0.feedUrl == feedUrl}) {
+            self.tableView.reloadRows(at: [IndexPath(row: index, section: 0)], with: .none)
+        }
+    }
+    
 }
 
 extension PodcastsTableViewController:PVFeedParserDelegate {
@@ -125,13 +132,19 @@ extension PodcastsTableViewController:UITableViewDelegate, UITableViewDataSource
         
         cell.title?.text = podcast.title
         
+        if podcast.shouldAutoDownload() {
+            cell.autoDownloadIndicator?.text = "Auto DL ON"
+        } else {
+            cell.autoDownloadIndicator?.text = "Auto DL OFF"
+        }
+        
         let episodes = podcast.episodes
         let episodesDownloaded = episodes.filter{ $0.fileName != nil }
         cell.totalEpisodes?.text = "\(episodesDownloaded.count) downloaded"
                 
         cell.lastPublishedDate?.text = ""
         if let lastPubDate = podcast.lastPubDate {
-            //cell.lastPublishedDate?.text = PVUtility.formatDateToString(lastPubDate)
+            cell.lastPublishedDate?.text = lastPubDate.toShortFormatString()
         }
         
         cell.pvImage.image = Podcast.retrievePodcastImage(managedObjectID: podcast.objectID)
@@ -169,6 +182,7 @@ extension PodcastsTableViewController:UITableViewDelegate, UITableViewDataSource
             if segue.identifier == "Show Episodes" {
                 let episodesTableViewController = segue.destination as! EpisodesTableViewController
                 episodesTableViewController.selectedPodcastID = subscribedPodcastsArray[index.row].objectID
+                episodesTableViewController.delegate = self
             }
         }
         
