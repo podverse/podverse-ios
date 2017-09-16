@@ -1,8 +1,13 @@
 import UIKit
 import CoreData
 
+protocol AutoDownloadProtocol: NSObjectProtocol {
+    func podcastAutodownloadChanged(feedUrl: String)
+}
+
 class EpisodesTableViewController: PVViewController, UITableViewDataSource, UITableViewDelegate {
     
+    weak var delegate: AutoDownloadProtocol?
     var episodesArray = [Episode]()
     let moc = CoreDataHelper.createMOCForThread(threadType: .privateThread)
     let reachability = PVReachability.shared
@@ -23,6 +28,7 @@ class EpisodesTableViewController: PVViewController, UITableViewDataSource, UITa
             } else {
                 podcast.addToAutoDownloadList()
             }
+            self.delegate?.podcastAutodownloadChanged(feedUrl: podcast.feedUrl)
         }
     }
     
