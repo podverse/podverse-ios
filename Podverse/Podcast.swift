@@ -99,13 +99,10 @@ class Podcast: NSManagedObject {
     
     func shouldAutoDownload() -> Bool {
         if let autoDownloadingFeedUrls = UserDefaults.standard.array(forKey: kAutoDownloadingFeedUrls) as? [String] {
-            
-            let results = autoDownloadingFeedUrls.filter { $0 == self.feedUrl }
-            
-            if results.isEmpty {
-                return false
-            } else {
+            if autoDownloadingFeedUrls.contains(self.feedUrl) {
                 return true
+            } else {
+                return false
             }
         }
         
@@ -115,9 +112,7 @@ class Podcast: NSManagedObject {
     func addToAutoDownloadList() {
         
         if var autoDownloadingFeedUrls = UserDefaults.standard.array(forKey: kAutoDownloadingFeedUrls) as? [String] {
-            let results = autoDownloadingFeedUrls.filter { $0 == self.feedUrl }
-            
-            if results.isEmpty {
+            if !autoDownloadingFeedUrls.contains(self.feedUrl) {
                 autoDownloadingFeedUrls.append(self.feedUrl)
                 UserDefaults.standard.setValue(autoDownloadingFeedUrls, forKey: kAutoDownloadingFeedUrls)
             }
