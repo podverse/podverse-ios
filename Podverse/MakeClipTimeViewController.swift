@@ -190,9 +190,16 @@ class MakeClipTimeViewController: UIViewController, UITextFieldDelegate {
     
     @objc private func updateTime () {
         DispatchQueue.main.async {
-            let playbackPosition = self.audioPlayer.progress
+            
+            var playbackPosition = Double(0)
+            if self.audioPlayer.progress > 0 {
+                playbackPosition = self.audioPlayer.progress
+            } else if let dur = self.pvMediaPlayer.duration {
+                playbackPosition = Double(self.progress.value) * dur
+            }
+            
             self.currentTime.text = Int64(playbackPosition).toMediaPlayerString()
-
+            
             if let dur = self.pvMediaPlayer.duration {
                 self.duration.text = Int64(dur).toMediaPlayerString()
                 self.progress.value = Float(playbackPosition / dur)
@@ -204,6 +211,7 @@ class MakeClipTimeViewController: UIViewController, UITextFieldDelegate {
                     self.endTimePreview = nil
                 }
             }
+            
         }
     }
     
@@ -240,7 +248,7 @@ class MakeClipTimeViewController: UIViewController, UITextFieldDelegate {
         super.viewDidLoad()
         
         self.navigationItem.backBarButtonItem = UIBarButtonItem(title:"Back", style:.plain, target:nil, action:nil)
-        
+
         setupTimer()
         
         addObservers()
@@ -268,20 +276,30 @@ class MakeClipTimeViewController: UIViewController, UITextFieldDelegate {
     }
     
     @IBAction func slidingRecognized(_ sender: Any) {
-        if let pan = sender as? UIPanGestureRecognizer {
-            let panPoint = pan.velocity(in: self.playbackControlView)
-            var newTime = (self.audioPlayer.progress + Double(panPoint.x / 140.0))
+        if let pan = sender as? UIPanGestureRecognizer, let duration = pvMediaPlayer.duration {
             
-            if newTime <= 0 {
-                newTime = 0
-            }
-            else if newTime >= self.audioPlayer.duration {
-                newTime = self.audioPlayer.duration - 1
-                self.audioPlayer.pause()
+            if pvMediaPlayer.checkIfNothingIsCurrentlyLoadedInPlayer() {
+                let panPoint = pan.velocity(in: self.playbackControlView)
+                let newTime = ((Double(self.progress.value) * duration) + Double(panPoint.x / 140.0))
+                self.progress.value = Float(newTime / duration)
+                self.pvMediaPlayer.seek(toTime: newTime)
+                updateTime()
+            } else {
+                let panPoint = pan.velocity(in: self.playbackControlView)
+                var newTime = (self.audioPlayer.progress + Double(panPoint.x / 140.0))
+                
+                if newTime <= 0 {
+                    newTime = 0
+                }
+                else if newTime >= duration {
+                    newTime = duration - 1
+                    self.audioPlayer.pause()
+                }
+                
+                self.pvMediaPlayer.seek(toTime: newTime)
+                updateTime()
             }
             
-            self.audioPlayer.seek(toTime: newTime)
-            updateTime()
         }
     }
     
