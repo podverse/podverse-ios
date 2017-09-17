@@ -1197,10 +1197,10 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="0.5" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="b9W-qZ-WQV">
+                            <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="b9W-qZ-WQV">
                                 <rect key="frame" x="-2" y="36" width="379" height="31"/>
                                 <connections>
-                                    <action selector="sliderAction:" destination="zd7-Mp-9ff" eventType="valueChanged" id="e6Z-F9-9JW"/>
+                                    <action selector="sliderAction:forEvent:" destination="zd7-Mp-9ff" eventType="valueChanged" id="hQ4-DI-RpM"/>
                                 </connections>
                             </slider>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Duration" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="viA-V7-R1t">
@@ -1740,10 +1740,10 @@
                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="0.5" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="Yv3-Oc-a1n">
+                            <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="Yv3-Oc-a1n">
                                 <rect key="frame" x="-2" y="512" width="379" height="31"/>
                                 <connections>
-                                    <action selector="sliderAction:" destination="fGh-hH-QQS" eventType="valueChanged" id="hzU-yj-xlx"/>
+                                    <action selector="sliderAction:forEvent:" destination="fGh-hH-QQS" eventType="valueChanged" id="3hG-VC-w9G"/>
                                 </connections>
                             </slider>
                             <pageControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" numberOfPages="2" translatesAutoresizingMaskIntoConstraints="NO" id="09J-Zt-eRz">

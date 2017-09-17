@@ -31,17 +31,27 @@ class MakeClipTimeViewController: UIViewController, UITextFieldDelegate {
     @IBOutlet weak var startPreview: UIButton!
     @IBOutlet weak var startTimeInput: UITextField!
     
-    @IBAction func sliderAction(_ sender: UISlider) {
-        if let duration = pvMediaPlayer.duration {
-            let newTime = Double(sender.value) * duration
-            self.audioPlayer.seek(toTime: newTime)
-            updateTime()
+    @IBAction func sliderAction(_ sender: Any, forEvent event: UIEvent) {
+        if let sender = sender as? UISlider, let touchEvent = event.allTouches?.first {
+            switch touchEvent.phase {
+            case .began:
+                removeTimer()
+            case .ended:
+                if let duration = pvMediaPlayer.duration {
+                    let newTime = Double(sender.value) * duration
+                    self.pvMediaPlayer.seek(toTime: newTime)
+                    updateTime()
+                }
+                setupTimer()
+            default:
+                break
+            }
         }
     }
     
     @IBAction func startTimePreview(_ sender: Any) {
         if let startTime = self.startTime {
-            self.audioPlayer.seek(toTime: Double(startTime))
+            self.pvMediaPlayer.seek(toTime: Double(startTime))
             self.pvMediaPlayer.play()
         }
     }
@@ -51,9 +61,9 @@ class MakeClipTimeViewController: UIViewController, UITextFieldDelegate {
             self.endTimePreview = endTime
             
             if endTime < 3 {
-                self.audioPlayer.seek(toTime: 0)
+                self.pvMediaPlayer.seek(toTime: 0)
             } else {
-                self.audioPlayer.seek(toTime: Double(endTime) - 3)
+                self.pvMediaPlayer.seek(toTime: Double(endTime) - 3)
             }
             
             self.pvMediaPlayer.play()
@@ -68,9 +78,9 @@ class MakeClipTimeViewController: UIViewController, UITextFieldDelegate {
         let newTime = audioPlayer.progress - 15
         
         if newTime >= 14 {
-            audioPlayer.seek(toTime: newTime)
+            self.pvMediaPlayer.seek(toTime: newTime)
         } else {
-            audioPlayer.seek(toTime: 0)
+            self.pvMediaPlayer.seek(toTime: 0)
         }
         
         updateTime()
@@ -78,7 +88,7 @@ class MakeClipTimeViewController: UIViewController, UITextFieldDelegate {
     
     @IBAction func timeJumpForward(_ sender: Any) {
         let newTime = audioPlayer.progress + 15
-        audioPlayer.seek(toTime: newTime)
+        self.pvMediaPlayer.seek(toTime: newTime)
         updateTime()
     }
     
@@ -236,6 +246,8 @@ class MakeClipTimeViewController: UIViewController, UITextFieldDelegate {
         addObservers()
         
         self.activityIndicator.startAnimating()
+        
+        self.progress.setThumbImage(#imageLiteral(resourceName: "SliderCurrentPosition"), for: .normal)
         
         updateTime()
         

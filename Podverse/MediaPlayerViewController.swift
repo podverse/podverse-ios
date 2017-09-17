@@ -43,7 +43,7 @@ class MediaPlayerViewController: PVViewController {
         let addToPlaylist = UIBarButtonItem(title: "Add to Playlist", style: .plain, target: self, action: #selector(showAddToPlaylist))
         navigationItem.rightBarButtonItems = [share, makeClip, addToPlaylist]
 
-        self.progress.isContinuous = false
+        self.progress.setThumbImage(#imageLiteral(resourceName: "SliderCurrentPosition"), for: .normal)
         
         populatePlayerInfo()
         
@@ -82,33 +82,44 @@ class MediaPlayerViewController: PVViewController {
         }
     }
     
-    @IBAction func sliderAction(_ sender: UISlider) {
-        if let duration = pvMediaPlayer.duration {
-            let newTime = Double(sender.value) * duration
-            audioPlayer.seek(toTime: newTime)
-            updateTime()
+    @IBAction func sliderAction(_ sender: Any, forEvent event: UIEvent) {
+        if let sender = sender as? UISlider, let touchEvent = event.allTouches?.first {
+            switch touchEvent.phase {
+            case .began:
+                removeTimer()
+            case .ended:
+                if let duration = pvMediaPlayer.duration {
+                    let newTime = Double(sender.value) * duration
+                    self.pvMediaPlayer.seek(toTime: newTime)
+                    updateTime()
+                }
+                setupTimer()
+            default:
+                break
+            }
         }
     }
-
+    
+    
     @IBAction func play(_ sender: Any) {
-        pvMediaPlayer.playOrPause()
+        self.pvMediaPlayer.playOrPause()
     }
 
     @IBAction func timeJumpBackward(_ sender: Any) {
-        let newTime = audioPlayer.progress - 15
+        let newTime = self.audioPlayer.progress - 15
         
         if newTime >= 14 {
-            audioPlayer.seek(toTime: newTime)
+            self.pvMediaPlayer.seek(toTime: newTime)
         } else {
-            audioPlayer.seek(toTime: 0)
+            self.pvMediaPlayer.seek(toTime: 0)
         }
         
         updateTime()
     }
     
     @IBAction func timeJumpForward(_ sender: Any) {
-        let newTime = audioPlayer.progress + 15
-        audioPlayer.seek(toTime: newTime)
+        let newTime = self.audioPlayer.progress + 15
+        self.pvMediaPlayer.seek(toTime: newTime)
         updateTime()
     }
     
@@ -224,7 +235,14 @@ class MediaPlayerViewController: PVViewController {
                 self.currentTime.text = "--:--"
                 self.duration.text = "--:--"
             } else {
-                let playbackPosition = self.audioPlayer.progress
+                
+                var playbackPosition = Double(0)
+                if self.audioPlayer.progress > 0 {
+                    playbackPosition = self.audioPlayer.progress
+                } else if let dur = self.pvMediaPlayer.duration {
+                    playbackPosition = Double(self.progress.value) * dur
+                }
+                
                 self.currentTime.text = Int64(playbackPosition).toMediaPlayerString()
                 
                 if let dur = self.pvMediaPlayer.duration {
