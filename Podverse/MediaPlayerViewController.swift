@@ -415,6 +415,10 @@ class MediaPlayerViewController: PVViewController {
 
 extension MediaPlayerViewController:ClipsListDelegate {
     func didSelectClip(clip: MediaRef) {
-        //Change the player data and info to the passed in clip
+        DispatchQueue.main.async {
+            let playerHistoryItem = self.playerHistoryManager.convertMediaRefToPlayerHistoryItem(mediaRef: clip)
+            self.pvMediaPlayer.loadPlayerHistoryItem(item: playerHistoryItem)
+            self.showAboutView()
+        }
     }
 }

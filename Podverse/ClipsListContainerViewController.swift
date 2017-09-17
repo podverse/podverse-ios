@@ -13,8 +13,10 @@ protocol ClipsListDelegate:class {
     func didSelectClip(clip:MediaRef)
 }
 
-enum ClipFilterType {
-    case episode, podcast, subscribed
+enum ClipFilterType: String {
+    case episode = "Episode"
+    case podcast = "Podcast"
+    case subscribed = "My Subscribed"
     
     var text:String {
         get {
@@ -46,7 +48,7 @@ class ClipsListContainerViewController: UIViewController {
     weak var delegate:ClipsListDelegate?
     let reachability = PVReachability.shared
     
-    var filterTypeSelected:ClipFilterType = .subscribed
+    var filterTypeSelected:ClipFilterType?
     
     @IBAction func retryButtonTouched(_ sender: Any) {
         
@@ -63,6 +65,7 @@ class ClipsListContainerViewController: UIViewController {
             }
             self.filterType.setTitle("Episode\u{2304}", for: .normal)
             self.filterTypeSelected = .episode
+            UserDefaults.standard.set("Episode", forKey: kClipsListFilterType)
         }))
         
         alert.addAction(UIAlertAction(title: "Podcast", style: .default, handler: { action in
@@ -73,6 +76,7 @@ class ClipsListContainerViewController: UIViewController {
             }
             self.filterType.setTitle("Podcast\u{2304}", for: .normal)
             self.filterTypeSelected = .podcast
+            UserDefaults.standard.set("Podcast", forKey: kClipsListFilterType)
         }))
         
         alert.addAction(UIAlertAction(title: "My Subscribed", style: .default, handler: { action in
@@ -83,6 +87,7 @@ class ClipsListContainerViewController: UIViewController {
             }
             self.filterType.setTitle("My Subscribed\u{2304}", for: .normal)
             self.filterTypeSelected = .subscribed
+            UserDefaults.standard.set("My Subscribed", forKey: kClipsListFilterType)
         }))
         
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
@@ -99,14 +104,29 @@ class ClipsListContainerViewController: UIViewController {
         
         activityIndicator.hidesWhenStopped = true
         showIndicator()
-                
-        if pvMediaPlayer.nowPlayingItem != nil {
-            MediaRef.retrieveMediaRefsFromServer() { (mediaRefs) -> Void in
-                self.reloadClipData(mediaRefs: mediaRefs)
-            }
+        
+        if let savedFilterType = UserDefaults.standard.value(forKey: kClipsListFilterType) as? String {
+            self.filterTypeSelected = ClipFilterType(rawValue: savedFilterType)
         }
         
-        filterType.setTitle("My Subscribed\u{2304}", for: .normal)
+        if let item = pvMediaPlayer.nowPlayingItem {
+            if self.filterTypeSelected == .episode {
+                MediaRef.retrieveMediaRefsFromServer(episodeMediaUrl: item.episodeMediaUrl) { (mediaRefs) -> Void in
+                    self.reloadClipData(mediaRefs: mediaRefs)
+                }
+                filterType.setTitle("Episode\u{2304}", for: .normal)
+            } else if self.filterTypeSelected == .podcast {
+                MediaRef.retrieveMediaRefsFromServer(podcastFeedUrl: item.podcastFeedUrl) { (mediaRefs) -> Void in
+                    self.reloadClipData(mediaRefs: mediaRefs)
+                }
+                filterType.setTitle("Podcast\u{2304}", for: .normal)
+            } else {
+                MediaRef.retrieveMediaRefsFromServer() { (mediaRefs) -> Void in
+                    self.reloadClipData(mediaRefs: mediaRefs)
+                }
+                filterType.setTitle("My Subscribed\u{2304}", for: .normal)
+            }
+        }
     }
     
     func reloadClipData(mediaRefs: [MediaRef]? = nil) {
