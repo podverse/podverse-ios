@@ -11,7 +11,9 @@ import CoreData
 import Lock
 
 class PodcastsTableViewController: PVViewController {
-
+    
+    @IBOutlet weak var parseStatus: UILabel!
+    @IBOutlet weak var parsingActivityIndicator: UIActivityIndicatorView!
     @IBOutlet weak var tableView: UITableView!
     
     var subscribedPodcastsArray = [Podcast]()
@@ -72,6 +74,11 @@ class PodcastsTableViewController: PVViewController {
         
         self.tableView.reloadData()
     }
+    
+    func updateParsingIndicator() {
+        self.parsingActivityIndicator.startAnimating()
+        // TODO
+    }
 }
 
 extension PodcastsTableViewController:PVFeedParserDelegate {
@@ -98,17 +105,6 @@ extension PodcastsTableViewController:PVFeedParserDelegate {
 
 extension PodcastsTableViewController:UITableViewDelegate, UITableViewDataSource {
     // MARK: - Table view data source
-    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        return 2
-    }
-    
-    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        if section == 0 {
-            return "Subscribed"
-        } else {
-            return "Following"
-        }
-    }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 92
