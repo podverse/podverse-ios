@@ -260,12 +260,29 @@ class MakeClipTimeViewController: UIViewController, UITextFieldDelegate {
         self.startTimeInput.text = PVTimeHelper.convertIntToHMSString(time: self.startTime)
         
         self.endTimeInput.becomeFirstResponder()
-        
     }
     
     deinit {
         removeObservers()
         removeTimer()
+    }
+    
+    @IBAction func slidingRecognized(_ sender: Any) {
+        if let pan = sender as? UIPanGestureRecognizer {
+            let panPoint = pan.velocity(in: self.playbackControlView)
+            var newTime = (self.audioPlayer.progress + Double(panPoint.x / 140.0))
+            
+            if newTime <= 0 {
+                newTime = 0
+            }
+            else if newTime >= self.audioPlayer.duration {
+                newTime = self.audioPlayer.duration - 1
+                self.audioPlayer.pause()
+            }
+            
+            self.audioPlayer.seek(toTime: newTime)
+            updateTime()
+        }
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {

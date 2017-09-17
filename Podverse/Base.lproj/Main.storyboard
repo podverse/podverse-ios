@@ -1347,6 +1347,7 @@
                                     </activityIndicatorView>
                                 </subviews>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <gestureRecognizers/>
                                 <constraints>
                                     <constraint firstAttribute="bottom" secondItem="ylx-69-eco" secondAttribute="bottom" id="0KU-f4-T0W"/>
                                     <constraint firstItem="ylx-69-eco" firstAttribute="centerX" secondItem="svO-df-TzM" secondAttribute="centerX" id="Bqh-cl-a6g"/>
@@ -1359,6 +1360,9 @@
                                     <constraint firstAttribute="height" constant="64" id="q93-Nx-d9Z"/>
                                     <constraint firstItem="c6w-IA-pcu" firstAttribute="top" secondItem="svO-df-TzM" secondAttribute="top" id="vbD-OD-gJw"/>
                                 </constraints>
+                                <connections>
+                                    <outletCollection property="gestureRecognizers" destination="oHo-Ke-tdN" appends="YES" id="yrb-cE-Rjc"/>
+                                </connections>
                             </view>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="4bh-ag-rn0">
                                 <rect key="frame" x="195.5" y="319" width="163.5" height="56"/>
@@ -1429,6 +1433,11 @@
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="lwi-OT-clR" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <panGestureRecognizer minimumNumberOfTouches="1" id="oHo-Ke-tdN">
+                    <connections>
+                        <action selector="slidingRecognized:" destination="zd7-Mp-9ff" id="nfB-NS-mbP"/>
+                    </connections>
+                </panGestureRecognizer>
             </objects>
             <point key="canvasLocation" x="2980" y="-2670.3148425787108"/>
         </scene>
