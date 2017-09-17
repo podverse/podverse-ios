@@ -10,7 +10,7 @@ import UIKit
 
 class PlaylistTableViewCell: UITableViewCell {
     
-    @IBOutlet weak var itemsTotal: UILabel!
+    @IBOutlet weak var itemCount: UILabel!
     @IBOutlet weak var lastUpdated: UILabel!
     @IBOutlet weak var title: UILabel!
 

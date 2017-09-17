@@ -112,6 +112,12 @@ extension PlaylistsTableViewController:UITableViewDelegate, UITableViewDataSourc
             cell.lastUpdated?.text = lastUpdated.toShortFormatString()
         }
         
+        if let itemCount = playlist.itemCount {
+            cell.itemCount.text = "Items: " + itemCount
+        } else {
+            cell.itemCount.text = "Items: 0"
+        }
+        
         return cell
     }
     
