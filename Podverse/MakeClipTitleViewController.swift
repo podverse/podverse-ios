@@ -113,7 +113,8 @@ class MakeClipTitleViewController: UIViewController, UITextViewDelegate {
             } else {
                 self.duration.text = "Duration:"
             }
-        }
+            
+            self.titleInput.becomeFirstResponder()        }
         
     }
     

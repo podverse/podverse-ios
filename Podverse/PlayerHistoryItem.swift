@@ -131,7 +131,7 @@ class PlayerHistoryItem: NSObject, NSCoding {
             } else if startTime == 0 {
                 time = "--:--"
             } else {
-                time = "Starts:" + startTime.toMediaPlayerString()
+                time = startTime.toMediaPlayerString() + " to " + "..."
             }
         }
         
