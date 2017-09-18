@@ -212,6 +212,7 @@ class PVMediaPlayer: NSObject {
     
     func seek(toTime: Double) {
         if self.audioPlayer.duration > 0 {
+            self.shouldStartFromTime = Int64(0)
             self.audioPlayer.seek(toTime: toTime)
         } else {
             self.shouldStartFromTime = Int64(toTime)
@@ -395,7 +396,7 @@ class PVMediaPlayer: NSObject {
                     
                     if self.shouldSetupClip == true {
                         if let startTime = item.startTime {
-                            self.audioPlayer.seek(toTime: Double(startTime))
+                            self.seek(toTime: Double(startTime))
                         }
                         
                         if let endTime = item.endTime {

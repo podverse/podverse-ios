@@ -62,7 +62,12 @@ class MediaPlayerViewController: PVViewController {
         self.activityIndicator.startAnimating()
         
         setupTimer()
-        setupClipFlags()
+        
+        // If autoplaying, we don't want the flags to appear immediately, as the pvMediaPlayer may still have an old duration value, and the flags will appear relative to the old duration.
+        // If not autoplaying, then the pvMediaPlayer.duration should still be accurate, and we can set the clip flags immediately.
+        if !pvMediaPlayer.shouldAutoplayOnce && !pvMediaPlayer.shouldAutoplayAlways {
+            setupClipFlags()
+        }
     }
     
     deinit {
@@ -95,7 +100,7 @@ class MediaPlayerViewController: PVViewController {
             case .began:
                 removeTimer()
             case .ended:
-                if let duration = pvMediaPlayer.duration {
+                if let duration = self.pvMediaPlayer.duration {
                     let newTime = Double(sender.value) * duration
                     self.pvMediaPlayer.seek(toTime: newTime)
                     updateTime()
@@ -436,11 +441,11 @@ class MediaPlayerViewController: PVViewController {
         
     }
     
-    fileprivate func setupClipFlags() {
+    fileprivate func setupClipFlags() {        
         self.startTimeLeadingConstraint.constant = 0
         self.endTimeLeadingConstraint.constant = 0
         let sliderThumbWidthAdjustment:CGFloat = 2.0
-        
+                
         if let 
             nowPlayingItem = self.pvMediaPlayer.nowPlayingItem, 
             let startTime = nowPlayingItem.startTime, 
@@ -469,7 +474,10 @@ extension MediaPlayerViewController:PVMediaPlayerUIDelegate {
     func playerHistoryItemLoadingBegan() {
         DispatchQueue.main.async {
             self.populatePlayerInfo()
+            self.startTimeFlagView.isHidden = true
+            self.endTimeFlagView.isHidden = true
         }
+        
     }
     
     func playerHistoryItemLoaded() {
