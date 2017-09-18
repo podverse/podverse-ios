@@ -34,6 +34,10 @@ class MediaPlayerViewController: PVViewController {
     @IBOutlet weak var podcastTitle: UILabel!
     @IBOutlet weak var progress: UISlider!
     @IBOutlet weak var speed: UIButton!
+    @IBOutlet weak var startTimeFlagView: UIView!
+    @IBOutlet weak var endTimeFlagView: UIView!
+    @IBOutlet weak var startTimeLeadingConstraint: NSLayoutConstraint!
+    @IBOutlet weak var endTimeLeadingConstraint: NSLayoutConstraint!
     
     override func viewDidLoad() {
         setupContainerView()
@@ -56,6 +60,7 @@ class MediaPlayerViewController: PVViewController {
         self.activityIndicator.startAnimating()
         
         setupTimer()
+        setupClipFlags()
     }
     
     deinit {
@@ -427,6 +432,30 @@ class MediaPlayerViewController: PVViewController {
             
         }
         
+    }
+    
+    fileprivate func setupClipFlags() {
+        self.startTimeLeadingConstraint.constant = 0
+        self.endTimeLeadingConstraint.constant = 0
+        let sliderThumbWidthAdjustment:CGFloat = 2.0
+        
+        if let 
+            nowPlayingItem = self.pvMediaPlayer.nowPlayingItem, 
+            let startTime = nowPlayingItem.startTime, 
+            let endTime = nowPlayingItem.endTime, 
+            let duration = self.pvMediaPlayer.duration, 
+            nowPlayingItem.isClip() {
+            
+            self.startTimeFlagView.isHidden = false
+            self.endTimeFlagView.isHidden = self.pvMediaPlayer.nowPlayingItem?.endTime == nil
+            
+            self.startTimeLeadingConstraint.constant = (CGFloat(Double(startTime) / duration) * progress.frame.width) - sliderThumbWidthAdjustment
+            self.endTimeLeadingConstraint.constant = (CGFloat(Double(endTime) / duration) * progress.frame.width) - sliderThumbWidthAdjustment
+        }
+        else {
+            self.startTimeFlagView.isHidden = true
+            self.endTimeFlagView.isHidden = true
+        }
     }
     
 }

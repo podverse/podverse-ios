@@ -1781,6 +1781,22 @@
                                     <action selector="pageControlAction:" destination="fGh-hH-QQS" eventType="valueChanged" id="YP7-tE-dwL"/>
                                 </connections>
                             </pageControl>
+                            <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="c3H-2M-tIc">
+                                <rect key="frame" x="0.0" y="512" width="2" height="30"/>
+                                <color key="backgroundColor" red="1" green="0.91107144289999997" blue="0.20899878729999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="2" id="lYI-ym-pMD"/>
+                                    <constraint firstAttribute="height" constant="30" id="w7V-0W-Zat"/>
+                                </constraints>
+                            </view>
+                            <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="SBa-Dx-9rx">
+                                <rect key="frame" x="0.0" y="512" width="2" height="30"/>
+                                <color key="backgroundColor" red="1" green="0.91107144290289366" blue="0.20899878725641041" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="2" id="7O8-w3-u9w"/>
+                                    <constraint firstAttribute="height" constant="30" id="u2u-A5-up8"/>
+                                </constraints>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
@@ -1794,11 +1810,15 @@
                             <constraint firstItem="uTA-rm-Ib9" firstAttribute="leading" secondItem="N8d-St-BhC" secondAttribute="leading" constant="12" id="I7s-mE-Y7O"/>
                             <constraint firstItem="xgo-aW-bmE" firstAttribute="leading" secondItem="N8d-St-BhC" secondAttribute="leading" id="Jzt-WS-5sn"/>
                             <constraint firstItem="i1e-q4-aop" firstAttribute="top" secondItem="d5T-eo-vSh" secondAttribute="bottom" constant="8" id="N5f-Yb-7g8"/>
+                            <constraint firstItem="SBa-Dx-9rx" firstAttribute="leading" secondItem="Yv3-Oc-a1n" secondAttribute="leading" id="Pjd-Ia-Lox"/>
                             <constraint firstItem="xgo-aW-bmE" firstAttribute="top" secondItem="uTA-rm-Ib9" secondAttribute="bottom" constant="4" id="QC5-97-vmP"/>
+                            <constraint firstItem="c3H-2M-tIc" firstAttribute="centerY" secondItem="Yv3-Oc-a1n" secondAttribute="centerY" id="SgG-rR-k4x"/>
                             <constraint firstItem="XV8-p8-n0p" firstAttribute="leading" secondItem="N8d-St-BhC" secondAttribute="leading" constant="-1" id="Sys-Of-61E"/>
                             <constraint firstAttribute="trailing" secondItem="Yv3-Oc-a1n" secondAttribute="trailing" id="cXB-lF-g6c"/>
+                            <constraint firstItem="c3H-2M-tIc" firstAttribute="leading" secondItem="Yv3-Oc-a1n" secondAttribute="leading" id="fQq-FE-BIa"/>
                             <constraint firstAttribute="trailing" secondItem="xgo-aW-bmE" secondAttribute="trailing" id="hxJ-LI-yep"/>
                             <constraint firstAttribute="trailing" secondItem="XV8-p8-n0p" secondAttribute="trailing" constant="-1" id="k0X-dx-0To"/>
+                            <constraint firstItem="SBa-Dx-9rx" firstAttribute="centerY" secondItem="Yv3-Oc-a1n" secondAttribute="centerY" id="klG-LX-Phu"/>
                             <constraint firstItem="Yv3-Oc-a1n" firstAttribute="top" secondItem="XV8-p8-n0p" secondAttribute="bottom" constant="16" id="mFj-F1-qac"/>
                             <constraint firstAttribute="bottom" secondItem="xgo-aW-bmE" secondAttribute="bottom" id="mGn-eu-yH1"/>
                             <constraint firstItem="09J-Zt-eRz" firstAttribute="centerX" secondItem="N8d-St-BhC" secondAttribute="centerX" id="pRP-6w-IJD"/>
@@ -1812,6 +1832,8 @@
                         <outlet property="currentTime" destination="uTA-rm-Ib9" id="APu-g9-5sk"/>
                         <outlet property="device" destination="qsu-6Y-Pz9" id="gA0-o7-2Iy"/>
                         <outlet property="duration" destination="Gf5-u2-hI0" id="UKG-7H-Q60"/>
+                        <outlet property="endTimeFlagView" destination="c3H-2M-tIc" id="Db0-n9-1jz"/>
+                        <outlet property="endTimeLeadingConstraint" destination="fQq-FE-BIa" id="wEe-LT-OwZ"/>
                         <outlet property="episodeTitle" destination="9El-7Y-kCh" id="MW8-Ge-P8Q"/>
                         <outlet property="image" destination="dKh-qP-chs" id="hov-Zq-24X"/>
                         <outlet property="pageControl" destination="09J-Zt-eRz" id="ILX-CS-eLy"/>
@@ -1819,6 +1841,8 @@
                         <outlet property="podcastTitle" destination="fJD-IK-w03" id="r6m-ue-wLk"/>
                         <outlet property="progress" destination="Yv3-Oc-a1n" id="6An-JE-nQb"/>
                         <outlet property="speed" destination="7Cr-KC-kdT" id="cbh-bz-Vwn"/>
+                        <outlet property="startTimeFlagView" destination="SBa-Dx-9rx" id="UzY-W5-l09"/>
+                        <outlet property="startTimeLeadingConstraint" destination="Pjd-Ia-Lox" id="HCk-gJ-V8u"/>
                         <outlet property="view" destination="N8d-St-BhC" id="a5o-uf-OqS"/>
                         <segue destination="KLO-yl-1MA" kind="show" identifier="Show Add to Playlist" id="nDQ-g4-4ny"/>
                         <segue destination="zd7-Mp-9ff" kind="show" identifier="Show Make Clip Time" id="Dev-wo-Kx8"/>
