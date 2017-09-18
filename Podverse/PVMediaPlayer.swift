@@ -391,7 +391,7 @@ class PVMediaPlayer: NSObject {
         if let keyPath = keyPath, let item = self.nowPlayingItem {
             if keyPath == #keyPath(audioPlayer.state) {
                 
-                if audioPlayer.state == STKAudioPlayerState.playing || audioPlayer.state == STKAudioPlayerState.buffering {
+                if self.audioPlayer.state == STKAudioPlayerState.playing || self.audioPlayer.state == STKAudioPlayerState.buffering {
                     
                     if self.audioPlayer.duration > 0 {
                         updateDuration(episodeMediaUrl: nil)
@@ -411,11 +411,20 @@ class PVMediaPlayer: NSObject {
                                 self.audioPlayer.seek(toTime: Double(self.shouldStartFromTime))
                                 self.shouldStartFromTime = 0
                             }
+                            
+                            
                         }
                         
-                        self.delegate?.playerHistoryItemLoaded()
                     }
                     
+                }
+                
+                if self.audioPlayer.state == STKAudioPlayerState.buffering || self.audioPlayer.state == STKAudioPlayerState.paused {
+                    return
+                }
+                
+                if self.audioPlayer.state == STKAudioPlayerState.playing {
+                    self.delegate?.playerHistoryItemLoaded()
                 }
                 
             }

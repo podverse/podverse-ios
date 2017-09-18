@@ -182,15 +182,6 @@ class MediaPlayerViewController: PVViewController {
         self.removeObserver(self, forKeyPath: #keyPath(audioPlayer.state))
     }
     
-    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
-        if let keyPath = keyPath {
-            if keyPath == #keyPath(audioPlayer.state) {
-                self.togglePlayIcon()
-                self.updateTime()
-            }
-        }
-    }
-        
     fileprivate func setupContainerView() {
         if let currentVC = self.storyboard?.instantiateViewController(withIdentifier: self.aboutClipsStoryboardId) {
             self.currentChildViewController = currentVC
@@ -212,9 +203,9 @@ class MediaPlayerViewController: PVViewController {
         self.pageControl.currentPage = 0
     }
     
-    private func togglePlayIcon() {
+    func togglePlayIcon() {
         DispatchQueue.main.async {
-            if self.audioPlayer.state == STKAudioPlayerState.buffering {
+            if self.audioPlayer.state == STKAudioPlayerState.buffering || self.pvMediaPlayer.shouldSetupClip {
                 self.activityIndicator.isHidden = false
                 self.play.isHidden = true
             } else if self.audioPlayer.state == STKAudioPlayerState.playing {
@@ -244,8 +235,7 @@ class MediaPlayerViewController: PVViewController {
     @objc private func updateTime () {
         DispatchQueue.main.async {
             if self.audioPlayer.state == STKAudioPlayerState.buffering {
-                self.currentTime.text = "--:--"
-                self.duration.text = "--:--"
+                self.showPendingTime()
             } else {
                 
                 var playbackPosition = 0.0
@@ -265,14 +255,31 @@ class MediaPlayerViewController: PVViewController {
         }
     }
     
-    private func setupTimer () {
-        timer = Timer.scheduledTimer(timeInterval: 0.25, target: self, selector: #selector(updateTime), userInfo: nil, repeats: true)
+    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
+        if let keyPath = keyPath {
+            if keyPath == #keyPath(audioPlayer.state) {
+                if audioPlayer.state == STKAudioPlayerState.playing || audioPlayer.state == STKAudioPlayerState.paused {
+                    self.togglePlayIcon()
+                    self.updateTime()
+                }
+            }
+        }
     }
     
-    private func removeTimer () {
-        if let timer = timer {
+    func showPendingTime() {
+        self.currentTime.text = "--:--"
+        self.duration.text = "--:--"
+    }
+    
+    func setupTimer () {
+        self.timer = Timer.scheduledTimer(timeInterval: 0.5, target: self, selector: #selector(updateTime), userInfo: nil, repeats: true)
+    }
+    
+    func removeTimer () {
+        if let timer = self.timer {
             timer.invalidate()
         }
+        self.timer = nil
     }
     
     func updateSpeedLabel() {
@@ -473,16 +480,21 @@ extension MediaPlayerViewController:PVMediaPlayerUIDelegate {
     
     func playerHistoryItemLoadingBegan() {
         DispatchQueue.main.async {
-            self.populatePlayerInfo()
+            self.removeTimer()
             self.startTimeFlagView.isHidden = true
             self.endTimeFlagView.isHidden = true
+            self.populatePlayerInfo()
+            self.togglePlayIcon()
+            self.showPendingTime()
         }
         
     }
     
     func playerHistoryItemLoaded() {
         DispatchQueue.main.async {
+            self.setupTimer()
             self.setupClipFlags()
+            self.togglePlayIcon()
         }
     }
     
