@@ -150,7 +150,10 @@ class EpisodesTableViewController: PVViewController, UITableViewDataSource, UITa
         cell.title?.text = episode.title
 
         if let summary = episode.summary {
-            cell.summary?.text = summary.removeHTMLFromString()
+            
+            let trimmed = summary.replacingOccurrences(of: "\\n*", with: "", options: .regularExpression)
+            
+            cell.summary?.text = trimmed.removeHTMLFromString()?.trimmingCharacters(in: .whitespacesAndNewlines)
         }
 
         let totalClips = String(123)
@@ -173,8 +176,12 @@ class EpisodesTableViewController: PVViewController, UITableViewDataSource, UITa
         return cell
     }
     
+    func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
+        return UITableViewAutomaticDimension
+    }
+    
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 120
+        return UITableViewAutomaticDimension
     }
 
     override func goToNowPlaying () {
