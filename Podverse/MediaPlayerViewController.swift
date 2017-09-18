@@ -42,6 +42,8 @@ class MediaPlayerViewController: PVViewController {
     override func viewDidLoad() {
         setupContainerView()
         
+        pvMediaPlayer.delegate = self
+        
         let share = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.action, target: self, action: #selector(showShareMenu))
         let makeClip = UIBarButtonItem(title: "Make Clip", style: .plain, target: self, action: #selector(showMakeClip))
         let addToPlaylist = UIBarButtonItem(title: "Add to Playlist", style: .plain, target: self, action: #selector(showAddToPlaylist))
@@ -222,14 +224,14 @@ class MediaPlayerViewController: PVViewController {
         }
     }
     
-    private func populatePlayerInfo() {
-        if let item = pvMediaPlayer.nowPlayingItem {
+    func populatePlayerInfo() {
+        if let item = self.pvMediaPlayer.nowPlayingItem {
             podcastTitle.text = item.podcastTitle
             episodeTitle.text = item.episodeTitle
             
             self.image.sd_setImage(with: URL(string: item.podcastImageUrl ?? ""), placeholderImage: #imageLiteral(resourceName: "PodverseIcon"))
-            if let dur = pvMediaPlayer.duration {
-                duration.text = Int64(audioPlayer.duration).toMediaPlayerString()
+            if let dur = self.pvMediaPlayer.duration {
+                duration.text = Int64(dur).toMediaPlayerString()
             }
         }
     }
@@ -241,9 +243,9 @@ class MediaPlayerViewController: PVViewController {
                 self.duration.text = "--:--"
             } else {
                 
-                var playbackPosition = Double(0)
-                if self.audioPlayer.progress > 0 {
-                    playbackPosition = self.audioPlayer.progress
+                var playbackPosition = 0.0
+                if self.pvMediaPlayer.progress > 0 {
+                    playbackPosition = self.pvMediaPlayer.progress
                 } else if let dur = self.pvMediaPlayer.duration {
                     playbackPosition = Double(self.progress.value) * dur
                 }
@@ -460,12 +462,29 @@ class MediaPlayerViewController: PVViewController {
     
 }
 
+extension MediaPlayerViewController:PVMediaPlayerUIDelegate {
+    
+    func mediaPlayerButtonStateChanged(showPlayerButton: Bool) {}
+    
+    func playerHistoryItemLoadingBegan() {
+        DispatchQueue.main.async {
+            self.populatePlayerInfo()
+        }
+    }
+    
+    func playerHistoryItemLoaded() {
+        DispatchQueue.main.async {
+            self.setupClipFlags()
+        }
+    }
+    
+}
+
 extension MediaPlayerViewController:ClipsListDelegate {
     func didSelectClip(clip: MediaRef) {
         DispatchQueue.main.async {
             let playerHistoryItem = self.playerHistoryManager.convertMediaRefToPlayerHistoryItem(mediaRef: clip)
             self.pvMediaPlayer.loadPlayerHistoryItem(item: playerHistoryItem)
-            self.showAboutView()
         }
     }
 }

@@ -69,6 +69,8 @@ enum PlayingSpeed {
 
 protocol PVMediaPlayerUIDelegate {
     func mediaPlayerButtonStateChanged(showPlayerButton:Bool)
+    func playerHistoryItemLoaded()
+    func playerHistoryItemLoadingBegan()
 }
 
 class PVMediaPlayer: NSObject {
@@ -79,7 +81,7 @@ class PVMediaPlayer: NSObject {
     var clipTimer: Timer?
     var duration: Double?
     var nowPlayingItem:PlayerHistoryItem?
-    var playerButtonDelegate:PVMediaPlayerUIDelegate?
+    var delegate:PVMediaPlayerUIDelegate?
     var playerHistoryManager = PlayerHistory.manager
     var shouldAutoplayAlways: Bool = false
     var shouldAutoplayOnce: Bool = false
@@ -296,6 +298,7 @@ class PVMediaPlayer: NSObject {
         if let episodeMediaUrl = episodeMediaUrl, let url = URL(string: episodeMediaUrl) {
             let asset = AVURLAsset(url: url, options: nil)
             self.duration = CMTimeGetSeconds(asset.duration)
+            self.delegate?.playerHistoryItemLoaded()
         } else {
             self.duration = self.audioPlayer.duration
         }
@@ -306,11 +309,18 @@ class PVMediaPlayer: NSObject {
         self.nowPlayingItem = item
         self.nowPlayingItem?.hasReachedEnd = false
         
-        playerHistoryManager.addOrUpdateItem(item: nowPlayingItem)
+        self.playerHistoryManager.addOrUpdateItem(item: nowPlayingItem)
+        
+        self.delegate?.playerHistoryItemLoadingBegan()
         
         // NOTE: calling audioPlayer.play will immediately start playback, so do not call it unless an autoplay flag is true
         if !shouldAutoplayOnce && !shouldAutoplayAlways {
             updateDuration(episodeMediaUrl: item.episodeMediaUrl)
+            
+            if let startTime = item.startTime {
+                seek(toTime: Double(startTime))
+            }
+            
             return
         }
         
@@ -399,6 +409,8 @@ class PVMediaPlayer: NSObject {
                             self.shouldStartFromTime = 0
                         }
                     }
+                    
+                    self.delegate?.playerHistoryItemLoaded()
                 }
                 
             }
