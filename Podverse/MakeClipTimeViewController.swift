@@ -31,17 +31,76 @@ class MakeClipTimeViewController: UIViewController, UITextFieldDelegate {
     @IBOutlet weak var startPreview: UIButton!
     @IBOutlet weak var startTimeInput: UITextField!
     
-    @IBAction func sliderAction(_ sender: UISlider) {
-        if let duration = pvMediaPlayer.duration {
-            let newTime = Double(sender.value) * duration
-            self.audioPlayer.seek(toTime: newTime)
-            updateTime()
+    @IBOutlet weak var nextButton: UIButton!
+    
+    override func viewWillAppear(_ animated: Bool) {
+        togglePlayIcon()
+        updateTime()
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        navigationController?.interactivePopGestureRecognizer?.isEnabled = true
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        self.navigationItem.backBarButtonItem = UIBarButtonItem(title:"Back", style:.plain, target:nil, action:nil)
+        
+        setupTimer()
+        
+        addObservers()
+        
+        self.activityIndicator.startAnimating()
+        
+        self.progress.setThumbImage(#imageLiteral(resourceName: "SliderCurrentPosition"), for: .normal)
+        
+        updateTime()
+        
+        populatePlayerInfo()
+        
+        // prevent keyboard from displaying for startTimeInput and endTimeInput
+        self.startTimeInput.inputView = UIView()
+        self.endTimeInput.inputView = UIView()
+        
+        self.startTimeInput.text = PVTimeHelper.convertIntToHMSString(time: self.startTime)
+        self.endTimeInput.placeholder = "(optional)"
+        
+        self.setTime.layer.borderColor = UIColor.lightGray.cgColor
+        self.nextButton.layer.borderColor = UIColor.lightGray.cgColor
+        
+        self.setTime.layer.borderWidth = 1
+        self.nextButton.layer.borderWidth = 1
+        
+        self.endTimeInput.becomeFirstResponder()
+    }
+    
+    deinit {
+        removeObservers()
+        removeTimer()
+    }
+    
+    @IBAction func sliderAction(_ sender: Any, forEvent event: UIEvent) {
+        if let sender = sender as? UISlider, let touchEvent = event.allTouches?.first {
+            switch touchEvent.phase {
+            case .began:
+                removeTimer()
+            case .ended:
+                if let duration = pvMediaPlayer.duration {
+                    let newTime = Double(sender.value) * duration
+                    self.pvMediaPlayer.seek(toTime: newTime)
+                    updateTime()
+                }
+                setupTimer()
+            default:
+                break
+            }
         }
     }
     
     @IBAction func startTimePreview(_ sender: Any) {
         if let startTime = self.startTime {
-            self.audioPlayer.seek(toTime: Double(startTime))
+            self.pvMediaPlayer.seek(toTime: Double(startTime))
             self.pvMediaPlayer.play()
         }
     }
@@ -51,9 +110,9 @@ class MakeClipTimeViewController: UIViewController, UITextFieldDelegate {
             self.endTimePreview = endTime
             
             if endTime < 3 {
-                self.audioPlayer.seek(toTime: 0)
+                self.pvMediaPlayer.seek(toTime: 0)
             } else {
-                self.audioPlayer.seek(toTime: Double(endTime) - 3)
+                self.pvMediaPlayer.seek(toTime: Double(endTime) - 3)
             }
             
             self.pvMediaPlayer.play()
@@ -65,25 +124,25 @@ class MakeClipTimeViewController: UIViewController, UITextFieldDelegate {
     }
     
     @IBAction func timeJumpBackward(_ sender: Any) {
-        let newTime = audioPlayer.progress - 15
+        let newTime = self.pvMediaPlayer.progress - 15
         
         if newTime >= 14 {
-            audioPlayer.seek(toTime: newTime)
+            self.pvMediaPlayer.seek(toTime: newTime)
         } else {
-            audioPlayer.seek(toTime: 0)
+            self.pvMediaPlayer.seek(toTime: 0)
         }
         
         updateTime()
     }
     
     @IBAction func timeJumpForward(_ sender: Any) {
-        let newTime = audioPlayer.progress + 15
-        audioPlayer.seek(toTime: newTime)
+        let newTime = self.pvMediaPlayer.progress + 15
+        self.pvMediaPlayer.seek(toTime: newTime)
         updateTime()
     }
     
     @IBAction func setTimeTouched(_ sender: Any) {
-        let currentTime = Int(self.audioPlayer.progress)
+        let currentTime = Int(self.pvMediaPlayer.progress)
         
         if self.startTimeInput.isFirstResponder {
             self.startTimeInput.text = PVTimeHelper.convertIntToHMSString(time: currentTime)
@@ -180,20 +239,28 @@ class MakeClipTimeViewController: UIViewController, UITextFieldDelegate {
     
     @objc private func updateTime () {
         DispatchQueue.main.async {
-            let playbackPosition = self.audioPlayer.progress
+            
+            var playbackPosition = Double(0)
+            if self.pvMediaPlayer.progress > 0 {
+                playbackPosition = self.pvMediaPlayer.progress
+            } else if let dur = self.pvMediaPlayer.duration {
+                playbackPosition = Double(self.progress.value) * dur
+            }
+            
             self.currentTime.text = Int64(playbackPosition).toMediaPlayerString()
-
+            
             if let dur = self.pvMediaPlayer.duration {
                 self.duration.text = Int64(dur).toMediaPlayerString()
                 self.progress.value = Float(playbackPosition / dur)
             }
             
             if let endTimePreview = self.endTimePreview {
-                if Int(self.audioPlayer.progress) >= endTimePreview {
+                if Int(self.pvMediaPlayer.progress) >= endTimePreview {
                     self.pvMediaPlayer.pause()
                     self.endTimePreview = nil
                 }
             }
+            
         }
     }
     
@@ -217,59 +284,31 @@ class MakeClipTimeViewController: UIViewController, UITextFieldDelegate {
         return super.canPerformAction(action, withSender: sender)
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        togglePlayIcon()
-        updateTime()
-    }
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        navigationController?.interactivePopGestureRecognizer?.isEnabled = true
-    }
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
-        self.navigationItem.backBarButtonItem = UIBarButtonItem(title:"Back", style:.plain, target:nil, action:nil)
-        
-        setupTimer()
-        
-        addObservers()
-        
-        self.activityIndicator.startAnimating()
-        
-        updateTime()
-        
-        populatePlayerInfo()
-        
-        // prevent keyboard from displaying for startTimeInput and endTimeInput
-        self.startTimeInput.inputView = UIView()
-        self.endTimeInput.inputView = UIView()
-        
-        self.startTimeInput.text = PVTimeHelper.convertIntToHMSString(time: self.startTime)
-        
-        self.endTimeInput.becomeFirstResponder()
-    }
-    
-    deinit {
-        removeObservers()
-        removeTimer()
-    }
-    
     @IBAction func slidingRecognized(_ sender: Any) {
-        if let pan = sender as? UIPanGestureRecognizer {
-            let panPoint = pan.velocity(in: self.playbackControlView)
-            var newTime = (self.audioPlayer.progress + Double(panPoint.x / 140.0))
+        if let pan = sender as? UIPanGestureRecognizer, let duration = pvMediaPlayer.duration {
             
-            if newTime <= 0 {
-                newTime = 0
-            }
-            else if newTime >= self.audioPlayer.duration {
-                newTime = self.audioPlayer.duration - 1
-                self.audioPlayer.pause()
+            if pvMediaPlayer.checkIfNothingIsCurrentlyLoadedInPlayer() {
+                let panPoint = pan.velocity(in: self.playbackControlView)
+                let newTime = ((Double(self.progress.value) * duration) + Double(panPoint.x / 140.0))
+                self.progress.value = Float(newTime / duration)
+                self.pvMediaPlayer.seek(toTime: newTime)
+                updateTime()
+            } else {
+                let panPoint = pan.velocity(in: self.playbackControlView)
+                var newTime = (self.pvMediaPlayer.progress + Double(panPoint.x / 140.0))
+                
+                if newTime <= 0 {
+                    newTime = 0
+                }
+                else if newTime >= duration {
+                    newTime = duration - 1
+                    self.audioPlayer.pause()
+                }
+                
+                self.pvMediaPlayer.seek(toTime: newTime)
+                updateTime()
             }
             
-            self.audioPlayer.seek(toTime: newTime)
-            updateTime()
         }
     }
     

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="12121" systemVersion="16F73" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="12121" systemVersion="16G29" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
@@ -38,15 +38,15 @@
                     </connections>
                 </button>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="LlN-Jq-gMl">
-                    <rect key="frame" x="65" y="5" width="245" height="21"/>
-                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                    <rect key="frame" x="65" y="8" width="245" height="19.5"/>
+                    <fontDescription key="fontDescription" type="system" weight="medium" pointSize="16"/>
                     <nil key="textColor"/>
                     <nil key="highlightedColor"/>
                 </label>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5Yx-gc-Ry1">
-                    <rect key="frame" x="65" y="34" width="245" height="21"/>
-                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                    <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                    <rect key="frame" x="65" y="32.5" width="245" height="19.5"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                    <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                     <nil key="highlightedColor"/>
                 </label>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="aBC-3L-i2l">
@@ -73,7 +73,7 @@
                 <constraint firstAttribute="bottom" secondItem="aBC-3L-i2l" secondAttribute="bottom" id="5ah-d5-Jrw"/>
                 <constraint firstItem="1tY-5h-x3N" firstAttribute="leading" secondItem="1Ox-UM-LRA" secondAttribute="leading" id="76Y-EQ-I6g"/>
                 <constraint firstAttribute="bottom" secondItem="KrJ-cs-BGD" secondAttribute="bottom" constant="1" id="93n-Dd-Ceo"/>
-                <constraint firstItem="LlN-Jq-gMl" firstAttribute="top" secondItem="1Ox-UM-LRA" secondAttribute="top" constant="5" id="BW1-Lx-IVC"/>
+                <constraint firstItem="LlN-Jq-gMl" firstAttribute="top" secondItem="1Ox-UM-LRA" secondAttribute="top" constant="8" id="BW1-Lx-IVC"/>
                 <constraint firstAttribute="bottom" secondItem="1tY-5h-x3N" secondAttribute="bottom" constant="1" id="FNG-IG-SpI"/>
                 <constraint firstAttribute="trailing" secondItem="KrJ-cs-BGD" secondAttribute="trailing" id="IRd-5c-wNi"/>
                 <constraint firstItem="KrJ-cs-BGD" firstAttribute="leading" secondItem="5Yx-gc-Ry1" secondAttribute="trailing" constant="10" id="OYz-ei-BJh"/>
@@ -84,7 +84,7 @@
                 <constraint firstAttribute="trailing" secondItem="SPp-Xs-7kY" secondAttribute="trailing" id="lQ4-Oo-CxW"/>
                 <constraint firstAttribute="trailing" secondItem="aBC-3L-i2l" secondAttribute="trailing" id="oi3-XQ-Id4"/>
                 <constraint firstItem="aBC-3L-i2l" firstAttribute="leading" secondItem="1Ox-UM-LRA" secondAttribute="leading" id="xuL-Yy-w7u"/>
-                <constraint firstAttribute="bottom" secondItem="5Yx-gc-Ry1" secondAttribute="bottom" constant="5" id="zUL-nt-SXB"/>
+                <constraint firstAttribute="bottom" secondItem="5Yx-gc-Ry1" secondAttribute="bottom" constant="8" id="zUL-nt-SXB"/>
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
             <connections>

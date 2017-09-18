@@ -26,12 +26,10 @@ class AboutPlayingItemViewController: UIViewController, UIWebViewDelegate {
                 }
                 
                 if let time = item.readableStartAndEndTime() {
-                    text += time + "<br><br>"
+                    text += "<span class=\"lightGray\">" + time + "</span>" + "<br><br>"
                 }
                 
                 text += "<hr><br>"
-                
-                text += "<i>Episode Summary</i><br><br>"
             }
             
             if let summary = item.episodeSummary {

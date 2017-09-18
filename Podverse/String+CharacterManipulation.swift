@@ -12,7 +12,7 @@ import UIKit
 extension String {
     
     func formatHtmlString() -> String {
-        let style = "<style>* { color: #fff !important; font-size: 15px !important; font-family: -apple-system !important; font-weight: 400 !important; } body { margin: 16px 8px !important; padding: 0 !important; } a { color: #007aff !important; text-decoration: none !important; } p { margin-top: 0 !important; } strong { font-weight: 600 !important } hr { border: none !important; height: 0.5px !important; color: #aaa !important; background-color: #aaa !important; }</style>"
+        let style = "<style>* { color: #fff !important; font-size: 15px !important; font-family: -apple-system !important; font-weight: 400 !important; } body { margin: 16px 8px !important; padding: 0 !important; } a { color: #007aff !important; text-decoration: none !important; } p { margin-top: 0 !important; } strong { font-weight: 600 !important } hr { border: none !important; height: 0.5px !important; color: #aaa !important; background-color: #aaa !important; } .lightGray { color: #aaa !important }</style>"
         return style + self
     }
     
