@@ -33,6 +33,7 @@ class AboutPlayingItemViewController: UIViewController, UIWebViewDelegate {
             }
             
             if let summary = item.episodeSummary {
+                text += "<i>Episode Summary</i><br><br>"
                 text += summary
             }
             
