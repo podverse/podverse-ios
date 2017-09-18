@@ -254,7 +254,6 @@ extension ClipsListContainerViewController:UITableViewDelegate, UITableViewDataS
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         self.tableView.deselectRow(at: indexPath, animated: true)
         self.delegate?.didSelectClip(clip: self.clipsArray[indexPath.row])
-        
     }
 }
 

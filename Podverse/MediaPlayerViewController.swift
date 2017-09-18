@@ -491,6 +491,7 @@ extension MediaPlayerViewController:PVMediaPlayerUIDelegate {
 extension MediaPlayerViewController:ClipsListDelegate {
     func didSelectClip(clip: MediaRef) {
         DispatchQueue.main.async {
+            self.pvMediaPlayer.shouldAutoplayOnce = true
             let playerHistoryItem = self.playerHistoryManager.convertMediaRefToPlayerHistoryItem(mediaRef: clip)
             self.pvMediaPlayer.loadPlayerHistoryItem(item: playerHistoryItem)
         }

@@ -391,27 +391,31 @@ class PVMediaPlayer: NSObject {
         if let keyPath = keyPath, let item = self.nowPlayingItem {
             if keyPath == #keyPath(audioPlayer.state) {
                 
-                if self.audioPlayer.duration > 0 {
-                    updateDuration(episodeMediaUrl: nil)
+                if audioPlayer.state == STKAudioPlayerState.playing || audioPlayer.state == STKAudioPlayerState.buffering {
                     
-                    if self.shouldSetupClip == true {
-                        if let startTime = item.startTime {
-                            self.seek(toTime: Double(startTime))
+                    if self.audioPlayer.duration > 0 {
+                        updateDuration(episodeMediaUrl: nil)
+                        
+                        if self.shouldSetupClip == true {
+                            if let startTime = item.startTime {
+                                self.seek(toTime: Double(startTime))
+                            }
+                            
+                            if let endTime = item.endTime {
+                                self.shouldStopAtEndTime = endTime
+                            }
+                            
+                            self.shouldSetupClip = false
+                            
+                            if self.shouldStartFromTime > 0 {
+                                self.audioPlayer.seek(toTime: Double(self.shouldStartFromTime))
+                                self.shouldStartFromTime = 0
+                            }
                         }
                         
-                        if let endTime = item.endTime {
-                            self.shouldStopAtEndTime = endTime
-                        }
-                        
-                        self.shouldSetupClip = false
-                        
-                        if self.shouldStartFromTime > 0 {
-                            self.audioPlayer.seek(toTime: Double(self.shouldStartFromTime))
-                            self.shouldStartFromTime = 0
-                        }
+                        self.delegate?.playerHistoryItemLoaded()
                     }
                     
-                    self.delegate?.playerHistoryItemLoaded()
                 }
                 
             }
