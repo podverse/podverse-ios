@@ -58,7 +58,7 @@ class PlaylistDetailTableViewController: PVViewController {
         }
         
         if let playlist = playlist {
-            self.itemCount.text = "Items: ###"
+            self.itemCount.text = "Items: " + String(playlist.mediaRefs.count)
             self.lastUpdated.text = playlist.lastUpdated?.toShortFormatString()
             self.playlistTitle.text = playlist.title
             self.mediaRefsArray = playlist.mediaRefs

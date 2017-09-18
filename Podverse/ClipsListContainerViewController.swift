@@ -120,6 +120,8 @@ class ClipsListContainerViewController: UIViewController {
             return
         }
         
+        self.clipsArray.removeAll()
+        
         for mediaRef in mediaRefArray {
             self.clipsArray.append(mediaRef)
         }
