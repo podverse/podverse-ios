@@ -58,9 +58,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func applicationWillTerminate(_ application: UIApplication) {
-        if pvMediaPlayer.audioPlayer.rate > 0.1 {
-            pvMediaPlayer.saveCurrentTimeAsPlaybackPosition()
-        }
+//        if pvMediaPlayer.audioPlayer.rate > 0.1 {
+//            pvMediaPlayer.saveCurrentTimeAsPlaybackPosition()
+//        }
         
         UIApplication.shared.applicationIconBadgeNumber = 0
     }
@@ -107,11 +107,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func skipBackwardEvent() {
-        pvMediaPlayer.audioPlayer.seek(toTime: pvMediaPlayer.audioPlayer.progress - 15)
+        pvMediaPlayer.seek(toTime: pvMediaPlayer.audioPlayer.progress - 15)
     }
     
     func skipForwardEvent() {
-        pvMediaPlayer.audioPlayer.seek(toTime: pvMediaPlayer.audioPlayer.progress + 15)
+        pvMediaPlayer.seek(toTime: pvMediaPlayer.audioPlayer.progress + 15)
     }
     
     func playOrPauseEvent() {

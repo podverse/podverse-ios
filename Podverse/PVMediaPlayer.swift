@@ -84,7 +84,12 @@ class PVMediaPlayer: NSObject {
     var shouldAutoplayAlways: Bool = false
     var shouldAutoplayOnce: Bool = false
     var shouldSetupClip: Bool = false
+    var shouldStartFromTime: Int64 = 0
     var shouldStopAtEndTime: Int64 = 0
+    
+    var progress:Double {
+        return self.audioPlayer.duration > 0 ? self.audioPlayer.progress : Double(self.shouldStartFromTime)
+    }
 
     override init() {
         
@@ -203,13 +208,20 @@ class PVMediaPlayer: NSObject {
         }
     }
     
+    func seek(toTime: Double) {
+        if self.audioPlayer.duration > 0 {
+            self.audioPlayer.seek(toTime: toTime)
+        } else {
+            self.shouldStartFromTime = Int64(toTime)
+        }
+    }
+    
     func play() {
         self.audioPlayer.resume()
         self.shouldAutoplayOnce = false
     }
     
     func pause() {
-        saveCurrentTimeAsPlaybackPosition()
         self.audioPlayer.pause()
     }
     
@@ -228,19 +240,6 @@ class PVMediaPlayer: NSObject {
         
     }
 
-    func saveCurrentTimeAsPlaybackPosition() {
-//        if let playingEpisode = self.nowPlayingEpisode {
-//            let currentTime = NSNumber(value:CMTimeGetSeconds(avPlayer.currentTime()))
-//            let didFinishPlaying = false // TODO
-////            let playerHistoryItem = PlayerHistoryItem(itemId: playingEpisode.objectID, lastPlaybackPosition: currentTime, didFinishPlaying: didFinishPlaying, lastUpdated: Date())
-////            playerHistoryManager.addOrUpdateItem(item: playerHistoryItem)
-//            
-//// TODO:playbackPosition
-////            playingEpisode.playbackPosition = NSNumber(value: 100.5)
-////            playingEpisode.managedObjectContext?.saveData(nil)
-//        }
-    }
-    
     func remoteControlReceivedWithEvent(event: UIEvent) {
         if event.type == UIEventType.remoteControl {
 //            if nowPlayingEpisode != nil || nowPlayingClip != nil {
@@ -394,6 +393,11 @@ class PVMediaPlayer: NSObject {
                         }
                         
                         self.shouldSetupClip = false
+                        
+                        if self.shouldStartFromTime > 0 {
+                            self.audioPlayer.seek(toTime: Double(self.shouldStartFromTime))
+                            self.shouldStartFromTime = 0
+                        }
                     }
                 }
                 
