@@ -31,6 +31,55 @@ class MakeClipTimeViewController: UIViewController, UITextFieldDelegate {
     @IBOutlet weak var startPreview: UIButton!
     @IBOutlet weak var startTimeInput: UITextField!
     
+    @IBOutlet weak var nextButton: UIButton!
+    
+    override func viewWillAppear(_ animated: Bool) {
+        togglePlayIcon()
+        updateTime()
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        navigationController?.interactivePopGestureRecognizer?.isEnabled = true
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        self.navigationItem.backBarButtonItem = UIBarButtonItem(title:"Back", style:.plain, target:nil, action:nil)
+        
+        setupTimer()
+        
+        addObservers()
+        
+        self.activityIndicator.startAnimating()
+        
+        self.progress.setThumbImage(#imageLiteral(resourceName: "SliderCurrentPosition"), for: .normal)
+        
+        updateTime()
+        
+        populatePlayerInfo()
+        
+        // prevent keyboard from displaying for startTimeInput and endTimeInput
+        self.startTimeInput.inputView = UIView()
+        self.endTimeInput.inputView = UIView()
+        
+        self.startTimeInput.text = PVTimeHelper.convertIntToHMSString(time: self.startTime)
+        self.endTimeInput.placeholder = "(optional)"
+        
+        self.setTime.layer.borderColor = UIColor.lightGray.cgColor
+        self.nextButton.layer.borderColor = UIColor.lightGray.cgColor
+        
+        self.setTime.layer.borderWidth = 1
+        self.nextButton.layer.borderWidth = 1
+        
+        self.endTimeInput.becomeFirstResponder()
+    }
+    
+    deinit {
+        removeObservers()
+        removeTimer()
+    }
+    
     @IBAction func sliderAction(_ sender: Any, forEvent event: UIEvent) {
         if let sender = sender as? UISlider, let touchEvent = event.allTouches?.first {
             switch touchEvent.phase {
@@ -75,7 +124,7 @@ class MakeClipTimeViewController: UIViewController, UITextFieldDelegate {
     }
     
     @IBAction func timeJumpBackward(_ sender: Any) {
-        let newTime = audioPlayer.progress - 15
+        let newTime = self.pvMediaPlayer.progress - 15
         
         if newTime >= 14 {
             self.pvMediaPlayer.seek(toTime: newTime)
@@ -87,13 +136,13 @@ class MakeClipTimeViewController: UIViewController, UITextFieldDelegate {
     }
     
     @IBAction func timeJumpForward(_ sender: Any) {
-        let newTime = audioPlayer.progress + 15
+        let newTime = self.pvMediaPlayer.progress + 15
         self.pvMediaPlayer.seek(toTime: newTime)
         updateTime()
     }
     
     @IBAction func setTimeTouched(_ sender: Any) {
-        let currentTime = Int(self.audioPlayer.progress)
+        let currentTime = Int(self.pvMediaPlayer.progress)
         
         if self.startTimeInput.isFirstResponder {
             self.startTimeInput.text = PVTimeHelper.convertIntToHMSString(time: currentTime)
@@ -192,8 +241,8 @@ class MakeClipTimeViewController: UIViewController, UITextFieldDelegate {
         DispatchQueue.main.async {
             
             var playbackPosition = Double(0)
-            if self.audioPlayer.progress > 0 {
-                playbackPosition = self.audioPlayer.progress
+            if self.pvMediaPlayer.progress > 0 {
+                playbackPosition = self.pvMediaPlayer.progress
             } else if let dur = self.pvMediaPlayer.duration {
                 playbackPosition = Double(self.progress.value) * dur
             }
@@ -206,7 +255,7 @@ class MakeClipTimeViewController: UIViewController, UITextFieldDelegate {
             }
             
             if let endTimePreview = self.endTimePreview {
-                if Int(self.audioPlayer.progress) >= endTimePreview {
+                if Int(self.pvMediaPlayer.progress) >= endTimePreview {
                     self.pvMediaPlayer.pause()
                     self.endTimePreview = nil
                 }
@@ -235,46 +284,6 @@ class MakeClipTimeViewController: UIViewController, UITextFieldDelegate {
         return super.canPerformAction(action, withSender: sender)
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        togglePlayIcon()
-        updateTime()
-    }
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        navigationController?.interactivePopGestureRecognizer?.isEnabled = true
-    }
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
-        self.navigationItem.backBarButtonItem = UIBarButtonItem(title:"Back", style:.plain, target:nil, action:nil)
-
-        setupTimer()
-        
-        addObservers()
-        
-        self.activityIndicator.startAnimating()
-        
-        self.progress.setThumbImage(#imageLiteral(resourceName: "SliderCurrentPosition"), for: .normal)
-        
-        updateTime()
-        
-        populatePlayerInfo()
-        
-        // prevent keyboard from displaying for startTimeInput and endTimeInput
-        self.startTimeInput.inputView = UIView()
-        self.endTimeInput.inputView = UIView()
-        
-        self.startTimeInput.text = PVTimeHelper.convertIntToHMSString(time: self.startTime)
-        
-        self.endTimeInput.becomeFirstResponder()
-    }
-    
-    deinit {
-        removeObservers()
-        removeTimer()
-    }
-    
     @IBAction func slidingRecognized(_ sender: Any) {
         if let pan = sender as? UIPanGestureRecognizer, let duration = pvMediaPlayer.duration {
             
@@ -286,7 +295,7 @@ class MakeClipTimeViewController: UIViewController, UITextFieldDelegate {
                 updateTime()
             } else {
                 let panPoint = pan.velocity(in: self.playbackControlView)
-                var newTime = (self.audioPlayer.progress + Double(panPoint.x / 140.0))
+                var newTime = (self.pvMediaPlayer.progress + Double(panPoint.x / 140.0))
                 
                 if newTime <= 0 {
                     newTime = 0

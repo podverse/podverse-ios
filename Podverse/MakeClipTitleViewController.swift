@@ -22,6 +22,42 @@ class MakeClipTitleViewController: UIViewController, UITextViewDelegate {
     @IBOutlet weak var podcastTitle: UILabel!
     @IBOutlet weak var startTimeLabel: UILabel!
     @IBOutlet weak var titleInput: UITextView!
+    @IBOutlet weak var saveButton: UIButton!
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        if let item = playerHistoryItem {
+            
+            self.podcastTitle.text = item.podcastTitle
+            self.episodeTitle.text = item.episodeTitle
+            
+            self.podcastImage.sd_setImage(with: URL(string: item.podcastImageUrl ?? ""), placeholderImage: #imageLiteral(resourceName: "PodverseIcon"))
+            
+            if let startTime = self.startTime {
+                self.startTimeLabel.text = "Start: " + PVTimeHelper.convertIntToHMSString(time: startTime)
+            } else {
+                self.startTimeLabel.text = ""
+            }
+            
+            if let endTime = self.endTime {
+                self.endTimeLabel.text = "End: " + PVTimeHelper.convertIntToHMSString(time: endTime)
+            } else {
+                self.endTimeLabel.text = "End:"
+            }
+            
+            if let startTime = self.startTime, let endTime = self.endTime {
+                self.duration.text = "Duration: " + PVTimeHelper.convertIntToReadableHMSDuration(seconds: endTime - startTime)
+            } else {
+                self.duration.text = "Duration:"
+            }
+            
+            self.titleInput.becomeFirstResponder()        
+        }
+        
+        self.saveButton.layer.borderWidth = 1
+        self.saveButton.layer.borderColor = UIColor.lightGray.cgColor
+    }
     
     func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
         if (text == "\n") {
@@ -85,38 +121,5 @@ class MakeClipTitleViewController: UIViewController, UITextViewDelegate {
         self.present(actions, animated: true, completion: nil)
 
     }
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-
-        if let item = playerHistoryItem {
-            
-            self.podcastTitle.text = item.podcastTitle
-            self.episodeTitle.text = item.episodeTitle
-            
-            self.podcastImage.sd_setImage(with: URL(string: item.podcastImageUrl ?? ""), placeholderImage: #imageLiteral(resourceName: "PodverseIcon"))
-            
-            if let startTime = self.startTime {
-                self.startTimeLabel.text = "Start: " + PVTimeHelper.convertIntToHMSString(time: startTime)
-            } else {
-                self.startTimeLabel.text = ""
-            }
-            
-            if let endTime = self.endTime {
-                self.endTimeLabel.text = "End: " + PVTimeHelper.convertIntToHMSString(time: endTime)
-            } else {
-                self.endTimeLabel.text = "End:"
-            }
-            
-            if let startTime = self.startTime, let endTime = self.endTime {
-                self.duration.text = "Duration: " + PVTimeHelper.convertIntToReadableHMSDuration(seconds: endTime - startTime)
-            } else {
-                self.duration.text = "Duration:"
-            }
-            
-            self.titleInput.becomeFirstResponder()        }
-        
-    }
-    
     
 }

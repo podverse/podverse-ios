@@ -86,6 +86,10 @@ class PVMediaPlayer: NSObject {
     var shouldSetupClip: Bool = false
     var shouldStartFromTime: Int64 = 0
     var shouldStopAtEndTime: Int64 = 0
+    
+    var progress:Double {
+        return self.audioPlayer.duration > 0 ? self.audioPlayer.progress : Double(self.shouldStartFromTime)
+    }
 
     override init() {
         
