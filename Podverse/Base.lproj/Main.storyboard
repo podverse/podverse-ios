@@ -1055,7 +1055,7 @@
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Items: #" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="q1x-t5-Yrq">
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Items: 0" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="q1x-t5-Yrq">
                                                     <rect key="frame" x="8" y="33" width="49" height="16"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="13"/>
                                                     <nil key="textColor"/>
@@ -1071,7 +1071,7 @@
                                             </constraints>
                                         </tableViewCellContentView>
                                         <connections>
-                                            <outlet property="itemsTotal" destination="q1x-t5-Yrq" id="kVJ-fd-M7W"/>
+                                            <outlet property="itemCount" destination="q1x-t5-Yrq" id="7IB-aO-KNk"/>
                                             <outlet property="title" destination="vs9-jP-EpM" id="fe5-MD-2Ll"/>
                                         </connections>
                                     </tableViewCell>
@@ -1897,7 +1897,7 @@
                                             </constraints>
                                         </tableViewCellContentView>
                                         <connections>
-                                            <outlet property="itemsTotal" destination="D0w-ev-1RX" id="ssb-Uf-FUG"/>
+                                            <outlet property="itemCount" destination="D0w-ev-1RX" id="KUR-b0-qQo"/>
                                             <outlet property="lastUpdated" destination="9GI-bD-y5j" id="OKy-a2-GmU"/>
                                             <outlet property="title" destination="xSk-VN-UDn" id="wnJ-99-nBO"/>
                                         </connections>

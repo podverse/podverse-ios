@@ -20,6 +20,7 @@ class Playlist {
     var lastUpdated: Date?
     var isMyClips: Bool = false
     var mediaRefs = [MediaRef]()
+    var itemCount: String?
     
     static func jsonToPlaylist(item: [String:Any]) -> Playlist {
     
@@ -46,6 +47,8 @@ class Playlist {
                 playlist.mediaRefs.append(mediaRef)
             }
         }
+        
+        playlist.itemCount = item["itemCount"] as? String
     
         return playlist
     
