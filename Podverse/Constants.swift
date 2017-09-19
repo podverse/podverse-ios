@@ -69,6 +69,8 @@ let kUserId = "userId"
 
 let kAutoDownloadingFeedUrls = "autoDownloadingFeedUrls"
 
+let kClipsListFilterType = "ClipsListFilterType"
+
 let kInternetIsUnreachable = "internetIsUnreachable"
 
 let kWiFiIsUnreachable = "wiFiIsUnreachable"
