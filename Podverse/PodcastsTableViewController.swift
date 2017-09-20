@@ -147,7 +147,7 @@ extension PodcastsTableViewController:UITableViewDelegate, UITableViewDataSource
             cell.lastPublishedDate?.text = lastPubDate.toShortFormatString()
         }
         
-        cell.pvImage.image = Podcast.retrievePodcastImage(managedObjectID: podcast.objectID)
+        cell.pvImage.sd_setImage(with: URL(string: podcast.imageUrl ?? ""), placeholderImage: #imageLiteral(resourceName: "PodverseIcon"))
         
         return cell
     }
@@ -181,7 +181,7 @@ extension PodcastsTableViewController:UITableViewDelegate, UITableViewDataSource
         if let index = tableView.indexPathForSelectedRow {
             if segue.identifier == "Show Episodes" {
                 let episodesTableViewController = segue.destination as! EpisodesTableViewController
-                episodesTableViewController.selectedPodcastID = subscribedPodcastsArray[index.row].objectID
+                episodesTableViewController.feedUrl = subscribedPodcastsArray[index.row].feedUrl
                 episodesTableViewController.delegate = self
             }
         }

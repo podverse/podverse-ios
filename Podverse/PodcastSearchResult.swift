@@ -14,6 +14,7 @@ class PodcastSearchResult {
     var categories: String?
     var description: String?
     var hosts: String?
+    var imageThumbUrl: String?
     var imageUrl: String?
     var network: String?
     var rssUrl: String?
@@ -51,8 +52,8 @@ class PodcastSearchResult {
             podcast.hosts = hostsString
         }
         
-        if let imageFiles = json["image_files"] as? [[String:Any]], let imageFile = imageFiles.first, let file = imageFile["file"] as? [String:Any], let thumb = file["thumb"] as? [String:Any], let url = thumb["url"] as? String {
-            podcast.imageUrl = url
+        if let imageUrls = json["image_urls"] as? [String:Any], let thumbUrl = imageUrls["thumb"] as? String {
+            podcast.imageThumbUrl = thumbUrl
         }
         
         if let network = json["network"] as? [String:Any], let name = network["name"] as? String {
