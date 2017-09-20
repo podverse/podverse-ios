@@ -10,6 +10,7 @@ import UIKit
 
 class PodcastTableViewCell: UITableViewCell {
     
+    @IBOutlet weak var autoDownloadIndicator: UILabel!
     @IBOutlet weak var lastPublishedDate: UILabel!
     @IBOutlet weak var pvImage: UIImageView!
     @IBOutlet weak var title: UILabel!

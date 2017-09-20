@@ -69,6 +69,8 @@ enum PlayingSpeed {
 
 protocol PVMediaPlayerUIDelegate {
     func mediaPlayerButtonStateChanged(showPlayerButton:Bool)
+    func playerHistoryItemLoaded()
+    func playerHistoryItemLoadingBegan()
 }
 
 class PVMediaPlayer: NSObject {
@@ -79,12 +81,17 @@ class PVMediaPlayer: NSObject {
     var clipTimer: Timer?
     var duration: Double?
     var nowPlayingItem:PlayerHistoryItem?
-    var playerButtonDelegate:PVMediaPlayerUIDelegate?
+    var delegate:PVMediaPlayerUIDelegate?
     var playerHistoryManager = PlayerHistory.manager
     var shouldAutoplayAlways: Bool = false
     var shouldAutoplayOnce: Bool = false
     var shouldSetupClip: Bool = false
+    var shouldStartFromTime: Int64 = 0
     var shouldStopAtEndTime: Int64 = 0
+    
+    var progress:Double {
+        return self.audioPlayer.duration > 0 ? self.audioPlayer.progress : Double(self.shouldStartFromTime)
+    }
 
     override init() {
         
@@ -203,13 +210,21 @@ class PVMediaPlayer: NSObject {
         }
     }
     
+    func seek(toTime: Double) {
+        if self.audioPlayer.duration > 0 {
+            self.shouldStartFromTime = Int64(0)
+            self.audioPlayer.seek(toTime: toTime)
+        } else {
+            self.shouldStartFromTime = Int64(toTime)
+        }
+    }
+    
     func play() {
         self.audioPlayer.resume()
         self.shouldAutoplayOnce = false
     }
     
     func pause() {
-        saveCurrentTimeAsPlaybackPosition()
         self.audioPlayer.pause()
     }
     
@@ -228,19 +243,6 @@ class PVMediaPlayer: NSObject {
         
     }
 
-    func saveCurrentTimeAsPlaybackPosition() {
-//        if let playingEpisode = self.nowPlayingEpisode {
-//            let currentTime = NSNumber(value:CMTimeGetSeconds(avPlayer.currentTime()))
-//            let didFinishPlaying = false // TODO
-////            let playerHistoryItem = PlayerHistoryItem(itemId: playingEpisode.objectID, lastPlaybackPosition: currentTime, didFinishPlaying: didFinishPlaying, lastUpdated: Date())
-////            playerHistoryManager.addOrUpdateItem(item: playerHistoryItem)
-//            
-//// TODO:playbackPosition
-////            playingEpisode.playbackPosition = NSNumber(value: 100.5)
-////            playingEpisode.managedObjectContext?.saveData(nil)
-//        }
-    }
-    
     func remoteControlReceivedWithEvent(event: UIEvent) {
         if event.type == UIEventType.remoteControl {
 //            if nowPlayingEpisode != nil || nowPlayingClip != nil {
@@ -297,6 +299,7 @@ class PVMediaPlayer: NSObject {
         if let episodeMediaUrl = episodeMediaUrl, let url = URL(string: episodeMediaUrl) {
             let asset = AVURLAsset(url: url, options: nil)
             self.duration = CMTimeGetSeconds(asset.duration)
+            self.delegate?.playerHistoryItemLoaded()
         } else {
             self.duration = self.audioPlayer.duration
         }
@@ -307,11 +310,18 @@ class PVMediaPlayer: NSObject {
         self.nowPlayingItem = item
         self.nowPlayingItem?.hasReachedEnd = false
         
-        playerHistoryManager.addOrUpdateItem(item: nowPlayingItem)
+        self.playerHistoryManager.addOrUpdateItem(item: nowPlayingItem)
+        
+        self.delegate?.playerHistoryItemLoadingBegan()
         
         // NOTE: calling audioPlayer.play will immediately start playback, so do not call it unless an autoplay flag is true
         if !shouldAutoplayOnce && !shouldAutoplayAlways {
             updateDuration(episodeMediaUrl: item.episodeMediaUrl)
+            
+            if let startTime = item.startTime {
+                seek(toTime: Double(startTime))
+            }
+            
             return
         }
         
@@ -381,20 +391,40 @@ class PVMediaPlayer: NSObject {
         if let keyPath = keyPath, let item = self.nowPlayingItem {
             if keyPath == #keyPath(audioPlayer.state) {
                 
-                if self.audioPlayer.duration > 0 {
-                    updateDuration(episodeMediaUrl: nil)
+                if self.audioPlayer.state == STKAudioPlayerState.playing || self.audioPlayer.state == STKAudioPlayerState.buffering {
                     
-                    if self.shouldSetupClip == true {
-                        if let startTime = item.startTime {
-                            self.audioPlayer.seek(toTime: Double(startTime))
+                    if self.audioPlayer.duration > 0 {
+                        updateDuration(episodeMediaUrl: nil)
+                        
+                        if self.shouldSetupClip == true {
+                            if let startTime = item.startTime {
+                                self.seek(toTime: Double(startTime))
+                            }
+                            
+                            if let endTime = item.endTime {
+                                self.shouldStopAtEndTime = endTime
+                            }
+                            
+                            self.shouldSetupClip = false
+                            
+                            if self.shouldStartFromTime > 0 {
+                                self.audioPlayer.seek(toTime: Double(self.shouldStartFromTime))
+                                self.shouldStartFromTime = 0
+                            }
+                            
+                            
                         }
                         
-                        if let endTime = item.endTime {
-                            self.shouldStopAtEndTime = endTime
-                        }
-                        
-                        self.shouldSetupClip = false
                     }
+                    
+                }
+                
+                if self.audioPlayer.state == STKAudioPlayerState.buffering || self.audioPlayer.state == STKAudioPlayerState.paused {
+                    return
+                }
+                
+                if self.audioPlayer.state == STKAudioPlayerState.playing {
+                    self.delegate?.playerHistoryItemLoaded()
                 }
                 
             }

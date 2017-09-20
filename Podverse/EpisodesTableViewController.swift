@@ -1,25 +1,36 @@
 import UIKit
 import CoreData
 
+protocol AutoDownloadProtocol: NSObjectProtocol {
+    func podcastAutodownloadChanged(feedUrl: String)
+}
+
 class EpisodesTableViewController: PVViewController, UITableViewDataSource, UITableViewDelegate {
     
+    weak var delegate: AutoDownloadProtocol?
+    var episodesArray = [Episode]()
+    let moc = CoreDataHelper.createMOCForThread(threadType: .privateThread)
+    let reachability = PVReachability.shared
+    var selectedPodcastID: NSManagedObjectID!
     var showAllEpisodes = false
     
-    let moc = CoreDataHelper.createMOCForThread(threadType: .privateThread)
-    
-    var selectedPodcastID: NSManagedObjectID!
-    
-    var episodesArray = [Episode]()
-    
-    let reachability = PVReachability.shared
-    
+    @IBOutlet weak var autoDownloadLabel: UILabel!
+    @IBOutlet weak var autoDownloadSwitch: UISwitch!
+    @IBOutlet weak var bottomButton: UITableView!
+    @IBOutlet weak var headerImageView: UIImageView!
+    @IBOutlet weak var headerPodcastTitle: UILabel!
     @IBOutlet weak var tableView: UITableView!
     
-    @IBOutlet weak var headerPodcastTitle: UILabel!
-    
-    @IBOutlet weak var headerImageView: UIImageView!
-    
-    @IBOutlet weak var bottomButton: UITableView!
+    @IBAction func autoDownloadSwitchTouched(_ sender: Any) {
+        if let podcast = CoreDataHelper.fetchEntityWithID(objectId: self.selectedPodcastID, moc: moc) as? Podcast {
+            if podcast.shouldAutoDownload() {
+                podcast.removeFromAutoDownloadList()
+            } else {
+                podcast.addToAutoDownloadList()
+            }
+            self.delegate?.podcastAutodownloadChanged(feedUrl: podcast.feedUrl)
+        }
+    }
     
     @IBAction func bottomButtonTouched(_ sender: Any) {
         showAllEpisodes = !showAllEpisodes
@@ -46,6 +57,12 @@ class EpisodesTableViewController: PVViewController, UITableViewDataSource, UITa
                 DispatchQueue.main.async {
                     self.headerImageView.image = cellImage
                 }
+            }
+            
+            if podcast.shouldAutoDownload() {
+                self.autoDownloadSwitch.isOn = true
+            } else {
+                self.autoDownloadSwitch.isOn = false
             }
             
             if (!showAllEpisodes) {
@@ -133,7 +150,10 @@ class EpisodesTableViewController: PVViewController, UITableViewDataSource, UITa
         cell.title?.text = episode.title
 
         if let summary = episode.summary {
-            cell.summary?.text = summary.removeHTMLFromString()
+            
+            let trimmed = summary.replacingOccurrences(of: "\\n*", with: "", options: .regularExpression)
+            
+            cell.summary?.text = trimmed.removeHTMLFromString()?.trimmingCharacters(in: .whitespacesAndNewlines)
         }
 
         let totalClips = String(123)
@@ -156,8 +176,12 @@ class EpisodesTableViewController: PVViewController, UITableViewDataSource, UITa
         return cell
     }
     
+    func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
+        return UITableViewAutomaticDimension
+    }
+    
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 120
+        return UITableViewAutomaticDimension
     }
 
     override func goToNowPlaying () {

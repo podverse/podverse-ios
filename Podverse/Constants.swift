@@ -67,9 +67,19 @@ let kMyEpisodesPlaylist = "My Episodes"
 
 let kUserId = "userId"
 
+let kAutoDownloadingFeedUrls = "autoDownloadingFeedUrls"
+
+let kClipsListFilterType = "ClipsListFilterType"
+
 let kInternetIsUnreachable = "internetIsUnreachable"
 
 let kWiFiIsUnreachable = "wiFiIsUnreachable"
+
+let kBeginParsingPodcast = "beginParsingPodcast"
+
+let kFinishedAllParsingPodcasts = "finishedAllParsingPodcasts"
+
+let kFinishedParsingPodcast = "finishedParsingPodcast"
 
 let rootPath = NSSearchPathForDirectoriesInDomains(FileManager.SearchPathDirectory.documentDirectory, .userDomainMask, true)[0]
 

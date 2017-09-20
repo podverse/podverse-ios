@@ -10,17 +10,16 @@ import UIKit
 import CoreData
 import Lock
 
-class PodcastsTableViewController: PVViewController {
-    
+class PodcastsTableViewController: PVViewController, AutoDownloadProtocol {
+
+    @IBOutlet weak var parseActivityIndicator: UIActivityIndicatorView!
     @IBOutlet weak var parseStatus: UILabel!
-    @IBOutlet weak var parsingActivityIndicator: UIActivityIndicatorView!
     @IBOutlet weak var tableView: UITableView!
     
-    var subscribedPodcastsArray = [Podcast]()
+    let moc = CoreDataHelper.createMOCForThread(threadType: .mainThread)
     let reachability = PVReachability.shared
     let refreshControl = UIRefreshControl()
-    
-    let moc = CoreDataHelper.createMOCForThread(threadType: .mainThread)
+    var subscribedPodcastsArray = [Podcast]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -41,9 +40,29 @@ class PodcastsTableViewController: PVViewController {
         self.refreshControl.addTarget(self, action: #selector(refreshPodcastFeeds), for: UIControlEvents.valueChanged)
         self.tableView.addSubview(refreshControl)
         
+        self.parseStatus.isHidden = true
+        self.parseActivityIndicator.isHidden = true
+        
         refreshPodcastFeeds()
         loadPodcastData()
+        
+        addObservers()
+    }
+    
+    deinit {
+        removeObservers()
+    }
+    
+    fileprivate func addObservers() {
         NotificationCenter.default.addObserver(self, selector: #selector(self.downloadFinished(_:)), name: .downloadFinished, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.refreshParsingStatus(_:)), name: NSNotification.Name(rawValue: kBeginParsingPodcast), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.refreshParsingStatus(_:)), name: NSNotification.Name(rawValue: kFinishedParsingPodcast), object: nil)
+    }
+    
+    fileprivate func removeObservers() {
+        NotificationCenter.default.removeObserver(self, name: .downloadFinished, object: nil)
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name(rawValue: kBeginParsingPodcast), object: nil)
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name(rawValue: kFinishedParsingPodcast), object: nil)
     }
     
     @objc fileprivate func refreshPodcastFeeds() {
@@ -74,11 +93,13 @@ class PodcastsTableViewController: PVViewController {
         
         self.tableView.reloadData()
     }
-    
-    func updateParsingIndicator() {
-        self.parsingActivityIndicator.startAnimating()
-        // TODO
+
+    func podcastAutodownloadChanged(feedUrl: String) {
+        if let index = self.subscribedPodcastsArray.index(where: {$0.feedUrl == feedUrl}) {
+            self.tableView.reloadRows(at: [IndexPath(row: index, section: 0)], with: .none)
+        }
     }
+    
 }
 
 extension PodcastsTableViewController:PVFeedParserDelegate {
@@ -121,13 +142,19 @@ extension PodcastsTableViewController:UITableViewDelegate, UITableViewDataSource
         
         cell.title?.text = podcast.title
         
+        if podcast.shouldAutoDownload() {
+            cell.autoDownloadIndicator?.text = "Auto DL ON"
+        } else {
+            cell.autoDownloadIndicator?.text = "Auto DL OFF"
+        }
+        
         let episodes = podcast.episodes
         let episodesDownloaded = episodes.filter{ $0.fileName != nil }
         cell.totalEpisodes?.text = "\(episodesDownloaded.count) downloaded"
                 
         cell.lastPublishedDate?.text = ""
         if let lastPubDate = podcast.lastPubDate {
-            //cell.lastPublishedDate?.text = PVUtility.formatDateToString(lastPubDate)
+            cell.lastPublishedDate?.text = lastPubDate.toShortFormatString()
         }
         
         cell.pvImage.image = Podcast.retrievePodcastImage(managedObjectID: podcast.objectID)
@@ -165,6 +192,7 @@ extension PodcastsTableViewController:UITableViewDelegate, UITableViewDataSource
             if segue.identifier == "Show Episodes" {
                 let episodesTableViewController = segue.destination as! EpisodesTableViewController
                 episodesTableViewController.selectedPodcastID = subscribedPodcastsArray[index.row].objectID
+                episodesTableViewController.delegate = self
             }
         }
         
@@ -199,6 +227,25 @@ extension PodcastsTableViewController {
         if let feedUrl = notification.userInfo?["feedUrl"] as? String, let index = self.subscribedPodcastsArray.index(where: { $0.feedUrl == feedUrl }) {
             DispatchQueue.main.async {
                 self.tableView.deleteRows(at: [IndexPath(row: index, section: 0)], with: .automatic)
+            }
+        }
+    }
+    
+    func refreshParsingStatus(_ notification:Notification) {
+        DispatchQueue.main.async {
+            let podcastList = ParsingPodcastsList.shared
+            let total = podcastList.urls.count
+            let currentItem = podcastList.currentlyParsingItem
+            
+            if total > 0 && currentItem < total {
+                self.parseActivityIndicator.startAnimating()
+                self.parseActivityIndicator.isHidden = false
+                self.parseStatus.isHidden = false
+                self.parseStatus.text = String(currentItem) + "/" + String(total) + " parsing"
+            } else {
+                self.parseActivityIndicator.stopAnimating()
+                self.parseActivityIndicator.isHidden = true
+                self.parseStatus.isHidden = true
             }
         }
     }

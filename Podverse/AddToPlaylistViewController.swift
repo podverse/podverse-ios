@@ -179,6 +179,10 @@ extension AddToPlaylistViewController:UITableViewDelegate, UITableViewDataSource
             cell.lastUpdated?.text = lastUpdated.toShortFormatString()
         }
         
+        if let itemCount = playlist.itemCount {
+            cell.itemCount.text = "Items: " + itemCount
+        }
+
         return cell
     }
     
@@ -193,7 +197,7 @@ extension AddToPlaylistViewController:UITableViewDelegate, UITableViewDataSource
                     if let cell = self.tableView.cellForRow(at: indexPath) as? PlaylistTableViewCell {
                         
                         if let itemCount = itemCount {
-                            cell.itemsTotal.text = "Items: " + String(describing: itemCount)
+                            cell.itemCount.text = "Items: " + String(describing: itemCount)
                         }
                         
                     }

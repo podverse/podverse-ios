@@ -96,4 +96,37 @@ class Podcast: NSManagedObject {
             return nil
         }
     }
+    
+    func shouldAutoDownload() -> Bool {
+        if let autoDownloadingFeedUrls = UserDefaults.standard.array(forKey: kAutoDownloadingFeedUrls) as? [String] {
+            if autoDownloadingFeedUrls.contains(self.feedUrl) {
+                return true
+            } else {
+                return false
+            }
+        }
+        
+        return false
+    }
+    
+    func addToAutoDownloadList() {
+        
+        if var autoDownloadingFeedUrls = UserDefaults.standard.array(forKey: kAutoDownloadingFeedUrls) as? [String] {
+            if !autoDownloadingFeedUrls.contains(self.feedUrl) {
+                autoDownloadingFeedUrls.append(self.feedUrl)
+                UserDefaults.standard.setValue(autoDownloadingFeedUrls, forKey: kAutoDownloadingFeedUrls)
+            }
+        } else {
+            UserDefaults.standard.setValue([self.feedUrl], forKey: kAutoDownloadingFeedUrls)
+        }
+        
+    }
+    
+    func removeFromAutoDownloadList() {
+        if let autoDownloadingFeedUrls = UserDefaults.standard.array(forKey: kAutoDownloadingFeedUrls) as? [String] {
+            let results = autoDownloadingFeedUrls.filter { $0 != self.feedUrl}
+            UserDefaults.standard.setValue(results, forKey: kAutoDownloadingFeedUrls)
+        }
+    }
+    
 }

@@ -21,12 +21,14 @@ class PVDeleter: NSObject {
         let moc = CoreDataHelper.createMOCForThread(threadType: .privateThread)
         
         if let podcastId = podcastId, let podcast = CoreDataHelper.fetchEntityWithID(objectId: podcastId, moc: moc) as? Podcast {
+            podcast.removeFromAutoDownloadList()
             deleteAllEpisodesFromPodcast(podcast: podcast)
             moc.delete(podcast)
             DispatchQueue.main.async {
                 NotificationCenter.default.post(name: .podcastDeleted, object: nil, userInfo: ["feedUrl": podcast.feedUrl as? Any])
             }
         } else if let feedUrl = feedUrl, let podcast = Podcast.podcastForFeedUrl(feedUrlString: feedUrl, managedObjectContext: moc) {
+            podcast.removeFromAutoDownloadList()
             deleteAllEpisodesFromPodcast(podcast: podcast)
             moc.delete(podcast)
             DispatchQueue.main.async {
