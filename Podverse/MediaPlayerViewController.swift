@@ -71,7 +71,6 @@ class MediaPlayerViewController: PVViewController {
     }
     
     deinit {
-        NotificationCenter.default.removeObserver(self, name: .playerHasFinished, object: nil)
         removeTimer()
     }
     
