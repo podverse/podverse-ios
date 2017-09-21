@@ -41,8 +41,6 @@ class PlaylistDetailTableViewController: PVViewController {
         self.activityIndicator.hidesWhenStopped = true
         showIndicator()
         
-        self.tableView.rowHeight = UITableViewAutomaticDimension
-        
         if let id = self.playlistId {
             Playlist.retrievePlaylistFromServer(id: id) { (playlist) -> Void in
                 self.reloadPlaylistData(playlist: playlist)

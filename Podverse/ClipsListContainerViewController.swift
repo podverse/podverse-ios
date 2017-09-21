@@ -16,7 +16,7 @@ protocol ClipsListDelegate:class {
 enum ClipFilterType: String {
     case episode = "Episode"
     case podcast = "Podcast"
-    case subscribed = "My Subscribed"
+    case subscribed = "Subscribed"
     
     var text:String {
         get {
@@ -26,7 +26,7 @@ enum ClipFilterType: String {
             case .podcast:
                 return "Podcast"
             case .subscribed:
-                return "My Subscribed"
+                return "Subscribed"
             }
         }
     }
@@ -79,15 +79,15 @@ class ClipsListContainerViewController: UIViewController {
             UserDefaults.standard.set("Podcast", forKey: kClipsListFilterType)
         }))
         
-        alert.addAction(UIAlertAction(title: "My Subscribed", style: .default, handler: { action in
+        alert.addAction(UIAlertAction(title: "Subscribed", style: .default, handler: { action in
             if let _ = self.pvMediaPlayer.nowPlayingItem {
                 MediaRef.retrieveMediaRefsFromServer(episodeMediaUrl: nil, podcastFeedUrl: nil) { (mediaRefs) -> Void in
                     self.reloadClipData(mediaRefs: mediaRefs)
                 }
             }
-            self.filterType.setTitle("My Subscribed\u{2304}", for: .normal)
+            self.filterType.setTitle("Subscribed\u{2304}", for: .normal)
             self.filterTypeSelected = .subscribed
-            UserDefaults.standard.set("My Subscribed", forKey: kClipsListFilterType)
+            UserDefaults.standard.set("Subscribed", forKey: kClipsListFilterType)
         }))
         
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
@@ -124,7 +124,7 @@ class ClipsListContainerViewController: UIViewController {
                 MediaRef.retrieveMediaRefsFromServer() { (mediaRefs) -> Void in
                     self.reloadClipData(mediaRefs: mediaRefs)
                 }
-                filterType.setTitle("My Subscribed\u{2304}", for: .normal)
+                filterType.setTitle("Subscribed\u{2304}", for: .normal)
             }
         }
     }
