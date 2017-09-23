@@ -135,17 +135,12 @@ class PVDownloader:NSObject {
 extension PVDownloader:URLSessionDelegate, URLSessionDownloadDelegate {
     
     func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didWriteData bytesWritten: Int64, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) {
-        if (totalBytesExpectedToWrite == NSURLSessionTransferSizeUnknown) {
-            print("Unknown transfer size")
-        }
-        else {
-            if let episodeDownloadIndex = DownloadingEpisodeList.shared.downloadingEpisodes.index(where: {$0.taskIdentifier == downloadTask.taskIdentifier}) {
-                let downloadingEpisode = DownloadingEpisodeList.shared.downloadingEpisodes[episodeDownloadIndex]
-                downloadingEpisode.totalBytesWritten = Float(totalBytesWritten)
-                downloadingEpisode.totalBytesExpectedToWrite = Float(totalBytesExpectedToWrite)
-                DispatchQueue.main.async {
-                    NotificationCenter.default.post(name: .downloadProgressed, object: nil, userInfo: [Episode.episodeKey:downloadingEpisode])
-                }
+        if totalBytesExpectedToWrite != NSURLSessionTransferSizeUnknown, let episodeDownloadIndex = DownloadingEpisodeList.shared.downloadingEpisodes.index(where: {$0.taskIdentifier == downloadTask.taskIdentifier}) {
+            let downloadingEpisode = DownloadingEpisodeList.shared.downloadingEpisodes[episodeDownloadIndex]
+            downloadingEpisode.totalBytesWritten = Float(totalBytesWritten)
+            downloadingEpisode.totalBytesExpectedToWrite = Float(totalBytesExpectedToWrite)
+            DispatchQueue.main.async {
+                NotificationCenter.default.post(name: .downloadProgressed, object: nil, userInfo: [Episode.episodeKey:downloadingEpisode])
             }
         }
     }
