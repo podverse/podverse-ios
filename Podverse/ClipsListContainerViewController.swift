@@ -101,10 +101,8 @@ class ClipsListContainerViewController: UIViewController {
         
         
         alert.addAction(UIAlertAction(title: "Subscribed", style: .default, handler: { action in
-            if let _ = self.pvMediaPlayer.nowPlayingItem {
-                MediaRef.retrieveMediaRefsFromServer(episodeMediaUrl: nil, podcastFeedUrl: nil) { (mediaRefs) -> Void in
-                    self.reloadClipData(mediaRefs: mediaRefs)
-                }
+            MediaRef.retrieveMediaRefsFromServer(episodeMediaUrl: nil, podcastFeedUrl: nil) { (mediaRefs) -> Void in
+                self.reloadClipData(mediaRefs: mediaRefs)
             }
             self.filterType.setTitle("Subscribed\u{2304}", for: .normal)
             self.filterTypeSelected = .subscribed
@@ -112,13 +110,11 @@ class ClipsListContainerViewController: UIViewController {
         }))
         
         alert.addAction(UIAlertAction(title: "All Podcasts", style: .default, handler: { action in
-            if let _ = self.pvMediaPlayer.nowPlayingItem {
-                MediaRef.retrieveMediaRefsFromServer(episodeMediaUrl: nil, podcastFeedUrl: nil) { (mediaRefs) -> Void in
-                    self.reloadClipData(mediaRefs: mediaRefs)
-                }
+            MediaRef.retrieveMediaRefsFromServer(episodeMediaUrl: nil, podcastFeedUrl: nil) { (mediaRefs) -> Void in
+                self.reloadClipData(mediaRefs: mediaRefs)
             }
             self.filterType.setTitle("All Podcasts\u{2304}", for: .normal)
-            self.filterTypeSelected = .subscribed
+            self.filterTypeSelected = .allPodcasts
             UserDefaults.standard.set("All Podcasts", forKey: kClipsListFilterType)
         }))
         
