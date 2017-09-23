@@ -13,25 +13,6 @@ protocol ClipsListDelegate:class {
     func didSelectClip(clip:MediaRef)
 }
 
-enum ClipFilterType: String {
-    case episode = "Episode"
-    case podcast = "Podcast"
-    case subscribed = "Subscribed"
-    
-    var text:String {
-        get {
-            switch self {
-            case .episode:
-                return "Episode"
-            case .podcast:
-                return "Podcast"
-            case .subscribed:
-                return "Subscribed"
-            }
-        }
-    }
-}
-
 class ClipsListContainerViewController: UIViewController {
 
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
@@ -50,13 +31,52 @@ class ClipsListContainerViewController: UIViewController {
     
     var filterTypeSelected:ClipFilterType?
     
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        self.tableView.separatorColor = .darkGray
+        self.tableControlsView.layer.borderColor = UIColor.lightGray.cgColor
+        self.tableControlsView.layer.borderWidth = 1.0
+        
+        activityIndicator.hidesWhenStopped = true
+        showIndicator()
+        
+        if let savedFilterType = UserDefaults.standard.value(forKey: kClipsListFilterType) as? String {
+            self.filterTypeSelected = ClipFilterType(rawValue: savedFilterType)
+        }
+        
+        if let item = pvMediaPlayer.nowPlayingItem {
+            if self.filterTypeSelected == .allPodcasts {
+                MediaRef.retrieveMediaRefsFromServer() { (mediaRefs) -> Void in
+                    self.reloadClipData(mediaRefs: mediaRefs)
+                }
+                filterType.setTitle("All Podcasts\u{2304}", for: .normal)
+            } else if self.filterTypeSelected == .subscribed {
+                MediaRef.retrieveMediaRefsFromServer() { (mediaRefs) -> Void in
+                    self.reloadClipData(mediaRefs: mediaRefs)
+                }
+                filterType.setTitle("Subscribed\u{2304}", for: .normal)
+            } else if self.filterTypeSelected == .podcast {
+                MediaRef.retrieveMediaRefsFromServer(podcastFeedUrl: item.podcastFeedUrl) { (mediaRefs) -> Void in
+                    self.reloadClipData(mediaRefs: mediaRefs)
+                }
+                filterType.setTitle("Podcast\u{2304}", for: .normal)
+            } else {
+                MediaRef.retrieveMediaRefsFromServer(episodeMediaUrl: item.episodeMediaUrl) { (mediaRefs) -> Void in
+                    self.reloadClipData(mediaRefs: mediaRefs)
+                }
+                filterType.setTitle("Episode\u{2304}", for: .normal)
+            }
+        }
+    }
+    
     @IBAction func retryButtonTouched(_ sender: Any) {
         
     }
     
     @IBAction func updateFilter(_ sender: Any) {
         let alert = UIAlertController(title: "Clips From", message: nil, preferredStyle: .alert)
-        
+
         alert.addAction(UIAlertAction(title: "Episode", style: .default, handler: { action in
             if let item = self.pvMediaPlayer.nowPlayingItem {
                 MediaRef.retrieveMediaRefsFromServer(episodeMediaUrl: item.episodeMediaUrl, podcastFeedUrl: nil) { (mediaRefs) -> Void in
@@ -79,6 +99,7 @@ class ClipsListContainerViewController: UIViewController {
             UserDefaults.standard.set("Podcast", forKey: kClipsListFilterType)
         }))
         
+        
         alert.addAction(UIAlertAction(title: "Subscribed", style: .default, handler: { action in
             if let _ = self.pvMediaPlayer.nowPlayingItem {
                 MediaRef.retrieveMediaRefsFromServer(episodeMediaUrl: nil, podcastFeedUrl: nil) { (mediaRefs) -> Void in
@@ -90,44 +111,22 @@ class ClipsListContainerViewController: UIViewController {
             UserDefaults.standard.set("Subscribed", forKey: kClipsListFilterType)
         }))
         
+        alert.addAction(UIAlertAction(title: "All Podcasts", style: .default, handler: { action in
+            if let _ = self.pvMediaPlayer.nowPlayingItem {
+                MediaRef.retrieveMediaRefsFromServer(episodeMediaUrl: nil, podcastFeedUrl: nil) { (mediaRefs) -> Void in
+                    self.reloadClipData(mediaRefs: mediaRefs)
+                }
+            }
+            self.filterType.setTitle("All Podcasts\u{2304}", for: .normal)
+            self.filterTypeSelected = .subscribed
+            UserDefaults.standard.set("All Podcasts", forKey: kClipsListFilterType)
+        }))
+        
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
         
         self.present(alert, animated: true, completion: nil)
     }
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
-        self.tableView.separatorColor = .darkGray
-        self.tableControlsView.layer.borderColor = UIColor.lightGray.cgColor
-        self.tableControlsView.layer.borderWidth = 1.0
-        
-        activityIndicator.hidesWhenStopped = true
-        showIndicator()
-        
-        if let savedFilterType = UserDefaults.standard.value(forKey: kClipsListFilterType) as? String {
-            self.filterTypeSelected = ClipFilterType(rawValue: savedFilterType)
-        }
-        
-        if let item = pvMediaPlayer.nowPlayingItem {
-            if self.filterTypeSelected == .episode {
-                MediaRef.retrieveMediaRefsFromServer(episodeMediaUrl: item.episodeMediaUrl) { (mediaRefs) -> Void in
-                    self.reloadClipData(mediaRefs: mediaRefs)
-                }
-                filterType.setTitle("Episode\u{2304}", for: .normal)
-            } else if self.filterTypeSelected == .podcast {
-                MediaRef.retrieveMediaRefsFromServer(podcastFeedUrl: item.podcastFeedUrl) { (mediaRefs) -> Void in
-                    self.reloadClipData(mediaRefs: mediaRefs)
-                }
-                filterType.setTitle("Podcast\u{2304}", for: .normal)
-            } else {
-                MediaRef.retrieveMediaRefsFromServer() { (mediaRefs) -> Void in
-                    self.reloadClipData(mediaRefs: mediaRefs)
-                }
-                filterType.setTitle("Subscribed\u{2304}", for: .normal)
-            }
-        }
-    }
     
     func reloadClipData(mediaRefs: [MediaRef]? = nil) {
         if self.reachability.hasInternetConnection() == false {

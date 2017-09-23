@@ -18,13 +18,11 @@ class ClipsTableViewController: PVViewController {
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     @IBOutlet weak var statusMessage: UILabel!
     @IBOutlet weak var retryButton: UIButton!
+    
+    @IBOutlet weak var filterType: UIButton!
+    @IBOutlet weak var sorting: UIButton!
 
-    @IBAction func retryButtonTouched(_ sender: Any) {
-        showIndicator()
-        MediaRef.retrieveMediaRefsFromServer() { (mediaRefs) -> Void in
-            self.reloadClipData(mediaRefs: mediaRefs)
-        }
-    }
+    var filterTypeSelected: ClipFilterType?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -32,6 +30,57 @@ class ClipsTableViewController: PVViewController {
         activityIndicator.hidesWhenStopped = true
         showIndicator()
         
+        if let savedFilterType = UserDefaults.standard.value(forKey: kClipsTableFilterType) as? String {
+            self.filterTypeSelected = ClipFilterType(rawValue: savedFilterType)
+        }
+        
+        if self.filterTypeSelected == .subscribed {
+            MediaRef.retrieveMediaRefsFromServer() { (mediaRefs) -> Void in
+                self.reloadClipData(mediaRefs: mediaRefs)
+            }
+            filterType.setTitle("Subscribed\u{2304}", for: .normal)
+        } else {
+            MediaRef.retrieveMediaRefsFromServer() { (mediaRefs) -> Void in
+                self.reloadClipData(mediaRefs: mediaRefs)
+            }
+            filterType.setTitle("All Podcasts\u{2304}", for: .normal)
+        }
+    }
+    
+    @IBAction func updateFilter(_ sender: Any) {
+        let alert = UIAlertController(title: "Clips From", message: nil, preferredStyle: .alert)
+        
+        alert.addAction(UIAlertAction(title: "Subscribed", style: .default, handler: { action in
+            MediaRef.retrieveMediaRefsFromServer(episodeMediaUrl: nil, podcastFeedUrl: nil) { (mediaRefs) -> Void in
+                self.reloadClipData(mediaRefs: mediaRefs)
+            }
+            self.filterType.setTitle("Subscribed\u{2304}", for: .normal)
+            self.filterTypeSelected = .subscribed
+            UserDefaults.standard.set("Subscribed", forKey: kClipsTableFilterType)
+        }))
+        
+        
+        alert.addAction(UIAlertAction(title: "All Podcasts", style: .default, handler: { action in
+            MediaRef.retrieveMediaRefsFromServer(episodeMediaUrl: nil, podcastFeedUrl: nil) { (mediaRefs) -> Void in
+                self.reloadClipData(mediaRefs: mediaRefs)
+            }
+            self.filterType.setTitle("All Podcasts\u{2304}", for: .normal)
+            self.filterTypeSelected = .allPodcasts
+            UserDefaults.standard.set("All Podcasts", forKey: kClipsTableFilterType)
+        }))
+        
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        
+        self.present(alert, animated: true, completion: nil)
+    }
+    
+    
+    @IBAction func updateSorting(_ sender: Any) {
+        
+    }
+    
+    @IBAction func retryButtonTouched(_ sender: Any) {
+        showIndicator()
         MediaRef.retrieveMediaRefsFromServer() { (mediaRefs) -> Void in
             self.reloadClipData(mediaRefs: mediaRefs)
         }

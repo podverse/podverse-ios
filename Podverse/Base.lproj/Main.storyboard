@@ -576,9 +576,49 @@
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="107" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="vEq-k2-ABP">
                                 <rect key="frame" x="0.0" y="64" width="375" height="554"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <view key="tableHeaderView" contentMode="scaleToFill" id="59Y-xY-O1p">
+                                    <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                    <subviews>
+                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="right" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="iVT-we-6Se">
+                                            <rect key="frame" x="247" y="6" width="120" height="32"/>
+                                            <constraints>
+                                                <constraint firstAttribute="width" constant="120" id="vlp-Dk-MVo"/>
+                                            </constraints>
+                                            <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                            <state key="normal" title="most popular">
+                                                <color key="titleColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                                            </state>
+                                            <connections>
+                                                <action selector="updateSorting:" destination="ARB-bz-Rwv" eventType="touchUpInside" id="wUc-ML-gqz"/>
+                                            </connections>
+                                        </button>
+                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="KUC-oU-N1h">
+                                            <rect key="frame" x="8" y="6" width="140" height="32"/>
+                                            <constraints>
+                                                <constraint firstAttribute="width" constant="140" id="aki-VZ-GzE"/>
+                                                <constraint firstAttribute="height" constant="32" id="iio-FI-RTy"/>
+                                            </constraints>
+                                            <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="16"/>
+                                            <state key="normal" title="Global">
+                                                <color key="titleColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                                            </state>
+                                            <connections>
+                                                <action selector="updateFilter:" destination="ARB-bz-Rwv" eventType="touchUpInside" id="bdB-HK-Noa"/>
+                                            </connections>
+                                        </button>
+                                    </subviews>
+                                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                    <constraints>
+                                        <constraint firstItem="KUC-oU-N1h" firstAttribute="top" secondItem="59Y-xY-O1p" secondAttribute="top" constant="6" id="4zv-Hp-WTn"/>
+                                        <constraint firstAttribute="trailing" secondItem="iVT-we-6Se" secondAttribute="trailing" constant="8" id="DjH-ab-iUs"/>
+                                        <constraint firstItem="iVT-we-6Se" firstAttribute="top" secondItem="59Y-xY-O1p" secondAttribute="top" constant="6" id="NZk-rZ-Vp1"/>
+                                        <constraint firstItem="KUC-oU-N1h" firstAttribute="leading" secondItem="59Y-xY-O1p" secondAttribute="leading" constant="8" id="so1-J8-fqO"/>
+                                    </constraints>
+                                </view>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="clipCell" rowHeight="127" id="eeR-hA-Vjb" customClass="ClipTableViewCell" customModule="Podverse" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="28" width="375" height="127"/>
+                                        <rect key="frame" x="0.0" y="72" width="375" height="127"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="eeR-hA-Vjb" id="1Eb-wo-QaL">
                                             <rect key="frame" x="0.0" y="0.0" width="375" height="127"/>
@@ -675,8 +715,10 @@
                     <navigationItem key="navigationItem" id="RfP-ff-YV2"/>
                     <connections>
                         <outlet property="activityIndicator" destination="7LK-Aw-ucR" id="ANo-oe-Fym"/>
+                        <outlet property="filterType" destination="KUC-oU-N1h" id="bDB-2D-cLn"/>
                         <outlet property="loadingView" destination="ma7-f8-mOk" id="2bc-lv-p3D"/>
                         <outlet property="retryButton" destination="oeE-hL-VuD" id="zRg-Kx-emw"/>
+                        <outlet property="sorting" destination="iVT-we-6Se" id="onI-Xg-tjc"/>
                         <outlet property="statusMessage" destination="YNF-hj-Oyh" id="ot0-AP-lBJ"/>
                         <outlet property="tableView" destination="vEq-k2-ABP" id="q9Z-J2-fbJ"/>
                     </connections>
