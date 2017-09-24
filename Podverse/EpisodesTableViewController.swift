@@ -11,7 +11,7 @@ class EpisodesTableViewController: PVViewController, UITableViewDataSource, UITa
     var episodesArray = [Episode]()
     let moc = CoreDataHelper.createMOCForThread(threadType: .privateThread)
     let reachability = PVReachability.shared
-    var selectedPodcastID: NSManagedObjectID!
+    var feedUrl: String?
     var showAllEpisodes = false
     
     @IBOutlet weak var autoDownloadLabel: UILabel!
@@ -22,7 +22,7 @@ class EpisodesTableViewController: PVViewController, UITableViewDataSource, UITa
     @IBOutlet weak var tableView: UITableView!
     
     @IBAction func autoDownloadSwitchTouched(_ sender: Any) {
-        if let podcast = CoreDataHelper.fetchEntityWithID(objectId: self.selectedPodcastID, moc: moc) as? Podcast {
+        if let feedUrl = feedUrl, let podcast = Podcast.podcastForFeedUrl(feedUrlString: feedUrl, managedObjectContext: moc) {
             if podcast.shouldAutoDownload() {
                 podcast.removeFromAutoDownloadList()
             } else {
@@ -39,7 +39,9 @@ class EpisodesTableViewController: PVViewController, UITableViewDataSource, UITa
     }
     
     func loadData() {
-        if let podcast = CoreDataHelper.fetchEntityWithID(objectId: self.selectedPodcastID, moc: moc) as? Podcast {
+        
+        if let feedUrl = feedUrl, let podcast = Podcast.podcastForFeedUrl(feedUrlString: feedUrl, managedObjectContext: moc) {
+            
             episodesArray.removeAll()
             
             headerPodcastTitle.text = podcast.title
@@ -77,7 +79,9 @@ class EpisodesTableViewController: PVViewController, UITableViewDataSource, UITa
                 
                 return false
             })
+
         }
+
     }
 
     func downloadPlay(sender: UIButton) {
