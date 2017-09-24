@@ -33,7 +33,7 @@ class PVViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        loadNowPlayingBarData()
+        toggleNowPlayingBar()
     }
     
     deinit {
@@ -52,18 +52,22 @@ class PVViewController: UIViewController {
         self.removeObserver(self, forKeyPath: #keyPath(pvMediaPlayer.audioPlayer.state))
     }
     
-    func loadNowPlayingBarData() {
-        DispatchQueue.main.async {
-            guard let tabbarVC = self.tabBarController else { return }
-            self.updateNowPlayingBarData()
-            tabbarVC.showPlayerView()
+    func toggleNowPlayingBar() {
+        self.updateNowPlayingBarData() { shouldShow in
+            let tabbarVC = self.tabBarController
+            
+            if shouldShow {
+                tabbarVC?.showPlayerView()
+            } else {
+                self.tabBarController?.hidePlayerView()
+            }
         }
     }
-    
-    func updateNowPlayingBarData() {
+
+    func updateNowPlayingBarData(completion: @escaping (_ shouldShow: Bool) -> Void) {
         DispatchQueue.main.async {
             guard let currentItem = self.playerHistoryManager.historyItems.first, let tabbarVC = self.tabBarController, PVMediaPlayer.shared.nowPlayingItem != nil && currentItem.hasReachedEnd != true else {
-                self.tabBarController?.hidePlayerView()
+                completion(false)
                 return
             }
             
@@ -71,6 +75,8 @@ class PVViewController: UIViewController {
             tabbarVC.playerView.episodeTitle.text = currentItem.episodeTitle
             tabbarVC.playerView.podcastImageView.sd_setImage(with: URL(string: currentItem.podcastImageUrl ?? ""), placeholderImage: #imageLiteral(resourceName: "PodverseIcon"))
             tabbarVC.playerView.isPlaying = (self.pvMediaPlayer.audioPlayer.state == STKAudioPlayerState.playing)
+            
+            completion(true)
         }
     }
     
@@ -81,7 +87,7 @@ class PVViewController: UIViewController {
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
         if let keyPath = keyPath {
             if keyPath == #keyPath(pvMediaPlayer.audioPlayer.state) {
-                updateNowPlayingBarData()
+                
             }
         }
     }

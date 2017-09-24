@@ -31,6 +31,7 @@ class PVFeedParser {
     var onlyParseChannel = false
     var latestEpisodePubDate:Date?
     var delegate:PVFeedParserDelegate?
+    let parsingPodcastsList = ParsingPodcastsList.shared
     
     init(shouldOnlyGetMostRecentEpisode:Bool, shouldSubscribe:Bool, shouldOnlyParseChannel:Bool) {
         self.onlyGetMostRecentEpisode = shouldOnlyGetMostRecentEpisode
@@ -39,6 +40,9 @@ class PVFeedParser {
     }
     
     func parsePodcastFeed(feedUrlString:String) {
+
+        parsingPodcastsList.addPodcast(feedUrl: feedUrlString)
+        
         if onlyParseChannel {
             channelInfoFeedParsingQueue.async {
                 self.feedUrl = feedUrlString
@@ -213,6 +217,9 @@ extension PVFeedParser:FeedParserDelegate {
     }
     
     func feedParser(_ parser: FeedParser, successfullyParsedURL url: String) {
+        
+        parsingPodcastsList.podcastFinishedParsing()
+        
         guard let podcastId = currentPodcastID, let podcast = CoreDataHelper.fetchEntityWithID(objectId: podcastId, moc: moc) as? Podcast else {
             return
         }
@@ -241,6 +248,9 @@ extension PVFeedParser:FeedParserDelegate {
     }
     
     func feedParserParsingAborted(_ parser: FeedParser) {
+        
+        parsingPodcastsList.podcastFinishedParsing()
+        
         guard let podcastId = currentPodcastID, let podcast = CoreDataHelper.fetchEntityWithID(objectId: podcastId, moc: moc) as? Podcast else {
             // If podcast is nil, then the RSS feed was invalid for the parser, and we should return out of successfullyParsedURL
             

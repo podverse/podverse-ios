@@ -75,6 +75,12 @@ let kInternetIsUnreachable = "internetIsUnreachable"
 
 let kWiFiIsUnreachable = "wiFiIsUnreachable"
 
+let kBeginParsingPodcast = "beginParsingPodcast"
+
+let kFinishedAllParsingPodcasts = "finishedAllParsingPodcasts"
+
+let kFinishedParsingPodcast = "finishedParsingPodcast"
+
 let rootPath = NSSearchPathForDirectoriesInDomains(FileManager.SearchPathDirectory.documentDirectory, .userDomainMask, true)[0]
 
 let TO_PLAYER_SEGUE_ID = "To Now Playing"
