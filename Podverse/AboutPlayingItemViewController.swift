@@ -10,9 +10,9 @@ import UIKit
 
 class AboutPlayingItemViewController: UIViewController, UIWebViewDelegate {
 
-    @IBOutlet weak var webView: UIWebView!
-    
     let pvMediaPlayer = PVMediaPlayer.shared
+    
+    @IBOutlet weak var webView: UIWebView!
     
     override func viewDidLoad() {
         super.viewDidLoad()

@@ -33,7 +33,7 @@ extension MoreTableViewController:UITableViewDelegate, UITableViewDataSource {
         
         switch indexPath.row {
         case 0:
-            cell.textLabel?.text = "Downloads"
+            cell.textLabel?.text = "Playlists"
         case 1:
             cell.textLabel?.text = "About"
         case 2:
@@ -54,7 +54,7 @@ extension MoreTableViewController:UITableViewDelegate, UITableViewDataSource {
         
         switch indexPath.row {
         case 0:
-            performSegue(withIdentifier: "Show Downloads", sender: nil)
+            performSegue(withIdentifier: "Show Playlists", sender: nil)
         case 1:
             if let url = URL(string: BASE_URL + "about") {
                 UIApplication.shared.openURL(url)
