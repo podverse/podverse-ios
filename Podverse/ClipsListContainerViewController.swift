@@ -36,10 +36,7 @@ class ClipsListContainerViewController: UIViewController {
 
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     @IBOutlet weak var filterType: UIButton!
-    @IBOutlet weak var loadingView: UIView!
-    @IBOutlet weak var retryButton: UIButton!
     @IBOutlet weak var sorting: UIButton!
-    @IBOutlet weak var statusMessage: UILabel!
     @IBOutlet weak var tableControlsView: UIView!
     @IBOutlet weak var tableView: UITableView!
     
@@ -49,10 +46,6 @@ class ClipsListContainerViewController: UIViewController {
     let reachability = PVReachability.shared
     
     var filterTypeSelected:ClipFilterType?
-    
-    @IBAction func retryButtonTouched(_ sender: Any) {
-        
-    }
     
     @IBAction func updateFilter(_ sender: Any) {
         let alert = UIAlertController(title: "Clips From", message: nil, preferredStyle: .alert)
@@ -103,12 +96,21 @@ class ClipsListContainerViewController: UIViewController {
         self.tableControlsView.layer.borderWidth = 1.0
         
         activityIndicator.hidesWhenStopped = true
-        showIndicator()
         
         if let savedFilterType = UserDefaults.standard.value(forKey: kClipsListFilterType) as? String {
             self.filterTypeSelected = ClipFilterType(rawValue: savedFilterType)
         }
         
+        loadClipData()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        checkForConnectvity()
+    }
+    
+    func loadClipData() {
+        showIndicator()
         if let item = pvMediaPlayer.nowPlayingItem {
             if self.filterTypeSelected == .episode {
                 MediaRef.retrieveMediaRefsFromServer(episodeMediaUrl: item.episodeMediaUrl) { (mediaRefs) -> Void in
@@ -127,58 +129,48 @@ class ClipsListContainerViewController: UIViewController {
                 filterType.setTitle("My Subscribed\u{2304}", for: .normal)
             }
         }
+        else {
+            MediaRef.retrieveMediaRefsFromServer() { (mediaRefs) -> Void in
+                self.reloadClipData(mediaRefs: mediaRefs)
+            }
+        }
+    }
+    
+    func checkForConnectvity() {
+        var message = "No clips available"
+        
+        if self.reachability.hasInternetConnection() == false {
+            message = "You must connect to the internet to load clips."
+        }
+        
+        if let noDataView = self.view.subviews.first(where: { $0.tag == kNoDataViewTag}) {
+            if let messageView = noDataView.subviews.first(where: {$0 is UILabel}), let messageLabel = messageView as? UILabel {
+                messageLabel.text = message
+            }
+        }
+        else {
+            self.addNoDataViewWithMessage(message, buttonTitle: "Retry", buttonImage: nil, retryPressed: #selector(ClipsTableViewController.loadClipData))   
+        }
     }
     
     func reloadClipData(mediaRefs: [MediaRef]? = nil) {
-        if self.reachability.hasInternetConnection() == false {
-            self.showStatusMessage(message: "You must connect to the internet to load clips.")
-            return
+        
+        self.tableView.isHidden = true
+        
+        if let mediaRefArray = mediaRefs, mediaRefArray.count > 0 {
+            self.clipsArray = mediaRefArray
+            
+            self.tableView.isHidden = false
         }
         
-        guard let mediaRefArray = mediaRefs, mediaRefArray.count > 0 else {
-            self.showStatusMessage(message: "No clips available")
-            return
-        }
-        
-        self.clipsArray.removeAll()
-        
-        for mediaRef in mediaRefArray {
-            self.clipsArray.append(mediaRef)
-        }
-        
-        self.showClipsView()
+        self.activityIndicator.stopAnimating()
         self.tableView.reloadData()
-    }
-    
-    func showStatusMessage(message: String) {
-        activityIndicator.stopAnimating()
-        statusMessage.text = message
-        tableView.isHidden = true
-        loadingView.isHidden = false
-        statusMessage.isHidden = false
-        
-        if message == "You must connect to the internet to load clips." {
-            retryButton.isHidden = false
-        }
     }
     
     func showIndicator() {
         activityIndicator.startAnimating()
-        tableView.isHidden = true
-        loadingView.isHidden = false
         activityIndicator.isHidden = false
-        statusMessage.isHidden = true
-        retryButton.isHidden = true
     }
-    
-    func showClipsView() {
-        activityIndicator.stopAnimating()
-        tableView.isHidden = false
-        loadingView.isHidden = true
-        statusMessage.isHidden = true
-        retryButton.isHidden = true
-    }
-    
 }
 
 extension ClipsListContainerViewController:UITableViewDelegate, UITableViewDataSource {

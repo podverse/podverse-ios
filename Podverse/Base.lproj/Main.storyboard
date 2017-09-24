@@ -542,37 +542,10 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ma7-f8-mOk">
-                                <rect key="frame" x="0.0" y="64" width="375" height="554"/>
-                                <subviews>
-                                    <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="7LK-Aw-ucR">
-                                        <rect key="frame" x="169" y="259" width="37" height="37"/>
-                                        <color key="color" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
-                                    </activityIndicatorView>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Status Message" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="YNF-hj-Oyh">
-                                        <rect key="frame" x="126" y="267" width="123" height="21"/>
-                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                        <nil key="textColor"/>
-                                        <nil key="highlightedColor"/>
-                                    </label>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="oeE-hL-VuD">
-                                        <rect key="frame" x="169" y="312" width="37" height="30"/>
-                                        <state key="normal" title="Retry"/>
-                                        <connections>
-                                            <action selector="retryButtonTouched:" destination="ARB-bz-Rwv" eventType="touchUpInside" id="khG-sS-dV7"/>
-                                        </connections>
-                                    </button>
-                                </subviews>
-                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                                <constraints>
-                                    <constraint firstItem="7LK-Aw-ucR" firstAttribute="centerX" secondItem="ma7-f8-mOk" secondAttribute="centerX" id="ME6-TD-D5U"/>
-                                    <constraint firstItem="YNF-hj-Oyh" firstAttribute="centerX" secondItem="ma7-f8-mOk" secondAttribute="centerX" id="NeT-5N-FX1"/>
-                                    <constraint firstItem="oeE-hL-VuD" firstAttribute="centerX" secondItem="ma7-f8-mOk" secondAttribute="centerX" id="T1W-Ze-Fhk"/>
-                                    <constraint firstItem="YNF-hj-Oyh" firstAttribute="centerY" secondItem="ma7-f8-mOk" secondAttribute="centerY" id="aif-Cg-eia"/>
-                                    <constraint firstItem="7LK-Aw-ucR" firstAttribute="centerY" secondItem="ma7-f8-mOk" secondAttribute="centerY" id="bCg-Tn-ZHh"/>
-                                    <constraint firstItem="oeE-hL-VuD" firstAttribute="top" secondItem="YNF-hj-Oyh" secondAttribute="bottom" constant="24" id="erM-mj-S0j"/>
-                                </constraints>
-                            </view>
+                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="7LK-Aw-ucR">
+                                <rect key="frame" x="169" y="315" width="37" height="37"/>
+                                <color key="color" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                            </activityIndicatorView>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="107" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="vEq-k2-ABP">
                                 <rect key="frame" x="0.0" y="64" width="375" height="554"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -662,22 +635,17 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstItem="7LK-Aw-ucR" firstAttribute="centerX" secondItem="gIq-dg-S0t" secondAttribute="centerX" id="6E4-z1-pw8"/>
                             <constraint firstAttribute="trailing" secondItem="vEq-k2-ABP" secondAttribute="trailing" id="7VU-Km-VTs"/>
-                            <constraint firstItem="teL-qA-mOZ" firstAttribute="top" secondItem="ma7-f8-mOk" secondAttribute="bottom" id="BAc-TL-DDr"/>
-                            <constraint firstAttribute="trailing" secondItem="ma7-f8-mOk" secondAttribute="trailing" id="MON-sX-PEM"/>
                             <constraint firstItem="vEq-k2-ABP" firstAttribute="top" secondItem="vOH-XF-B6x" secondAttribute="bottom" id="OhC-18-aoU"/>
+                            <constraint firstItem="7LK-Aw-ucR" firstAttribute="centerY" secondItem="gIq-dg-S0t" secondAttribute="centerY" id="XuK-Ml-RmX"/>
                             <constraint firstItem="vEq-k2-ABP" firstAttribute="leading" secondItem="gIq-dg-S0t" secondAttribute="leading" id="hTn-hA-Eb1"/>
                             <constraint firstItem="teL-qA-mOZ" firstAttribute="top" secondItem="vEq-k2-ABP" secondAttribute="bottom" id="iDV-SF-Z5y"/>
-                            <constraint firstItem="ma7-f8-mOk" firstAttribute="leading" secondItem="gIq-dg-S0t" secondAttribute="leading" id="kzy-ZN-r2i"/>
-                            <constraint firstItem="ma7-f8-mOk" firstAttribute="top" secondItem="vOH-XF-B6x" secondAttribute="bottom" id="qHR-y8-fsL"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="RfP-ff-YV2"/>
                     <connections>
                         <outlet property="activityIndicator" destination="7LK-Aw-ucR" id="ANo-oe-Fym"/>
-                        <outlet property="loadingView" destination="ma7-f8-mOk" id="2bc-lv-p3D"/>
-                        <outlet property="retryButton" destination="oeE-hL-VuD" id="zRg-Kx-emw"/>
-                        <outlet property="statusMessage" destination="YNF-hj-Oyh" id="ot0-AP-lBJ"/>
                         <outlet property="tableView" destination="vEq-k2-ABP" id="q9Z-J2-fbJ"/>
                     </connections>
                 </viewController>
@@ -1041,7 +1009,6 @@
                                         <state key="normal" title="Retry"/>
                                         <connections>
                                             <action selector="retryButtonTouched:" destination="KLO-yl-1MA" eventType="touchUpInside" id="9bg-A8-6bl"/>
-                                            <action selector="retryButtonTouched:" destination="PTS-x4-uBx" eventType="touchUpInside" id="Juk-mm-zC4"/>
                                         </connections>
                                     </button>
                                 </subviews>
@@ -1864,38 +1831,6 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gzl-WT-wig">
-                                <rect key="frame" x="0.0" y="64" width="375" height="554"/>
-                                <subviews>
-                                    <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="DX8-Vg-cVl">
-                                        <rect key="frame" x="169" y="259" width="37" height="37"/>
-                                        <color key="color" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
-                                    </activityIndicatorView>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Status Message" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jfH-97-cuD">
-                                        <rect key="frame" x="126" y="267" width="123" height="21"/>
-                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                        <nil key="textColor"/>
-                                        <nil key="highlightedColor"/>
-                                    </label>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bH0-RR-ruT">
-                                        <rect key="frame" x="169" y="311" width="37" height="30"/>
-                                        <state key="normal" title="Retry"/>
-                                        <connections>
-                                            <action selector="retryButtonTouched:" destination="5eV-gs-MqJ" eventType="touchUpInside" id="AkF-b2-vW6"/>
-                                            <action selector="retryButtonTouched:" destination="ARB-bz-Rwv" eventType="touchUpInside" id="OBL-dR-Cu1"/>
-                                        </connections>
-                                    </button>
-                                </subviews>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                <constraints>
-                                    <constraint firstItem="bH0-RR-ruT" firstAttribute="top" secondItem="DX8-Vg-cVl" secondAttribute="bottom" constant="15" id="AjS-2W-vIC"/>
-                                    <constraint firstItem="jfH-97-cuD" firstAttribute="centerX" secondItem="gzl-WT-wig" secondAttribute="centerX" id="Oa0-1q-f8d"/>
-                                    <constraint firstItem="bH0-RR-ruT" firstAttribute="centerX" secondItem="gzl-WT-wig" secondAttribute="centerX" id="XkA-XM-3rk"/>
-                                    <constraint firstItem="jfH-97-cuD" firstAttribute="centerY" secondItem="gzl-WT-wig" secondAttribute="centerY" id="bTE-GW-LVw"/>
-                                    <constraint firstItem="DX8-Vg-cVl" firstAttribute="centerY" secondItem="gzl-WT-wig" secondAttribute="centerY" id="baM-Gj-3Nn"/>
-                                    <constraint firstItem="DX8-Vg-cVl" firstAttribute="centerX" secondItem="gzl-WT-wig" secondAttribute="centerX" id="nfV-im-dJs"/>
-                                </constraints>
-                            </view>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="69" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="XS3-BK-jNT">
                                 <rect key="frame" x="0.0" y="64" width="375" height="554"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -1949,25 +1884,22 @@
                                     <outlet property="delegate" destination="5eV-gs-MqJ" id="w89-YB-126"/>
                                 </connections>
                             </tableView>
+                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="04T-jm-gw0">
+                                <rect key="frame" x="169" y="315" width="37" height="37"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            </activityIndicatorView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="dn5-lp-b6B" firstAttribute="top" secondItem="XS3-BK-jNT" secondAttribute="bottom" id="2ea-gi-dQg"/>
-                            <constraint firstItem="gzl-WT-wig" firstAttribute="leading" secondItem="Yfo-hY-mxU" secondAttribute="leading" id="BbS-xU-34j"/>
-                            <constraint firstItem="dn5-lp-b6B" firstAttribute="top" secondItem="gzl-WT-wig" secondAttribute="bottom" id="PZS-n7-h4g"/>
                             <constraint firstItem="XS3-BK-jNT" firstAttribute="top" secondItem="Z12-hX-iCg" secondAttribute="bottom" id="a6E-IR-9z8"/>
-                            <constraint firstItem="gzl-WT-wig" firstAttribute="top" secondItem="Z12-hX-iCg" secondAttribute="bottom" id="d8s-Gl-2wE"/>
                             <constraint firstAttribute="trailing" secondItem="XS3-BK-jNT" secondAttribute="trailing" id="dzb-kh-Vp4"/>
                             <constraint firstItem="XS3-BK-jNT" firstAttribute="leading" secondItem="Yfo-hY-mxU" secondAttribute="leading" id="fw3-aQ-mWm"/>
-                            <constraint firstAttribute="trailing" secondItem="gzl-WT-wig" secondAttribute="trailing" id="wPA-ZK-EOb"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="My Playlists" id="gll-NB-RZL"/>
                     <connections>
-                        <outlet property="activityIndicator" destination="DX8-Vg-cVl" id="YOT-Qb-kjl"/>
-                        <outlet property="loadingView" destination="gzl-WT-wig" id="GTQ-3v-GQr"/>
-                        <outlet property="retryButton" destination="bH0-RR-ruT" id="ptE-eH-l3S"/>
-                        <outlet property="statusMessage" destination="jfH-97-cuD" id="kyl-1j-q6Z"/>
+                        <outlet property="activityIndicator" destination="04T-jm-gw0" id="HEV-xC-tLQ"/>
                         <outlet property="tableView" destination="XS3-BK-jNT" id="zTe-KK-Qrb"/>
                         <segue destination="5wc-DY-Nr3" kind="show" identifier="Show Playlist" id="ZVj-f0-Old"/>
                     </connections>
@@ -1988,39 +1920,6 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="pKt-jp-Aji">
-                                <rect key="frame" x="0.0" y="64" width="375" height="554"/>
-                                <subviews>
-                                    <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="Bkt-bw-pLR">
-                                        <rect key="frame" x="169" y="258.5" width="37" height="37"/>
-                                        <color key="color" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
-                                    </activityIndicatorView>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Status Message" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dAK-hT-O6U">
-                                        <rect key="frame" x="126" y="266.5" width="123" height="21"/>
-                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                        <nil key="textColor"/>
-                                        <nil key="highlightedColor"/>
-                                    </label>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="tcL-rw-Oci">
-                                        <rect key="frame" x="169" y="310.5" width="37" height="30"/>
-                                        <state key="normal" title="Retry"/>
-                                        <connections>
-                                            <action selector="retryButtonTouched:" destination="5wc-DY-Nr3" eventType="touchUpInside" id="G2F-4b-Nb2"/>
-                                            <action selector="retryButtonTouched:" destination="ARB-bz-Rwv" eventType="touchUpInside" id="I5U-H1-Qhf"/>
-                                            <action selector="retryButtonTouched:" destination="5eV-gs-MqJ" eventType="touchUpInside" id="K8U-ca-VL2"/>
-                                        </connections>
-                                    </button>
-                                </subviews>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                <constraints>
-                                    <constraint firstItem="dAK-hT-O6U" firstAttribute="centerY" secondItem="pKt-jp-Aji" secondAttribute="centerY" id="D4i-ir-3m1"/>
-                                    <constraint firstItem="tcL-rw-Oci" firstAttribute="top" secondItem="Bkt-bw-pLR" secondAttribute="bottom" constant="15" id="QQq-LR-AA0"/>
-                                    <constraint firstItem="Bkt-bw-pLR" firstAttribute="centerY" secondItem="pKt-jp-Aji" secondAttribute="centerY" id="U3u-dE-4tO"/>
-                                    <constraint firstItem="Bkt-bw-pLR" firstAttribute="centerX" secondItem="pKt-jp-Aji" secondAttribute="centerX" id="i4r-oo-Zay"/>
-                                    <constraint firstItem="tcL-rw-Oci" firstAttribute="centerX" secondItem="pKt-jp-Aji" secondAttribute="centerX" id="twV-Vz-9T7"/>
-                                    <constraint firstItem="dAK-hT-O6U" firstAttribute="centerX" secondItem="pKt-jp-Aji" secondAttribute="centerX" id="z37-iz-tzG"/>
-                                </constraints>
-                            </view>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="108" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="QyI-Lc-3yM">
                                 <rect key="frame" x="0.0" y="123" width="375" height="495"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -2155,25 +2054,17 @@
                         <constraints>
                             <constraint firstAttribute="trailing" secondItem="Q9V-fy-GMA" secondAttribute="trailing" id="4O0-jQ-gPt"/>
                             <constraint firstItem="tQ2-Q5-Tl2" firstAttribute="top" secondItem="QyI-Lc-3yM" secondAttribute="bottom" id="4cH-Se-959"/>
-                            <constraint firstItem="pKt-jp-Aji" firstAttribute="top" secondItem="Nbh-VK-ZQp" secondAttribute="bottom" id="FQL-6m-7fi"/>
                             <constraint firstItem="Q9V-fy-GMA" firstAttribute="leading" secondItem="Pcd-hV-MSr" secondAttribute="leading" id="NaW-0j-BeX"/>
-                            <constraint firstAttribute="trailing" secondItem="pKt-jp-Aji" secondAttribute="trailing" id="PjW-xT-s95"/>
-                            <constraint firstItem="pKt-jp-Aji" firstAttribute="leading" secondItem="Pcd-hV-MSr" secondAttribute="leading" id="XmT-ss-NXE"/>
                             <constraint firstAttribute="trailing" secondItem="QyI-Lc-3yM" secondAttribute="trailing" id="Z5V-m9-zfS"/>
                             <constraint firstItem="QyI-Lc-3yM" firstAttribute="leading" secondItem="Pcd-hV-MSr" secondAttribute="leading" id="fl5-Ig-QK6"/>
                             <constraint firstItem="QyI-Lc-3yM" firstAttribute="top" secondItem="Q9V-fy-GMA" secondAttribute="bottom" id="h32-lq-GWm"/>
-                            <constraint firstItem="tQ2-Q5-Tl2" firstAttribute="top" secondItem="pKt-jp-Aji" secondAttribute="bottom" id="vUc-Mu-J5j"/>
                             <constraint firstItem="Q9V-fy-GMA" firstAttribute="top" secondItem="Nbh-VK-ZQp" secondAttribute="bottom" id="w5L-1f-a6N"/>
                         </constraints>
                     </view>
                     <connections>
-                        <outlet property="activityIndicator" destination="Bkt-bw-pLR" id="fKy-mB-sqJ"/>
                         <outlet property="itemCount" destination="cj1-b5-FTU" id="b1E-vO-77O"/>
                         <outlet property="lastUpdated" destination="yK5-NK-vTb" id="hmK-pR-us8"/>
-                        <outlet property="loadingView" destination="pKt-jp-Aji" id="EMe-oR-o10"/>
                         <outlet property="playlistTitle" destination="9kC-YH-fni" id="42A-rJ-4yN"/>
-                        <outlet property="retryButton" destination="tcL-rw-Oci" id="RiC-Oa-dK9"/>
-                        <outlet property="statusMessage" destination="dAK-hT-O6U" id="Cq4-T3-ojI"/>
                         <outlet property="tableView" destination="QyI-Lc-3yM" id="gf0-pv-cty"/>
                     </connections>
                 </viewController>
@@ -2373,36 +2264,6 @@
                                     <outlet property="delegate" destination="PTS-x4-uBx" id="x2z-z9-ub1"/>
                                 </connections>
                             </tableView>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="EiM-6C-YCB">
-                                <rect key="frame" x="8" y="68" width="359" height="599"/>
-                                <subviews>
-                                    <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="j2A-52-Vjl">
-                                        <rect key="frame" x="161" y="281" width="37" height="37"/>
-                                    </activityIndicatorView>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Status Message" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="blV-j7-c1T">
-                                        <rect key="frame" x="118.5" y="289" width="122.5" height="21"/>
-                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                        <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                        <nil key="highlightedColor"/>
-                                    </label>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="g2G-yt-FLg">
-                                        <rect key="frame" x="161" y="334" width="37" height="30"/>
-                                        <state key="normal" title="Retry"/>
-                                        <connections>
-                                            <action selector="retryButtonTouched:" destination="PTS-x4-uBx" eventType="touchUpInside" id="CP5-dO-Ajw"/>
-                                        </connections>
-                                    </button>
-                                </subviews>
-                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                                <constraints>
-                                    <constraint firstItem="g2G-yt-FLg" firstAttribute="centerX" secondItem="EiM-6C-YCB" secondAttribute="centerX" id="Bx6-1d-dCL"/>
-                                    <constraint firstItem="blV-j7-c1T" firstAttribute="centerX" secondItem="EiM-6C-YCB" secondAttribute="centerX" id="Cwn-Xo-Ue0"/>
-                                    <constraint firstItem="blV-j7-c1T" firstAttribute="centerY" secondItem="EiM-6C-YCB" secondAttribute="centerY" id="DSO-nL-cmW"/>
-                                    <constraint firstItem="g2G-yt-FLg" firstAttribute="top" secondItem="j2A-52-Vjl" secondAttribute="bottom" constant="16" id="RMJ-lw-a8D"/>
-                                    <constraint firstItem="j2A-52-Vjl" firstAttribute="centerX" secondItem="EiM-6C-YCB" secondAttribute="centerX" id="gvL-Y3-yIb"/>
-                                    <constraint firstItem="j2A-52-Vjl" firstAttribute="centerY" secondItem="EiM-6C-YCB" secondAttribute="centerY" id="ur7-Y5-clw"/>
-                                </constraints>
-                            </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="2Be-OV-8O0">
                                 <rect key="frame" x="-1" y="20" width="377" height="44"/>
                                 <subviews>
@@ -2429,34 +2290,27 @@
                                     <constraint firstAttribute="height" constant="44" id="aiD-m3-Ck4"/>
                                 </constraints>
                             </view>
+                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="T0a-VP-hBf">
+                                <rect key="frame" x="169" y="315" width="37" height="37"/>
+                            </activityIndicatorView>
                         </subviews>
                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
-                            <constraint firstAttribute="trailing" secondItem="EiM-6C-YCB" secondAttribute="trailing" constant="8" id="2Xr-ZX-cSZ"/>
-                            <constraint firstItem="EiM-6C-YCB" firstAttribute="top" secondItem="2Be-OV-8O0" secondAttribute="bottom" constant="4" id="7B2-qk-zEh"/>
                             <constraint firstItem="2Be-OV-8O0" firstAttribute="top" secondItem="Pxr-g3-o0n" secondAttribute="bottom" id="CVd-kO-EuF"/>
-                            <constraint firstItem="EiM-6C-YCB" firstAttribute="leading" secondItem="MBd-jM-R1p" secondAttribute="leading" constant="8" id="Egs-kM-LnW"/>
                             <constraint firstItem="AtU-cy-hVq" firstAttribute="top" secondItem="2Be-OV-8O0" secondAttribute="bottom" id="HCZ-89-mFQ"/>
                             <constraint firstItem="AtU-cy-hVq" firstAttribute="leading" secondItem="MBd-jM-R1p" secondAttribute="leading" id="MeY-yL-NfT"/>
-                            <constraint firstAttribute="bottom" secondItem="EiM-6C-YCB" secondAttribute="bottom" id="OIo-37-sbV"/>
                             <constraint firstAttribute="trailing" secondItem="AtU-cy-hVq" secondAttribute="trailing" id="Xs4-3V-afH"/>
                             <constraint firstItem="3dk-BJ-97w" firstAttribute="top" secondItem="AtU-cy-hVq" secondAttribute="bottom" id="fK1-Ml-LxH"/>
+                            <constraint firstItem="T0a-VP-hBf" firstAttribute="centerY" secondItem="MBd-jM-R1p" secondAttribute="centerY" id="l3K-YM-bfV"/>
                             <constraint firstAttribute="trailing" secondItem="2Be-OV-8O0" secondAttribute="trailing" constant="-1" id="nX8-Hp-Qw2"/>
                             <constraint firstItem="2Be-OV-8O0" firstAttribute="leading" secondItem="MBd-jM-R1p" secondAttribute="leading" constant="-1" id="nzZ-7Y-l7a"/>
+                            <constraint firstItem="T0a-VP-hBf" firstAttribute="centerX" secondItem="MBd-jM-R1p" secondAttribute="centerX" id="r38-U7-foV"/>
                         </constraints>
-                        <variation key="default">
-                            <mask key="subviews">
-                                <exclude reference="EiM-6C-YCB"/>
-                            </mask>
-                        </variation>
                     </view>
                     <connections>
-                        <outlet property="activityIndicator" destination="j2A-52-Vjl" id="7S8-kE-0Lh"/>
+                        <outlet property="activityIndicator" destination="T0a-VP-hBf" id="wbN-ra-Zl5"/>
                         <outlet property="filterType" destination="TWn-qR-Q9D" id="mIu-Io-wF8"/>
-                        <outlet property="loadingView" destination="EiM-6C-YCB" id="bjH-uW-hqA"/>
-                        <outlet property="retryButton" destination="g2G-yt-FLg" id="ZKy-7t-8wT"/>
                         <outlet property="sorting" destination="lb7-xd-ovk" id="wLv-Fj-roT"/>
-                        <outlet property="statusMessage" destination="blV-j7-c1T" id="ZWn-oM-Rrv"/>
                         <outlet property="tableControlsView" destination="2Be-OV-8O0" id="n5A-5C-7jF"/>
                         <outlet property="tableView" destination="AtU-cy-hVq" id="y9k-YP-i6g"/>
                     </connections>

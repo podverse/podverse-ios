@@ -14,79 +14,66 @@ class ClipsTableViewController: PVViewController {
     let reachability = PVReachability.shared
     
     @IBOutlet weak var tableView: UITableView!
-    @IBOutlet weak var loadingView: UIView!
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
-    @IBOutlet weak var statusMessage: UILabel!
-    @IBOutlet weak var retryButton: UIButton!
-
-    @IBAction func retryButtonTouched(_ sender: Any) {
-        showIndicator()
-        MediaRef.retrieveMediaRefsFromServer() { (mediaRefs) -> Void in
-            self.reloadClipData(mediaRefs: mediaRefs)
-        }
-    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        activityIndicator.hidesWhenStopped = true
-        showIndicator()
+        self.activityIndicator.hidesWhenStopped = true
         
         self.tableView.rowHeight = UITableViewAutomaticDimension
+        self.tableView.translatesAutoresizingMaskIntoConstraints = false
         
+        loadClipData()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        checkForConnectvity()
+    }
+    
+    func loadClipData() {
+        showIndicator()
         MediaRef.retrieveMediaRefsFromServer() { (mediaRefs) -> Void in
             self.reloadClipData(mediaRefs: mediaRefs)
         }
     }
     
-    func reloadClipData(mediaRefs: [MediaRef]? = nil) {
+    func checkForConnectvity() {
+        var message = "No clips available"
+        
         if self.reachability.hasInternetConnection() == false {
-            self.showStatusMessage(message: "You must connect to the internet to load clips.")
-            return
+            message = "You must connect to the internet to load clips."
         }
         
-        guard let mediaRefArray = mediaRefs, mediaRefArray.count > 0 else {
-            self.showStatusMessage(message: "No clips available")
-            return
+        if let noDataView = self.view.subviews.first(where: { $0.tag == kNoDataViewTag}) {
+            if let messageView = noDataView.subviews.first(where: {$0 is UILabel}), let messageLabel = messageView as? UILabel {
+                messageLabel.text = message
+            }
         }
-        
-        for mediaRef in mediaRefArray {
-            self.clipsArray.append(mediaRef)
+        else {
+            self.addNoDataViewWithMessage(message, buttonTitle: "Retry", buttonImage: nil, retryPressed: #selector(ClipsTableViewController.loadClipData))   
         }
-        
-        self.showClipsView()
-        self.tableView.reloadData()
     }
     
-    func showStatusMessage(message: String) {
-        activityIndicator.stopAnimating()
-        statusMessage.text = message
-        tableView.isHidden = true
-        loadingView.isHidden = false
-        statusMessage.isHidden = false
+    func reloadClipData(mediaRefs: [MediaRef]? = nil) {
         
-        if message == "You must connect to the internet to load clips." {
-            retryButton.isHidden = false
+        self.tableView.isHidden = true
+
+        if let mediaRefArray = mediaRefs, mediaRefArray.count > 0 {
+            self.clipsArray = mediaRefArray
+            
+            self.tableView.isHidden = false
         }
+        
+        self.activityIndicator.stopAnimating()
+        self.tableView.reloadData()
     }
     
     func showIndicator() {
         activityIndicator.startAnimating()
-        tableView.isHidden = true
-        loadingView.isHidden = false
         activityIndicator.isHidden = false
-        statusMessage.isHidden = true
-        retryButton.isHidden = true
     }
-    
-    func showClipsView() {
-        activityIndicator.stopAnimating()
-        tableView.isHidden = false
-        loadingView.isHidden = true
-        statusMessage.isHidden = true
-        retryButton.isHidden = true
-    }
-    
 }
 
 extension ClipsTableViewController:UITableViewDelegate, UITableViewDataSource {
@@ -98,10 +85,10 @@ extension ClipsTableViewController:UITableViewDelegate, UITableViewDataSource {
         return UITableViewAutomaticDimension
     }
     
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {        
         return clipsArray.count
     }
-    
+        
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let clip = clipsArray[indexPath.row]
         

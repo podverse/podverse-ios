@@ -33,7 +33,7 @@ enum SharePermission:String {
 
 let DEV_URL = "http://localhost:8080/"
 let PROD_URL = "https://podverse.fm/"
-let BASE_URL = DEV_URL
+let BASE_URL = PROD_URL
 
 let kNowPlayingTag = 100
 
@@ -74,6 +74,8 @@ let kClipsListFilterType = "ClipsListFilterType"
 let kInternetIsUnreachable = "internetIsUnreachable"
 
 let kWiFiIsUnreachable = "wiFiIsUnreachable"
+
+let kNoDataViewTag = 999
 
 let rootPath = NSSearchPathForDirectoriesInDomains(FileManager.SearchPathDirectory.documentDirectory, .userDomainMask, true)[0]
 
