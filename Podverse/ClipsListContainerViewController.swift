@@ -57,7 +57,7 @@ class ClipsListContainerViewController: UIViewController {
                 }
                 filterType.setTitle("Subscribed\u{2304}", for: .normal)
             } else if self.filterTypeSelected == .podcast {
-                MediaRef.retrieveMediaRefsFromServer(podcastFeedUrl: item.podcastFeedUrl) { (mediaRefs) -> Void in
+                MediaRef.retrieveMediaRefsFromServer(podcastFeedUrls: [item.podcastFeedUrl]) { (mediaRefs) -> Void in
                     self.reloadClipData(mediaRefs: mediaRefs)
                 }
                 filterType.setTitle("Podcast\u{2304}", for: .normal)
@@ -79,7 +79,7 @@ class ClipsListContainerViewController: UIViewController {
 
         alert.addAction(UIAlertAction(title: "Episode", style: .default, handler: { action in
             if let item = self.pvMediaPlayer.nowPlayingItem {
-                MediaRef.retrieveMediaRefsFromServer(episodeMediaUrl: item.episodeMediaUrl, podcastFeedUrl: nil) { (mediaRefs) -> Void in
+                MediaRef.retrieveMediaRefsFromServer(episodeMediaUrl: item.episodeMediaUrl, podcastFeedUrls: []) { (mediaRefs) -> Void in
                     self.reloadClipData(mediaRefs: mediaRefs)
                 }
             }
@@ -90,7 +90,7 @@ class ClipsListContainerViewController: UIViewController {
         
         alert.addAction(UIAlertAction(title: "Podcast", style: .default, handler: { action in
             if let item = self.pvMediaPlayer.nowPlayingItem {
-                MediaRef.retrieveMediaRefsFromServer(episodeMediaUrl: nil, podcastFeedUrl: item.podcastFeedUrl) { (mediaRefs) -> Void in
+                MediaRef.retrieveMediaRefsFromServer(episodeMediaUrl: nil, podcastFeedUrls: [item.podcastFeedUrl]) { (mediaRefs) -> Void in
                     self.reloadClipData(mediaRefs: mediaRefs)
                 }
             }
@@ -101,7 +101,7 @@ class ClipsListContainerViewController: UIViewController {
         
         
         alert.addAction(UIAlertAction(title: "Subscribed", style: .default, handler: { action in
-            MediaRef.retrieveMediaRefsFromServer(episodeMediaUrl: nil, podcastFeedUrl: nil) { (mediaRefs) -> Void in
+            MediaRef.retrieveMediaRefsFromServer(episodeMediaUrl: nil, podcastFeedUrls: []) { (mediaRefs) -> Void in
                 self.reloadClipData(mediaRefs: mediaRefs)
             }
             self.filterType.setTitle("Subscribed\u{2304}", for: .normal)
@@ -110,7 +110,7 @@ class ClipsListContainerViewController: UIViewController {
         }))
         
         alert.addAction(UIAlertAction(title: "All Podcasts", style: .default, handler: { action in
-            MediaRef.retrieveMediaRefsFromServer(episodeMediaUrl: nil, podcastFeedUrl: nil) { (mediaRefs) -> Void in
+            MediaRef.retrieveMediaRefsFromServer(episodeMediaUrl: nil, podcastFeedUrls: []) { (mediaRefs) -> Void in
                 self.reloadClipData(mediaRefs: mediaRefs)
             }
             self.filterType.setTitle("All Podcasts\u{2304}", for: .normal)

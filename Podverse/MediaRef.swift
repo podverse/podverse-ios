@@ -46,30 +46,37 @@ class MediaRef {
         
     }
     
-    static func retrieveMediaRefsFromServer(episodeMediaUrl: String? = nil, podcastFeedUrl: String? = nil, onlySubscribed: Bool? = nil, page: Int? = 1, completion: @escaping (_ mediaRefs:[MediaRef]?) -> Void) {
+    static func retrieveMediaRefsFromServer(episodeMediaUrl: String? = nil, podcastFeedUrls: [String?] = [], onlySubscribed: Bool? = nil, page: Int? = 1, completion: @escaping (_ mediaRefs:[MediaRef]?) -> Void) {
         
         if let url = URL(string: BASE_URL + "api/clips") {
             
-            var request = URLRequest(url: url, cachePolicy: NSURLRequest.CachePolicy.reloadIgnoringLocalAndRemoteCacheData, timeoutInterval: 60)
+            let request = NSMutableURLRequest(url: url, cachePolicy: NSURLRequest.CachePolicy.reloadIgnoringLocalAndRemoteCacheData, timeoutInterval: 60)
+            
+            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+            
             request.httpMethod = "POST"
             
-            var postString = ""
+            var values: [String: Any] = [:]
             
             if let episodeMediaUrl = episodeMediaUrl {
-                postString = "episodeMediaURL=" + episodeMediaUrl
+                values["episodeMediaURL"] = episodeMediaUrl
             }
             
-            if let podcastFeedUrl = podcastFeedUrl {
-                postString = "podcastFeedURL=" + podcastFeedUrl
+            if podcastFeedUrls.count > 0 {
+                values["podcastFeedURLs"] = podcastFeedUrls
             }
             
             if let page = page {
-                postString = postString + "&page=" + String(page)
+                values["page"] = String(page)
             }
             
-            request.httpBody = postString.data(using: .utf8)
+            do {
+                request.httpBody = try JSONSerialization.data(withJSONObject: values, options: [])
+            } catch {
+                print("Error: \(error.localizedDescription)")
+            }
             
-            let task = URLSession.shared.dataTask(with: request) { data, response, error in
+            let task = URLSession.shared.dataTask(with: request as URLRequest) { data, response, error in
 
                 guard error == nil else {
                     print("Error: \(error?.localizedDescription ?? "Unknown Error")")

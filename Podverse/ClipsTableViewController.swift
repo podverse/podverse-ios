@@ -101,10 +101,20 @@ class ClipsTableViewController: PVViewController {
         self.clipQueryPage += 1
         
         if self.filterTypeSelected == .subscribed {
-            MediaRef.retrieveMediaRefsFromServer(page: self.clipQueryPage) { (mediaRefs) -> Void in
+            
+            let moc = CoreDataHelper.createMOCForThread(threadType: .privateThread)
+            var subscribedPodcastFeedUrls = [String]()
+            let subscribedPodcastsArray = CoreDataHelper.fetchEntities(className:"Podcast", predicate: nil, moc:moc) as! [Podcast]
+            
+            for podcast in subscribedPodcastsArray {
+                subscribedPodcastFeedUrls.append(podcast.feedUrl)
+            }
+            
+            MediaRef.retrieveMediaRefsFromServer(podcastFeedUrls: subscribedPodcastFeedUrls, page: self.clipQueryPage) { (mediaRefs) -> Void in
                 self.reloadClipData(mediaRefs: mediaRefs)
             }
             filterType.setTitle("Subscribed\u{2304}", for: .normal)
+            
         } else {
             MediaRef.retrieveMediaRefsFromServer(page: self.clipQueryPage) { (mediaRefs) -> Void in
                 self.reloadClipData(mediaRefs: mediaRefs)
