@@ -9,7 +9,7 @@
 import Foundation
 
 enum TabItems:Int {
-    case Podcasts = 0, Clips, Playlists, Find, More
+    case Podcasts = 0, Clips, Find, Downloads, More
     
     var index:Int {
         switch self {
@@ -17,9 +17,9 @@ enum TabItems:Int {
             return 0
         case .Clips:
             return 1
-        case .Playlists:
-            return 2
         case .Find:
+            return 2
+        case .Downloads:
             return 3
         case .More:
             return 4
