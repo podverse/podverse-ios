@@ -42,6 +42,13 @@ class ClipsTableViewController: PVViewController {
         
         if let savedFilterType = UserDefaults.standard.value(forKey: kClipsTableFilterType) as? String {
             self.filterTypeSelected = ClipFilterType(rawValue: savedFilterType)
+        } else {
+            self.filterTypeSelected = .allPodcasts
+            UserDefaults.standard.set("All Podcasts", forKey: kClipsTableFilterType)
+        }
+        
+        if let filterTypeSelected = self.filterTypeSelected {
+            self.filterType.setTitle(filterTypeSelected.text + "\u{2304}", for: .normal)
         }
         
         retrieveClips()
@@ -108,6 +115,11 @@ class ClipsTableViewController: PVViewController {
             
             for podcast in subscribedPodcastsArray {
                 subscribedPodcastFeedUrls.append(podcast.feedUrl)
+            }
+            
+            if subscribedPodcastFeedUrls.count < 1 {
+                self.reloadClipData()
+                return
             }
             
             MediaRef.retrieveMediaRefsFromServer(podcastFeedUrls: subscribedPodcastFeedUrls, page: self.clipQueryPage) { (mediaRefs) -> Void in
