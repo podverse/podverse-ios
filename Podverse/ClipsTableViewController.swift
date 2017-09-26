@@ -33,7 +33,7 @@ class ClipsTableViewController: PVViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+
         activityIndicator.hidesWhenStopped = true
         showIndicator()
         

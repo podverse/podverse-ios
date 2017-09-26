@@ -81,7 +81,7 @@ class PVViewController: UIViewController {
     }
     
     func goToNowPlaying() {
-        self.tabBarController?.goToMediaPlayer()
+        self.tabBarController?.goToNowPlaying()
     }
     
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {

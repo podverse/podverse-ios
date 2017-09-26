@@ -41,8 +41,6 @@ class AboutPlayingItemViewController: UIViewController, UIWebViewDelegate {
         }
         
         self.view.backgroundColor = UIColor.black
-        self.webView.layer.borderColor = UIColor.lightGray.cgColor
-        self.webView.layer.borderWidth = 1.0
         self.webView.delegate = self
     }
     

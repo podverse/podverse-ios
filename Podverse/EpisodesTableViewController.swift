@@ -140,6 +140,10 @@ class EpisodesTableViewController: PVViewController, UITableViewDataSource, UITa
             return "Downloaded"
         }
     }
+    
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return 44
+    }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return episodesArray.count

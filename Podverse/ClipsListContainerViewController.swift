@@ -34,9 +34,7 @@ class ClipsListContainerViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.tableView.separatorColor = .darkGray
-        self.tableControlsView.layer.borderColor = UIColor.lightGray.cgColor
-        self.tableControlsView.layer.borderWidth = 1.0
+        self.tableView.separatorColor = UIColor.darkGray
         
         activityIndicator.hidesWhenStopped = true
         showIndicator()
