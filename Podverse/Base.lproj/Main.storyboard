@@ -203,13 +203,13 @@
                                                     </constraints>
                                                 </imageView>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Podcast Title" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="nHK-v5-PZN">
-                                                    <rect key="frame" x="102" y="8" width="265" height="19.5"/>
+                                                    <rect key="frame" x="104" y="8" width="263" height="19.5"/>
                                                     <fontDescription key="fontDescription" type="system" weight="medium" pointSize="16"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="# downloaded" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="tvC-4n-69O">
-                                                    <rect key="frame" x="102" y="68" width="86" height="16"/>
+                                                    <rect key="frame" x="104" y="68" width="86" height="16"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="13"/>
                                                     <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                                     <nil key="highlightedColor"/>
@@ -228,8 +228,8 @@
                                                 </label>
                                             </subviews>
                                             <constraints>
-                                                <constraint firstItem="nHK-v5-PZN" firstAttribute="leading" secondItem="uk6-qB-t6M" secondAttribute="trailing" constant="10" id="1im-Zf-hBc"/>
-                                                <constraint firstItem="tvC-4n-69O" firstAttribute="leading" secondItem="uk6-qB-t6M" secondAttribute="trailing" constant="10" id="6ec-GM-9dd"/>
+                                                <constraint firstItem="nHK-v5-PZN" firstAttribute="leading" secondItem="uk6-qB-t6M" secondAttribute="trailing" constant="12" id="1im-Zf-hBc"/>
+                                                <constraint firstItem="tvC-4n-69O" firstAttribute="leading" secondItem="uk6-qB-t6M" secondAttribute="trailing" constant="12" id="6ec-GM-9dd"/>
                                                 <constraint firstAttribute="bottomMargin" secondItem="wxe-bv-W6i" secondAttribute="bottom" id="DTq-Ow-BSw"/>
                                                 <constraint firstAttribute="bottomMargin" secondItem="tvC-4n-69O" secondAttribute="bottom" id="Gqi-oH-dcZ"/>
                                                 <constraint firstItem="nHK-v5-PZN" firstAttribute="top" secondItem="HcB-O2-XAh" secondAttribute="topMargin" id="K56-a6-kRx"/>
@@ -489,19 +489,19 @@
                                                     </constraints>
                                                 </imageView>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Podcast Title" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dIs-wT-naP">
-                                                    <rect key="frame" x="102" y="31.5" width="265" height="17"/>
+                                                    <rect key="frame" x="104" y="31.5" width="263" height="17"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                     <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Episode Title" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ujm-KV-IbF">
-                                                    <rect key="frame" x="102" y="8" width="265" height="19.5"/>
+                                                    <rect key="frame" x="104" y="8" width="263" height="19.5"/>
                                                     <fontDescription key="fontDescription" type="system" weight="medium" pointSize="16"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Progress Stats" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="y0l-eT-lNh">
-                                                    <rect key="frame" x="102" y="70" width="89" height="16"/>
+                                                    <rect key="frame" x="104" y="70" width="89" height="16"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="13"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
@@ -513,7 +513,7 @@
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="m3q-8T-7rQ">
-                                                    <rect key="frame" x="104" y="60" width="263" height="2"/>
+                                                    <rect key="frame" x="106" y="60" width="261" height="2"/>
                                                 </progressView>
                                             </subviews>
                                             <constraints>
@@ -521,14 +521,14 @@
                                                 <constraint firstItem="s88-sk-5av" firstAttribute="top" secondItem="WoL-IB-epv" secondAttribute="top" id="Di5-TW-Q19"/>
                                                 <constraint firstAttribute="trailing" secondItem="Oxa-jJ-Wn1" secondAttribute="trailing" constant="8" id="GU9-0j-qMS"/>
                                                 <constraint firstAttribute="bottom" secondItem="y0l-eT-lNh" secondAttribute="bottom" constant="5.5" id="HMm-nx-Yxm"/>
-                                                <constraint firstItem="m3q-8T-7rQ" firstAttribute="leading" secondItem="WoL-IB-epv" secondAttribute="leadingMargin" constant="96" id="SOi-nX-GAS"/>
+                                                <constraint firstItem="m3q-8T-7rQ" firstAttribute="leading" secondItem="WoL-IB-epv" secondAttribute="leadingMargin" constant="98" id="SOi-nX-GAS"/>
                                                 <constraint firstAttribute="bottom" secondItem="Oxa-jJ-Wn1" secondAttribute="bottom" constant="5.5" id="TsI-PI-0dv"/>
                                                 <constraint firstItem="m3q-8T-7rQ" firstAttribute="trailing" secondItem="WoL-IB-epv" secondAttribute="trailingMargin" id="UED-w2-VVg"/>
                                                 <constraint firstItem="dIs-wT-naP" firstAttribute="trailing" secondItem="WoL-IB-epv" secondAttribute="trailingMargin" id="WAV-cZ-V7A"/>
                                                 <constraint firstItem="Ujm-KV-IbF" firstAttribute="top" secondItem="WoL-IB-epv" secondAttribute="topMargin" id="YLk-Oz-oqD"/>
-                                                <constraint firstItem="y0l-eT-lNh" firstAttribute="leading" secondItem="s88-sk-5av" secondAttribute="trailing" constant="10" id="Zlt-yb-mhz"/>
-                                                <constraint firstItem="Ujm-KV-IbF" firstAttribute="leading" secondItem="s88-sk-5av" secondAttribute="trailing" constant="10" id="aiB-kB-meg"/>
-                                                <constraint firstItem="dIs-wT-naP" firstAttribute="leading" secondItem="s88-sk-5av" secondAttribute="trailing" constant="10" id="jRu-5a-kPk"/>
+                                                <constraint firstItem="y0l-eT-lNh" firstAttribute="leading" secondItem="s88-sk-5av" secondAttribute="trailing" constant="12" id="Zlt-yb-mhz"/>
+                                                <constraint firstItem="Ujm-KV-IbF" firstAttribute="leading" secondItem="s88-sk-5av" secondAttribute="trailing" constant="12" id="aiB-kB-meg"/>
+                                                <constraint firstItem="dIs-wT-naP" firstAttribute="leading" secondItem="s88-sk-5av" secondAttribute="trailing" constant="12" id="jRu-5a-kPk"/>
                                                 <constraint firstItem="dIs-wT-naP" firstAttribute="top" secondItem="Ujm-KV-IbF" secondAttribute="bottom" constant="4" id="jtB-7t-MDH"/>
                                                 <constraint firstItem="Oxa-jJ-Wn1" firstAttribute="top" secondItem="m3q-8T-7rQ" secondAttribute="bottom" constant="8" id="vxf-84-hvr"/>
                                                 <constraint firstItem="Ujm-KV-IbF" firstAttribute="trailing" secondItem="WoL-IB-epv" secondAttribute="trailingMargin" id="zFa-dF-pRg"/>
@@ -879,28 +879,28 @@
                                                     </constraints>
                                                 </imageView>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Podcast Title" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ia6-hz-P3R">
-                                                    <rect key="frame" x="100" y="7" width="267" height="19.5"/>
+                                                    <rect key="frame" x="104" y="7" width="263" height="19.5"/>
                                                     <fontDescription key="fontDescription" type="system" weight="medium" pointSize="16"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Categories" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="uOf-ot-8bz">
-                                                    <rect key="frame" x="100" y="66" width="267" height="17"/>
+                                                    <rect key="frame" x="104" y="66" width="263" height="17"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                     <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Network" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="62w-JK-Sj7">
-                                                    <rect key="frame" x="100" y="45" width="267" height="17"/>
+                                                    <rect key="frame" x="104" y="45" width="263" height="17"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                     <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                             </subviews>
                                             <constraints>
-                                                <constraint firstItem="62w-JK-Sj7" firstAttribute="leading" secondItem="rVM-pl-tJ8" secondAttribute="trailing" constant="8" id="0S9-T8-gkP"/>
-                                                <constraint firstItem="Ia6-hz-P3R" firstAttribute="leading" secondItem="rVM-pl-tJ8" secondAttribute="trailing" constant="8" id="AuF-rD-V5X"/>
-                                                <constraint firstItem="uOf-ot-8bz" firstAttribute="leading" secondItem="rVM-pl-tJ8" secondAttribute="trailing" constant="8" id="DfG-sw-4V9"/>
+                                                <constraint firstItem="62w-JK-Sj7" firstAttribute="leading" secondItem="rVM-pl-tJ8" secondAttribute="trailing" constant="12" id="0S9-T8-gkP"/>
+                                                <constraint firstItem="Ia6-hz-P3R" firstAttribute="leading" secondItem="rVM-pl-tJ8" secondAttribute="trailing" constant="12" id="AuF-rD-V5X"/>
+                                                <constraint firstItem="uOf-ot-8bz" firstAttribute="leading" secondItem="rVM-pl-tJ8" secondAttribute="trailing" constant="12" id="DfG-sw-4V9"/>
                                                 <constraint firstItem="62w-JK-Sj7" firstAttribute="trailing" secondItem="5D8-yU-XcQ" secondAttribute="trailingMargin" id="GGG-SG-NT4"/>
                                                 <constraint firstAttribute="trailing" secondItem="Ia6-hz-P3R" secondAttribute="trailing" constant="8" id="TH8-eL-cP6"/>
                                                 <constraint firstItem="uOf-ot-8bz" firstAttribute="top" secondItem="62w-JK-Sj7" secondAttribute="bottom" constant="4" id="Tw2-yu-da8"/>
@@ -1062,9 +1062,8 @@
                                             <constraint firstAttribute="width" constant="92" id="LXb-9g-4Kv"/>
                                         </constraints>
                                     </imageView>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Podcast Title" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4bn-tB-LUD">
-                                        <rect key="frame" x="92" y="8" width="275" height="21"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Podcast Title" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4bn-tB-LUD">
+                                        <rect key="frame" x="104" y="8" width="263" height="19.5"/>
                                         <fontDescription key="fontDescription" type="system" weight="medium" pointSize="16"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
@@ -1085,13 +1084,16 @@
                                 </subviews>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
+                                    <constraint firstAttribute="trailing" secondItem="4bn-tB-LUD" secondAttribute="trailing" constant="8" id="0Nh-NU-uLH"/>
                                     <constraint firstAttribute="height" constant="92" id="D3u-CA-JcY"/>
+                                    <constraint firstItem="4bn-tB-LUD" firstAttribute="leading" secondItem="W2q-RV-W1m" secondAttribute="trailing" constant="12" id="Ljn-aO-kDT"/>
                                     <constraint firstAttribute="trailing" secondItem="yez-rs-zzS" secondAttribute="trailing" constant="8" id="MT3-Qo-UWs"/>
                                     <constraint firstItem="W2q-RV-W1m" firstAttribute="leading" secondItem="yDP-ef-HEq" secondAttribute="leading" id="MZD-Pt-ALq"/>
                                     <constraint firstItem="yez-rs-zzS" firstAttribute="leading" secondItem="TnX-z2-VIN" secondAttribute="trailing" constant="8" id="a3y-Os-bRk"/>
                                     <constraint firstAttribute="bottom" secondItem="TnX-z2-VIN" secondAttribute="bottom" constant="15" id="i9b-xS-j59"/>
                                     <constraint firstItem="W2q-RV-W1m" firstAttribute="top" secondItem="yDP-ef-HEq" secondAttribute="top" id="x5u-2l-iaK"/>
                                     <constraint firstAttribute="bottom" secondItem="yez-rs-zzS" secondAttribute="bottom" constant="8" id="ybe-Qm-G8b"/>
+                                    <constraint firstItem="4bn-tB-LUD" firstAttribute="top" secondItem="yDP-ef-HEq" secondAttribute="top" constant="8" id="yvP-Rf-7xz"/>
                                 </constraints>
                             </view>
                         </subviews>
@@ -1206,13 +1208,13 @@
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="125"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Episode Title" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="VSV-X3-F3R">
-                                        <rect key="frame" x="64" y="32" width="303" height="17"/>
+                                        <rect key="frame" x="62" y="32" width="305" height="17"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                         <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Podcast Title" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="oPA-Sq-KsM">
-                                        <rect key="frame" x="64" y="11" width="303" height="17"/>
+                                        <rect key="frame" x="62" y="11" width="305" height="17"/>
                                         <fontDescription key="fontDescription" type="system" weight="medium" pointSize="14"/>
                                         <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                         <nil key="highlightedColor"/>
@@ -1257,12 +1259,12 @@
                                     <constraint firstItem="Eb3-EQ-haI" firstAttribute="top" secondItem="Qof-lo-qVg" secondAttribute="bottom" constant="12" id="DKp-73-bg5"/>
                                     <constraint firstItem="akJ-kq-7BY" firstAttribute="top" secondItem="cUO-fQ-0ot" secondAttribute="bottom" constant="8" id="I2O-la-XB6"/>
                                     <constraint firstItem="Qln-nW-afb" firstAttribute="width" secondItem="cUO-fQ-0ot" secondAttribute="width" id="JyE-yf-tQJ"/>
-                                    <constraint firstItem="oPA-Sq-KsM" firstAttribute="leading" secondItem="Qof-lo-qVg" secondAttribute="trailing" constant="12" id="LHo-fd-uTE"/>
+                                    <constraint firstItem="oPA-Sq-KsM" firstAttribute="leading" secondItem="Qof-lo-qVg" secondAttribute="trailing" constant="10" id="LHo-fd-uTE"/>
                                     <constraint firstItem="Qln-nW-afb" firstAttribute="top" secondItem="Eb3-EQ-haI" secondAttribute="bottom" constant="12" id="LwP-tE-7Zr"/>
                                     <constraint firstItem="oPA-Sq-KsM" firstAttribute="top" secondItem="YxU-HH-uyR" secondAttribute="top" constant="11" id="N0b-O5-utt"/>
                                     <constraint firstItem="Qof-lo-qVg" firstAttribute="top" secondItem="YxU-HH-uyR" secondAttribute="top" constant="8" id="QI9-gs-hWt"/>
                                     <constraint firstAttribute="trailing" secondItem="oPA-Sq-KsM" secondAttribute="trailing" constant="8" id="RPF-rv-NJQ"/>
-                                    <constraint firstItem="VSV-X3-F3R" firstAttribute="leading" secondItem="Qof-lo-qVg" secondAttribute="trailing" constant="12" id="TQQ-yY-hmh"/>
+                                    <constraint firstItem="VSV-X3-F3R" firstAttribute="leading" secondItem="Qof-lo-qVg" secondAttribute="trailing" constant="10" id="TQQ-yY-hmh"/>
                                     <constraint firstAttribute="trailing" secondItem="Eb3-EQ-haI" secondAttribute="trailing" constant="8" id="UMv-MN-xKd"/>
                                     <constraint firstItem="akJ-kq-7BY" firstAttribute="leading" secondItem="YxU-HH-uyR" secondAttribute="leading" id="Uvg-d2-WjR"/>
                                     <constraint firstAttribute="trailing" secondItem="VSV-X3-F3R" secondAttribute="trailing" constant="8" id="aev-Vx-wUP"/>
@@ -1838,7 +1840,7 @@
                                         </constraints>
                                     </imageView>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Podcast title" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fJD-IK-w03">
-                                        <rect key="frame" x="8" y="8" width="259" height="17"/>
+                                        <rect key="frame" x="8" y="8" width="263" height="17"/>
                                         <fontDescription key="fontDescription" type="system" weight="medium" pointSize="14"/>
                                         <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                         <nil key="highlightedColor"/>
@@ -1853,7 +1855,7 @@
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="92" id="4aZ-KU-lMM"/>
-                                    <constraint firstItem="dKh-qP-chs" firstAttribute="leading" secondItem="fJD-IK-w03" secondAttribute="trailing" constant="16" id="9pQ-nd-pfU"/>
+                                    <constraint firstItem="dKh-qP-chs" firstAttribute="leading" secondItem="fJD-IK-w03" secondAttribute="trailing" constant="12" id="9pQ-nd-pfU"/>
                                     <constraint firstItem="dKh-qP-chs" firstAttribute="top" secondItem="i1e-q4-aop" secondAttribute="top" id="Jz7-nT-DSD"/>
                                     <constraint firstItem="fJD-IK-w03" firstAttribute="top" secondItem="i1e-q4-aop" secondAttribute="top" constant="8" id="MVM-fh-9ib"/>
                                     <constraint firstItem="9El-7Y-kCh" firstAttribute="top" secondItem="fJD-IK-w03" secondAttribute="bottom" constant="8" id="aqB-El-VFv"/>
