@@ -460,15 +460,16 @@ class MediaPlayerViewController: PVViewController {
         if let 
             nowPlayingItem = self.pvMediaPlayer.nowPlayingItem, 
             let startTime = nowPlayingItem.startTime, 
-            let endTime = nowPlayingItem.endTime, 
-            let duration = self.pvMediaPlayer.duration, 
+            let endTime = nowPlayingItem.endTime,
+            let dur = self.pvMediaPlayer.duration,
+            dur > 0,
             nowPlayingItem.isClip() {
             
             self.startTimeFlagView.isHidden = false
             self.endTimeFlagView.isHidden = self.pvMediaPlayer.nowPlayingItem?.endTime == nil
             
-            self.startTimeLeadingConstraint.constant = (CGFloat(Double(startTime) / duration) * progress.frame.width) - sliderThumbWidthAdjustment
-            self.endTimeLeadingConstraint.constant = (CGFloat(Double(endTime) / duration) * progress.frame.width) - sliderThumbWidthAdjustment
+            self.startTimeLeadingConstraint.constant = (CGFloat(Double(startTime) / dur) * progress.frame.width) - sliderThumbWidthAdjustment
+            self.endTimeLeadingConstraint.constant = (CGFloat(Double(endTime) / dur) * progress.frame.width) - sliderThumbWidthAdjustment
         }
         else {
             self.startTimeFlagView.isHidden = true

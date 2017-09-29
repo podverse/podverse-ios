@@ -22,6 +22,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         
+        // Enable the media player to continue playing in the background and on the lock screen
+        // Enable the media player to use remote control events
+        // Remote control events are overridden in the AppDelegate and set in remoteControlReceivedWithEvent
+        do {
+            try AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayback)
+            do {
+                try AVAudioSession.sharedInstance().setActive(true)
+                UIApplication.shared.beginReceivingRemoteControlEvents()
+            } catch let error as NSError {
+                print(error.localizedDescription)
+            }
+        } catch let error as NSError {
+            print(error.localizedDescription)
+        }
+        
         UIApplication.shared.statusBarStyle = .lightContent
         setupUI()
         setupRemoteFunctions()
@@ -39,8 +54,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
         
         PVAuth.shared.syncUserInfoWithServer()
-        
-        setupBackgroundPlayback()
         
         return true
     }
@@ -90,21 +103,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         UINavigationBar.appearance().barTintColor = UIColor(red: 41.0/255.0, green: 104.0/255.0, blue: 177.0/255.0, alpha: 1.0)
         UINavigationBar.appearance().tintColor = UIColor.white
         UINavigationBar.appearance().titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white, NSFontAttributeName: UIFont.boldSystemFont(ofSize: 17.0)]
-    }
-    
-    fileprivate func setupBackgroundPlayback() {
-        do {
-            try AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayback, with: .mixWithOthers)
-            print("AVAudioSession Category Playback OK")
-            do {
-                try AVAudioSession.sharedInstance().setActive(true)
-                print("AVAudioSession is Active")
-            } catch {
-                print(error)
-            }
-        } catch {
-            print(error)
-        }
     }
     
     fileprivate func setupRemoteFunctions() {

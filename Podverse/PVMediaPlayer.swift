@@ -97,27 +97,6 @@ class PVMediaPlayer: NSObject {
         
         super.init()
         
-        // Enable the media player to continue playing in the background and on the lock screen
-        do {
-            try AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayback)
-            do {
-                try AVAudioSession.sharedInstance().setActive(true)
-            } catch let error as NSError {
-                print(error.localizedDescription)
-            }
-        } catch let error as NSError {
-            print(error.localizedDescription)
-        }
-        
-        // Enable the media player to use remote control events
-        // Remote control events are overridden in the AppDelegate and set in remoteControlReceivedWithEvent
-        do {
-            try AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayback)
-            UIApplication.shared.beginReceivingRemoteControlEvents()
-        } catch let error as NSError {
-            print(error.localizedDescription)
-        }
-        
         addObservers()
         startClipTimer()
     }
@@ -245,21 +224,9 @@ class PVMediaPlayer: NSObject {
 
     func remoteControlReceivedWithEvent(event: UIEvent) {
         if event.type == UIEventType.remoteControl {
-//            if nowPlayingEpisode != nil || nowPlayingClip != nil {
-//                switch event.subtype {
-//                case UIEventSubtype.remoteControlPlay:
-//                    self.playOrPause()
-//                    break
-//                case UIEventSubtype.remoteControlPause:
-//                    self.playOrPause()
-//                    break
-//                case UIEventSubtype.remoteControlTogglePlayPause:
-//                    self.playOrPause()
-//                    break
-//                default:
-//                    break
-//                }
-//            }
+            if event.subtype == UIEventSubtype.remoteControlPlay || event.subtype == UIEventSubtype.remoteControlPause || event.subtype == UIEventSubtype.remoteControlTogglePlayPause {
+                self.playOrPause()
+            }
         }
     }
     
@@ -420,10 +387,11 @@ class PVMediaPlayer: NSObject {
                 }
                 
                 if self.audioPlayer.state == STKAudioPlayerState.error, let item = self.nowPlayingItem {
+                    print("wtf")
                     self.loadPlayerHistoryItem(item: item)
                 }
                 
-                if self.audioPlayer.state == STKAudioPlayerState.buffering || self.audioPlayer.state == STKAudioPlayerState.paused {
+                if self.audioPlayer.state == STKAudioPlayerState.buffering || self.audioPlayer.state == STKAudioPlayerState.paused || self.audioPlayer.state == STKAudioPlayerState.playing {
                     return
                 }
                 
