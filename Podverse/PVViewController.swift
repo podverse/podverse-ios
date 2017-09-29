@@ -43,13 +43,11 @@ class PVViewController: UIViewController {
     fileprivate func addObservers() {
         NotificationCenter.default.addObserver(self, selector: #selector(self.episodeDeleted(_:)), name: .episodeDeleted, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(self.podcastDeleted(_:)), name: .podcastDeleted, object: nil)
-        self.addObserver(self, forKeyPath: #keyPath(pvMediaPlayer.audioPlayer.state), options: [.new, .old], context: nil)
     }
     
     fileprivate func removeObservers() {
         NotificationCenter.default.removeObserver(self, name: .episodeDeleted, object: nil)
         NotificationCenter.default.removeObserver(self, name: .podcastDeleted, object: nil)
-        self.removeObserver(self, forKeyPath: #keyPath(pvMediaPlayer.audioPlayer.state))
     }
     
     func toggleNowPlayingBar() {
@@ -84,13 +82,6 @@ class PVViewController: UIViewController {
         self.tabBarController?.goToNowPlaying()
     }
     
-    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
-        if let keyPath = keyPath {
-            if keyPath == #keyPath(pvMediaPlayer.audioPlayer.state) {
-                
-            }
-        }
-    }
 }
 
 extension PVViewController {
