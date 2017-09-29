@@ -16,8 +16,6 @@ class MoreTableViewController: PVViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        self.navigationItem.backBarButtonItem = UIBarButtonItem(title:"More", style:.plain, target:nil, action:nil)
     }
 
 }
