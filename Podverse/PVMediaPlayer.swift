@@ -419,6 +419,10 @@ class PVMediaPlayer: NSObject {
                     
                 }
                 
+                if self.audioPlayer.state == STKAudioPlayerState.error, let item = self.nowPlayingItem {
+                    self.loadPlayerHistoryItem(item: item)
+                }
+                
                 if self.audioPlayer.state == STKAudioPlayerState.buffering || self.audioPlayer.state == STKAudioPlayerState.paused {
                     return
                 }

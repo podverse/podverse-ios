@@ -194,7 +194,7 @@ class MediaPlayerViewController: PVViewController {
     
     func togglePlayIcon() {
         DispatchQueue.main.async {
-            if self.audioPlayer.state == STKAudioPlayerState.buffering || self.pvMediaPlayer.shouldSetupClip {
+            if self.audioPlayer.state == STKAudioPlayerState.buffering || self.audioPlayer.state == STKAudioPlayerState.error || self.pvMediaPlayer.shouldSetupClip {
                 self.activityIndicator.isHidden = false
                 self.play.isHidden = true
             } else if self.audioPlayer.state == STKAudioPlayerState.playing {
@@ -247,9 +247,13 @@ class MediaPlayerViewController: PVViewController {
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
         if let keyPath = keyPath {
             if keyPath == #keyPath(audioPlayer.state) {
-                if audioPlayer.state == STKAudioPlayerState.playing || audioPlayer.state == STKAudioPlayerState.paused {
+                if self.audioPlayer.state == STKAudioPlayerState.playing || audioPlayer.state == STKAudioPlayerState.paused {
                     self.togglePlayIcon()
                     self.updateTime()
+                }
+                
+                if self.audioPlayer.state == STKAudioPlayerState.error {
+                    print("ERROR AUDIOPLAYER ERROR STATE")
                 }
             }
         }
