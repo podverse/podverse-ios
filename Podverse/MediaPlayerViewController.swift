@@ -57,7 +57,7 @@ class MediaPlayerViewController: PVViewController {
         
         navigationController?.interactivePopGestureRecognizer?.isEnabled = false
         
-        NotificationCenter.default.addObserver(self, selector: #selector(pause), name: .playerHasFinished, object: nil)
+        addObservers()
         
         self.activityIndicator.startAnimating()
         
@@ -71,6 +71,7 @@ class MediaPlayerViewController: PVViewController {
     }
     
     deinit {
+        removeObservers()
         removeTimer()
     }
     
@@ -81,6 +82,16 @@ class MediaPlayerViewController: PVViewController {
     
     override func viewWillDisappear(_ animated: Bool) {
         navigationController?.interactivePopGestureRecognizer?.isEnabled = true
+    }
+    
+    fileprivate func addObservers() {
+        self.addObserver(self, forKeyPath: #keyPath(audioPlayer.state), options: [.new], context: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(pause), name: .playerHasFinished, object: nil)
+    }
+    
+    fileprivate func removeObservers() {
+        self.removeObserver(self, forKeyPath: #keyPath(audioPlayer.state))
+        NotificationCenter.default.removeObserver(self, name: .playerHasFinished, object: nil)
     }
     
     @IBAction func pageControlAction(_ sender: Any) {

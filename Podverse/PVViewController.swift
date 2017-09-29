@@ -72,7 +72,6 @@ class PVViewController: UIViewController {
             tabbarVC.playerView.podcastTitleLabel.text = currentItem.podcastTitle
             tabbarVC.playerView.episodeTitle.text = currentItem.episodeTitle
             tabbarVC.playerView.podcastImageView.sd_setImage(with: URL(string: currentItem.podcastImageUrl ?? ""), placeholderImage: #imageLiteral(resourceName: "PodverseIcon"))
-            tabbarVC.playerView.isPlaying = (self.pvMediaPlayer.audioPlayer.state == STKAudioPlayerState.playing)
             
             completion(true)
         }
