@@ -33,6 +33,7 @@ class Episode: NSManagedObject {
     }
     
     static let episodeKey = "episode"
+    
 }
 
 
