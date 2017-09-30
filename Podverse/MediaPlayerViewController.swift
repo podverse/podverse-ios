@@ -186,7 +186,7 @@ class MediaPlayerViewController: PVViewController {
         self.clipsContainerView.addGestureRecognizer(swipeLeft)
         self.clipsContainerView.addGestureRecognizer(swipeRight)
         
-        self.clipsContainerView.layer.borderColor = UIColor.lightGray.cgColor
+        self.clipsContainerView.layer.borderColor = UIColor.darkGray.cgColor
         self.clipsContainerView.layer.borderWidth = 1.0
         
         self.pageControl.currentPage = 0

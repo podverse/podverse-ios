@@ -69,6 +69,8 @@ let kUserId = "userId"
 
 let kAutoDownloadingFeedUrls = "autoDownloadingFeedUrls"
 
+let kClipsTableFilterType = "ClipsListFilterType"
+
 let kClipsListFilterType = "ClipsListFilterType"
 
 let kInternetIsUnreachable = "internetIsUnreachable"
@@ -87,3 +89,26 @@ let TO_PLAYER_SEGUE_ID = "To Now Playing"
 
 let ErrorDomain = Bundle.main.bundleIdentifier!
 let CoreDataFailureCode = -9999
+
+enum ClipFilterType: String {
+    case allPodcasts = "All Podcasts"
+    case episode = "Episode"
+    case podcast = "Podcast"
+    case subscribed = "Subscribed"
+    
+    var text:String {
+        get {
+            switch self {
+            case .allPodcasts:
+                return "All Podcasts"
+            case .episode:
+                return "Episode"
+            case .podcast:
+                return "Podcast"
+            case .subscribed:
+                return "Subscribed"
+            }
+        }
+    }
+    
+}

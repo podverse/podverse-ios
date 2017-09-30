@@ -33,7 +33,6 @@ class PodcastsTableViewController: PVViewController, AutoDownloadProtocol {
             UserDefaults.standard.set(NSUUID().uuidString, forKey: "ONE_TIME_LOGIN")
         }
 
-        self.navigationItem.title = "Podcasts"
         self.tabBarController?.tabBar.isTranslucent = false
         
         self.refreshControl.attributedTitle = NSAttributedString(string: "Pull to refresh all podcasts")

@@ -553,8 +553,13 @@
 				TargetAttributes = {
 					E79515D81E03853400382BF8 = {
 						CreatedOnToolsVersion = 8.2;
-						DevelopmentTeam = VRUTXA3F6E;
+						DevelopmentTeam = NVBK9KF43L;
 						ProvisioningStyle = Automatic;
+						SystemCapabilities = {
+							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
+						};
 					};
 					E79515EE1E03853500382BF8 = {
 						CreatedOnToolsVersion = 8.2;
@@ -984,7 +989,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				DEVELOPMENT_TEAM = VRUTXA3F6E;
+				DEVELOPMENT_TEAM = NVBK9KF43L;
 				INFOPLIST_FILE = Podverse/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.podverse.Podverse;
@@ -999,7 +1004,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				DEVELOPMENT_TEAM = VRUTXA3F6E;
+				DEVELOPMENT_TEAM = NVBK9KF43L;
 				INFOPLIST_FILE = Podverse/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.podverse.Podverse;
