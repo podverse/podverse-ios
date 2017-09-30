@@ -83,10 +83,10 @@ class EpisodesTableViewController: PVViewController, UITableViewDataSource, UITa
                 goToNowPlaying()
                 pvMediaPlayer.loadPlayerHistoryItem(item: playerHistoryItem)
             } else {
-//                if reachability.hasInternetConnection() == false {
-//                    showInternetNeededAlert("Connect to WiFi or cellular data to download an episode.")
-//                    return
-//                }
+                if reachability.hasWiFiConnection() == false {
+                    showInternetNeededAlertWithDesciription(message: "Connect to WiFi to download an episode.")
+                    return
+                }
                 PVDownloader.shared.startDownloadingEpisode(episode: episode)
             }
         }
