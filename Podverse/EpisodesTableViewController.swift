@@ -46,20 +46,9 @@ class EpisodesTableViewController: PVViewController, UITableViewDataSource, UITa
             
             headerPodcastTitle.text = podcast.title
             
-            DispatchQueue.global().async {
-                var cellImage:UIImage?
-                
-                if let imageData = podcast.imageThumbData, let image = UIImage(data: imageData) {
-                    cellImage = image
-                }
-                else {
-                    cellImage = UIImage(named: "PodverseIcon")
-                }
-                
-                DispatchQueue.main.async {
-                    self.headerImageView.image = cellImage
-                }
-            }
+            self.headerImageView.image = Podcast.retrievePodcastImage(podcastImageURLString: podcast.imageUrl, feedURLString: podcast.feedUrl, managedObjectID: podcast.objectID, completion: { _ in
+                self.headerImageView.sd_setImage(with: URL(string: podcast.imageUrl ?? ""), placeholderImage: #imageLiteral(resourceName: "PodverseIcon"))
+            })
             
             if podcast.shouldAutoDownload() {
                 self.autoDownloadSwitch.isOn = true
