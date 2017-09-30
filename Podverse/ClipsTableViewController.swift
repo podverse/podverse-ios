@@ -29,7 +29,12 @@ class ClipsTableViewController: PVViewController {
     var clipQueryPage: Int = 0
     var clipQueryIsLoading: Bool = false
     var clipQueryEndOfResultsReached: Bool = false
-    var filterTypeSelected: ClipFilterType?
+    var filterTypeSelected: ClipFilterType = .allPodcasts {
+        didSet {
+            self.filterType.setTitle(filterTypeSelected.text + "\u{2304}", for: .normal)
+            UserDefaults.standard.set(filterTypeSelected.text, forKey: kClipsTableFilterType)
+        }
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -40,16 +45,14 @@ class ClipsTableViewController: PVViewController {
         self.clipQueryActivityIndicator.hidesWhenStopped = true
         self.clipQueryMessage.isHidden = true
         
-        if let savedFilterType = UserDefaults.standard.value(forKey: kClipsTableFilterType) as? String {
-            self.filterTypeSelected = ClipFilterType(rawValue: savedFilterType)
+        if let savedFilterType = UserDefaults.standard.value(forKey: kClipsTableFilterType) as? String, let clipFilterType = ClipFilterType(rawValue: savedFilterType) {
+            self.filterTypeSelected = clipFilterType
         } else {
             self.filterTypeSelected = .allPodcasts
-            UserDefaults.standard.set("All Podcasts", forKey: kClipsTableFilterType)
+            
         }
         
-        if let filterTypeSelected = self.filterTypeSelected {
-            self.filterType.setTitle(filterTypeSelected.text + "\u{2304}", for: .normal)
-        }
+
         
         retrieveClips()
     }
@@ -58,25 +61,14 @@ class ClipsTableViewController: PVViewController {
         let alert = UIAlertController(title: "Clips From", message: nil, preferredStyle: .alert)
         
         alert.addAction(UIAlertAction(title: "Subscribed", style: .default, handler: { action in
-            
             self.resetClipQuery()
-            
-            self.filterType.setTitle("Subscribed\u{2304}", for: .normal)
             self.filterTypeSelected = .subscribed
-            UserDefaults.standard.set("Subscribed", forKey: kClipsTableFilterType)
-            
             self.retrieveClips()
         }))
         
-        
         alert.addAction(UIAlertAction(title: "All Podcasts", style: .default, handler: { action in
-            
             self.resetClipQuery()
-            
-            self.filterType.setTitle("All Podcasts\u{2304}", for: .normal)
             self.filterTypeSelected = .allPodcasts
-            UserDefaults.standard.set("All Podcasts", forKey: kClipsTableFilterType)
-            
             self.retrieveClips()
         }))
         
@@ -125,13 +117,13 @@ class ClipsTableViewController: PVViewController {
             MediaRef.retrieveMediaRefsFromServer(podcastFeedUrls: subscribedPodcastFeedUrls, page: self.clipQueryPage) { (mediaRefs) -> Void in
                 self.reloadClipData(mediaRefs: mediaRefs)
             }
-            filterType.setTitle("Subscribed\u{2304}", for: .normal)
             
         } else {
+            
             MediaRef.retrieveMediaRefsFromServer(page: self.clipQueryPage) { (mediaRefs) -> Void in
                 self.reloadClipData(mediaRefs: mediaRefs)
             }
-            filterType.setTitle("All Podcasts\u{2304}", for: .normal)
+            
         }
         
     }
