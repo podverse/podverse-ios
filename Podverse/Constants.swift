@@ -69,6 +69,8 @@ let kUserId = "userId"
 
 let kAutoDownloadingFeedUrls = "autoDownloadingFeedUrls"
 
+let kDownloadingMediaUrls = "downloadingMediaUrls"
+
 let kClipsTableFilterType = "ClipsListFilterType"
 
 let kClipsListFilterType = "ClipsListFilterType"

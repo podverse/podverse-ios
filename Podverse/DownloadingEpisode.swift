@@ -62,7 +62,29 @@ final class DownloadingEpisode:Equatable {
         title = episode.title
         totalBytesWritten = nil
         totalBytesExpectedToWrite = nil
+        
+        addToDownloadHistory()
     }
+    
+    func addToDownloadHistory() {
+        if var downloadingMediaUrls = UserDefaults.standard.array(forKey: kDownloadingMediaUrls) as? [String], let mediaUrl = self.mediaUrl {
+            if !downloadingMediaUrls.contains(mediaUrl) {
+                downloadingMediaUrls.append(mediaUrl)
+                UserDefaults.standard.setValue(downloadingMediaUrls, forKey: kDownloadingMediaUrls)
+            }
+        } else if let mediaUrl = self.mediaUrl {
+            UserDefaults.standard.setValue([mediaUrl], forKey: kDownloadingMediaUrls)
+        }
+        
+    }
+    
+    func removeFromDownloadHistory() {
+        if let downloadingMediaUrls = UserDefaults.standard.array(forKey: kDownloadingMediaUrls) as? [String] {
+            let results = downloadingMediaUrls.filter { $0 != mediaUrl }
+            UserDefaults.standard.setValue(results, forKey: kDownloadingMediaUrls)
+        }
+    }
+    
 }
 
 func == (lhs: DownloadingEpisode, rhs: DownloadingEpisode) -> Bool {

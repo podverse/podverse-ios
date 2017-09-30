@@ -55,6 +55,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         PVAuth.shared.syncUserInfoWithServer()
         
+        PVDownloader.shared.resumeDownloadingAllEpisodes()
+        
         return true
     }
 
