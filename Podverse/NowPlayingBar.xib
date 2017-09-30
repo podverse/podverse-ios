@@ -53,14 +53,14 @@
                     <rect key="frame" x="0.0" y="59" width="375" height="1"/>
                     <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                     <constraints>
-                        <constraint firstAttribute="height" constant="1" id="HeU-8O-XCs"/>
+                        <constraint firstAttribute="height" constant="0.5" id="HeU-8O-XCs"/>
                     </constraints>
                 </view>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="SPp-Xs-7kY">
                     <rect key="frame" x="0.0" y="0.0" width="375" height="1"/>
                     <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                     <constraints>
-                        <constraint firstAttribute="height" constant="1" id="FfT-K4-rrS"/>
+                        <constraint firstAttribute="height" constant="0.5" id="FfT-K4-rrS"/>
                     </constraints>
                 </view>
             </subviews>
