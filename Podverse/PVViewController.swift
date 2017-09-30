@@ -110,7 +110,7 @@ extension PVViewController:TableViewHeightProtocol {
     func adjustTableView() {
         if let index = self.view.constraints.index(where: {$0.secondItem is UITableView && $0.secondAttribute == NSLayoutAttribute.bottom }),
            let tabbarVC = self.tabBarController {
-            self.view.constraints[index].constant = tabbarVC.playerView.isHidden ? 0.0 : tabbarVC.playerView.frame.height
+            self.view.constraints[index].constant = tabbarVC.playerView.isHidden ? 0.0 : tabbarVC.playerView.frame.height - 0.5
         }
     }
 }
