@@ -46,20 +46,9 @@ class EpisodesTableViewController: PVViewController, UITableViewDataSource, UITa
             
             headerPodcastTitle.text = podcast.title
             
-            DispatchQueue.global().async {
-                var cellImage:UIImage?
-                
-                if let imageData = podcast.imageThumbData, let image = UIImage(data: imageData) {
-                    cellImage = image
-                }
-                else {
-                    cellImage = UIImage(named: "PodverseIcon")
-                }
-                
-                DispatchQueue.main.async {
-                    self.headerImageView.image = cellImage
-                }
-            }
+            self.headerImageView.image = Podcast.retrievePodcastImage(podcastImageURLString: podcast.imageUrl, feedURLString: podcast.feedUrl, managedObjectID: podcast.objectID, completion: { _ in
+                self.headerImageView.sd_setImage(with: URL(string: podcast.imageUrl ?? ""), placeholderImage: #imageLiteral(resourceName: "PodverseIcon"))
+            })
             
             if podcast.shouldAutoDownload() {
                 self.autoDownloadSwitch.isOn = true
@@ -94,10 +83,10 @@ class EpisodesTableViewController: PVViewController, UITableViewDataSource, UITa
                 goToNowPlaying()
                 pvMediaPlayer.loadPlayerHistoryItem(item: playerHistoryItem)
             } else {
-//                if reachability.hasInternetConnection() == false {
-//                    showInternetNeededAlert("Connect to WiFi or cellular data to download an episode.")
-//                    return
-//                }
+                if reachability.hasWiFiConnection() == false {
+                    showInternetNeededAlertWithDesciription(message: "Connect to WiFi to download an episode.")
+                    return
+                }
                 PVDownloader.shared.startDownloadingEpisode(episode: episode)
             }
         }

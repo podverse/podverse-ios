@@ -120,7 +120,9 @@ extension PlaylistDetailTableViewController:UITableViewDelegate, UITableViewData
         cell.podcastTitle.text = mediaRef.podcastTitle
         cell.pubDate.text = mediaRef.episodePubDate?.toShortFormatString()
         
-        cell.podcastImage.sd_setImage(with: URL(string: mediaRef.podcastImageUrl ?? ""), placeholderImage: #imageLiteral(resourceName: "PodverseIcon"))
+        cell.podcastImage.image = Podcast.retrievePodcastImage(podcastImageURLString: mediaRef.podcastImageUrl, feedURLString: mediaRef.podcastFeedUrl, managedObjectID: nil, completion: { _ in
+            cell.podcastImage.sd_setImage(with: URL(string: mediaRef.podcastImageUrl ?? ""), placeholderImage: #imageLiteral(resourceName: "PodverseIcon"))
+        })
         
         if mediaRef.isClip() {
             cell.clipTitle.text = mediaRef.readableClipTitle()
