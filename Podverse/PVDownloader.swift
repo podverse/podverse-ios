@@ -75,6 +75,7 @@ class PVDownloader:NSObject {
     
     func startDownloadingEpisode(episode: Episode) {
         if let downloadSourceStringURL = episode.mediaUrl, let downloadSourceURL = URL(string: downloadSourceStringURL) {
+            
             let downloadTask = downloadSession.downloadTask(with: downloadSourceURL)
             
             let downloadingEpisode = DownloadingEpisode(episode:episode)
@@ -95,6 +96,19 @@ class PVDownloader:NSObject {
             
             DispatchQueue.main.async {
                 NotificationCenter.default.post(name: .downloadStarted, object: nil, userInfo: [Episode.episodeKey:downloadingEpisode])
+            }
+        }
+    }
+    
+    func resumeDownloadingAllEpisodes() {
+        if let downloadingMediaUrls = UserDefaults.standard.array(forKey: kDownloadingMediaUrls) as? [String] {
+            for mediaUrl in downloadingMediaUrls {
+                if let episode = Episode.episodeForMediaUrl(mediaUrlString: mediaUrl) {
+                    startDownloadingEpisode(episode: episode)
+                } else {
+                    let results = downloadingMediaUrls.filter { $0 != mediaUrl }
+                    UserDefaults.standard.setValue(results, forKey: kDownloadingMediaUrls)
+                }
             }
         }
     }
@@ -148,6 +162,7 @@ extension PVDownloader:URLSessionDelegate, URLSessionDownloadDelegate {
     func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didFinishDownloadingTo location: URL) {
         let fileManager = FileManager()
         print("did finish downloading")
+        
         let moc = CoreDataHelper.createMOCForThread(threadType: .privateThread)
         
         // Get the corresponding episode object by its taskIdentifier value
@@ -216,6 +231,8 @@ extension PVDownloader:URLSessionDelegate, URLSessionDownloadDelegate {
                             notification.alertAction = "open"
                             notification.soundName = UILocalNotificationDefaultSoundName
                             UIApplication.shared.presentLocalNotificationNow(notification)
+                            
+                            downloadingEpisode.removeFromDownloadHistory()
                             
                             PVDownloader.shared.decrementBadge()
                         }
