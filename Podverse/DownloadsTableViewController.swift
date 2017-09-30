@@ -61,7 +61,7 @@ class DownloadsTableViewController: PVViewController {
 extension DownloadsTableViewController:UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 100
+        return 96
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {

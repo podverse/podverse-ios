@@ -127,7 +127,7 @@ extension PodcastsTableViewController:UITableViewDelegate, UITableViewDataSource
     // MARK: - Table view data source
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 100
+        return 96
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
