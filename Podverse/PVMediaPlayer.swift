@@ -79,6 +79,7 @@ class PVMediaPlayer: NSObject {
     
     var audioPlayer = STKAudioPlayer()
     var clipTimer: Timer?
+    var playbackTimer: Timer?
     var duration: Double?
     var nowPlayingItem:PlayerHistoryItem?
     var delegate:PVMediaPlayerUIDelegate?
@@ -99,11 +100,13 @@ class PVMediaPlayer: NSObject {
         
         addObservers()
         startClipTimer()
+        startPlaybackTimer()
     }
     
     deinit {
         removeObservers()
         removeClipTimer()
+        removePlaybackTimer()
     }
     
     @objc func headphonesWereUnplugged(notification: Notification) {
@@ -124,6 +127,30 @@ class PVMediaPlayer: NSObject {
     private func removeClipTimer () {
         if let timer = self.clipTimer {
             timer.invalidate()
+        }
+    }
+    
+    private func startPlaybackTimer () {
+        self.playbackTimer = Timer.scheduledTimer(timeInterval: 10, target: self, selector: #selector(savePlaybackPosition), userInfo: nil, repeats: true)
+    }
+    
+    private func removePlaybackTimer () {
+        if let timer = self.playbackTimer {
+            timer.invalidate()
+        }
+    }
+    
+    @objc private func savePlaybackPosition() {
+        if let item = nowPlayingItem, self.audioPlayer.progress > 0 {
+            item.lastPlaybackPosition = Int64(self.audioPlayer.progress)
+            playerHistoryManager.addOrUpdateItem(item: item)
+        }
+    }
+    
+    private func clearPlaybackPosition() {
+        if let item = nowPlayingItem, self.audioPlayer.progress > 0 {
+            item.lastPlaybackPosition = Int64(0)
+            playerHistoryManager.addOrUpdateItem(item: item)
         }
     }
     
@@ -154,6 +181,8 @@ class PVMediaPlayer: NSObject {
     
     // TODO: should this be public here or not?
     @objc @discardableResult public func playOrPause() -> Bool {
+        
+        savePlaybackPosition()
         
         let state = audioPlayer.state
         
@@ -188,24 +217,27 @@ class PVMediaPlayer: NSObject {
     }
     
     func seek(toTime: Double) {
+        self.shouldStartFromTime = Int64(toTime)
+        
         if self.audioPlayer.duration > 0 {
-            self.shouldStartFromTime = Int64(0)
             self.audioPlayer.seek(toTime: toTime)
-        } else {
-            self.shouldStartFromTime = Int64(toTime)
         }
     }
     
     func play() {
+        savePlaybackPosition()
         self.audioPlayer.resume()
         self.shouldAutoplayOnce = false
     }
     
     func pause() {
+        savePlaybackPosition()
         self.audioPlayer.pause()
     }
     
     @objc func playerDidFinishPlaying() {
+        
+        clearPlaybackPosition()
         
         let moc = CoreDataHelper.createMOCForThread(threadType: .mainThread)
         if let nowPlayingItem = playerHistoryManager.historyItems.first, let episodeMediaUrl = nowPlayingItem.episodeMediaUrl, let episode = Episode.episodeForMediaUrl(mediaUrlString: episodeMediaUrl, managedObjectContext: moc) {
@@ -275,11 +307,16 @@ class PVMediaPlayer: NSObject {
         
         self.delegate?.playerHistoryItemLoadingBegan()
         
+        // If you are loading a clip, or an episode from the beginning, the item.lastPlaybackPosition will be overridden in the observeValue or seek method.
+        if let lastPlaybackPosition = item.lastPlaybackPosition {
+            self.shouldStartFromTime = lastPlaybackPosition
+        }
+        
         // NOTE: calling audioPlayer.play will immediately start playback, so do not call it unless an autoplay flag is true
         if !shouldAutoplayOnce && !shouldAutoplayAlways {
             updateDuration(episodeMediaUrl: item.episodeMediaUrl)
             
-            if let startTime = item.startTime {
+            if item.isClip(), let startTime = item.startTime {
                 seek(toTime: Double(startTime))
             }
             
@@ -320,9 +357,7 @@ class PVMediaPlayer: NSObject {
                 self.audioPlayer.play(dataSource)
             }
             
-            if let _ = item.startTime {
-                self.shouldSetupClip = true
-            }
+            self.shouldSetupClip = item.isClip()
 
         }
         
@@ -374,6 +409,8 @@ class PVMediaPlayer: NSObject {
                             }
                             
                             
+                        } else if self.shouldStartFromTime > 0 {
+                            self.audioPlayer.seek(toTime: Double(self.shouldStartFromTime))
                         }
                         
                     }
@@ -381,7 +418,6 @@ class PVMediaPlayer: NSObject {
                 }
                 
                 if self.audioPlayer.state == STKAudioPlayerState.error, let item = self.nowPlayingItem {
-                    print("wtf")
                     self.loadPlayerHistoryItem(item: item)
                     return
                 }
@@ -390,10 +426,6 @@ class PVMediaPlayer: NSObject {
                     self.delegate?.playerHistoryItemLoaded()
                     return
                 }
-                
-//                if self.audioPlayer.state == STKAudioPlayerState.buffering || self.audioPlayer.state == STKAudioPlayerState.paused {
-//                    return
-//                }
                 
             }
         }
