@@ -485,7 +485,6 @@ extension MediaPlayerViewController:PVMediaPlayerUIDelegate {
     
     func playerHistoryItemLoadingBegan() {
         DispatchQueue.main.async {
-            self.removeTimer()
             self.startTimeFlagView.isHidden = true
             self.endTimeFlagView.isHidden = true
             self.populatePlayerInfo()
@@ -497,7 +496,6 @@ extension MediaPlayerViewController:PVMediaPlayerUIDelegate {
     
     func playerHistoryItemLoaded() {
         DispatchQueue.main.async {
-            self.setupTimer()
             self.setupClipFlags()
             self.togglePlayIcon()
         }

@@ -63,6 +63,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func applicationDidEnterBackground(_ application: UIApplication) {
         UIApplication.shared.applicationIconBadgeNumber = 0
+        pvMediaPlayer.setPlayingInfo()
     }
 
     func applicationWillEnterForeground(_ application: UIApplication) {
@@ -123,14 +124,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func skipBackwardEvent() {
         pvMediaPlayer.seek(toTime: pvMediaPlayer.audioPlayer.progress - 15)
+        pvMediaPlayer.setPlayingInfo()
     }
     
     func skipForwardEvent() {
         pvMediaPlayer.seek(toTime: pvMediaPlayer.audioPlayer.progress + 15)
+        pvMediaPlayer.setPlayingInfo()
     }
     
     func playOrPauseEvent() {
-        print("remote play or pause happened")
+        pvMediaPlayer.setPlayingInfo()
     }
 }
 
