@@ -27,12 +27,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Remote control events are overridden in the AppDelegate and set in remoteControlReceivedWithEvent
         do {
             try AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayback)
-            do {
-                try AVAudioSession.sharedInstance().setActive(true)
-                UIApplication.shared.beginReceivingRemoteControlEvents()
-            } catch let error as NSError {
-                print(error.localizedDescription)
-            }
+            try AVAudioSession.sharedInstance().setActive(true)
+            UIApplication.shared.beginReceivingRemoteControlEvents()
         } catch let error as NSError {
             print(error.localizedDescription)
         }

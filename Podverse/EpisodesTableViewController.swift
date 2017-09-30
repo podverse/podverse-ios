@@ -58,6 +58,13 @@ class EpisodesTableViewController: PVViewController, UITableViewDataSource, UITa
             
             if (!showAllEpisodes) {
                 episodesArray = Array(podcast.episodes.filter { $0.fileName != nil } )
+                let downloadingEpisodes = DownloadingEpisodeList.shared.downloadingEpisodes.filter({$0.podcastFeedUrl == podcast.feedUrl})
+                
+                for dlEpisode in downloadingEpisodes {
+                    if let mediaUrl = dlEpisode.mediaUrl, let episode = Episode.episodeForMediaUrl(mediaUrlString: mediaUrl) {
+                        episodesArray.append(episode)
+                    }
+                }
             } else {
                 episodesArray = Array(podcast.episodes)
             }
@@ -78,10 +85,22 @@ class EpisodesTableViewController: PVViewController, UITableViewDataSource, UITa
            let indexRow = self.tableView.indexPath(for: cell)?.row {
         
             let episode = episodesArray[indexRow]
-            if episode.fileName != nil {                
-                let playerHistoryItem = playerHistoryManager.convertEpisodeToPlayerHistoryItem(episode: episode)
+            if episode.fileName != nil {
+                
+                let playerHistoryItem: PlayerHistoryItem?
+                
+                if let mediaUrl = episode.mediaUrl, let item = playerHistoryManager.retrieveExistingPlayerHistoryItem(mediaUrl: mediaUrl) {
+                    playerHistoryItem = item
+                } else {
+                    playerHistoryItem = playerHistoryManager.convertEpisodeToPlayerHistoryItem(episode: episode)
+                }
+                
                 goToNowPlaying()
-                pvMediaPlayer.loadPlayerHistoryItem(item: playerHistoryItem)
+                
+                if let item = playerHistoryItem {
+                    pvMediaPlayer.loadPlayerHistoryItem(item: item)
+                }
+
             } else {
                 if reachability.hasWiFiConnection() == false {
                     showInternetNeededAlertWithDesciription(message: "Connect to WiFi to download an episode.")

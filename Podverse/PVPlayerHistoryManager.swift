@@ -73,6 +73,20 @@ class PlayerHistory {
         
     }
     
+    func retrieveExistingPlayerHistoryItem(mediaUrl: String) -> PlayerHistoryItem? {
+        
+        let previousIndex = historyItems.index(where: { (previousItem) -> Bool in // thanks sschuth https://stackoverflow.com/a/24069331/2608858
+            previousItem.episodeMediaUrl == mediaUrl
+        })
+        
+        if let index = previousIndex {
+            return historyItems[index]
+        }
+        
+        return nil
+
+    }
+    
     func convertEpisodeToPlayerHistoryItem(episode: Episode) -> PlayerHistoryItem {
         let playerHistoryItem = PlayerHistoryItem(
             podcastFeedUrl: episode.podcast.feedUrl,
