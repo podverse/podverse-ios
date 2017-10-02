@@ -133,3 +133,19 @@ enum PodcastFilterType: String {
         }
     }
 }
+
+enum EpisodeFilterType: String {
+    case clips = "Clips"
+    case showNotes = "Show Notes"
+    
+    var text:String {
+        get {
+            switch self {
+            case .clips:
+                return "Clips"
+            case .showNotes:
+                return "Show Notes"
+            }
+        }
+    }
+}
