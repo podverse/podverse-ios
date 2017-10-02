@@ -75,7 +75,9 @@ class EpisodeTableViewController: PVViewController {
         
         if let mediaUrl = self.mediaUrl, let episode = Episode.episodeForMediaUrl(mediaUrlString: mediaUrl, managedObjectContext: self.moc) {
             
-            if let summary = episode.summary {
+            if var summary = episode.summary {
+                // add linebreaks to account for the NowPlayingBar on the bottom of the screen
+                summary += "<br><br>"
                 self.webView.loadHTMLString(summary.formatHtmlString(isWhiteBg: true), baseURL: nil)
             }
             
