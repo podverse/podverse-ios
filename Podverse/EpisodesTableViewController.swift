@@ -12,7 +12,12 @@ class EpisodesTableViewController: PVViewController, UITableViewDataSource, UITa
     let moc = CoreDataHelper.createMOCForThread(threadType: .privateThread)
     let reachability = PVReachability.shared
     var feedUrl: String?
-    var showAllEpisodes = false
+    
+    var filterTypeSelected: PodcastFilterType = .downloaded {
+        didSet {
+            self.filterType.setTitle(filterTypeSelected.text + "\u{2304}", for: .normal)
+        }
+    }
     
     @IBOutlet weak var autoDownloadLabel: UILabel!
     @IBOutlet weak var autoDownloadSwitch: UISwitch!
@@ -20,6 +25,34 @@ class EpisodesTableViewController: PVViewController, UITableViewDataSource, UITa
     @IBOutlet weak var headerImageView: UIImageView!
     @IBOutlet weak var headerPodcastTitle: UILabel!
     @IBOutlet weak var tableView: UITableView!
+    
+    @IBOutlet weak var filterType: UIButton!
+    @IBOutlet weak var sorting: UIButton!
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        self.filterTypeSelected = .downloaded
+        loadData()
+        setupNotificationListeners()
+    }
+    
+    deinit {
+        removeObservers()
+    }
+    
+    fileprivate func setupNotificationListeners() {
+        NotificationCenter.default.addObserver(self, selector: #selector(self.downloadStarted(_:)), name: .downloadStarted, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.downloadResumed(_:)), name: .downloadResumed, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.downloadPaused(_:)), name: .downloadPaused, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.downloadFinished(_:)), name: .downloadFinished, object: nil)
+    }
+    
+    fileprivate func removeObservers() {
+        NotificationCenter.default.removeObserver(self, name: .downloadStarted, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .downloadResumed, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .downloadPaused, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .downloadFinished, object: nil)
+    }
     
     @IBAction func autoDownloadSwitchTouched(_ sender: Any) {
         if let feedUrl = feedUrl, let podcast = Podcast.podcastForFeedUrl(feedUrlString: feedUrl, managedObjectContext: moc) {
@@ -32,10 +65,32 @@ class EpisodesTableViewController: PVViewController, UITableViewDataSource, UITa
         }
     }
     
-    @IBAction func bottomButtonTouched(_ sender: Any) {
-        showAllEpisodes = !showAllEpisodes
-        loadData()
-        self.tableView.reloadData()
+    @IBAction func updateFilter(_ sender: Any) {
+        
+        let alert = UIAlertController(title: "Show Only", message: nil, preferredStyle: .alert)
+        
+        alert.addAction(UIAlertAction(title: "Downloaded", style: .default, handler: { action in
+            self.filterTypeSelected = .downloaded
+            self.loadData()
+        }))
+        
+        alert.addAction(UIAlertAction(title: "All Episodes", style: .default, handler: { action in
+            self.filterTypeSelected = .allEpisodes
+            self.loadData()
+        }))
+        
+        alert.addAction(UIAlertAction(title: "Clips", style: .default, handler: { action in
+            self.filterTypeSelected = .clips
+            self.loadData()
+        }))
+        
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        
+        self.present(alert, animated: true, completion: nil)
+    }
+    
+    
+    @IBAction func updateSorting(_ sender: Any) {
     }
     
     func loadData() {
@@ -50,13 +105,9 @@ class EpisodesTableViewController: PVViewController, UITableViewDataSource, UITa
                 self.headerImageView.sd_setImage(with: URL(string: podcast.imageUrl ?? ""), placeholderImage: #imageLiteral(resourceName: "PodverseIcon"))
             })
             
-            if podcast.shouldAutoDownload() {
-                self.autoDownloadSwitch.isOn = true
-            } else {
-                self.autoDownloadSwitch.isOn = false
-            }
+            self.autoDownloadSwitch.isOn = podcast.shouldAutoDownload() ? true : false
             
-            if (!showAllEpisodes) {
+            if self.filterTypeSelected == .downloaded {
                 episodesArray = Array(podcast.episodes.filter { $0.fileName != nil } )
                 let downloadingEpisodes = DownloadingEpisodeList.shared.downloadingEpisodes.filter({$0.podcastFeedUrl == podcast.feedUrl})
                 
@@ -65,9 +116,12 @@ class EpisodesTableViewController: PVViewController, UITableViewDataSource, UITa
                         episodesArray.append(episode)
                     }
                 }
-            } else {
+            } else if self.filterTypeSelected == .allEpisodes {
                 episodesArray = Array(podcast.episodes)
+            } else if self.filterTypeSelected == .clips {
+                print("clips filter selected")
             }
+            
             episodesArray.sort(by: { (prevEp, nextEp) -> Bool in
                 if let prevTimeInterval = prevEp.pubDate, let nextTimeInterval = nextEp.pubDate {
                     return (prevTimeInterval > nextTimeInterval)
@@ -75,6 +129,8 @@ class EpisodesTableViewController: PVViewController, UITableViewDataSource, UITa
                 
                 return false
             })
+            
+            self.tableView.reloadData()
 
         }
 
@@ -111,48 +167,11 @@ class EpisodesTableViewController: PVViewController, UITableViewDataSource, UITa
         }
     }
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        loadData()
-        self.tableView.reloadData()
-        setupNotificationListeners()
-    }
-    
-    deinit {
-        removeObservers()
-    }
-    
-    fileprivate func setupNotificationListeners() {
-        NotificationCenter.default.addObserver(self, selector: #selector(self.downloadStarted(_:)), name: .downloadStarted, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(self.downloadResumed(_:)), name: .downloadResumed, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(self.downloadPaused(_:)), name: .downloadPaused, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(self.downloadFinished(_:)), name: .downloadFinished, object: nil)
-    }
-    
-    fileprivate func removeObservers() {
-        NotificationCenter.default.removeObserver(self, name: .downloadStarted, object: nil)
-        NotificationCenter.default.removeObserver(self, name: .downloadResumed, object: nil)
-        NotificationCenter.default.removeObserver(self, name: .downloadPaused, object: nil)
-        NotificationCenter.default.removeObserver(self, name: .downloadFinished, object: nil)
-    }
-
 //    // MARK: - Table view data source
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         return 1
     }
-
-    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        if showAllEpisodes {
-            return "All Available Episodes"
-        } else {
-            return "Downloaded"
-        }
-    }
     
-    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return 44
-    }
-
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return episodesArray.count
     }
@@ -301,7 +320,7 @@ extension EpisodesTableViewController {
         super.episodeDeleted(notification)
         
         if let mediaUrl = notification.userInfo?["mediaUrl"] as? String, let index = self.episodesArray.index(where: { $0.mediaUrl == mediaUrl }), let _ = tableView.cellForRow(at: IndexPath(row: index, section: 0)) as? EpisodeTableViewCell {
-            if showAllEpisodes == false {
+            if self.filterTypeSelected == .downloaded {
                 self.episodesArray.remove(at: index)
                 self.tableView.deleteRows(at: [IndexPath(row: index, section: 0)], with: .automatic)
                 self.moc.refreshAllObjects()
