@@ -79,6 +79,8 @@ let kInternetIsUnreachable = "internetIsUnreachable"
 
 let kWiFiIsUnreachable = "wiFiIsUnreachable"
 
+let kNoDataViewTag = 999
+
 let kBeginParsingPodcast = "beginParsingPodcast"
 
 let kFinishedAllParsingPodcasts = "finishedAllParsingPodcasts"

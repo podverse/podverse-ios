@@ -14,6 +14,10 @@ import CoreData
 class PVAuth: NSObject {
     
     static let shared = PVAuth()
+    
+    static var userIsLoggedIn:Bool {
+        return UserDefaults.standard.value(forKey: "idToken") != nil
+    }
 
     func showAuth0Lock (vc: UIViewController, completion:(() -> ())?) {
 
@@ -100,5 +104,4 @@ class PVAuth: NSObject {
         UserDefaults.standard.set(nil, forKey: "userId")
         UserDefaults.standard.set(nil, forKey: "userName")
     }
-
 }
