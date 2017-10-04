@@ -29,7 +29,7 @@ class ClipsTableViewController: PVViewController {
     var clipQueryPage: Int = 0
     var clipQueryIsLoading: Bool = false
     var clipQueryEndOfResultsReached: Bool = false
-    var filterTypeSelected: ClipFilterType = .allPodcasts {
+    var filterTypeSelected: ClipFilter = .allPodcasts {
         didSet {
             self.filterType.setTitle(filterTypeSelected.text + "\u{2304}", for: .normal)
             UserDefaults.standard.set(filterTypeSelected.text, forKey: kClipsTableFilterType)
@@ -45,7 +45,7 @@ class ClipsTableViewController: PVViewController {
         self.clipQueryActivityIndicator.hidesWhenStopped = true
         self.clipQueryMessage.isHidden = true
         
-        if let savedFilterType = UserDefaults.standard.value(forKey: kClipsTableFilterType) as? String, let clipFilterType = ClipFilterType(rawValue: savedFilterType) {
+        if let savedFilterType = UserDefaults.standard.value(forKey: kClipsTableFilterType) as? String, let clipFilterType = ClipFilter(rawValue: savedFilterType) {
             self.filterTypeSelected = clipFilterType
         } else {
             self.filterTypeSelected = .allPodcasts

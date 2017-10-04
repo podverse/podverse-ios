@@ -92,7 +92,7 @@ let TO_PLAYER_SEGUE_ID = "To Now Playing"
 let ErrorDomain = Bundle.main.bundleIdentifier!
 let CoreDataFailureCode = -9999
 
-enum ClipFilterType: String {
+enum ClipFilter: String {
     case allPodcasts = "All Podcasts"
     case episode = "Episode"
     case podcast = "Podcast"
@@ -112,5 +112,23 @@ enum ClipFilterType: String {
             }
         }
     }
+}
+
+enum EpisodeFilter: String {
+    case downloads = "Downloads"
+    case allEpisodes = "All Episodes"
+    case clips = "Clips"
     
+    var text:String {
+        get {
+            switch self {
+            case .downloads:
+                return "Downloads"
+            case .allEpisodes:
+                return "All Episodes"
+            case .clips:
+                return "Clips"
+            }
+        }
+    }
 }
