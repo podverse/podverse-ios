@@ -46,7 +46,7 @@ class FindSearchTableViewController: PVViewController {
 extension FindSearchTableViewController: UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 92
+        return 96.5
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -61,8 +61,10 @@ extension FindSearchTableViewController: UITableViewDataSource, UITableViewDeleg
         cell.title.text = podcastSearchResult.title
         cell.network.text = podcastSearchResult.network
         cell.categories.text = podcastSearchResult.categories
-
-        cell.pvImage.sd_setImage(with: URL(string: podcastSearchResult.imageUrl ?? ""), placeholderImage: #imageLiteral(resourceName: "PodverseIcon"))
+        
+        cell.pvImage.image = Podcast.retrievePodcastImage(podcastImageURLString: podcastSearchResult.imageThumbUrl, feedURLString: podcastSearchResult.rssUrl, managedObjectID: nil, completion: { _ in
+            cell.pvImage.sd_setImage(with: URL(string: podcastSearchResult.imageThumbUrl ?? ""), placeholderImage: #imageLiteral(resourceName: "PodverseIcon"))
+        })
         
         return cell
     }

@@ -75,6 +75,7 @@ class PVDownloader:NSObject {
     
     func startDownloadingEpisode(episode: Episode) {
         if let downloadSourceStringURL = episode.mediaUrl, let downloadSourceURL = URL(string: downloadSourceStringURL) {
+            
             let downloadTask = downloadSession.downloadTask(with: downloadSourceURL)
             
             let downloadingEpisode = DownloadingEpisode(episode:episode)
@@ -99,12 +100,25 @@ class PVDownloader:NSObject {
         }
     }
     
+    func resumeDownloadingAllEpisodes() {
+        if let downloadingMediaUrls = UserDefaults.standard.array(forKey: kDownloadingMediaUrls) as? [String] {
+            for mediaUrl in downloadingMediaUrls {
+                if let episode = Episode.episodeForMediaUrl(mediaUrlString: mediaUrl) {
+                    startDownloadingEpisode(episode: episode)
+                } else {
+                    let results = downloadingMediaUrls.filter { $0 != mediaUrl }
+                    UserDefaults.standard.setValue(results, forKey: kDownloadingMediaUrls)
+                }
+            }
+        }
+    }
+    
     func decrementBadge() {
         if let tabBarCntrl = self.appDelegate.window?.rootViewController as? UITabBarController {
-            if let badgeValue = tabBarCntrl.tabBar.items?[TabItems.More.index].badgeValue, let badgeInt = Int(badgeValue) {
-                tabBarCntrl.tabBar.items?[TabItems.More.index].badgeValue = "\(badgeInt - 1)"
-                if tabBarCntrl.tabBar.items?[TabItems.More.index].badgeValue == "0" {
-                    tabBarCntrl.tabBar.items?[TabItems.More.index].badgeValue = nil
+            if let badgeValue = tabBarCntrl.tabBar.items?[TabItems.Downloads.index].badgeValue, let badgeInt = Int(badgeValue) {
+                tabBarCntrl.tabBar.items?[TabItems.Downloads.index].badgeValue = "\(badgeInt - 1)"
+                if tabBarCntrl.tabBar.items?[TabItems.Downloads.index].badgeValue == "0" {
+                    tabBarCntrl.tabBar.items?[TabItems.Downloads.index].badgeValue = nil
                 }
             }
         }
@@ -113,11 +127,11 @@ class PVDownloader:NSObject {
     fileprivate func incrementBadge() {
         DispatchQueue.main.async {
             if let tabBarCntrl = self.appDelegate.window?.rootViewController as? UITabBarController {
-                if let badgeValue = tabBarCntrl.tabBar.items?[TabItems.More.index].badgeValue, let badgeInt = Int(badgeValue) {
-                    tabBarCntrl.tabBar.items?[TabItems.More.index].badgeValue = "\(badgeInt + 1)"
+                if let badgeValue = tabBarCntrl.tabBar.items?[TabItems.Downloads.index].badgeValue, let badgeInt = Int(badgeValue) {
+                    tabBarCntrl.tabBar.items?[TabItems.Downloads.index].badgeValue = "\(badgeInt + 1)"
                 }
                 else {
-                    tabBarCntrl.tabBar.items?[TabItems.More.index].badgeValue = "1"
+                    tabBarCntrl.tabBar.items?[TabItems.Downloads.index].badgeValue = "1"
                 }
             }
         }
@@ -135,17 +149,12 @@ class PVDownloader:NSObject {
 extension PVDownloader:URLSessionDelegate, URLSessionDownloadDelegate {
     
     func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didWriteData bytesWritten: Int64, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) {
-        if (totalBytesExpectedToWrite == NSURLSessionTransferSizeUnknown) {
-            print("Unknown transfer size")
-        }
-        else {
-            if let episodeDownloadIndex = DownloadingEpisodeList.shared.downloadingEpisodes.index(where: {$0.taskIdentifier == downloadTask.taskIdentifier}) {
-                let downloadingEpisode = DownloadingEpisodeList.shared.downloadingEpisodes[episodeDownloadIndex]
-                downloadingEpisode.totalBytesWritten = Float(totalBytesWritten)
-                downloadingEpisode.totalBytesExpectedToWrite = Float(totalBytesExpectedToWrite)
-                DispatchQueue.main.async {
-                    NotificationCenter.default.post(name: .downloadProgressed, object: nil, userInfo: [Episode.episodeKey:downloadingEpisode])
-                }
+        if totalBytesExpectedToWrite != NSURLSessionTransferSizeUnknown, let episodeDownloadIndex = DownloadingEpisodeList.shared.downloadingEpisodes.index(where: {$0.taskIdentifier == downloadTask.taskIdentifier}) {
+            let downloadingEpisode = DownloadingEpisodeList.shared.downloadingEpisodes[episodeDownloadIndex]
+            downloadingEpisode.totalBytesWritten = Float(totalBytesWritten)
+            downloadingEpisode.totalBytesExpectedToWrite = Float(totalBytesExpectedToWrite)
+            DispatchQueue.main.async {
+                NotificationCenter.default.post(name: .downloadProgressed, object: nil, userInfo: [Episode.episodeKey:downloadingEpisode])
             }
         }
     }
@@ -153,6 +162,7 @@ extension PVDownloader:URLSessionDelegate, URLSessionDownloadDelegate {
     func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didFinishDownloadingTo location: URL) {
         let fileManager = FileManager()
         print("did finish downloading")
+        
         let moc = CoreDataHelper.createMOCForThread(threadType: .privateThread)
         
         // Get the corresponding episode object by its taskIdentifier value
@@ -221,6 +231,8 @@ extension PVDownloader:URLSessionDelegate, URLSessionDownloadDelegate {
                             notification.alertAction = "open"
                             notification.soundName = UILocalNotificationDefaultSoundName
                             UIApplication.shared.presentLocalNotificationNow(notification)
+                            
+                            downloadingEpisode.removeFromDownloadHistory()
                             
                             PVDownloader.shared.decrementBadge()
                         }

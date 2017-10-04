@@ -11,7 +11,7 @@ class EpisodesTableViewController: PVViewController, UITableViewDataSource, UITa
     var episodesArray = [Episode]()
     let moc = CoreDataHelper.createMOCForThread(threadType: .privateThread)
     let reachability = PVReachability.shared
-    var selectedPodcastID: NSManagedObjectID!
+    var feedUrl: String?
     var showAllEpisodes = false
     
     @IBOutlet weak var autoDownloadLabel: UILabel!
@@ -22,7 +22,7 @@ class EpisodesTableViewController: PVViewController, UITableViewDataSource, UITa
     @IBOutlet weak var tableView: UITableView!
     
     @IBAction func autoDownloadSwitchTouched(_ sender: Any) {
-        if let podcast = CoreDataHelper.fetchEntityWithID(objectId: self.selectedPodcastID, moc: moc) as? Podcast {
+        if let feedUrl = feedUrl, let podcast = Podcast.podcastForFeedUrl(feedUrlString: feedUrl, managedObjectContext: moc) {
             if podcast.shouldAutoDownload() {
                 podcast.removeFromAutoDownloadList()
             } else {
@@ -39,25 +39,16 @@ class EpisodesTableViewController: PVViewController, UITableViewDataSource, UITa
     }
     
     func loadData() {
-        if let podcast = CoreDataHelper.fetchEntityWithID(objectId: self.selectedPodcastID, moc: moc) as? Podcast {
+        
+        if let feedUrl = feedUrl, let podcast = Podcast.podcastForFeedUrl(feedUrlString: feedUrl, managedObjectContext: moc) {
+            
             episodesArray.removeAll()
             
             headerPodcastTitle.text = podcast.title
             
-            DispatchQueue.global().async {
-                var cellImage:UIImage?
-                
-                if let imageData = podcast.imageThumbData, let image = UIImage(data: imageData) {
-                    cellImage = image
-                }
-                else {
-                    cellImage = UIImage(named: "PodverseIcon")
-                }
-                
-                DispatchQueue.main.async {
-                    self.headerImageView.image = cellImage
-                }
-            }
+            self.headerImageView.image = Podcast.retrievePodcastImage(podcastImageURLString: podcast.imageUrl, feedURLString: podcast.feedUrl, managedObjectID: podcast.objectID, completion: { _ in
+                self.headerImageView.sd_setImage(with: URL(string: podcast.imageUrl ?? ""), placeholderImage: #imageLiteral(resourceName: "PodverseIcon"))
+            })
             
             if podcast.shouldAutoDownload() {
                 self.autoDownloadSwitch.isOn = true
@@ -67,6 +58,13 @@ class EpisodesTableViewController: PVViewController, UITableViewDataSource, UITa
             
             if (!showAllEpisodes) {
                 episodesArray = Array(podcast.episodes.filter { $0.fileName != nil } )
+                let downloadingEpisodes = DownloadingEpisodeList.shared.downloadingEpisodes.filter({$0.podcastFeedUrl == podcast.feedUrl})
+                
+                for dlEpisode in downloadingEpisodes {
+                    if let mediaUrl = dlEpisode.mediaUrl, let episode = Episode.episodeForMediaUrl(mediaUrlString: mediaUrl) {
+                        episodesArray.append(episode)
+                    }
+                }
             } else {
                 episodesArray = Array(podcast.episodes)
             }
@@ -77,7 +75,9 @@ class EpisodesTableViewController: PVViewController, UITableViewDataSource, UITa
                 
                 return false
             })
+
         }
+
     }
 
     func downloadPlay(sender: UIButton) {
@@ -85,15 +85,27 @@ class EpisodesTableViewController: PVViewController, UITableViewDataSource, UITa
            let indexRow = self.tableView.indexPath(for: cell)?.row {
         
             let episode = episodesArray[indexRow]
-            if episode.fileName != nil {                
-                let playerHistoryItem = playerHistoryManager.convertEpisodeToPlayerHistoryItem(episode: episode)
+            if episode.fileName != nil {
+                
+                let playerHistoryItem: PlayerHistoryItem?
+                
+                if let mediaUrl = episode.mediaUrl, let item = playerHistoryManager.retrieveExistingPlayerHistoryItem(mediaUrl: mediaUrl) {
+                    playerHistoryItem = item
+                } else {
+                    playerHistoryItem = playerHistoryManager.convertEpisodeToPlayerHistoryItem(episode: episode)
+                }
+                
                 goToNowPlaying()
-                pvMediaPlayer.loadPlayerHistoryItem(item: playerHistoryItem)
+                
+                if let item = playerHistoryItem {
+                    pvMediaPlayer.loadPlayerHistoryItem(item: item)
+                }
+
             } else {
-//                if reachability.hasInternetConnection() == false {
-//                    showInternetNeededAlert("Connect to WiFi or cellular data to download an episode.")
-//                    return
-//                }
+                if reachability.hasWiFiConnection() == false {
+                    showInternetNeededAlertWithDesciription(message: "Connect to WiFi to download an episode.")
+                    return
+                }
                 PVDownloader.shared.startDownloadingEpisode(episode: episode)
             }
         }
@@ -135,6 +147,10 @@ class EpisodesTableViewController: PVViewController, UITableViewDataSource, UITa
         } else {
             return "Downloaded"
         }
+    }
+    
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return 44
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {

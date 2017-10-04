@@ -31,6 +31,7 @@ class PVFeedParser {
     var onlyParseChannel = false
     var latestEpisodePubDate:Date?
     var delegate:PVFeedParserDelegate?
+    let parsingPodcastsList = ParsingPodcastsList.shared
     
     init(shouldOnlyGetMostRecentEpisode:Bool, shouldSubscribe:Bool, shouldOnlyParseChannel:Bool) {
         self.onlyGetMostRecentEpisode = shouldOnlyGetMostRecentEpisode
@@ -39,6 +40,9 @@ class PVFeedParser {
     }
     
     func parsePodcastFeed(feedUrlString:String) {
+
+        parsingPodcastsList.addPodcast(feedUrl: feedUrlString)
+        
         if onlyParseChannel {
             channelInfoFeedParsingQueue.async {
                 self.feedUrl = feedUrlString
@@ -213,6 +217,9 @@ extension PVFeedParser:FeedParserDelegate {
     }
     
     func feedParser(_ parser: FeedParser, successfullyParsedURL url: String) {
+        
+        parsingPodcastsList.podcastFinishedParsing()
+        
         guard let podcastId = currentPodcastID, let podcast = CoreDataHelper.fetchEntityWithID(objectId: podcastId, moc: moc) as? Podcast else {
             return
         }
@@ -241,6 +248,9 @@ extension PVFeedParser:FeedParserDelegate {
     }
     
     func feedParserParsingAborted(_ parser: FeedParser) {
+        
+        parsingPodcastsList.podcastFinishedParsing()
+        
         guard let podcastId = currentPodcastID, let podcast = CoreDataHelper.fetchEntityWithID(objectId: podcastId, moc: moc) as? Podcast else {
             // If podcast is nil, then the RSS feed was invalid for the parser, and we should return out of successfullyParsedURL
             
@@ -255,11 +265,12 @@ extension PVFeedParser:FeedParserDelegate {
         if let latestEpisodePubDateInRSSFeed = latestEpisodePubDate, self.onlyGetMostRecentEpisode == true {
             let podcastPredicate = NSPredicate(format: "podcast == %@", podcast)
             
-            if let mostRecentEpisode = CoreDataHelper.fetchEntityWithMostRecentPubDate(className: "Episode", predicate: podcastPredicate, moc: moc) as? Episode,
-               let mostRecentPubDate = mostRecentEpisode.pubDate, latestEpisodePubDateInRSSFeed != mostRecentPubDate {
-                self.onlyGetMostRecentEpisode = false
-                self.downloadMostRecentEpisode = true
-                self.parsePodcastFeed(feedUrlString: podcast.feedUrl)
+            let mostRecentEpisode = CoreDataHelper.fetchEntityWithMostRecentPubDate(className: "Episode", predicate: podcastPredicate, moc: moc) as? Episode
+            
+            if mostRecentEpisode == nil {
+                parseAndDownloadMostRecentEpisode(feedUrl: podcast.feedUrl)
+            } else if let mostRecentEpisode = mostRecentEpisode, let mostRecentPubDate = mostRecentEpisode.pubDate, latestEpisodePubDateInRSSFeed != mostRecentPubDate {
+                parseAndDownloadMostRecentEpisode(feedUrl: podcast.feedUrl)
             }
             else {
                 DispatchQueue.main.async {
@@ -269,5 +280,11 @@ extension PVFeedParser:FeedParserDelegate {
         } else {
             print("No newer episode available, don't download")
         }
+    }
+    
+    func parseAndDownloadMostRecentEpisode (feedUrl: String) {
+        self.onlyGetMostRecentEpisode = false
+        self.downloadMostRecentEpisode = true
+        self.parsePodcastFeed(feedUrlString: feedUrl)
     }
 }

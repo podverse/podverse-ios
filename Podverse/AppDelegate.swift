@@ -22,6 +22,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         
+        // Enable the media player to continue playing in the background and on the lock screen
+        // Enable the media player to use remote control events
+        // Remote control events are overridden in the AppDelegate and set in remoteControlReceivedWithEvent
+        do {
+            try AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayback)
+            try AVAudioSession.sharedInstance().setActive(true)
+            UIApplication.shared.beginReceivingRemoteControlEvents()
+        } catch let error as NSError {
+            print(error.localizedDescription)
+        }
+        
         UIApplication.shared.statusBarStyle = .lightContent
         setupUI()
         setupRemoteFunctions()
@@ -40,6 +51,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         PVAuth.shared.syncUserInfoWithServer()
         
+        PVDownloader.shared.resumeDownloadingAllEpisodes()
+        
         return true
     }
 
@@ -48,6 +61,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func applicationDidEnterBackground(_ application: UIApplication) {
         UIApplication.shared.applicationIconBadgeNumber = 0
+        pvMediaPlayer.setPlayingInfo()
     }
 
     func applicationWillEnterForeground(_ application: UIApplication) {
@@ -108,14 +122,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func skipBackwardEvent() {
         pvMediaPlayer.seek(toTime: pvMediaPlayer.audioPlayer.progress - 15)
+        pvMediaPlayer.setPlayingInfo()
     }
     
     func skipForwardEvent() {
         pvMediaPlayer.seek(toTime: pvMediaPlayer.audioPlayer.progress + 15)
+        pvMediaPlayer.setPlayingInfo()
     }
     
     func playOrPauseEvent() {
-        print("remote play or pause happened")
+        pvMediaPlayer.setPlayingInfo()
     }
 }
 

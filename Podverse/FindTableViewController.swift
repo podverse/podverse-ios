@@ -29,8 +29,6 @@ class FindTableViewController: PVViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        self.navigationItem.title = "Find"
     }
 
     override func didReceiveMemoryWarning() {
@@ -54,6 +52,10 @@ class FindTableViewController: PVViewController {
 extension FindTableViewController:UITableViewDelegate, UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1
+    }
+    
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return 44
     }
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {

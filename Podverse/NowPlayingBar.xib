@@ -10,6 +10,7 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="NowPlayingBar" customModule="Podverse" customModuleProvider="target">
             <connections>
+                <outlet property="activityIndicator" destination="0Of-l0-PpG" id="67F-uA-Bkc"/>
                 <outlet property="episodeTitle" destination="5Yx-gc-Ry1" id="Wz4-5E-Dca"/>
                 <outlet property="playButton" destination="KrJ-cs-BGD" id="2UY-FX-FT2"/>
                 <outlet property="podcastImageView" destination="1tY-5h-x3N" id="r35-Va-XH8"/>
@@ -53,20 +54,26 @@
                     <rect key="frame" x="0.0" y="59" width="375" height="1"/>
                     <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                     <constraints>
-                        <constraint firstAttribute="height" constant="1" id="HeU-8O-XCs"/>
+                        <constraint firstAttribute="height" constant="0.5" id="HeU-8O-XCs"/>
                     </constraints>
                 </view>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="SPp-Xs-7kY">
                     <rect key="frame" x="0.0" y="0.0" width="375" height="1"/>
                     <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                     <constraints>
-                        <constraint firstAttribute="height" constant="1" id="FfT-K4-rrS"/>
+                        <constraint firstAttribute="height" constant="0.5" id="FfT-K4-rrS"/>
                     </constraints>
                 </view>
+                <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="0Of-l0-PpG">
+                    <rect key="frame" x="329" y="12" width="37" height="37"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <color key="color" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                </activityIndicatorView>
             </subviews>
             <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
             <gestureRecognizers/>
             <constraints>
+                <constraint firstAttribute="trailing" secondItem="KrJ-cs-BGD" secondAttribute="trailing" id="0DE-j1-3AH"/>
                 <constraint firstItem="SPp-Xs-7kY" firstAttribute="top" secondItem="1Ox-UM-LRA" secondAttribute="top" id="2G0-I7-F5X"/>
                 <constraint firstItem="KrJ-cs-BGD" firstAttribute="top" secondItem="1Ox-UM-LRA" secondAttribute="top" constant="1" id="2Vo-lO-5cZ"/>
                 <constraint firstItem="5Yx-gc-Ry1" firstAttribute="leading" secondItem="1tY-5h-x3N" secondAttribute="trailing" constant="10" id="4GO-RR-PYl"/>
@@ -78,9 +85,11 @@
                 <constraint firstAttribute="trailing" secondItem="KrJ-cs-BGD" secondAttribute="trailing" id="IRd-5c-wNi"/>
                 <constraint firstItem="KrJ-cs-BGD" firstAttribute="leading" secondItem="5Yx-gc-Ry1" secondAttribute="trailing" constant="10" id="OYz-ei-BJh"/>
                 <constraint firstItem="1tY-5h-x3N" firstAttribute="top" secondItem="1Ox-UM-LRA" secondAttribute="top" constant="1" id="S71-9H-HsV"/>
+                <constraint firstItem="KrJ-cs-BGD" firstAttribute="leading" secondItem="5Yx-gc-Ry1" secondAttribute="trailing" constant="10" id="WHv-oD-VK4"/>
                 <constraint firstItem="LlN-Jq-gMl" firstAttribute="leading" secondItem="1tY-5h-x3N" secondAttribute="trailing" constant="10" id="Wyn-DB-AHr"/>
                 <constraint firstItem="SPp-Xs-7kY" firstAttribute="leading" secondItem="1Ox-UM-LRA" secondAttribute="leading" id="ciE-ds-n3s"/>
                 <constraint firstItem="KrJ-cs-BGD" firstAttribute="leading" secondItem="LlN-Jq-gMl" secondAttribute="trailing" constant="10" id="h8Z-aX-CqG"/>
+                <constraint firstItem="KrJ-cs-BGD" firstAttribute="top" secondItem="SPp-Xs-7kY" secondAttribute="bottom" id="kF2-jX-Vk8"/>
                 <constraint firstAttribute="trailing" secondItem="SPp-Xs-7kY" secondAttribute="trailing" id="lQ4-Oo-CxW"/>
                 <constraint firstAttribute="trailing" secondItem="aBC-3L-i2l" secondAttribute="trailing" id="oi3-XQ-Id4"/>
                 <constraint firstItem="aBC-3L-i2l" firstAttribute="leading" secondItem="1Ox-UM-LRA" secondAttribute="leading" id="xuL-Yy-w7u"/>

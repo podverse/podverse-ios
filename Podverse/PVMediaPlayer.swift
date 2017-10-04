@@ -79,6 +79,7 @@ class PVMediaPlayer: NSObject {
     
     var audioPlayer = STKAudioPlayer()
     var clipTimer: Timer?
+    var playbackTimer: Timer?
     var duration: Double?
     var nowPlayingItem:PlayerHistoryItem?
     var delegate:PVMediaPlayerUIDelegate?
@@ -97,34 +98,15 @@ class PVMediaPlayer: NSObject {
         
         super.init()
         
-        // Enable the media player to continue playing in the background and on the lock screen
-        do {
-            try AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayback)
-            do {
-                try AVAudioSession.sharedInstance().setActive(true)
-            } catch let error as NSError {
-                print(error.localizedDescription)
-            }
-        } catch let error as NSError {
-            print(error.localizedDescription)
-        }
-        
-        // Enable the media player to use remote control events
-        // Remote control events are overridden in the AppDelegate and set in remoteControlReceivedWithEvent
-        do {
-            try AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayback)
-            UIApplication.shared.beginReceivingRemoteControlEvents()
-        } catch let error as NSError {
-            print(error.localizedDescription)
-        }
-        
         addObservers()
         startClipTimer()
+        startPlaybackTimer()
     }
     
     deinit {
         removeObservers()
         removeClipTimer()
+        removePlaybackTimer()
     }
     
     @objc func headphonesWereUnplugged(notification: Notification) {
@@ -145,6 +127,30 @@ class PVMediaPlayer: NSObject {
     private func removeClipTimer () {
         if let timer = self.clipTimer {
             timer.invalidate()
+        }
+    }
+    
+    private func startPlaybackTimer () {
+        self.playbackTimer = Timer.scheduledTimer(timeInterval: 10, target: self, selector: #selector(savePlaybackPosition), userInfo: nil, repeats: true)
+    }
+    
+    private func removePlaybackTimer () {
+        if let timer = self.playbackTimer {
+            timer.invalidate()
+        }
+    }
+    
+    @objc private func savePlaybackPosition() {
+        if let item = nowPlayingItem, self.audioPlayer.progress > 0 {
+            item.lastPlaybackPosition = Int64(self.audioPlayer.progress)
+            playerHistoryManager.addOrUpdateItem(item: item)
+        }
+    }
+    
+    private func clearPlaybackPosition() {
+        if let item = nowPlayingItem, self.audioPlayer.progress > 0 {
+            item.lastPlaybackPosition = Int64(0)
+            playerHistoryManager.addOrUpdateItem(item: item)
         }
     }
     
@@ -175,8 +181,8 @@ class PVMediaPlayer: NSObject {
     
     // TODO: should this be public here or not?
     @objc @discardableResult public func playOrPause() -> Bool {
-                
-        self.setPlayingInfo()
+        
+        savePlaybackPosition()
         
         let state = audioPlayer.state
         
@@ -211,24 +217,27 @@ class PVMediaPlayer: NSObject {
     }
     
     func seek(toTime: Double) {
+        self.shouldStartFromTime = Int64(toTime)
+        
         if self.audioPlayer.duration > 0 {
-            self.shouldStartFromTime = Int64(0)
             self.audioPlayer.seek(toTime: toTime)
-        } else {
-            self.shouldStartFromTime = Int64(toTime)
         }
     }
     
     func play() {
+        savePlaybackPosition()
         self.audioPlayer.resume()
         self.shouldAutoplayOnce = false
     }
     
     func pause() {
+        savePlaybackPosition()
         self.audioPlayer.pause()
     }
     
     @objc func playerDidFinishPlaying() {
+        
+        clearPlaybackPosition()
         
         let moc = CoreDataHelper.createMOCForThread(threadType: .mainThread)
         if let nowPlayingItem = playerHistoryManager.historyItems.first, let episodeMediaUrl = nowPlayingItem.episodeMediaUrl, let episode = Episode.episodeForMediaUrl(mediaUrlString: episodeMediaUrl, managedObjectContext: moc) {
@@ -245,21 +254,9 @@ class PVMediaPlayer: NSObject {
 
     func remoteControlReceivedWithEvent(event: UIEvent) {
         if event.type == UIEventType.remoteControl {
-//            if nowPlayingEpisode != nil || nowPlayingClip != nil {
-//                switch event.subtype {
-//                case UIEventSubtype.remoteControlPlay:
-//                    self.playOrPause()
-//                    break
-//                case UIEventSubtype.remoteControlPause:
-//                    self.playOrPause()
-//                    break
-//                case UIEventSubtype.remoteControlTogglePlayPause:
-//                    self.playOrPause()
-//                    break
-//                default:
-//                    break
-//                }
-//            }
+            if event.subtype == UIEventSubtype.remoteControlPlay || event.subtype == UIEventSubtype.remoteControlPause || event.subtype == UIEventSubtype.remoteControlTogglePlayPause {
+                self.playOrPause()
+            }
         }
     }
     
@@ -272,7 +269,6 @@ class PVMediaPlayer: NSObject {
         var podcastTitle: String?
         var episodeTitle: String?
 //        var podcastImage: MPMediaItemArtwork?
-        var lastPlaybackTime: NSNumber?
         let rate = self.audioPlayer.rate
         
         if let pTitle = item.podcastTitle {
@@ -283,15 +279,10 @@ class PVMediaPlayer: NSObject {
             episodeTitle = eTitle
         }
         
-        let lastPlaybackCMTime = self.audioPlayer.progress
-        lastPlaybackTime = NSNumber(value: lastPlaybackCMTime)
+        var currentPlaybackTime = NSNumber(value: self.audioPlayer.progress)
         
-        MPNowPlayingInfoCenter.default().nowPlayingInfo = [MPMediaItemPropertyArtist: podcastTitle, MPMediaItemPropertyTitle: episodeTitle, MPMediaItemPropertyPlaybackDuration: self.duration, MPNowPlayingInfoPropertyElapsedPlaybackTime: lastPlaybackTime, MPNowPlayingInfoPropertyPlaybackRate: rate]
+        MPNowPlayingInfoCenter.default().nowPlayingInfo = [MPMediaItemPropertyArtist: podcastTitle, MPMediaItemPropertyTitle: episodeTitle, MPMediaItemPropertyPlaybackDuration: self.duration, MPNowPlayingInfoPropertyElapsedPlaybackTime: currentPlaybackTime, MPNowPlayingInfoPropertyPlaybackRate: rate]
         
-    }
-    
-    func clearPlayingInfo() {
-        MPNowPlayingInfoCenter.default().nowPlayingInfo = nil
     }
     
     // This is only used when an episode/clip should appear loaded in the player, but it should not start streaming or playing. Since StreamingKit automatically plays a file as soon as you load it, this retrieveRemoteFileDuration method uses AVURLAsset to determine the duration of a remote media file if no stream is loaded.
@@ -310,15 +301,22 @@ class PVMediaPlayer: NSObject {
         self.nowPlayingItem = item
         self.nowPlayingItem?.hasReachedEnd = false
         
+        setPlayingInfo()
+        
         self.playerHistoryManager.addOrUpdateItem(item: nowPlayingItem)
         
         self.delegate?.playerHistoryItemLoadingBegan()
+        
+        // If you are loading a clip, or an episode from the beginning, the item.lastPlaybackPosition will be overridden in the observeValue or seek method.
+        if let lastPlaybackPosition = item.lastPlaybackPosition {
+            self.shouldStartFromTime = lastPlaybackPosition
+        }
         
         // NOTE: calling audioPlayer.play will immediately start playback, so do not call it unless an autoplay flag is true
         if !shouldAutoplayOnce && !shouldAutoplayAlways {
             updateDuration(episodeMediaUrl: item.episodeMediaUrl)
             
-            if let startTime = item.startTime {
+            if item.isClip(), let startTime = item.startTime {
                 seek(toTime: Double(startTime))
             }
             
@@ -359,9 +357,7 @@ class PVMediaPlayer: NSObject {
                 self.audioPlayer.play(dataSource)
             }
             
-            if let _ = item.startTime {
-                self.shouldSetupClip = true
-            }
+            self.shouldSetupClip = item.isClip()
 
         }
         
@@ -413,18 +409,22 @@ class PVMediaPlayer: NSObject {
                             }
                             
                             
+                        } else if self.shouldStartFromTime > 0 {
+                            self.audioPlayer.seek(toTime: Double(self.shouldStartFromTime))
                         }
                         
                     }
                     
                 }
                 
-                if self.audioPlayer.state == STKAudioPlayerState.buffering || self.audioPlayer.state == STKAudioPlayerState.paused {
+                if self.audioPlayer.state == STKAudioPlayerState.error, let item = self.nowPlayingItem {
+                    self.loadPlayerHistoryItem(item: item)
                     return
                 }
                 
                 if self.audioPlayer.state == STKAudioPlayerState.playing {
                     self.delegate?.playerHistoryItemLoaded()
+                    return
                 }
                 
             }

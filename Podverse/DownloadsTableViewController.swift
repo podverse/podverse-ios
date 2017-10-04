@@ -61,7 +61,7 @@ class DownloadsTableViewController: PVViewController {
 extension DownloadsTableViewController:UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 92
+        return 96.5
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -73,7 +73,10 @@ extension DownloadsTableViewController:UITableViewDelegate, UITableViewDataSourc
         
         let episode = DownloadingEpisodeList.shared.downloadingEpisodes[indexPath.row]
         
-        cell.podcastImage.sd_setImage(with: URL(string: episode.podcastImageUrl ?? ""), placeholderImage: #imageLiteral(resourceName: "PodverseIcon"))        
+        cell.podcastImage.image = Podcast.retrievePodcastImage(podcastImageURLString: episode.podcastImageUrl, feedURLString: episode.podcastFeedUrl, managedObjectID: nil, completion: { _ in
+            cell.podcastImage.sd_setImage(with: URL(string: episode.podcastImageUrl ?? ""), placeholderImage: #imageLiteral(resourceName: "PodverseIcon"))
+        })
+        
         cell.episodeTitle.text = episode.title
         cell.podcastTitle.text = episode.podcastTitle
         

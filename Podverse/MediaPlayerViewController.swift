@@ -57,7 +57,7 @@ class MediaPlayerViewController: PVViewController {
         
         navigationController?.interactivePopGestureRecognizer?.isEnabled = false
         
-        NotificationCenter.default.addObserver(self, selector: #selector(pause), name: .playerHasFinished, object: nil)
+        addObservers()
         
         self.activityIndicator.startAnimating()
         
@@ -71,7 +71,7 @@ class MediaPlayerViewController: PVViewController {
     }
     
     deinit {
-        NotificationCenter.default.removeObserver(self, name: .playerHasFinished, object: nil)
+        removeObservers()
         removeTimer()
     }
     
@@ -82,6 +82,16 @@ class MediaPlayerViewController: PVViewController {
     
     override func viewWillDisappear(_ animated: Bool) {
         navigationController?.interactivePopGestureRecognizer?.isEnabled = true
+    }
+    
+    fileprivate func addObservers() {
+        self.addObserver(self, forKeyPath: #keyPath(audioPlayer.state), options: [.new], context: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(pause), name: .playerHasFinished, object: nil)
+    }
+    
+    fileprivate func removeObservers() {
+        self.removeObserver(self, forKeyPath: #keyPath(audioPlayer.state))
+        NotificationCenter.default.removeObserver(self, name: .playerHasFinished, object: nil)
     }
     
     @IBAction func pageControlAction(_ sender: Any) {
@@ -187,7 +197,7 @@ class MediaPlayerViewController: PVViewController {
         self.clipsContainerView.addGestureRecognizer(swipeLeft)
         self.clipsContainerView.addGestureRecognizer(swipeRight)
         
-        self.clipsContainerView.layer.borderColor = UIColor.lightGray.cgColor
+        self.clipsContainerView.layer.borderColor = UIColor.darkGray.cgColor
         self.clipsContainerView.layer.borderWidth = 1.0
         
         self.pageControl.currentPage = 0
@@ -195,7 +205,7 @@ class MediaPlayerViewController: PVViewController {
     
     func togglePlayIcon() {
         DispatchQueue.main.async {
-            if self.audioPlayer.state == STKAudioPlayerState.buffering || self.pvMediaPlayer.shouldSetupClip {
+            if self.audioPlayer.state == STKAudioPlayerState.buffering || self.audioPlayer.state == STKAudioPlayerState.error || self.pvMediaPlayer.shouldSetupClip {
                 self.activityIndicator.isHidden = false
                 self.play.isHidden = true
             } else if self.audioPlayer.state == STKAudioPlayerState.playing {
@@ -215,7 +225,10 @@ class MediaPlayerViewController: PVViewController {
             podcastTitle.text = item.podcastTitle
             episodeTitle.text = item.episodeTitle
             
-            self.image.sd_setImage(with: URL(string: item.podcastImageUrl ?? ""), placeholderImage: #imageLiteral(resourceName: "PodverseIcon"))
+            image.image = Podcast.retrievePodcastImage(podcastImageURLString: item.podcastImageUrl, feedURLString: item.podcastFeedUrl, managedObjectID: nil, completion: { _ in
+                self.image.sd_setImage(with: URL(string: item.podcastImageUrl ?? ""), placeholderImage: #imageLiteral(resourceName: "PodverseIcon"))
+            })
+            
             if let dur = self.pvMediaPlayer.duration {
                 duration.text = Int64(dur).toMediaPlayerString()
             }
@@ -248,9 +261,13 @@ class MediaPlayerViewController: PVViewController {
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
         if let keyPath = keyPath {
             if keyPath == #keyPath(audioPlayer.state) {
-                if audioPlayer.state == STKAudioPlayerState.playing || audioPlayer.state == STKAudioPlayerState.paused {
+                if self.audioPlayer.state == STKAudioPlayerState.playing || audioPlayer.state == STKAudioPlayerState.paused {
                     self.togglePlayIcon()
                     self.updateTime()
+                }
+                
+                if self.audioPlayer.state == STKAudioPlayerState.error {
+                    print("ERROR AUDIOPLAYER ERROR STATE")
                 }
             }
         }
@@ -446,15 +463,16 @@ class MediaPlayerViewController: PVViewController {
         if let 
             nowPlayingItem = self.pvMediaPlayer.nowPlayingItem, 
             let startTime = nowPlayingItem.startTime, 
-            let endTime = nowPlayingItem.endTime, 
-            let duration = self.pvMediaPlayer.duration, 
+            let endTime = nowPlayingItem.endTime,
+            let dur = self.pvMediaPlayer.duration,
+            dur > 0,
             nowPlayingItem.isClip() {
             
             self.startTimeFlagView.isHidden = false
             self.endTimeFlagView.isHidden = self.pvMediaPlayer.nowPlayingItem?.endTime == nil
             
-            self.startTimeLeadingConstraint.constant = (CGFloat(Double(startTime) / duration) * progress.frame.width) - sliderThumbWidthAdjustment
-            self.endTimeLeadingConstraint.constant = (CGFloat(Double(endTime) / duration) * progress.frame.width) - sliderThumbWidthAdjustment
+            self.startTimeLeadingConstraint.constant = (CGFloat(Double(startTime) / dur) * progress.frame.width) - sliderThumbWidthAdjustment
+            self.endTimeLeadingConstraint.constant = (CGFloat(Double(endTime) / dur) * progress.frame.width) - sliderThumbWidthAdjustment
         }
         else {
             self.startTimeFlagView.isHidden = true
@@ -470,7 +488,6 @@ extension MediaPlayerViewController:PVMediaPlayerUIDelegate {
     
     func playerHistoryItemLoadingBegan() {
         DispatchQueue.main.async {
-            self.removeTimer()
             self.startTimeFlagView.isHidden = true
             self.endTimeFlagView.isHidden = true
             self.populatePlayerInfo()
@@ -482,7 +499,6 @@ extension MediaPlayerViewController:PVMediaPlayerUIDelegate {
     
     func playerHistoryItemLoaded() {
         DispatchQueue.main.async {
-            self.setupTimer()
             self.setupClipFlags()
             self.togglePlayIcon()
         }

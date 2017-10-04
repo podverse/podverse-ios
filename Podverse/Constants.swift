@@ -9,7 +9,7 @@
 import Foundation
 
 enum TabItems:Int {
-    case Podcasts = 0, Clips, Playlists, Find, More
+    case Podcasts = 0, Clips, Find, Downloads, More
     
     var index:Int {
         switch self {
@@ -17,9 +17,9 @@ enum TabItems:Int {
             return 0
         case .Clips:
             return 1
-        case .Playlists:
-            return 2
         case .Find:
+            return 2
+        case .Downloads:
             return 3
         case .More:
             return 4
@@ -69,6 +69,10 @@ let kUserId = "userId"
 
 let kAutoDownloadingFeedUrls = "autoDownloadingFeedUrls"
 
+let kDownloadingMediaUrls = "downloadingMediaUrls"
+
+let kClipsTableFilterType = "ClipsListFilterType"
+
 let kClipsListFilterType = "ClipsListFilterType"
 
 let kInternetIsUnreachable = "internetIsUnreachable"
@@ -77,9 +81,38 @@ let kWiFiIsUnreachable = "wiFiIsUnreachable"
 
 let kNoDataViewTag = 999
 
+let kBeginParsingPodcast = "beginParsingPodcast"
+
+let kFinishedAllParsingPodcasts = "finishedAllParsingPodcasts"
+
+let kFinishedParsingPodcast = "finishedParsingPodcast"
+
 let rootPath = NSSearchPathForDirectoriesInDomains(FileManager.SearchPathDirectory.documentDirectory, .userDomainMask, true)[0]
 
 let TO_PLAYER_SEGUE_ID = "To Now Playing"
 
 let ErrorDomain = Bundle.main.bundleIdentifier!
 let CoreDataFailureCode = -9999
+
+enum ClipFilterType: String {
+    case allPodcasts = "All Podcasts"
+    case episode = "Episode"
+    case podcast = "Podcast"
+    case subscribed = "Subscribed"
+    
+    var text:String {
+        get {
+            switch self {
+            case .allPodcasts:
+                return "All Podcasts"
+            case .episode:
+                return "Episode"
+            case .podcast:
+                return "Podcast"
+            case .subscribed:
+                return "Subscribed"
+            }
+        }
+    }
+    
+}

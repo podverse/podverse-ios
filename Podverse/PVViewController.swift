@@ -33,7 +33,7 @@ class PVViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        loadNowPlayingBarData()
+        toggleNowPlayingBar()
     }
     
     deinit {
@@ -43,48 +43,47 @@ class PVViewController: UIViewController {
     fileprivate func addObservers() {
         NotificationCenter.default.addObserver(self, selector: #selector(self.episodeDeleted(_:)), name: .episodeDeleted, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(self.podcastDeleted(_:)), name: .podcastDeleted, object: nil)
-        self.addObserver(self, forKeyPath: #keyPath(pvMediaPlayer.audioPlayer.state), options: [.new, .old], context: nil)
     }
     
     fileprivate func removeObservers() {
         NotificationCenter.default.removeObserver(self, name: .episodeDeleted, object: nil)
         NotificationCenter.default.removeObserver(self, name: .podcastDeleted, object: nil)
-        self.removeObserver(self, forKeyPath: #keyPath(pvMediaPlayer.audioPlayer.state))
     }
     
-    func loadNowPlayingBarData() {
-        DispatchQueue.main.async {
-            guard let tabbarVC = self.tabBarController else { return }
-            self.updateNowPlayingBarData()
-            tabbarVC.showPlayerView()
+    func toggleNowPlayingBar() {
+        self.updateNowPlayingBarData() { shouldShow in
+            let tabbarVC = self.tabBarController
+            
+            if shouldShow {
+                tabbarVC?.showPlayerView()
+            } else {
+                self.tabBarController?.hidePlayerView()
+            }
         }
     }
-    
-    func updateNowPlayingBarData() {
+
+    func updateNowPlayingBarData(completion: @escaping (_ shouldShow: Bool) -> Void) {
         DispatchQueue.main.async {
             guard let currentItem = self.playerHistoryManager.historyItems.first, let tabbarVC = self.tabBarController, PVMediaPlayer.shared.nowPlayingItem != nil && currentItem.hasReachedEnd != true else {
-                self.tabBarController?.hidePlayerView()
+                completion(false)
                 return
             }
             
             tabbarVC.playerView.podcastTitleLabel.text = currentItem.podcastTitle
             tabbarVC.playerView.episodeTitle.text = currentItem.episodeTitle
-            tabbarVC.playerView.podcastImageView.sd_setImage(with: URL(string: currentItem.podcastImageUrl ?? ""), placeholderImage: #imageLiteral(resourceName: "PodverseIcon"))
-            tabbarVC.playerView.isPlaying = (self.pvMediaPlayer.audioPlayer.state == STKAudioPlayerState.playing)
+            
+            tabbarVC.playerView.podcastImageView.image = Podcast.retrievePodcastImage(podcastImageURLString: currentItem.podcastImageUrl, feedURLString: currentItem.podcastFeedUrl, managedObjectID: nil, completion: { _ in
+                tabbarVC.playerView.podcastImageView.sd_setImage(with: URL(string: currentItem.podcastImageUrl ?? ""), placeholderImage: #imageLiteral(resourceName: "PodverseIcon"))
+            })
+            
+            completion(true)
         }
     }
     
     func goToNowPlaying() {
-        self.tabBarController?.goToMediaPlayer()
+        self.tabBarController?.goToNowPlaying()
     }
     
-    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
-        if let keyPath = keyPath {
-            if keyPath == #keyPath(pvMediaPlayer.audioPlayer.state) {
-                updateNowPlayingBarData()
-            }
-        }
-    }
 }
 
 extension PVViewController {
@@ -113,7 +112,7 @@ extension PVViewController:TableViewHeightProtocol {
     func adjustTableView() {
         if let index = self.view.constraints.index(where: {$0.secondItem is UITableView && $0.secondAttribute == NSLayoutAttribute.bottom }),
            let tabbarVC = self.tabBarController {
-            self.view.constraints[index].constant = tabbarVC.playerView.isHidden ? 0.0 : tabbarVC.playerView.frame.height
+            self.view.constraints[index].constant = tabbarVC.playerView.isHidden ? 0.0 : tabbarVC.playerView.frame.height - 0.5
         }
     }
 }

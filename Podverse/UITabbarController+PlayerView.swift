@@ -12,7 +12,7 @@ protocol PlayerViewProtocol {
     func setupPlayerBar()
     func hidePlayerView()
     func showPlayerView()
-    func goToMediaPlayer()
+    func goToNowPlaying()
     var playerView:NowPlayingBar {get}
 }
 
@@ -55,7 +55,7 @@ extension UITabBarController:PlayerViewProtocol {
         PVViewController.delegate?.adjustTableView()
     }
     
-    func goToMediaPlayer() {
+    func goToNowPlaying() {
         if let mediaPlayerVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "MediaPlayerVC") as? MediaPlayerViewController, let currentNavVC = self.selectedViewController?.childViewControllers.first?.navigationController {
             currentNavVC.pushViewController(mediaPlayerVC, animated: true)
         }
@@ -65,6 +65,6 @@ extension UITabBarController:PlayerViewProtocol {
 
 extension UITabBarController:NowPlayingBarDelegate {
     func didTapView() {
-        goToMediaPlayer()
+        goToNowPlaying()
     }
 }

@@ -10,9 +10,9 @@ import UIKit
 
 class AboutPlayingItemViewController: UIViewController, UIWebViewDelegate {
 
-    @IBOutlet weak var webView: UIWebView!
-    
     let pvMediaPlayer = PVMediaPlayer.shared
+    
+    @IBOutlet weak var webView: UIWebView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -41,8 +41,6 @@ class AboutPlayingItemViewController: UIViewController, UIWebViewDelegate {
         }
         
         self.view.backgroundColor = UIColor.black
-        self.webView.layer.borderColor = UIColor.lightGray.cgColor
-        self.webView.layer.borderWidth = 1.0
         self.webView.delegate = self
     }
     
