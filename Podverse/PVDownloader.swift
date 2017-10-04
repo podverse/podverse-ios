@@ -114,7 +114,7 @@ class PVDownloader:NSObject {
     
     func decrementBadge() {
         DispatchQueue.main.async {
-            if let tabBarCntrl = UIApplication.shared.delegate as! AppDelegate).window?.rootViewController as? UITabBarController {
+            if let tabBarCntrl = (UIApplication.shared.delegate as! AppDelegate).window?.rootViewController as? UITabBarController {
                 if let badgeValue = tabBarCntrl.tabBar.items?[TabItems.Downloads.index].badgeValue, let badgeInt = Int(badgeValue) {
                     tabBarCntrl.tabBar.items?[TabItems.Downloads.index].badgeValue = "\(badgeInt - 1)"
                     if tabBarCntrl.tabBar.items?[TabItems.Downloads.index].badgeValue == "0" {
@@ -127,7 +127,7 @@ class PVDownloader:NSObject {
     
     fileprivate func incrementBadge() {
         DispatchQueue.main.async {
-            if let tabBarCntrl = UIApplication.shared.delegate as! AppDelegate).window?.rootViewController as? UITabBarController {
+            if let tabBarCntrl = (UIApplication.shared.delegate as! AppDelegate).window?.rootViewController as? UITabBarController {
                 if let badgeValue = tabBarCntrl.tabBar.items?[TabItems.Downloads.index].badgeValue, let badgeInt = Int(badgeValue) {
                     tabBarCntrl.tabBar.items?[TabItems.Downloads.index].badgeValue = "\(badgeInt + 1)"
                 }

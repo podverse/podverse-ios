@@ -19,7 +19,7 @@ class AudioSearchClientSwift {
     
     static var oauth2 = OAuth2ClientCredentials(settings: [
         "client_id": "df0ec8d7ce31a8a5be833df0fe47a2e531bfa04e2081d64a5b24bdd6649908fb",
-        "client_secret": "13a31b2657e7af4b9b5ee364b40c8f364d552565395e12d84e01569e1d94f684",
+        "client_secret": "",
         "authorize_uri": "https://audiosear.ch/oauth/authorize",
         "token_uri": "https://audiosear.ch/oauth/token",
         "scope": "",
