@@ -71,13 +71,27 @@ let kAutoDownloadingFeedUrls = "autoDownloadingFeedUrls"
 
 let kDownloadingMediaUrls = "downloadingMediaUrls"
 
-let kClipsTableFilterType = "ClipsListFilterType"
+let kClipsTableFilterType = "ClipsTableFilterType"
+
+let kClipsTableSortingType = "ClipsTableSortingType"
 
 let kClipsListFilterType = "ClipsListFilterType"
+
+let kClipsListSortingType = "ClipsListFilterType"
+
+let kEpisodesTableFilterType = "EpisodesTableFilterType"
+
+let kEpisodesTableSortingType = "EpisodesTableSortingType"
+
+let kEpisodeTableFilterType = "EpisodeTableFilterType"
+
+let kEpisodeTableSortingType = "EpisodeTableSortingType"
 
 let kInternetIsUnreachable = "internetIsUnreachable"
 
 let kWiFiIsUnreachable = "wiFiIsUnreachable"
+
+let kDropdownCaret = " \u{2304}"
 
 let kNoDataViewTag = 999
 
@@ -111,6 +125,25 @@ enum ClipFilter: String {
                 return "Podcast"
             case .subscribed:
                 return "Subscribed"
+            }
+        }
+    }
+}
+
+enum ClipSorting: String {
+    case top = "top"
+    case recent = "recent"
+    case trending = "trending"
+    
+    var text: String {
+        get {
+            switch self {
+            case .top:
+                return "top"
+            case .recent:
+                return "recent"
+            case .trending:
+                return "trending"
             }
         }
     }

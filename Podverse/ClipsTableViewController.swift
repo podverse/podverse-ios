@@ -15,26 +15,23 @@ class ClipsTableViewController: PVViewController {
     
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
+    
+    @IBOutlet weak var tableViewHeader: FiltersTableHeaderView!
+    
     @IBOutlet weak var clipQueryActivityIndicator: UIActivityIndicatorView!
     @IBOutlet weak var clipQueryMessage: UILabel!
     @IBOutlet weak var clipQueryStatusView: UIView!
     
-    @IBOutlet weak var filterType: UIButton!
-    @IBOutlet weak var sorting: UIButton!
-    
     var clipQueryPage: Int = 0
     var clipQueryIsLoading: Bool = false
     var clipQueryEndOfResultsReached: Bool = false
-    var filterTypeSelected: ClipFilter = .allPodcasts {
-        didSet {
-            self.filterType.setTitle(filterTypeSelected.text + "\u{2304}", for: .normal)
-            UserDefaults.standard.set(filterTypeSelected.text, forKey: kClipsTableFilterType)
-        }
-    }
+    
+    var filterTypeSelected: ClipFilter = .allPodcasts
+    var sortingTypeSelected: ClipSorting = .top
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         activityIndicator.hidesWhenStopped = true
         showIndicator()
         
@@ -45,10 +42,22 @@ class ClipsTableViewController: PVViewController {
             self.filterTypeSelected = clipFilterType
         } else {
             self.filterTypeSelected = .allPodcasts
-            
+        }
+        
+        if let savedSortingType = UserDefaults.standard.value(forKey: kClipsTableSortingType) as? String, let clipSortingType = ClipSorting(rawValue: savedSortingType) {
+            self.sortingTypeSelected = clipSortingType
+        } else {
+            self.sortingTypeSelected = .top
         }
         
         retrieveClips()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        self.tableViewHeader.filterTitle = self.filterTypeSelected.text
+        self.tableViewHeader.sortingTitle = self.sortingTypeSelected.text
+        self.tableViewHeader.delegate = self
+        self.tableViewHeader.setupViews()
     }
     
     @IBAction func updateFilter(_ sender: Any) {
@@ -56,13 +65,13 @@ class ClipsTableViewController: PVViewController {
         
         alert.addAction(UIAlertAction(title: "Subscribed", style: .default, handler: { action in
             self.resetClipQuery()
-            self.filterTypeSelected = .subscribed
+//            self.filterTypeSelected = .subscribed
             self.retrieveClips()
         }))
         
         alert.addAction(UIAlertAction(title: "All Podcasts", style: .default, handler: { action in
             self.resetClipQuery()
-            self.filterTypeSelected = .allPodcasts
+//            self.filterTypeSelected = .allPodcasts
             self.retrieveClips()
         }))
         
@@ -92,32 +101,32 @@ class ClipsTableViewController: PVViewController {
     func retrieveClips() {
         self.clipQueryPage += 1
         
-        if self.filterTypeSelected == .subscribed {
-            
-            let moc = CoreDataHelper.createMOCForThread(threadType: .privateThread)
-            var subscribedPodcastFeedUrls = [String]()
-            let subscribedPodcastsArray = CoreDataHelper.fetchEntities(className:"Podcast", predicate: nil, moc:moc) as! [Podcast]
-            
-            for podcast in subscribedPodcastsArray {
-                subscribedPodcastFeedUrls.append(podcast.feedUrl)
-            }
-            
-            if subscribedPodcastFeedUrls.count < 1 {
-                self.reloadClipData()
-                return
-            }
-            
-            MediaRef.retrieveMediaRefsFromServer(podcastFeedUrls: subscribedPodcastFeedUrls, page: self.clipQueryPage) { (mediaRefs) -> Void in
-                self.reloadClipData(mediaRefs: mediaRefs)
-            }
-            
-        } else {
-            
+//        if self.filterTypeSelected == .subscribed {
+//
+//            let moc = CoreDataHelper.createMOCForThread(threadType: .privateThread)
+//            var subscribedPodcastFeedUrls = [String]()
+//            let subscribedPodcastsArray = CoreDataHelper.fetchEntities(className:"Podcast", predicate: nil, moc:moc) as! [Podcast]
+//
+//            for podcast in subscribedPodcastsArray {
+//                subscribedPodcastFeedUrls.append(podcast.feedUrl)
+//            }
+//
+//            if subscribedPodcastFeedUrls.count < 1 {
+//                self.reloadClipData()
+//                return
+//            }
+//
+//            MediaRef.retrieveMediaRefsFromServer(podcastFeedUrls: subscribedPodcastFeedUrls, page: self.clipQueryPage) { (mediaRefs) -> Void in
+//                self.reloadClipData(mediaRefs: mediaRefs)
+//            }
+//
+//        } else {
+        
             MediaRef.retrieveMediaRefsFromServer(page: self.clipQueryPage) { (mediaRefs) -> Void in
                 self.reloadClipData(mediaRefs: mediaRefs)
             }
             
-        }
+//        }
         
     }
     
@@ -166,6 +175,16 @@ class ClipsTableViewController: PVViewController {
     func showIndicator() {
         activityIndicator.startAnimating()
         activityIndicator.isHidden = false
+    }
+}
+
+extension ClipsTableViewController:FilterSelectionProtocol {
+    func filterButtonTapped() {
+        print("filter button tapped")
+    }
+    
+    func sortingButtonTapped() {
+        print("sorting button tapped")
     }
 }
 
