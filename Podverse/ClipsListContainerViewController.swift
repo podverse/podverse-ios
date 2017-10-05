@@ -17,10 +17,7 @@ class ClipsListContainerViewController: UIViewController {
 
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     @IBOutlet weak var filterType: UIButton!
-    @IBOutlet weak var loadingView: UIView!
-    @IBOutlet weak var retryButton: UIButton!
     @IBOutlet weak var sorting: UIButton!
-    @IBOutlet weak var statusMessage: UILabel!
     @IBOutlet weak var tableControlsView: UIView!
     @IBOutlet weak var tableView: UITableView!
     
@@ -39,7 +36,9 @@ class ClipsListContainerViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.tableView.separatorColor = UIColor.darkGray
+        self.tableView.separatorColor = .darkGray
+        self.tableControlsView.layer.borderColor = UIColor.lightGray.cgColor
+        self.tableControlsView.layer.borderWidth = 1.0
         
         activityIndicator.hidesWhenStopped = true
         showIndicator()
@@ -48,25 +47,12 @@ class ClipsListContainerViewController: UIViewController {
             self.filterTypeSelected = sFilterType
         }
         
-        if let item = pvMediaPlayer.nowPlayingItem {
-            if self.filterTypeSelected == .allPodcasts {
-                MediaRef.retrieveMediaRefsFromServer() { (mediaRefs) -> Void in
-                    self.reloadClipData(mediaRefs: mediaRefs)
-                }
-            } else if self.filterTypeSelected == .subscribed {
-                MediaRef.retrieveMediaRefsFromServer() { (mediaRefs) -> Void in
-                    self.reloadClipData(mediaRefs: mediaRefs)
-                }
-            } else if self.filterTypeSelected == .podcast, let podcastFeedUrl = item.podcastFeedUrl {
-                MediaRef.retrieveMediaRefsFromServer(podcastFeedUrls: [podcastFeedUrl]) { (mediaRefs) -> Void in
-                    self.reloadClipData(mediaRefs: mediaRefs)
-                }
-            } else {
-                MediaRef.retrieveMediaRefsFromServer(episodeMediaUrl: item.episodeMediaUrl) { (mediaRefs) -> Void in
-                    self.reloadClipData(mediaRefs: mediaRefs)
-                }
-            }
-        }
+        retrieveClipData()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        checkForConnectvity()
     }
     
     @IBAction func retryButtonTouched(_ sender: Any) {
@@ -74,7 +60,7 @@ class ClipsListContainerViewController: UIViewController {
     }
     
     @IBAction func updateFilter(_ sender: Any) {
-        let alert = UIAlertController(title: "Clips From", message: nil, preferredStyle: .alert)
+        let alert = UIAlertController(title: "Clips From", message: nil, preferredStyle: .actionSheet)
 
         alert.addAction(UIAlertAction(title: "Episode", style: .default, handler: { action in
             if let item = self.pvMediaPlayer.nowPlayingItem {
@@ -122,57 +108,79 @@ class ClipsListContainerViewController: UIViewController {
         self.present(alert, animated: true, completion: nil)
     }
     
-    
-    func reloadClipData(mediaRefs: [MediaRef]? = nil) {
-        if self.reachability.hasInternetConnection() == false {
-            self.showStatusMessage(message: "You must connect to the internet to load clips.")
-            return
+    func retrieveClipData() {
+        showIndicator()
+        if let item = pvMediaPlayer.nowPlayingItem {
+            if self.filterTypeSelected == .allPodcasts {
+                MediaRef.retrieveMediaRefsFromServer() { (mediaRefs) -> Void in
+                    self.reloadClipData(mediaRefs: mediaRefs)
+                }
+            } else if self.filterTypeSelected == .subscribed {
+                MediaRef.retrieveMediaRefsFromServer() { (mediaRefs) -> Void in
+                    self.reloadClipData(mediaRefs: mediaRefs)
+                }
+            } else if self.filterTypeSelected == .podcast, let podcastFeedUrl = item.podcastFeedUrl {
+                MediaRef.retrieveMediaRefsFromServer(podcastFeedUrls: [podcastFeedUrl]) { (mediaRefs) -> Void in
+                    self.reloadClipData(mediaRefs: mediaRefs)
+                }
+            } else {
+                MediaRef.retrieveMediaRefsFromServer(episodeMediaUrl: item.episodeMediaUrl) { (mediaRefs) -> Void in
+                    self.reloadClipData(mediaRefs: mediaRefs)
+                }
+            }
         }
-        
-        guard let mediaRefArray = mediaRefs, mediaRefArray.count > 0 else {
-            self.showStatusMessage(message: "No clips available")
-            return
+        else {
+            MediaRef.retrieveMediaRefsFromServer() { (mediaRefs) -> Void in
+                self.reloadClipData(mediaRefs: mediaRefs)
+            }
         }
-        
-        self.clipsArray.removeAll()
-        
-        for mediaRef in mediaRefArray {
-            self.clipsArray.append(mediaRef)
-        }
-        
-        self.showClipsView()
-        self.tableView.reloadData()
     }
     
-    func showStatusMessage(message: String) {
-        activityIndicator.stopAnimating()
-        statusMessage.text = message
-        tableView.isHidden = true
-        loadingView.isHidden = false
-        statusMessage.isHidden = false
+    func checkForConnectvity() {
+        var message = "No clips available"
         
-        if message == "You must connect to the internet to load clips." {
-            retryButton.isHidden = false
+        if self.reachability.hasInternetConnection() == false {
+            message = "You must connect to the internet to load clips."
         }
+        
+        if let noDataView = self.view.subviews.first(where: { $0.tag == kNoDataViewTag}) {
+            if let messageView = noDataView.subviews.first(where: {$0 is UILabel}), let messageLabel = messageView as? UILabel {
+                messageLabel.text = message
+            }
+        }
+        else {
+            self.addNoDataViewWithMessage(message, buttonTitle: "Retry", buttonImage: nil, retryPressed: #selector(ClipsListContainerViewController.retrieveClipData))   
+            if let noDataView = self.view.subviews.first(where: { $0.tag == kNoDataViewTag}) {
+                noDataView.backgroundColor = .black
+                if let messageView = noDataView.subviews.first(where: {$0 is UILabel}), let messageLabel = messageView as? UILabel {
+                    messageLabel.textColor = .white
+                }
+                
+                if let retryView = noDataView.subviews.first(where: {$0 is UIButton}), let retryButton = retryView as? UIButton {
+                    retryButton.setTitleColor(.white, for: .normal)
+                }
+            }
+        }
+    }
+    
+    func reloadClipData(mediaRefs: [MediaRef]? = nil) {
+        
+        self.tableView.isHidden = true
+        
+        if let mediaRefArray = mediaRefs, mediaRefArray.count > 0 {
+            self.clipsArray = mediaRefArray
+            
+            self.tableView.isHidden = false
+        }
+        
+        self.activityIndicator.stopAnimating()
+        self.tableView.reloadData()
     }
     
     func showIndicator() {
         activityIndicator.startAnimating()
-        tableView.isHidden = true
-        loadingView.isHidden = false
         activityIndicator.isHidden = false
-        statusMessage.isHidden = true
-        retryButton.isHidden = true
     }
-    
-    func showClipsView() {
-        activityIndicator.stopAnimating()
-        tableView.isHidden = false
-        loadingView.isHidden = true
-        statusMessage.isHidden = true
-        retryButton.isHidden = true
-    }
-    
 }
 
 extension ClipsListContainerViewController:UITableViewDelegate, UITableViewDataSource {
