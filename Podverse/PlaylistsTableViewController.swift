@@ -14,76 +14,80 @@ class PlaylistsTableViewController: PVViewController {
     let reachability = PVReachability.shared
 
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
-    @IBOutlet weak var loadingView: UIView!
-    @IBOutlet weak var retryButton: UIButton!
-    @IBOutlet weak var statusMessage: UILabel!
     @IBOutlet weak var tableView: UITableView!
 
-    @IBAction func retryButtonTouched(_ sender: Any) {
-        showIndicator()
-        Playlist.retrievePlaylistsFromServer() { (playlists) -> Void in
-            self.reloadPlaylistData(playlists: playlists)
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        self.activityIndicator.hidesWhenStopped = true
+        
+        loadPlaylistData()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        checkAuthorizationAndConnectivity()
+    }
+    
+    func checkAuthorizationAndConnectivity() {
+        var message = "No playlists available"
+        var buttonTitle = "Retry"
+        var selector:Selector = #selector(PlaylistsTableViewController.loadPlaylistData)
+        let isLoggedIn = PVAuth.userIsLoggedIn
+        
+        if self.reachability.hasInternetConnection() == false {
+            message = "You must connect to the internet to load playlists."
+        }
+        else if !isLoggedIn {
+            message = "You must be logged in to access playlists."
+            buttonTitle = "Login"
+
+            selector = #selector(PlaylistsTableViewController.presentLogin)
+        }
+        
+        if let noDataView = self.view.subviews.first(where: { $0.tag == kNoDataViewTag}) {
+            if let actionButtonView = noDataView.subviews.first(where: {$0 is UIButton}), let actionButton = actionButtonView as? UIButton {
+                actionButton.setTitle(buttonTitle, for: .normal)
+                actionButton.addTarget(self, action: selector, for: .touchUpInside)
+            }
+            
+            if let messageView = noDataView.subviews.first(where: {$0 is UILabel}), let messageLabel = messageView as? UILabel {
+                messageLabel.text = message
+            }
+        }
+        else {
+            self.addNoDataViewWithMessage(message, buttonTitle: buttonTitle, buttonImage: nil, retryPressed: selector)
         }
     }
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
-        self.activityIndicator.hidesWhenStopped = true
-        showIndicator()
-        
+    func presentLogin() {
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        if let loginVC = storyboard.instantiateViewController(withIdentifier: "LoginVC") as? LoginViewController {
+            self.present(loginVC, animated: true, completion: nil)
+        }
+    }
+    
+    func loadPlaylistData() {
         Playlist.retrievePlaylistsFromServer() { (playlists) -> Void in
+            self.showIndicator()
             self.reloadPlaylistData(playlists: playlists)
         }
-        
     }
     
     func reloadPlaylistData(playlists: [Playlist]? = nil) {
-        if self.reachability.hasInternetConnection() == false {
-            self.showStatusMessage(message: "You must connect to the internet to load playlists.")
-            return
-        }
-        
-        guard let pArray = playlists, pArray.count > 0 else {
-            self.showStatusMessage(message: "No playlists available")
-            return
-        }
-        
-        for playlist in pArray {
-            self.playlistsArray.append(playlist)
-        }
-        
-        self.showPlaylistsView()
-        self.tableView.reloadData()
-    }
-
-    func showStatusMessage(message: String) {
-        self.activityIndicator.stopAnimating()
-        self.statusMessage.text = message
         self.tableView.isHidden = true
-        self.loadingView.isHidden = false
-        self.statusMessage.isHidden = false
-        
-        if message == "You must connect to the internet to load playlists." {
-            self.retryButton.isHidden = false
+
+        if let pArray = playlists, pArray.count > 0 {
+            self.playlistsArray = pArray
+            self.tableView.isHidden = false
         }
+        
+        self.activityIndicator.stopAnimating()
+        self.tableView.reloadData()
     }
     
     func showIndicator() {
         self.activityIndicator.startAnimating()
-        self.tableView.isHidden = true
-        self.loadingView.isHidden = false
         self.activityIndicator.isHidden = false
-        self.statusMessage.isHidden = true
-        self.retryButton.isHidden = true
-    }
-    
-    func showPlaylistsView() {
-        self.activityIndicator.stopAnimating()
-        self.tableView.isHidden = false
-        self.loadingView.isHidden = true
-        self.statusMessage.isHidden = true
-        self.retryButton.isHidden = true
     }
 
 }

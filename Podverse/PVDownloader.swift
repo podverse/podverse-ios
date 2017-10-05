@@ -20,7 +20,6 @@ extension Notification.Name {
 
 class PVDownloader:NSObject {
     static let shared = PVDownloader()
-    var appDelegate = UIApplication.shared.delegate as! AppDelegate
     var docDirectoryURL: URL?
     var downloadSession: URLSession!
     let reachability = PVReachability.shared
@@ -114,11 +113,13 @@ class PVDownloader:NSObject {
     }
     
     func decrementBadge() {
-        if let tabBarCntrl = self.appDelegate.window?.rootViewController as? UITabBarController {
-            if let badgeValue = tabBarCntrl.tabBar.items?[TabItems.Downloads.index].badgeValue, let badgeInt = Int(badgeValue) {
-                tabBarCntrl.tabBar.items?[TabItems.Downloads.index].badgeValue = "\(badgeInt - 1)"
-                if tabBarCntrl.tabBar.items?[TabItems.Downloads.index].badgeValue == "0" {
-                    tabBarCntrl.tabBar.items?[TabItems.Downloads.index].badgeValue = nil
+        DispatchQueue.main.async {
+            if let tabBarCntrl = (UIApplication.shared.delegate as! AppDelegate).window?.rootViewController as? UITabBarController {
+                if let badgeValue = tabBarCntrl.tabBar.items?[TabItems.Downloads.index].badgeValue, let badgeInt = Int(badgeValue) {
+                    tabBarCntrl.tabBar.items?[TabItems.Downloads.index].badgeValue = "\(badgeInt - 1)"
+                    if tabBarCntrl.tabBar.items?[TabItems.Downloads.index].badgeValue == "0" {
+                        tabBarCntrl.tabBar.items?[TabItems.Downloads.index].badgeValue = nil
+                    }
                 }
             }
         }
@@ -126,7 +127,7 @@ class PVDownloader:NSObject {
     
     fileprivate func incrementBadge() {
         DispatchQueue.main.async {
-            if let tabBarCntrl = self.appDelegate.window?.rootViewController as? UITabBarController {
+            if let tabBarCntrl = (UIApplication.shared.delegate as! AppDelegate).window?.rootViewController as? UITabBarController {
                 if let badgeValue = tabBarCntrl.tabBar.items?[TabItems.Downloads.index].badgeValue, let badgeInt = Int(badgeValue) {
                     tabBarCntrl.tabBar.items?[TabItems.Downloads.index].badgeValue = "\(badgeInt + 1)"
                 }
