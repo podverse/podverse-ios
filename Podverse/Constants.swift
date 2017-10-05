@@ -116,3 +116,38 @@ enum ClipFilterType: String {
     }
     
 }
+
+enum PodcastFilterType: String {
+    case allEpisodes = "All Episodes"
+    case clips = "Clips"
+    case downloaded = "Only Downloaded"
+    
+    var text:String {
+        get {
+            switch self {
+            case .allEpisodes:
+                return "All Episodes"
+            case .clips:
+                return "Clips"
+            case .downloaded:
+                return "Downloaded"
+            }
+        }
+    }
+}
+
+enum EpisodeFilterType: String {
+    case clips = "Clips"
+    case showNotes = "Show Notes"
+    
+    var text:String {
+        get {
+            switch self {
+            case .clips:
+                return "Clips"
+            case .showNotes:
+                return "Show Notes"
+            }
+        }
+    }
+}

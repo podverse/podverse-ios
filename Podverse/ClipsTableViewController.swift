@@ -25,6 +25,7 @@ class ClipsTableViewController: PVViewController {
     var clipQueryPage: Int = 0
     var clipQueryIsLoading: Bool = false
     var clipQueryEndOfResultsReached: Bool = false
+    
     var filterTypeSelected: ClipFilterType = .allPodcasts {
         didSet {
             self.filterType.setTitle(filterTypeSelected.text + "\u{2304}", for: .normal)

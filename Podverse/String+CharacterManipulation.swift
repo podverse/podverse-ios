@@ -11,8 +11,16 @@ import UIKit
 
 extension String {
     
-    func formatHtmlString() -> String {
-        let style = "<style>* { color: #fff !important; font-size: 16px !important; font-family: -apple-system !important; font-weight: 400 !important; } body { margin: 24px 8px !important; padding: 0 !important; } a { color: #007aff !important; text-decoration: none !important; } p { margin-top: 0 !important; } strong { font-weight: 500 !important } hr { border: none !important; height: 1px !important; color: #5d5d5d !important; background-color: #5d5d5d !important; } .lightGray { color: #aaa !important }</style>"
+    func formatHtmlString(isWhiteBg: Bool = false) -> String {
+        
+        var style = ""
+        
+        if isWhiteBg {
+            style = "<style>* { color: #000 !important; font-size: 16px !important; font-family: -apple-system !important; font-weight: 400 !important; } body { margin: 24px 12px !important; padding: 0 !important; } a { color: #007aff !important; text-decoration: none !important; } p { margin-top: 0 !important; } strong { font-weight: 500 !important } hr { border: none !important; height: 1px !important; color: #ccc !important; background-color: #ccc !important; } .lightGray { color: #aaa !important }</style>"
+        } else {
+            style = "<style>* { color: #fff !important; font-size: 16px !important; font-family: -apple-system !important; font-weight: 400 !important; } body { margin: 24px 12px !important; padding: 0 !important; } a { color: #007aff !important; text-decoration: none !important; } p { margin-top: 0 !important; } strong { font-weight: 500 !important } hr { border: none !important; height: 1px !important; color: #5d5d5d !important; background-color: #5d5d5d !important; } .lightGray { color: #aaa !important }</style>"
+        }
+        
         return style + self
     }
     
