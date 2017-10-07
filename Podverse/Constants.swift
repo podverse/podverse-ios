@@ -131,22 +131,85 @@ enum ClipFilter: String {
 }
 
 enum ClipSorting: String {
-    case top = "top"
     case recent = "recent"
-    case trending = "trending"
+    case topHour = "top - past hour"
+    case topDay = "top - past day"
+    case topWeek = "top - past week"
+    case topMonth = "top - past month"
+    case topYear = "top - past year"
+    case topAllTime = "top - all time"
     
     var text: String {
         get {
             switch self {
-            case .top:
-                return "top"
             case .recent:
                 return "recent"
-            case .trending:
-                return "trending"
+            case .topHour:
+                return "top - past hour"
+            case .topDay:
+                return "top - past day"
+            case .topWeek:
+                return "top - past week"
+            case .topMonth:
+                return "top - past month"
+            case .topYear:
+                return "top - past year"
+            case .topAllTime:
+                return "top - all time"
             }
         }
     }
+
+    var requestParam: String {
+        get {
+            switch self {
+            case .recent:
+                return "recent"
+            case .topHour:
+                return "pastHour"
+            case .topDay:
+                return "pastDay"
+            case .topWeek:
+                return "pastWeek"
+            case .topMonth:
+                return "pastMonth"
+            case .topYear:
+                return "pastYear"
+            case .topAllTime:
+                return "allTime"
+            }
+        }
+    }
+        
+}
+
+enum SortingTimeRange: String {
+    case hour = "hour"
+    case day = "day"
+    case week = "week"
+    case month = "month"
+    case year = "year"
+    case allTime = "allTime"
+    
+    var text: String {
+        get {
+            switch self {
+            case .hour:
+                return "past hour"
+            case .day:
+                return "past day"
+            case .week:
+                return "past week"
+            case .month:
+                return "past month"
+            case .year:
+                return "past year"
+            case .allTime:
+                return "all time"
+            }
+        }
+    }
+    
 }
 
 enum EpisodeFilter: String {

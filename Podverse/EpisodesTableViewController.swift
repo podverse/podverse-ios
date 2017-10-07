@@ -61,7 +61,7 @@ class EpisodesTableViewController: PVViewController, UITableViewDataSource, UITa
                 let downloadingEpisodes = DownloadingEpisodeList.shared.downloadingEpisodes.filter({$0.podcastFeedUrl == podcast.feedUrl})
                 
                 for dlEpisode in downloadingEpisodes {
-                    if let mediaUrl = dlEpisode.mediaUrl, let episode = Episode.episodeForMediaUrl(mediaUrlString: mediaUrl) {
+                    if let mediaUrl = dlEpisode.mediaUrl, let episode = Episode.episodeForMediaUrl(mediaUrlString: mediaUrl, managedObjectContext: self.moc), !episodesArray.contains(episode) {
                         episodesArray.append(episode)
                     }
                 }

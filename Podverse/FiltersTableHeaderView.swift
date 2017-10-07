@@ -23,6 +23,7 @@ class FiltersTableHeaderView: UIView {
             }
         }
     }
+    
     var sortingTitle = "" {
         didSet {
             DispatchQueue.main.async {
@@ -30,7 +31,7 @@ class FiltersTableHeaderView: UIView {
             }
         }
     }
-    
+        
     let filterButton = UIButton()
     let sortingButton = UIButton()
     let topBorder = UIView()
@@ -122,7 +123,7 @@ class FiltersTableHeaderView: UIView {
                                              toItem: nil,
                                              attribute: .notAnAttribute,
                                              multiplier: 1,
-                                             constant: 120)
+                                             constant: 140)
         
         self.addSubview(self.sortingButton)
         

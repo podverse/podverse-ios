@@ -46,7 +46,7 @@ class MediaRef {
         
     }
     
-    static func retrieveMediaRefsFromServer(episodeMediaUrl: String? = nil, podcastFeedUrls: [String] = [], onlySubscribed: Bool? = nil, page: Int? = 1, completion: @escaping (_ mediaRefs:[MediaRef]?) -> Void) {
+    static func retrieveMediaRefsFromServer(episodeMediaUrl: String? = nil, podcastFeedUrls: [String] = [], onlySubscribed: Bool? = nil, sortingType: ClipSorting? = nil, page: Int? = 1, completion: @escaping (_ mediaRefs:[MediaRef]?) -> Void) {
         
         if let url = URL(string: BASE_URL + "api/clips") {
             
@@ -64,6 +64,10 @@ class MediaRef {
             
             if podcastFeedUrls.count > 0 {
                 values["podcastFeedURLs"] = podcastFeedUrls
+            }
+            
+            if let sortingType = sortingType {
+                values["filterType"] = sortingType.requestParam
             }
             
             if let page = page {
