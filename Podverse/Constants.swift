@@ -212,18 +212,34 @@ enum SortingTimeRange: String {
     
 }
 
-enum EpisodeFilter: String {
-    case downloads = "Downloads"
+enum EpisodesFilter: String {
+    case downloaded = "Downloaded"
     case allEpisodes = "All Episodes"
     case clips = "Clips"
     
     var text:String {
         get {
             switch self {
-            case .downloads:
-                return "Downloads"
+            case .downloaded:
+                return "Downloaded"
             case .allEpisodes:
                 return "All Episodes"
+            case .clips:
+                return "Clips"
+            }
+        }
+    }
+}
+
+enum EpisodeFilter: String {
+    case showNotes = "Show Notes"
+    case clips = "Clips"
+    
+    var text:String {
+        get {
+            switch self {
+            case .showNotes:
+                return "Show Notes"
             case .clips:
                 return "Clips"
             }

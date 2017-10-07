@@ -295,7 +295,7 @@ class MakeClipTimeViewController: UIViewController, UITextFieldDelegate {
                 updateTime()
             } else {
                 let panPoint = pan.velocity(in: self.playbackControlView)
-                var newTime = (self.pvMediaPlayer.progress + Double(panPoint.x / 140.0))
+                var newTime = (self.pvMediaPlayer.progress + Double(panPoint.x / 160.0))
                 
                 if newTime <= 0 {
                     newTime = 0
