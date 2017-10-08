@@ -11,6 +11,12 @@ import UIKit
 protocol FilterSelectionProtocol {
     func filterButtonTapped()
     func sortingButtonTapped()
+    func sortByTopHour()
+    func sortByTopDay()
+    func sortByTopWeek()
+    func sortByTopMonth()
+    func sortByTopYear()
+    func sortByTopAllTime()
 }
 
 class FiltersTableHeaderView: UIView {
@@ -201,6 +207,64 @@ class FiltersTableHeaderView: UIView {
         
         self.addConstraints([filterLeading, filterTop, filterHeight, filterWidth, sortingLeading, sortingTop, sortingHeight, sortingWidth, topBorderLeading, topBorderTop, topBorderTrailing, topBorderHeight, bottomBorderLeading, bottomBorderBottom, bottomBorderTrailing, bottomBorderHeight])
         
+    }
+    
+    func showSortByTimeRangeMenu(vc: Any) {
+        
+        let alert = UIAlertController(title: "Time Range", message: nil, preferredStyle: .actionSheet)
+        
+        alert.addAction(UIAlertAction(title: "Day", style: .default, handler: { action in
+            self.sortByTopDay()
+        }))
+        
+        alert.addAction(UIAlertAction(title: "Week", style: .default, handler: { action in
+            self.sortByTopWeek()
+        }))
+        
+        alert.addAction(UIAlertAction(title: "Month", style: .default, handler: { action in
+            self.sortByTopMonth()
+        }))
+        
+        alert.addAction(UIAlertAction(title: "Year", style: .default, handler: { action in
+            self.sortByTopYear()
+        }))
+        
+        alert.addAction(UIAlertAction(title: "All Time", style: .default, handler: { action in
+            self.sortByTopAllTime()
+        }))
+        
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        
+        if let vc = vc as? PVViewController {
+            vc.present(alert, animated: true, completion: nil)
+        } else if let vc = vc as? UIViewController {
+            vc.present(alert, animated: true, completion: nil)
+        }
+        
+    }
+    
+    func sortByTopHour() {
+        self.delegate?.sortByTopHour()
+    }
+    
+    func sortByTopDay() {
+        self.delegate?.sortByTopDay()
+    }
+    
+    func sortByTopWeek() {
+        self.delegate?.sortByTopWeek()
+    }
+    
+    func sortByTopMonth() {
+        self.delegate?.sortByTopMonth()
+    }
+    
+    func sortByTopYear() {
+        self.delegate?.sortByTopYear()
+    }
+    
+    func sortByTopAllTime() {
+        self.delegate?.sortByTopAllTime()
     }
     
     func filterButtonTapped() {

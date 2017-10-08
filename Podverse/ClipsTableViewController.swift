@@ -163,91 +163,6 @@ class ClipsTableViewController: PVViewController {
     }
 }
 
-extension ClipsTableViewController:FilterSelectionProtocol {
-    func filterButtonTapped() {
-        
-        let alert = UIAlertController(title: "Clips From", message: nil, preferredStyle: .actionSheet)
-        
-        alert.addAction(UIAlertAction(title: "Subscribed", style: .default, handler: { action in
-            self.resetClipQuery()
-            self.filterTypeSelected = .subscribed
-            self.retrieveClips()
-        }))
-        
-        alert.addAction(UIAlertAction(title: "All Podcasts", style: .default, handler: { action in
-            self.resetClipQuery()
-            self.filterTypeSelected = .allPodcasts
-            self.retrieveClips()
-        }))
-        
-        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
-        
-        self.present(alert, animated: true, completion: nil)
-        
-    }
-    
-    func sortingButtonTapped() {
-        
-        let alert = UIAlertController(title: "Sort By", message: nil, preferredStyle: .actionSheet)
-        
-        alert.addAction(UIAlertAction(title: "Top", style: .default, handler: { action in
-            self.showSortByTimeRangeMenu()
-        }))
-        
-        alert.addAction(UIAlertAction(title: "Recent", style: .default, handler: { action in
-            self.resetClipQuery()
-            self.sortingTypeSelected = .recent
-            self.retrieveClips()
-        }))
-        
-        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
-        
-        self.present(alert, animated: true, completion: nil)
-        
-    }
-    
-    func showSortByTimeRangeMenu() {
-        
-        let alert = UIAlertController(title: "Time Range", message: nil, preferredStyle: .actionSheet)
-        
-        alert.addAction(UIAlertAction(title: "Day", style: .default, handler: { action in
-            self.resetClipQuery()
-            self.sortingTypeSelected = .topDay
-            self.retrieveClips()
-        }))
-        
-        alert.addAction(UIAlertAction(title: "Week", style: .default, handler: { action in
-            self.resetClipQuery()
-            self.sortingTypeSelected = .topWeek
-            self.retrieveClips()
-        }))
-        
-        alert.addAction(UIAlertAction(title: "Month", style: .default, handler: { action in
-            self.resetClipQuery()
-            self.sortingTypeSelected = .topMonth
-            self.retrieveClips()
-        }))
-        
-        alert.addAction(UIAlertAction(title: "Year", style: .default, handler: { action in
-            self.resetClipQuery()
-            self.sortingTypeSelected = .topYear
-            self.retrieveClips()
-        }))
-        
-        alert.addAction(UIAlertAction(title: "All Time", style: .default, handler: { action in
-            self.resetClipQuery()
-            self.sortingTypeSelected = .topAllTime
-            self.retrieveClips()
-        }))
-        
-        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
-        
-        self.present(alert, animated: true, completion: nil)
-        
-    }
-    
-}
-
 extension ClipsTableViewController:UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return UITableViewAutomaticDimension
@@ -310,4 +225,80 @@ extension ClipsTableViewController:UITableViewDelegate, UITableViewDataSource {
         }
     }
     
+}
+
+extension ClipsTableViewController:FilterSelectionProtocol {
+    func filterButtonTapped() {
+        
+        let alert = UIAlertController(title: "Clips From", message: nil, preferredStyle: .actionSheet)
+        
+        alert.addAction(UIAlertAction(title: "Subscribed", style: .default, handler: { action in
+            self.resetClipQuery()
+            self.filterTypeSelected = .subscribed
+            self.retrieveClips()
+        }))
+        
+        alert.addAction(UIAlertAction(title: "All Podcasts", style: .default, handler: { action in
+            self.resetClipQuery()
+            self.filterTypeSelected = .allPodcasts
+            self.retrieveClips()
+        }))
+        
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        
+        self.present(alert, animated: true, completion: nil)
+        
+    }
+    
+    func sortingButtonTapped() {
+        
+        let alert = UIAlertController(title: "Sort By", message: nil, preferredStyle: .actionSheet)
+        
+        alert.addAction(UIAlertAction(title: "Top", style: .default, handler: { action in
+            self.tableViewHeader.showSortByTimeRangeMenu(vc: self)
+        }))
+        
+        alert.addAction(UIAlertAction(title: "Recent", style: .default, handler: { action in
+            self.resetClipQuery()
+            self.sortingTypeSelected = .recent
+            self.retrieveClips()
+        }))
+        
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        
+        self.present(alert, animated: true, completion: nil)
+        
+    }
+    
+    func sortByTopHour() { }
+    
+    func sortByTopDay() {
+        self.resetClipQuery()
+        self.sortingTypeSelected = .topDay
+        self.retrieveClips()
+    }
+    
+    func sortByTopWeek() {
+        self.resetClipQuery()
+        self.sortingTypeSelected = .topWeek
+        self.retrieveClips()
+    }
+    
+    func sortByTopMonth() {
+        self.resetClipQuery()
+        self.sortingTypeSelected = .topMonth
+        self.retrieveClips()
+    }
+    
+    func sortByTopYear() {
+        self.resetClipQuery()
+        self.sortingTypeSelected = .topYear
+        self.retrieveClips()
+    }
+    
+    func sortByTopAllTime() {
+        self.resetClipQuery()
+        self.sortingTypeSelected = .topAllTime
+        self.retrieveClips()
+    }
 }
