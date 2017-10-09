@@ -224,9 +224,7 @@ class FiltersTableHeaderView: UIView {
         
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
         
-        if let vc = vc as? PVViewController {
-            vc.present(alert, animated: true, completion: nil)
-        } else if let vc = vc as? UIViewController {
+        if let vc = vc as? UIViewController {
             vc.present(alert, animated: true, completion: nil)
         }
     }
@@ -257,9 +255,7 @@ class FiltersTableHeaderView: UIView {
         
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
         
-        if let vc = vc as? PVViewController {
-            vc.present(alert, animated: true, completion: nil)
-        } else if let vc = vc as? UIViewController {
+        if let vc = vc as? UIViewController {
             vc.present(alert, animated: true, completion: nil)
         }
         
