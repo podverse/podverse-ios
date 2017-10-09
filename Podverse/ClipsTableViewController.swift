@@ -267,35 +267,22 @@ extension ClipsTableViewController:FilterSelectionProtocol {
         self.tableViewHeader.showSortByTimeRangeMenu(vc: self)
     }
     
-    func sortByTopHour() { }
-    
-    func sortByTopDay() {
+    func sortByTopWithTimeRange(timeRange: String) {
         self.resetClipQuery()
-        self.sortingTypeSelected = .topDay
+        
+        if timeRange == "Day" {
+            self.sortingTypeSelected = .topDay
+        } else if timeRange == "Week" {
+            self.sortingTypeSelected = .topWeek
+        } else if timeRange == "Month" {
+            self.sortingTypeSelected = .topMonth
+        } else if timeRange == "Year" {
+            self.sortingTypeSelected = .topYear
+        } else if timeRange == "All Time" {
+            self.sortingTypeSelected = .topAllTime
+        }
+        
         self.retrieveClips()
     }
     
-    func sortByTopWeek() {
-        self.resetClipQuery()
-        self.sortingTypeSelected = .topWeek
-        self.retrieveClips()
-    }
-    
-    func sortByTopMonth() {
-        self.resetClipQuery()
-        self.sortingTypeSelected = .topMonth
-        self.retrieveClips()
-    }
-    
-    func sortByTopYear() {
-        self.resetClipQuery()
-        self.sortingTypeSelected = .topYear
-        self.retrieveClips()
-    }
-    
-    func sortByTopAllTime() {
-        self.resetClipQuery()
-        self.sortingTypeSelected = .topAllTime
-        self.retrieveClips()
-    }
 }
