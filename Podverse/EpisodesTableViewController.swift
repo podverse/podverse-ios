@@ -307,19 +307,25 @@ class EpisodesTableViewController: PVViewController, UITableViewDataSource, UITa
     }
     
     func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
-        let episodeToEdit = episodesArray[indexPath.row]
         
-        let deleteAction = UITableViewRowAction(style: .default, title: "Delete", handler: {action, indexpath in
-            self.episodesArray.remove(at: indexPath.row)
-            self.tableView.deleteRows(at: [indexPath], with: .fade)
-            if self.pvMediaPlayer.nowPlayingItem?.episodeMediaUrl == episodeToEdit.mediaUrl {
-                self.tabBarController?.hidePlayerView()
-            }
-
-            PVDeleter.deleteEpisode(episodeId: episodeToEdit.objectID, fileOnly: true, shouldCallNotificationMethod: true)
-        })
+        if self.filterTypeSelected != .clips {
+            let episodeToEdit = episodesArray[indexPath.row]
+            
+            let deleteAction = UITableViewRowAction(style: .default, title: "Delete", handler: {action, indexpath in
+                self.episodesArray.remove(at: indexPath.row)
+                self.tableView.deleteRows(at: [indexPath], with: .fade)
+                if self.pvMediaPlayer.nowPlayingItem?.episodeMediaUrl == episodeToEdit.mediaUrl {
+                    self.tabBarController?.hidePlayerView()
+                }
+                
+                PVDeleter.deleteEpisode(episodeId: episodeToEdit.objectID, fileOnly: true, shouldCallNotificationMethod: true)
+            })
+            
+            return [deleteAction]
+        } else {
+            return []
+        }
         
-        return [deleteAction]
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
