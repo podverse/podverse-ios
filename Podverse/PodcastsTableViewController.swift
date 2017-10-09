@@ -114,7 +114,9 @@ extension PodcastsTableViewController:PVFeedParserDelegate {
         
         if let navVCs = self.navigationController?.viewControllers, navVCs.count > 1, 
            let episodesTableVC = self.navigationController?.viewControllers[1] as? EpisodesTableViewController {
-            episodesTableVC.loadData()
+            if episodesTableVC.filterTypeSelected != .clips {
+                episodesTableVC.reloadEpisodeData()
+            }
         }
     }
     

@@ -8,14 +8,29 @@ protocol AutoDownloadProtocol: NSObjectProtocol {
 class EpisodesTableViewController: PVViewController, UITableViewDataSource, UITableViewDelegate {
     
     weak var delegate: AutoDownloadProtocol?
+    var clipsArray = [MediaRef]()
     var episodesArray = [Episode]()
+    var feedUrl: String?
     let moc = CoreDataHelper.createMOCForThread(threadType: .privateThread)
     let reachability = PVReachability.shared
-    var feedUrl: String?
     
     var filterTypeSelected: EpisodesFilter = .downloaded {
         didSet {
-            self.filterType.setTitle(filterTypeSelected.text + "\u{2304}", for: .normal)
+            self.tableViewHeader.filterTitle = self.filterTypeSelected.text
+            UserDefaults.standard.set(filterTypeSelected.text, forKey: kEpisodesTableFilterType)
+            
+            if filterTypeSelected == .clips {
+                self.tableViewHeader.sortingButton.isHidden = false
+            } else {
+                self.tableViewHeader.sortingButton.isHidden = true
+            }
+        }
+    }
+    
+    var sortingTypeSelected: ClipSorting = .topWeek {
+        didSet {
+            self.tableViewHeader.sortingTitle = sortingTypeSelected.text
+            UserDefaults.standard.set(sortingTypeSelected.text, forKey: kEpisodesTableSortingType)
         }
     }
     
@@ -25,15 +40,37 @@ class EpisodesTableViewController: PVViewController, UITableViewDataSource, UITa
     @IBOutlet weak var headerImageView: UIImageView!
     @IBOutlet weak var headerPodcastTitle: UILabel!
     @IBOutlet weak var tableView: UITableView!
-    
-    @IBOutlet weak var filterType: UIButton!
-    @IBOutlet weak var sorting: UIButton!
+    @IBOutlet weak var tableViewHeader: FiltersTableHeaderView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.filterTypeSelected = .downloaded
-        loadData()
+        
+        self.tableViewHeader.delegate = self
+        self.tableViewHeader.setupViews()
+        
+        if let savedFilterType = UserDefaults.standard.value(forKey: kEpisodesTableFilterType) as? String, let episodesFilterType = EpisodesFilter(rawValue: savedFilterType) {
+            self.filterTypeSelected = episodesFilterType
+        } else {
+            self.filterTypeSelected = .downloaded
+        }
+        
+        if let savedSortingType = UserDefaults.standard.value(forKey: kEpisodesTableFilterType) as? String, let episodesSortingType = ClipSorting(rawValue: savedSortingType) {
+            self.sortingTypeSelected = episodesSortingType
+        } else {
+            self.sortingTypeSelected = .topWeek
+        }
+        
+        loadPodcastHeader()
+        
+        reloadEpisodeOrClipData()
+        
         setupNotificationListeners()
+        
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        self.tableViewHeader.filterTitle = self.filterTypeSelected.text
+        self.tableViewHeader.sortingTitle = self.sortingTypeSelected.text
     }
     
     deinit {
@@ -65,47 +102,48 @@ class EpisodesTableViewController: PVViewController, UITableViewDataSource, UITa
         }
     }
     
-    @IBAction func updateFilter(_ sender: Any) {
-        
-        let alert = UIAlertController(title: "Show", message: nil, preferredStyle: .alert)
-        
-        alert.addAction(UIAlertAction(title: "Downloaded", style: .default, handler: { action in
-            self.filterTypeSelected = .downloaded
-            self.loadData()
-        }))
-        
-        alert.addAction(UIAlertAction(title: "All Episodes", style: .default, handler: { action in
-            self.filterTypeSelected = .allEpisodes
-            self.loadData()
-        }))
-        
-        alert.addAction(UIAlertAction(title: "Clips", style: .default, handler: { action in
-            self.filterTypeSelected = .clips
-            self.loadData()
-        }))
-        
-        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
-        
-        self.present(alert, animated: true, completion: nil)
-    }
-    
-    
-    @IBAction func updateSorting(_ sender: Any) {
-    }
-    
-    func loadData() {
-        
+    func loadPodcastHeader() {
         if let feedUrl = feedUrl, let podcast = Podcast.podcastForFeedUrl(feedUrlString: feedUrl, managedObjectContext: moc) {
             
-            episodesArray.removeAll()
-            
-            headerPodcastTitle.text = podcast.title
+            self.headerPodcastTitle.text = podcast.title
             
             self.headerImageView.image = Podcast.retrievePodcastImage(podcastImageURLString: podcast.imageUrl, feedURLString: podcast.feedUrl, managedObjectID: podcast.objectID, completion: { _ in
                 self.headerImageView.sd_setImage(with: URL(string: podcast.imageUrl ?? ""), placeholderImage: #imageLiteral(resourceName: "PodverseIcon"))
             })
             
             self.autoDownloadSwitch.isOn = podcast.shouldAutoDownload() ? true : false
+        }
+    }
+    
+    func retrieveClips() {
+        self.episodesArray.removeAll()
+        self.tableView.reloadData()
+        
+        if let feedUrl = feedUrl {
+            MediaRef.retrieveMediaRefsFromServer(podcastFeedUrls: [feedUrl], sortingType: self.sortingTypeSelected, page: 1) { (mediaRefs) -> Void in
+                
+                self.clipsArray.removeAll()
+                
+                if let mediaRefs = mediaRefs {
+                    self.clipsArray = mediaRefs
+                }
+                
+                self.reloadClipData()
+            }
+        }
+    }
+    
+    func reloadClipData() {
+        // TODO: Handle infinite scroll logic here
+        
+        self.tableView.reloadData()
+    }
+    
+    func reloadEpisodeData() {
+        
+        if let feedUrl = feedUrl, let podcast = Podcast.podcastForFeedUrl(feedUrlString: feedUrl, managedObjectContext: moc) {
+            
+            self.episodesArray.removeAll()
             
             if self.filterTypeSelected == .downloaded {
                 episodesArray = Array(podcast.episodes.filter { $0.fileName != nil } )
@@ -118,8 +156,6 @@ class EpisodesTableViewController: PVViewController, UITableViewDataSource, UITa
                 }
             } else if self.filterTypeSelected == .allEpisodes {
                 episodesArray = Array(podcast.episodes)
-            } else if self.filterTypeSelected == .clips {
-                print("clips filter selected")
             }
             
             episodesArray.sort(by: { (prevEp, nextEp) -> Bool in
@@ -135,6 +171,15 @@ class EpisodesTableViewController: PVViewController, UITableViewDataSource, UITa
         }
 
     }
+    
+    func reloadEpisodeOrClipData() {
+        if self.filterTypeSelected == .clips {
+            retrieveClips()
+        } else {
+            reloadEpisodeData()
+        }
+    }
+    
 
     func downloadPlay(sender: UIButton) {
         if let cell = sender.superview?.superview as? EpisodeTableViewCell,
@@ -173,42 +218,66 @@ class EpisodesTableViewController: PVViewController, UITableViewDataSource, UITa
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return episodesArray.count
+        
+        if self.filterTypeSelected == .clips {
+            return clipsArray.count
+        } else {
+            return episodesArray.count
+        }
+        
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-
-        let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath as IndexPath) as! EpisodeTableViewCell
-
-        let episode = episodesArray[indexPath.row]
-
-        cell.title?.text = episode.title
-
-        if let summary = episode.summary {
+        
+        if self.filterTypeSelected == .clips {
             
-            let trimmed = summary.replacingOccurrences(of: "\\n*", with: "", options: .regularExpression)
+            let cell = self.tableView.dequeueReusableCell(withIdentifier: "clipCell", for: indexPath as IndexPath) as! ClipPodcastTableViewCell
             
-            cell.summary?.text = trimmed.removeHTMLFromString()?.trimmingCharacters(in: .whitespacesAndNewlines)
-        }
+            let clip = clipsArray[indexPath.row]
 
-        let totalClips = String(123)
-        cell.totalClips?.text = String(totalClips + " clips")
- 
-        if let pubDate = episode.pubDate {
-            cell.pubDate?.text = pubDate.toShortFormatString()
+            cell.episodeTitle.text = clip.episodeTitle
+            cell.clipTitle.text = clip.readableClipTitle()
+            cell.time.text = clip.readableStartAndEndTime()
+            cell.episodePubDate.text = clip.episodePubDate?.toShortFormatString()
+            
+            return cell
+
+        } else {
+            
+            let cell = tableView.dequeueReusableCell(withIdentifier: "episodeCell", for: indexPath as IndexPath) as! EpisodeTableViewCell
+            
+            let episode = episodesArray[indexPath.row]
+            
+            cell.title?.text = episode.title
+            
+            if let summary = episode.summary {
+                
+                let trimmed = summary.replacingOccurrences(of: "\\n*", with: "", options: .regularExpression)
+                
+                cell.summary?.text = trimmed.removeHTMLFromString()?.trimmingCharacters(in: .whitespacesAndNewlines)
+            }
+            
+            let totalClips = String(123)
+            cell.totalClips?.text = String(totalClips + " clips")
+            
+            if let pubDate = episode.pubDate {
+                cell.pubDate?.text = pubDate.toShortFormatString()
+            }
+            
+            if (DownloadingEpisodeList.shared.downloadingEpisodes.contains(where: {$0.mediaUrl == episode.mediaUrl})) {
+                cell.button.setTitle("DLing", for: .normal)
+            } else if episode.fileName != nil {
+                cell.button.setTitle("Play", for: .normal)
+            } else {
+                cell.button.setTitle("DL", for: .normal)
+            }
+            
+            cell.button.addTarget(self, action: #selector(downloadPlay(sender:)), for: .touchUpInside)
+            
+            return cell
+            
         }
         
-        if (DownloadingEpisodeList.shared.downloadingEpisodes.contains(where: {$0.mediaUrl == episode.mediaUrl})) {
-            cell.button.setTitle("DLing", for: .normal)
-        } else if episode.fileName != nil {
-            cell.button.setTitle("Play", for: .normal)
-        } else {
-            cell.button.setTitle("DL", for: .normal)
-        }
-
-        cell.button.addTarget(self, action: #selector(downloadPlay(sender:)), for: .touchUpInside)
-
-        return cell
     }
     
     func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -228,6 +297,13 @@ class EpisodesTableViewController: PVViewController, UITableViewDataSource, UITa
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath as IndexPath, animated: true)
+        
+        if self.filterTypeSelected == .clips {
+            let clip = clipsArray[indexPath.row]
+            let playerHistoryItem = self.playerHistoryManager.convertMediaRefToPlayerHistoryItem(mediaRef: clip)
+            self.goToNowPlaying()
+            self.pvMediaPlayer.loadPlayerHistoryItem(item: playerHistoryItem)
+        }
     }
     
     func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
@@ -259,7 +335,7 @@ class EpisodesTableViewController: PVViewController, UITableViewDataSource, UITa
 extension EpisodesTableViewController {
     
     func updateCellByNotification(_ notification:Notification) {
-        loadData()
+        reloadEpisodeData()
         if let downloadingEpisode = notification.userInfo?[Episode.episodeKey] as? DownloadingEpisode, let mediaUrl = downloadingEpisode.mediaUrl, let index = self.episodesArray.index(where: { $0.mediaUrl == mediaUrl }) {
             
             self.moc.refresh(self.episodesArray[index], mergeChanges: true)
@@ -296,3 +372,71 @@ extension EpisodesTableViewController {
     }
 
 }
+
+extension EpisodesTableViewController:FilterSelectionProtocol {
+    func filterButtonTapped() {
+        
+        let alert = UIAlertController(title: "Show", message: nil, preferredStyle: .alert)
+        
+        alert.addAction(UIAlertAction(title: "Downloaded", style: .default, handler: { action in
+            self.filterTypeSelected = .downloaded
+            self.reloadEpisodeData()
+        }))
+        
+        alert.addAction(UIAlertAction(title: "All Episodes", style: .default, handler: { action in
+            self.filterTypeSelected = .allEpisodes
+            self.reloadEpisodeData()
+        }))
+        
+        alert.addAction(UIAlertAction(title: "Clips", style: .default, handler: { action in
+            self.filterTypeSelected = .clips
+            self.retrieveClips()
+        }))
+        
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        
+        self.present(alert, animated: true, completion: nil)
+        
+    }
+    
+    func sortingButtonTapped() {
+        self.tableViewHeader.showSortByMenu(vc: self)
+    }
+    
+    func sortByRecent() {
+        self.sortingTypeSelected = .recent
+        self.retrieveClips()
+    }
+    
+    func sortByTop() {
+        self.tableViewHeader.showSortByTimeRangeMenu(vc: self)
+    }
+    
+    func sortByTopHour() { }
+    
+    func sortByTopDay() {
+        self.sortingTypeSelected = .topDay
+        self.retrieveClips()
+    }
+    
+    func sortByTopWeek() {
+        self.sortingTypeSelected = .topWeek
+        self.retrieveClips()
+    }
+    
+    func sortByTopMonth() {
+        self.sortingTypeSelected = .topMonth
+        self.retrieveClips()
+    }
+    
+    func sortByTopYear() {
+        self.sortingTypeSelected = .topYear
+        self.retrieveClips()
+    }
+    
+    func sortByTopAllTime() {
+        self.sortingTypeSelected = .topAllTime
+        self.retrieveClips()
+    }
+}
+

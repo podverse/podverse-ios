@@ -45,6 +45,9 @@ class ClipsTableViewController: PVViewController {
         activityIndicator.hidesWhenStopped = true
         showIndicator()
         
+        self.tableViewHeader.delegate = self
+        self.tableViewHeader.setupViews()
+        
         self.clipQueryActivityIndicator.hidesWhenStopped = true
         self.clipQueryMessage.isHidden = true
         
@@ -251,23 +254,17 @@ extension ClipsTableViewController:FilterSelectionProtocol {
     }
     
     func sortingButtonTapped() {
-        
-        let alert = UIAlertController(title: "Sort By", message: nil, preferredStyle: .actionSheet)
-        
-        alert.addAction(UIAlertAction(title: "Top", style: .default, handler: { action in
-            self.tableViewHeader.showSortByTimeRangeMenu(vc: self)
-        }))
-        
-        alert.addAction(UIAlertAction(title: "Recent", style: .default, handler: { action in
-            self.resetClipQuery()
-            self.sortingTypeSelected = .recent
-            self.retrieveClips()
-        }))
-        
-        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
-        
-        self.present(alert, animated: true, completion: nil)
-        
+        self.tableViewHeader.showSortByMenu(vc: self)
+    }
+    
+    func sortByRecent() {
+        self.resetClipQuery()
+        self.sortingTypeSelected = .recent
+        self.retrieveClips()
+    }
+    
+    func sortByTop() {
+        self.tableViewHeader.showSortByTimeRangeMenu(vc: self)
     }
     
     func sortByTopHour() { }

@@ -11,6 +11,8 @@ import UIKit
 protocol FilterSelectionProtocol {
     func filterButtonTapped()
     func sortingButtonTapped()
+    func sortByRecent()
+    func sortByTop()
     func sortByTopHour()
     func sortByTopDay()
     func sortByTopWeek()
@@ -201,12 +203,32 @@ class FiltersTableHeaderView: UIView {
                                                  toItem: nil,
                                                  attribute: .notAnAttribute,
                                                  multiplier: 1,
-                                                 constant: 1)
+                                                 constant: 0.5)
         
         self.addSubview(self.bottomBorder)
         
         self.addConstraints([filterLeading, filterTop, filterHeight, filterWidth, sortingLeading, sortingTop, sortingHeight, sortingWidth, topBorderLeading, topBorderTop, topBorderTrailing, topBorderHeight, bottomBorderLeading, bottomBorderBottom, bottomBorderTrailing, bottomBorderHeight])
         
+    }
+    
+    func showSortByMenu(vc: Any) {
+        let alert = UIAlertController(title: "Sort By", message: nil, preferredStyle: .actionSheet)
+        
+        alert.addAction(UIAlertAction(title: "Top", style: .default, handler: { action in
+            self.delegate?.sortByTop()
+        }))
+        
+        alert.addAction(UIAlertAction(title: "Recent", style: .default, handler: { action in
+            self.delegate?.sortByRecent()
+        }))
+        
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        
+        if let vc = vc as? PVViewController {
+            vc.present(alert, animated: true, completion: nil)
+        } else if let vc = vc as? UIViewController {
+            vc.present(alert, animated: true, completion: nil)
+        }
     }
     
     func showSortByTimeRangeMenu(vc: Any) {
@@ -241,6 +263,14 @@ class FiltersTableHeaderView: UIView {
             vc.present(alert, animated: true, completion: nil)
         }
         
+    }
+    
+    func sortByRecent() {
+        self.delegate?.sortByRecent()
+    }
+    
+    func sortByTop() {
+        self.delegate?.sortByTop()
     }
     
     func sortByTopHour() {
