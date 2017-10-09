@@ -18,7 +18,7 @@ class EpisodeTableViewController: PVViewController {
     
     @IBOutlet weak var webView: UIWebView!
     
-    var filterTypeSelected: EpisodeFilterType = .showNotes {
+    var filterTypeSelected: EpisodeFilter = .showNotes {
         didSet {
             self.filterType.setTitle(filterTypeSelected.text + "\u{2304}", for: .normal)
             

@@ -26,7 +26,7 @@ class ClipsListContainerViewController: UIViewController {
     weak var delegate:ClipsListDelegate?
     let reachability = PVReachability.shared
     
-    var filterTypeSelected: ClipFilterType = .episode {
+    var filterTypeSelected: ClipFilter = .episode {
         didSet {
             self.filterType.setTitle(filterTypeSelected.text + "\u{2304}", for: .normal)
             UserDefaults.standard.set(filterTypeSelected.text, forKey: kClipsListFilterType)
@@ -43,7 +43,7 @@ class ClipsListContainerViewController: UIViewController {
         activityIndicator.hidesWhenStopped = true
         showIndicator()
         
-        if let savedFilterType = UserDefaults.standard.value(forKey: kClipsListFilterType) as? String, let sFilterType = ClipFilterType(rawValue: savedFilterType) {
+        if let savedFilterType = UserDefaults.standard.value(forKey: kClipsListFilterType) as? String, let sFilterType = ClipFilter(rawValue: savedFilterType) {
             self.filterTypeSelected = sFilterType
         }
         

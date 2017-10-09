@@ -15,66 +15,62 @@ class ClipsTableViewController: PVViewController {
     
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
+    
+    @IBOutlet weak var tableViewHeader: FiltersTableHeaderView!
+    
     @IBOutlet weak var clipQueryActivityIndicator: UIActivityIndicatorView!
     @IBOutlet weak var clipQueryMessage: UILabel!
     @IBOutlet weak var clipQueryStatusView: UIView!
-    
-    @IBOutlet weak var filterType: UIButton!
-    @IBOutlet weak var sorting: UIButton!
     
     var clipQueryPage: Int = 0
     var clipQueryIsLoading: Bool = false
     var clipQueryEndOfResultsReached: Bool = false
     
-    var filterTypeSelected: ClipFilterType = .allPodcasts {
+    var filterTypeSelected: ClipFilter = .allPodcasts {
         didSet {
-            self.filterType.setTitle(filterTypeSelected.text + "\u{2304}", for: .normal)
+            self.tableViewHeader.filterTitle = self.filterTypeSelected.text
             UserDefaults.standard.set(filterTypeSelected.text, forKey: kClipsTableFilterType)
         }
     }
-
+    var sortingTypeSelected: ClipSorting = .topWeek {
+        didSet {
+            self.tableViewHeader.sortingTitle = sortingTypeSelected.text
+            UserDefaults.standard.set(sortingTypeSelected.text, forKey: kClipsTableSortingType)
+        }
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         activityIndicator.hidesWhenStopped = true
         showIndicator()
+        
+        self.tableViewHeader.delegate = self
+        self.tableViewHeader.setupViews()
         
         self.clipQueryActivityIndicator.hidesWhenStopped = true
         self.clipQueryMessage.isHidden = true
         
-        if let savedFilterType = UserDefaults.standard.value(forKey: kClipsTableFilterType) as? String, let clipFilterType = ClipFilterType(rawValue: savedFilterType) {
+        if let savedFilterType = UserDefaults.standard.value(forKey: kClipsTableFilterType) as? String, let clipFilterType = ClipFilter(rawValue: savedFilterType) {
             self.filterTypeSelected = clipFilterType
         } else {
             self.filterTypeSelected = .allPodcasts
-            
+        }
+        
+        if let savedSortingType = UserDefaults.standard.value(forKey: kClipsTableSortingType) as? String, let clipSortingType = ClipSorting(rawValue: savedSortingType) {
+            self.sortingTypeSelected = clipSortingType
+        } else {
+            self.sortingTypeSelected = .topWeek
         }
         
         retrieveClips()
     }
     
-    @IBAction func updateFilter(_ sender: Any) {
-        let alert = UIAlertController(title: "Clips From", message: nil, preferredStyle: .alert)
-        
-        alert.addAction(UIAlertAction(title: "Subscribed", style: .default, handler: { action in
-            self.resetClipQuery()
-            self.filterTypeSelected = .subscribed
-            self.retrieveClips()
-        }))
-        
-        alert.addAction(UIAlertAction(title: "All Podcasts", style: .default, handler: { action in
-            self.resetClipQuery()
-            self.filterTypeSelected = .allPodcasts
-            self.retrieveClips()
-        }))
-        
-        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
-        
-        self.present(alert, animated: true, completion: nil)
-    }
-    
-    
-    @IBAction func updateSorting(_ sender: Any) {
-        
+    override func viewWillAppear(_ animated: Bool) {
+        self.tableViewHeader.filterTitle = self.filterTypeSelected.text
+        self.tableViewHeader.sortingTitle = self.sortingTypeSelected.text
+        self.tableViewHeader.delegate = self
+        self.tableViewHeader.setupViews()
     }
     
     @IBAction func retryButtonTouched(_ sender: Any) {
@@ -94,30 +90,30 @@ class ClipsTableViewController: PVViewController {
         self.clipQueryPage += 1
         
         if self.filterTypeSelected == .subscribed {
-            
+
             let moc = CoreDataHelper.createMOCForThread(threadType: .privateThread)
             var subscribedPodcastFeedUrls = [String]()
             let subscribedPodcastsArray = CoreDataHelper.fetchEntities(className:"Podcast", predicate: nil, moc:moc) as! [Podcast]
-            
+
             for podcast in subscribedPodcastsArray {
                 subscribedPodcastFeedUrls.append(podcast.feedUrl)
             }
-            
+
             if subscribedPodcastFeedUrls.count < 1 {
                 self.reloadClipData()
                 return
             }
-            
-            MediaRef.retrieveMediaRefsFromServer(podcastFeedUrls: subscribedPodcastFeedUrls, page: self.clipQueryPage) { (mediaRefs) -> Void in
+
+            MediaRef.retrieveMediaRefsFromServer(podcastFeedUrls: subscribedPodcastFeedUrls, sortingType: self.sortingTypeSelected, page: self.clipQueryPage) { (mediaRefs) -> Void in
                 self.reloadClipData(mediaRefs: mediaRefs)
             }
-            
+
         } else {
-            
-            MediaRef.retrieveMediaRefsFromServer(page: self.clipQueryPage) { (mediaRefs) -> Void in
+
+            MediaRef.retrieveMediaRefsFromServer(sortingType: self.sortingTypeSelected, page: self.clipQueryPage) { (mediaRefs) -> Void in
                 self.reloadClipData(mediaRefs: mediaRefs)
             }
-            
+
         }
         
     }
@@ -232,4 +228,74 @@ extension ClipsTableViewController:UITableViewDelegate, UITableViewDataSource {
         }
     }
     
+}
+
+extension ClipsTableViewController:FilterSelectionProtocol {
+    func filterButtonTapped() {
+        
+        let alert = UIAlertController(title: "Clips From", message: nil, preferredStyle: .actionSheet)
+        
+        alert.addAction(UIAlertAction(title: "Subscribed", style: .default, handler: { action in
+            self.resetClipQuery()
+            self.filterTypeSelected = .subscribed
+            self.retrieveClips()
+        }))
+        
+        alert.addAction(UIAlertAction(title: "All Podcasts", style: .default, handler: { action in
+            self.resetClipQuery()
+            self.filterTypeSelected = .allPodcasts
+            self.retrieveClips()
+        }))
+        
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        
+        self.present(alert, animated: true, completion: nil)
+        
+    }
+    
+    func sortingButtonTapped() {
+        self.tableViewHeader.showSortByMenu(vc: self)
+    }
+    
+    func sortByRecent() {
+        self.resetClipQuery()
+        self.sortingTypeSelected = .recent
+        self.retrieveClips()
+    }
+    
+    func sortByTop() {
+        self.tableViewHeader.showSortByTimeRangeMenu(vc: self)
+    }
+    
+    func sortByTopHour() { }
+    
+    func sortByTopDay() {
+        self.resetClipQuery()
+        self.sortingTypeSelected = .topDay
+        self.retrieveClips()
+    }
+    
+    func sortByTopWeek() {
+        self.resetClipQuery()
+        self.sortingTypeSelected = .topWeek
+        self.retrieveClips()
+    }
+    
+    func sortByTopMonth() {
+        self.resetClipQuery()
+        self.sortingTypeSelected = .topMonth
+        self.retrieveClips()
+    }
+    
+    func sortByTopYear() {
+        self.resetClipQuery()
+        self.sortingTypeSelected = .topYear
+        self.retrieveClips()
+    }
+    
+    func sortByTopAllTime() {
+        self.resetClipQuery()
+        self.sortingTypeSelected = .topAllTime
+        self.retrieveClips()
+    }
 }

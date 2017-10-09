@@ -71,13 +71,27 @@ let kAutoDownloadingFeedUrls = "autoDownloadingFeedUrls"
 
 let kDownloadingMediaUrls = "downloadingMediaUrls"
 
-let kClipsTableFilterType = "ClipsListFilterType"
+let kClipsTableFilterType = "ClipsTableFilterType"
+
+let kClipsTableSortingType = "ClipsTableSortingType"
 
 let kClipsListFilterType = "ClipsListFilterType"
+
+let kClipsListSortingType = "ClipsListFilterType"
+
+let kEpisodesTableFilterType = "EpisodesTableFilterType"
+
+let kEpisodesTableSortingType = "EpisodesTableSortingType"
+
+let kEpisodeTableFilterType = "EpisodeTableFilterType"
+
+let kEpisodeTableSortingType = "EpisodeTableSortingType"
 
 let kInternetIsUnreachable = "internetIsUnreachable"
 
 let kWiFiIsUnreachable = "wiFiIsUnreachable"
+
+let kDropdownCaret = " \u{2304}"
 
 let kNoDataViewTag = 999
 
@@ -94,7 +108,7 @@ let TO_PLAYER_SEGUE_ID = "To Now Playing"
 let ErrorDomain = Bundle.main.bundleIdentifier!
 let CoreDataFailureCode = -9999
 
-enum ClipFilterType: String {
+enum ClipFilter: String {
     case allPodcasts = "All Podcasts"
     case episode = "Episode"
     case podcast = "Podcast"
@@ -114,39 +128,120 @@ enum ClipFilterType: String {
             }
         }
     }
+}
+
+enum ClipSorting: String {
+    case recent = "recent"
+    case topHour = "top - past hour"
+    case topDay = "top - past day"
+    case topWeek = "top - past week"
+    case topMonth = "top - past month"
+    case topYear = "top - past year"
+    case topAllTime = "top - all time"
+    
+    var text: String {
+        get {
+            switch self {
+            case .recent:
+                return "recent"
+            case .topHour:
+                return "top - past hour"
+            case .topDay:
+                return "top - past day"
+            case .topWeek:
+                return "top - past week"
+            case .topMonth:
+                return "top - past month"
+            case .topYear:
+                return "top - past year"
+            case .topAllTime:
+                return "top - all time"
+            }
+        }
+    }
+
+    var requestParam: String {
+        get {
+            switch self {
+            case .recent:
+                return "recent"
+            case .topHour:
+                return "pastHour"
+            case .topDay:
+                return "pastDay"
+            case .topWeek:
+                return "pastWeek"
+            case .topMonth:
+                return "pastMonth"
+            case .topYear:
+                return "pastYear"
+            case .topAllTime:
+                return "allTime"
+            }
+        }
+    }
+        
+}
+
+enum SortingTimeRange: String {
+    case hour = "hour"
+    case day = "day"
+    case week = "week"
+    case month = "month"
+    case year = "year"
+    case allTime = "allTime"
+    
+    var text: String {
+        get {
+            switch self {
+            case .hour:
+                return "past hour"
+            case .day:
+                return "past day"
+            case .week:
+                return "past week"
+            case .month:
+                return "past month"
+            case .year:
+                return "past year"
+            case .allTime:
+                return "all time"
+            }
+        }
+    }
     
 }
 
-enum PodcastFilterType: String {
+enum EpisodesFilter: String {
+    case downloaded = "Downloaded"
     case allEpisodes = "All Episodes"
     case clips = "Clips"
-    case downloaded = "Only Downloaded"
     
     var text:String {
         get {
             switch self {
+            case .downloaded:
+                return "Downloaded"
             case .allEpisodes:
                 return "All Episodes"
             case .clips:
                 return "Clips"
-            case .downloaded:
-                return "Downloaded"
             }
         }
     }
 }
 
-enum EpisodeFilterType: String {
-    case clips = "Clips"
+enum EpisodeFilter: String {
     case showNotes = "Show Notes"
+    case clips = "Clips"
     
     var text:String {
         get {
             switch self {
-            case .clips:
-                return "Clips"
             case .showNotes:
                 return "Show Notes"
+            case .clips:
+                return "Clips"
             }
         }
     }
