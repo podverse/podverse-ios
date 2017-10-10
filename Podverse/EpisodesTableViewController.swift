@@ -418,17 +418,17 @@ extension EpisodesTableViewController:FilterSelectionProtocol {
         self.tableViewHeader.showSortByTimeRangeMenu(vc: self)
     }
     
-    func sortByTopWithTimeRange(timeRange: String) {
+    func sortByTopWithTimeRange(timeRange: SortingTimeRange) {
         
-        if timeRange == "Day" {
+        if timeRange == .day {
             self.sortingTypeSelected = .topDay
-        } else if timeRange == "Week" {
+        } else if timeRange == .week {
             self.sortingTypeSelected = .topWeek
-        } else if timeRange == "Month" {
+        } else if timeRange == .month {
             self.sortingTypeSelected = .topMonth
-        } else if timeRange == "Year" {
+        } else if timeRange == .year {
             self.sortingTypeSelected = .topYear
-        } else if timeRange == "All Time" {
+        } else if timeRange == .allTime {
             self.sortingTypeSelected = .topAllTime
         }
         

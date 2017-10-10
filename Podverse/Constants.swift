@@ -183,6 +183,22 @@ enum ClipSorting: String {
         
 }
 
+enum SortByOptions: String {
+    case top = "top"
+    case recent = "recent"
+    
+    var title: String {
+        get {
+            switch self {
+            case .top:
+                return "Top"
+            case .recent:
+                return "Recent"
+            }
+        }
+    }
+}
+
 enum SortingTimeRange: String {
     case hour = "hour"
     case day = "day"
@@ -191,21 +207,21 @@ enum SortingTimeRange: String {
     case year = "year"
     case allTime = "allTime"
     
-    var text: String {
+    var title: String {
         get {
             switch self {
             case .hour:
-                return "past hour"
+                return "Hour"
             case .day:
-                return "past day"
+                return "Day"
             case .week:
-                return "past week"
+                return "Week"
             case .month:
-                return "past month"
+                return "Month"
             case .year:
-                return "past year"
+                return "Year"
             case .allTime:
-                return "all time"
+                return "All Time"
             }
         }
     }

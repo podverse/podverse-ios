@@ -13,7 +13,7 @@ protocol FilterSelectionProtocol {
     func sortingButtonTapped()
     func sortByRecent()
     func sortByTop()
-    func sortByTopWithTimeRange(timeRange: String)
+    func sortByTopWithTimeRange(timeRange: SortingTimeRange)
 }
 
 class FiltersTableHeaderView: UIView {
@@ -209,11 +209,11 @@ class FiltersTableHeaderView: UIView {
     func showSortByMenu(vc: Any) {
         let alert = UIAlertController(title: "Sort By", message: nil, preferredStyle: .actionSheet)
         
-        alert.addAction(UIAlertAction(title: "Top", style: .default, handler: { action in
+        alert.addAction(UIAlertAction(title: SortByOptions.top.title, style: .default, handler: { action in
             self.delegate?.sortByTop()
         }))
         
-        alert.addAction(UIAlertAction(title: "Recent", style: .default, handler: { action in
+        alert.addAction(UIAlertAction(title: SortByOptions.recent.title, style: .default, handler: { action in
             self.delegate?.sortByRecent()
         }))
         
@@ -228,24 +228,24 @@ class FiltersTableHeaderView: UIView {
         
         let alert = UIAlertController(title: "Time Range", message: nil, preferredStyle: .actionSheet)
         
-        alert.addAction(UIAlertAction(title: "Day", style: .default, handler: { action in
-            self.sortByTopWithTimeRange(timeRange: "Day")
+        alert.addAction(UIAlertAction(title: SortingTimeRange.day.title, style: .default, handler: { action in
+            self.sortByTopWithTimeRange(timeRange: .day)
         }))
         
-        alert.addAction(UIAlertAction(title: "Week", style: .default, handler: { action in
-            self.sortByTopWithTimeRange(timeRange: "Week")
+        alert.addAction(UIAlertAction(title: SortingTimeRange.week.title, style: .default, handler: { action in
+            self.sortByTopWithTimeRange(timeRange: .week)
         }))
         
-        alert.addAction(UIAlertAction(title: "Month", style: .default, handler: { action in
-            self.sortByTopWithTimeRange(timeRange: "Month")
+        alert.addAction(UIAlertAction(title: SortingTimeRange.month.title, style: .default, handler: { action in
+            self.sortByTopWithTimeRange(timeRange: .month)
         }))
         
-        alert.addAction(UIAlertAction(title: "Year", style: .default, handler: { action in
-            self.sortByTopWithTimeRange(timeRange: "Year")
+        alert.addAction(UIAlertAction(title: SortingTimeRange.year.title, style: .default, handler: { action in
+            self.sortByTopWithTimeRange(timeRange: .year)
         }))
         
-        alert.addAction(UIAlertAction(title: "All Time", style: .default, handler: { action in
-            self.sortByTopWithTimeRange(timeRange: "All Time")
+        alert.addAction(UIAlertAction(title: SortingTimeRange.allTime.title, style: .default, handler: { action in
+            self.sortByTopWithTimeRange(timeRange: .allTime)
         }))
         
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
@@ -264,7 +264,7 @@ class FiltersTableHeaderView: UIView {
         self.delegate?.sortByTop()
     }
     
-    func sortByTopWithTimeRange(timeRange: String) {
+    func sortByTopWithTimeRange(timeRange: SortingTimeRange) {
         self.delegate?.sortByTopWithTimeRange(timeRange: timeRange)
     }
     
