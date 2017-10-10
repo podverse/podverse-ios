@@ -54,10 +54,16 @@ class EpisodeTableViewController: PVViewController {
         self.tableViewHeader.delegate = self
         self.tableViewHeader.setupViews()
         
-        if let savedFilterType = UserDefaults.standard.value(forKey: kEpisodeTableSortingType) as? String, let episodeFilterType = EpisodeFilter(rawValue: savedFilterType) {
+        if let savedFilterType = UserDefaults.standard.value(forKey: kEpisodeTableFilterType) as? String, let episodeFilterType = EpisodeFilter(rawValue: savedFilterType) {
             self.filterTypeSelected = episodeFilterType
         } else {
             self.filterTypeSelected = .showNotes
+        }
+        
+        if let savedSortingType = UserDefaults.standard.value(forKey: kEpisodeTableSortingType) as? String, let episodesSortingType = ClipSorting(rawValue: savedSortingType) {
+            self.sortingTypeSelected = episodesSortingType
+        } else {
+            self.sortingTypeSelected = .topWeek
         }
         
         setupNotificationListeners()

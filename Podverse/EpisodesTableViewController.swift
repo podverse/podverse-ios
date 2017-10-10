@@ -54,7 +54,7 @@ class EpisodesTableViewController: PVViewController {
             self.filterTypeSelected = .downloaded
         }
         
-        if let savedSortingType = UserDefaults.standard.value(forKey: kEpisodesTableFilterType) as? String, let episodesSortingType = ClipSorting(rawValue: savedSortingType) {
+        if let savedSortingType = UserDefaults.standard.value(forKey: kEpisodesTableSortingType) as? String, let episodesSortingType = ClipSorting(rawValue: savedSortingType) {
             self.sortingTypeSelected = episodesSortingType
         } else {
             self.sortingTypeSelected = .topWeek
