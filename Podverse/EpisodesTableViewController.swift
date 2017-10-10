@@ -5,7 +5,7 @@ protocol AutoDownloadProtocol: NSObjectProtocol {
     func podcastAutodownloadChanged(feedUrl: String)
 }
 
-class EpisodesTableViewController: PVViewController, UITableViewDataSource, UITableViewDelegate {
+class EpisodesTableViewController: PVViewController {
     
     weak var delegate: AutoDownloadProtocol?
     var clipsArray = [MediaRef]()
@@ -212,21 +212,35 @@ class EpisodesTableViewController: PVViewController, UITableViewDataSource, UITa
         }
     }
 
-//    // MARK: - Table view data source
-    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        return 1
+    override func goToNowPlaying () {
+        if let mediaPlayerVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "MediaPlayerVC") as? MediaPlayerViewController {
+            pvMediaPlayer.shouldAutoplayOnce = true
+            self.navigationController?.pushViewController(mediaPlayerVC, animated: true)
+        }
     }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "Show Episode" {
+            if let episodeTableViewController = segue.destination as? EpisodeTableViewController, let feedUrl = self.feedUrl, let index = self.tableView.indexPathForSelectedRow {
+                episodeTableViewController.feedUrl = feedUrl
+                episodeTableViewController.mediaUrl = self.episodesArray[index.row].mediaUrl
+            }
+        }
+    }
+}
+
+extension EpisodesTableViewController: UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
         if self.filterTypeSelected == .clips {
-            return clipsArray.count
+            return self.clipsArray.count
         } else {
-            return episodesArray.count
+            return self.episodesArray.count
         }
         
     }
-
+    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         if self.filterTypeSelected == .clips {
@@ -234,14 +248,14 @@ class EpisodesTableViewController: PVViewController, UITableViewDataSource, UITa
             let cell = self.tableView.dequeueReusableCell(withIdentifier: "clipCell", for: indexPath as IndexPath) as! ClipPodcastTableViewCell
             
             let clip = clipsArray[indexPath.row]
-
+            
             cell.episodeTitle.text = clip.episodeTitle
             cell.clipTitle.text = clip.readableClipTitle()
             cell.time.text = clip.readableStartAndEndTime()
             cell.episodePubDate.text = clip.episodePubDate?.toShortFormatString()
             
             return cell
-
+            
         } else {
             
             let cell = tableView.dequeueReusableCell(withIdentifier: "episodeCell", for: indexPath as IndexPath) as! EpisodeTableViewCell
@@ -287,13 +301,6 @@ class EpisodesTableViewController: PVViewController, UITableViewDataSource, UITa
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return UITableViewAutomaticDimension
     }
-
-    override func goToNowPlaying () {
-        if let mediaPlayerVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "MediaPlayerVC") as? MediaPlayerViewController {
-            pvMediaPlayer.shouldAutoplayOnce = true
-            self.navigationController?.pushViewController(mediaPlayerVC, animated: true)
-        }
-    }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath as IndexPath, animated: true)
@@ -326,15 +333,6 @@ class EpisodesTableViewController: PVViewController, UITableViewDataSource, UITa
             return []
         }
         
-    }
-    
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == "Show Episode" {
-            if let episodeTableViewController = segue.destination as? EpisodeTableViewController, let feedUrl = self.feedUrl, let index = self.tableView.indexPathForSelectedRow {
-                episodeTableViewController.feedUrl = feedUrl
-                episodeTableViewController.mediaUrl = self.episodesArray[index.row].mediaUrl
-            }
-        }
     }
 }
 
@@ -384,17 +382,17 @@ extension EpisodesTableViewController:FilterSelectionProtocol {
         
         let alert = UIAlertController(title: "Show", message: nil, preferredStyle: .alert)
         
-        alert.addAction(UIAlertAction(title: "Downloaded", style: .default, handler: { action in
+        alert.addAction(UIAlertAction(title: EpisodesFilter.downloaded.text, style: .default, handler: { action in
             self.filterTypeSelected = .downloaded
             self.reloadEpisodeData()
         }))
         
-        alert.addAction(UIAlertAction(title: "All Episodes", style: .default, handler: { action in
+        alert.addAction(UIAlertAction(title: EpisodesFilter.allEpisodes.text, style: .default, handler: { action in
             self.filterTypeSelected = .allEpisodes
             self.reloadEpisodeData()
         }))
         
-        alert.addAction(UIAlertAction(title: "Clips", style: .default, handler: { action in
+        alert.addAction(UIAlertAction(title: EpisodesFilter.clips.text, style: .default, handler: { action in
             self.filterTypeSelected = .clips
             self.retrieveClips()
         }))

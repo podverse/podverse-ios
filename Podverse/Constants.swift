@@ -101,6 +101,8 @@ let kFinishedAllParsingPodcasts = "finishedAllParsingPodcasts"
 
 let kFinishedParsingPodcast = "finishedParsingPodcast"
 
+let kNoShowNotesMessage = "No show notes available for this episode."
+
 let rootPath = NSSearchPathForDirectoriesInDomains(FileManager.SearchPathDirectory.documentDirectory, .userDomainMask, true)[0]
 
 let TO_PLAYER_SEGUE_ID = "To Now Playing"
@@ -260,5 +262,28 @@ enum EpisodeFilter: String {
                 return "Clips"
             }
         }
+    }
+}
+
+enum EpisodeActions: String {
+    case stream = "Stream"
+    case downloading = "Downloading"
+    case download = "Download"
+    case play = "Play"
+    
+    var title:String {
+        get {
+            switch self {
+            case .stream:
+                return "Stream"
+            case .downloading:
+                return "Downloading"
+            case .download:
+                return "Download"
+            case .play:
+                return "Play"
+            }
+        }
+        
     }
 }
