@@ -40,7 +40,11 @@ class FiltersTableHeaderView: UIView {
     let topBorder = UIView()
     let bottomBorder = UIView()
         
-    func setupViews() {
+    func setupViews(isBlackBg: Bool = false) {
+        
+        let titleColor:UIColor = isBlackBg ? .white : .black
+        let borderColor:UIColor = isBlackBg ? .darkGray : .lightGray
+        
         self.translatesAutoresizingMaskIntoConstraints = false
         self.filterButton.translatesAutoresizingMaskIntoConstraints = false
         self.sortingButton.translatesAutoresizingMaskIntoConstraints = false
@@ -48,7 +52,7 @@ class FiltersTableHeaderView: UIView {
         self.bottomBorder.translatesAutoresizingMaskIntoConstraints = false
         
         self.filterButton.setTitle(filterTitle, for: .normal)
-        self.filterButton.setTitleColor(.black, for: .normal)
+        self.filterButton.setTitleColor(titleColor, for: .normal)
         self.filterButton.titleLabel?.font = UIFont.systemFont(ofSize: 17, weight: UIFontWeightSemibold)
         self.filterButton.contentHorizontalAlignment = .left
         
@@ -89,7 +93,7 @@ class FiltersTableHeaderView: UIView {
                                               constant: 140)
         
         self.sortingButton.setTitle(sortingTitle, for: .normal)
-        self.sortingButton.setTitleColor(.black, for: .normal)
+        self.sortingButton.setTitleColor(titleColor, for: .normal)
         self.sortingButton.titleLabel?.font = UIFont.systemFont(ofSize: 16)
         self.sortingButton.contentHorizontalAlignment = .right
         
@@ -130,7 +134,7 @@ class FiltersTableHeaderView: UIView {
         
         self.addSubview(self.sortingButton)
         
-        self.topBorder.backgroundColor = UIColor.lightGray
+        self.topBorder.backgroundColor = borderColor
         
         let topBorderLeading = NSLayoutConstraint(item: self.topBorder,
                                                 attribute: .leading,
@@ -166,7 +170,7 @@ class FiltersTableHeaderView: UIView {
         
         self.addSubview(self.topBorder)
         
-        self.bottomBorder.backgroundColor = UIColor.lightGray
+        self.bottomBorder.backgroundColor = borderColor
         
         let bottomBorderLeading = NSLayoutConstraint(item: self.bottomBorder,
                                                   attribute: .leading,
@@ -209,11 +213,11 @@ class FiltersTableHeaderView: UIView {
     func showSortByMenu(vc: Any) {
         let alert = UIAlertController(title: "Sort By", message: nil, preferredStyle: .actionSheet)
         
-        alert.addAction(UIAlertAction(title: SortByOptions.top.title, style: .default, handler: { action in
+        alert.addAction(UIAlertAction(title: SortByOptions.top.text, style: .default, handler: { action in
             self.delegate?.sortByTop()
         }))
         
-        alert.addAction(UIAlertAction(title: SortByOptions.recent.title, style: .default, handler: { action in
+        alert.addAction(UIAlertAction(title: SortByOptions.recent.text, style: .default, handler: { action in
             self.delegate?.sortByRecent()
         }))
         
@@ -228,23 +232,23 @@ class FiltersTableHeaderView: UIView {
         
         let alert = UIAlertController(title: "Time Range", message: nil, preferredStyle: .actionSheet)
         
-        alert.addAction(UIAlertAction(title: SortingTimeRange.day.title, style: .default, handler: { action in
+        alert.addAction(UIAlertAction(title: SortingTimeRange.day.text, style: .default, handler: { action in
             self.sortByTopWithTimeRange(timeRange: .day)
         }))
         
-        alert.addAction(UIAlertAction(title: SortingTimeRange.week.title, style: .default, handler: { action in
+        alert.addAction(UIAlertAction(title: SortingTimeRange.week.text, style: .default, handler: { action in
             self.sortByTopWithTimeRange(timeRange: .week)
         }))
         
-        alert.addAction(UIAlertAction(title: SortingTimeRange.month.title, style: .default, handler: { action in
+        alert.addAction(UIAlertAction(title: SortingTimeRange.month.text, style: .default, handler: { action in
             self.sortByTopWithTimeRange(timeRange: .month)
         }))
         
-        alert.addAction(UIAlertAction(title: SortingTimeRange.year.title, style: .default, handler: { action in
+        alert.addAction(UIAlertAction(title: SortingTimeRange.year.text, style: .default, handler: { action in
             self.sortByTopWithTimeRange(timeRange: .year)
         }))
         
-        alert.addAction(UIAlertAction(title: SortingTimeRange.allTime.title, style: .default, handler: { action in
+        alert.addAction(UIAlertAction(title: SortingTimeRange.allTime.text, style: .default, handler: { action in
             self.sortByTopWithTimeRange(timeRange: .allTime)
         }))
         

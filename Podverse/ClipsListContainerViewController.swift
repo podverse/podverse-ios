@@ -16,38 +16,52 @@ protocol ClipsListDelegate:class {
 class ClipsListContainerViewController: UIViewController {
 
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
-    @IBOutlet weak var filterType: UIButton!
-    @IBOutlet weak var sorting: UIButton!
-    @IBOutlet weak var tableControlsView: UIView!
     @IBOutlet weak var tableView: UITableView!
+    @IBOutlet weak var tableViewHeader: FiltersTableHeaderView!
     
-    let pvMediaPlayer = PVMediaPlayer.shared
     var clipsArray = [MediaRef]()
     weak var delegate:ClipsListDelegate?
+    let pvMediaPlayer = PVMediaPlayer.shared
     let reachability = PVReachability.shared
     
     var filterTypeSelected: ClipFilter = .episode {
         didSet {
-            self.filterType.setTitle(filterTypeSelected.text + "\u{2304}", for: .normal)
+            self.tableViewHeader.filterTitle = filterTypeSelected.text
             UserDefaults.standard.set(filterTypeSelected.text, forKey: kClipsListFilterType)
+        }
+    }
+    
+    var sortingTypeSelected: ClipSorting = .topWeek {
+        didSet {
+            self.tableViewHeader.sortingTitle = sortingTypeSelected.text
+            UserDefaults.standard.set(sortingTypeSelected.text, forKey: kClipsListSortingType)
         }
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        self.tableViewHeader.delegate = self
+        self.tableViewHeader.setupViews(isBlackBg: true)
+        
         self.tableView.separatorColor = .darkGray
-        self.tableControlsView.layer.borderColor = UIColor.lightGray.cgColor
-        self.tableControlsView.layer.borderWidth = 1.0
         
         activityIndicator.hidesWhenStopped = true
         showIndicator()
         
         if let savedFilterType = UserDefaults.standard.value(forKey: kClipsListFilterType) as? String, let sFilterType = ClipFilter(rawValue: savedFilterType) {
             self.filterTypeSelected = sFilterType
+        } else {
+            self.filterTypeSelected = .episode
         }
         
-        retrieveClipData()
+        if let savedSortingType = UserDefaults.standard.value(forKey: kClipsListSortingType) as? String, let episodesSortingType = ClipSorting(rawValue: savedSortingType) {
+            self.sortingTypeSelected = episodesSortingType
+        } else {
+            self.sortingTypeSelected = .topWeek
+        }
+        
+        retrieveClips()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -55,84 +69,59 @@ class ClipsListContainerViewController: UIViewController {
         checkForConnectvity()
     }
     
-    @IBAction func retryButtonTouched(_ sender: Any) {
+    func retrieveClipsAllPodcasts() {
+        MediaRef.retrieveMediaRefsFromServer(sortingType: self.sortingTypeSelected) { (mediaRefs) -> Void in
+            self.reloadClipData(mediaRefs: mediaRefs)
+        }
         
+        self.filterTypeSelected = .allPodcasts
+        UserDefaults.standard.set(ClipFilter.allPodcasts.text, forKey: kClipsListFilterType)
     }
     
-    @IBAction func updateFilter(_ sender: Any) {
-        let alert = UIAlertController(title: "Clips From", message: nil, preferredStyle: .actionSheet)
-
-        alert.addAction(UIAlertAction(title: "Episode", style: .default, handler: { action in
-            if let item = self.pvMediaPlayer.nowPlayingItem {
-                MediaRef.retrieveMediaRefsFromServer(episodeMediaUrl: item.episodeMediaUrl, podcastFeedUrls: []) { (mediaRefs) -> Void in
-                    self.reloadClipData(mediaRefs: mediaRefs)
-                }
-            }
-            self.filterType.setTitle("Episode\u{2304}", for: .normal)
-            self.filterTypeSelected = .episode
-            UserDefaults.standard.set("Episode", forKey: kClipsListFilterType)
-        }))
+    func retrieveClipsSubscribed() {
+        let subscribedPodcastFeedUrls = Podcast.retrieveSubscribedUrls()
         
-        alert.addAction(UIAlertAction(title: "Podcast", style: .default, handler: { action in
-            if let item = self.pvMediaPlayer.nowPlayingItem, let podcastFeedUrl = item.podcastFeedUrl {
-                MediaRef.retrieveMediaRefsFromServer(episodeMediaUrl: nil, podcastFeedUrls: [podcastFeedUrl]) { (mediaRefs) -> Void in
-                    self.reloadClipData(mediaRefs: mediaRefs)
-                }
-            }
-            self.filterType.setTitle("Podcast\u{2304}", for: .normal)
-            self.filterTypeSelected = .podcast
-            UserDefaults.standard.set("Podcast", forKey: kClipsListFilterType)
-        }))
+        MediaRef.retrieveMediaRefsFromServer(episodeMediaUrl: nil, podcastFeedUrls: subscribedPodcastFeedUrls, sortingType: self.sortingTypeSelected) { (mediaRefs) -> Void in
+            self.reloadClipData(mediaRefs: mediaRefs)
+        }
         
-        
-        alert.addAction(UIAlertAction(title: "Subscribed", style: .default, handler: { action in
-            MediaRef.retrieveMediaRefsFromServer(episodeMediaUrl: nil, podcastFeedUrls: []) { (mediaRefs) -> Void in
-                self.reloadClipData(mediaRefs: mediaRefs)
-            }
-            self.filterType.setTitle("Subscribed\u{2304}", for: .normal)
-            self.filterTypeSelected = .subscribed
-            UserDefaults.standard.set("Subscribed", forKey: kClipsListFilterType)
-        }))
-        
-        alert.addAction(UIAlertAction(title: "All Podcasts", style: .default, handler: { action in
-            MediaRef.retrieveMediaRefsFromServer(episodeMediaUrl: nil, podcastFeedUrls: []) { (mediaRefs) -> Void in
-                self.reloadClipData(mediaRefs: mediaRefs)
-            }
-            self.filterType.setTitle("All Podcasts\u{2304}", for: .normal)
-            self.filterTypeSelected = .allPodcasts
-            UserDefaults.standard.set("All Podcasts", forKey: kClipsListFilterType)
-        }))
-        
-        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
-        
-        self.present(alert, animated: true, completion: nil)
+        self.filterTypeSelected = .subscribed
+        UserDefaults.standard.set(ClipFilter.subscribed.text, forKey: kClipsListFilterType)
     }
     
-    func retrieveClipData() {
+    func retrieveClipsPodcast(feedUrl: String) {
+        MediaRef.retrieveMediaRefsFromServer(podcastFeedUrls: [feedUrl], sortingType: self.sortingTypeSelected) { (mediaRefs) -> Void in
+            self.reloadClipData(mediaRefs: mediaRefs)
+        }
+        
+        self.filterTypeSelected = .podcast
+        UserDefaults.standard.set(ClipFilter.podcast.text, forKey: kClipsListFilterType)
+    }
+    
+    func retrieveClipsEpisode(mediaUrl: String) {
+        MediaRef.retrieveMediaRefsFromServer(episodeMediaUrl: mediaUrl, sortingType: self.sortingTypeSelected) { (mediaRefs) -> Void in
+            self.reloadClipData(mediaRefs: mediaRefs)
+        }
+        
+        self.filterTypeSelected = .episode
+        UserDefaults.standard.set(ClipFilter.episode.text, forKey: kClipsListFilterType)
+    }
+    
+    func retrieveClips() {
         showIndicator()
         if let item = pvMediaPlayer.nowPlayingItem {
             if self.filterTypeSelected == .allPodcasts {
-                MediaRef.retrieveMediaRefsFromServer() { (mediaRefs) -> Void in
-                    self.reloadClipData(mediaRefs: mediaRefs)
-                }
+                retrieveClipsAllPodcasts()
             } else if self.filterTypeSelected == .subscribed {
-                MediaRef.retrieveMediaRefsFromServer() { (mediaRefs) -> Void in
-                    self.reloadClipData(mediaRefs: mediaRefs)
-                }
+                retrieveClipsSubscribed()
             } else if self.filterTypeSelected == .podcast, let podcastFeedUrl = item.podcastFeedUrl {
-                MediaRef.retrieveMediaRefsFromServer(podcastFeedUrls: [podcastFeedUrl]) { (mediaRefs) -> Void in
-                    self.reloadClipData(mediaRefs: mediaRefs)
-                }
-            } else {
-                MediaRef.retrieveMediaRefsFromServer(episodeMediaUrl: item.episodeMediaUrl) { (mediaRefs) -> Void in
-                    self.reloadClipData(mediaRefs: mediaRefs)
-                }
+                retrieveClipsPodcast(feedUrl: podcastFeedUrl)
+            } else if let mediaUrl = item.episodeMediaUrl {
+                retrieveClipsEpisode(mediaUrl: mediaUrl)
             }
         }
         else {
-            MediaRef.retrieveMediaRefsFromServer() { (mediaRefs) -> Void in
-                self.reloadClipData(mediaRefs: mediaRefs)
-            }
+            retrieveClipsAllPodcasts()
         }
     }
     
@@ -149,7 +138,7 @@ class ClipsListContainerViewController: UIViewController {
             }
         }
         else {
-            self.addNoDataViewWithMessage(message, buttonTitle: "Retry", buttonImage: nil, retryPressed: #selector(ClipsListContainerViewController.retrieveClipData))   
+            self.addNoDataViewWithMessage(message, buttonTitle: "Retry", buttonImage: nil, retryPressed: #selector(ClipsListContainerViewController.retrieveClips))
             if let noDataView = self.view.subviews.first(where: { $0.tag == kNoDataViewTag}) {
                 noDataView.backgroundColor = .black
                 if let messageView = noDataView.subviews.first(where: {$0 is UILabel}), let messageLabel = messageView as? UILabel {
@@ -261,3 +250,66 @@ extension ClipsListContainerViewController:UITableViewDelegate, UITableViewDataS
     }
 }
 
+extension ClipsListContainerViewController: FilterSelectionProtocol {
+    
+    func filterButtonTapped() {
+        
+        let alert = UIAlertController(title: "Clips From", message: nil, preferredStyle: .actionSheet)
+        
+        alert.addAction(UIAlertAction(title: ClipFilter.episode.text, style: .default, handler: { action in
+            if let item = self.pvMediaPlayer.nowPlayingItem, let mediaUrl = item.episodeMediaUrl {
+                self.retrieveClipsEpisode(mediaUrl: mediaUrl)
+            }
+        }))
+        
+        alert.addAction(UIAlertAction(title: ClipFilter.podcast.text, style: .default, handler: { action in
+            if let item = self.pvMediaPlayer.nowPlayingItem, let podcastFeedUrl = item.podcastFeedUrl {
+                self.retrieveClipsPodcast(feedUrl: podcastFeedUrl)
+            }
+        }))
+        
+        alert.addAction(UIAlertAction(title: ClipFilter.subscribed.text, style: .default, handler: { action in
+            self.retrieveClipsSubscribed()
+        }))
+        
+        alert.addAction(UIAlertAction(title: ClipFilter.allPodcasts.text, style: .default, handler: { action in
+            self.retrieveClipsAllPodcasts()
+        }))
+        
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        
+        self.present(alert, animated: true, completion: nil)
+        
+    }
+    
+    func sortingButtonTapped() {
+        self.tableViewHeader.showSortByMenu(vc: self)
+    }
+    
+    func sortByRecent() {
+        self.sortingTypeSelected = .recent
+        self.retrieveClips()
+    }
+    
+    func sortByTop() {
+        self.tableViewHeader.showSortByTimeRangeMenu(vc: self)
+    }
+    
+    func sortByTopWithTimeRange(timeRange: SortingTimeRange) {
+        
+        if timeRange == .day {
+            self.sortingTypeSelected = .topDay
+        } else if timeRange == .week {
+            self.sortingTypeSelected = .topWeek
+        } else if timeRange == .month {
+            self.sortingTypeSelected = .topMonth
+        } else if timeRange == .year {
+            self.sortingTypeSelected = .topYear
+        } else if timeRange == .allTime {
+            self.sortingTypeSelected = .topAllTime
+        }
+        
+        self.retrieveClips()
+        
+    }
+}

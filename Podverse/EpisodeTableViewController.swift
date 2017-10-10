@@ -155,15 +155,15 @@ class EpisodeTableViewController: PVViewController {
             // Set Stream / Download / Downloading / Play button titles
             if (DownloadingEpisodeList.shared.downloadingEpisodes.contains(where: {$0.mediaUrl == mediaUrl})) {
                 self.streamButton.isHidden = false
-                self.streamButton.setTitle(EpisodeActions.stream.title, for: .normal)
-                self.localMultiButton.setTitle(EpisodeActions.downloading.title, for: .normal)
+                self.streamButton.setTitle(EpisodeActions.stream.text, for: .normal)
+                self.localMultiButton.setTitle(EpisodeActions.downloading.text, for: .normal)
             } else if episode.fileName == nil {
                 self.streamButton.isHidden = false
-                self.streamButton.setTitle(EpisodeActions.stream.title, for: .normal)
-                self.localMultiButton.setTitle(EpisodeActions.download.title, for: .normal)
+                self.streamButton.setTitle(EpisodeActions.stream.text, for: .normal)
+                self.localMultiButton.setTitle(EpisodeActions.download.text, for: .normal)
             } else {
                 self.streamButton.isHidden = true
-                self.localMultiButton.setTitle(EpisodeActions.play.title, for: .normal)
+                self.localMultiButton.setTitle(EpisodeActions.play.text, for: .normal)
             }
         }
     }
@@ -337,6 +337,7 @@ extension EpisodeTableViewController:FilterSelectionProtocol {
     
     func sortByRecent() {
         self.sortingTypeSelected = .recent
+        self.retrieveClips()
     }
     
     func sortByTop() {

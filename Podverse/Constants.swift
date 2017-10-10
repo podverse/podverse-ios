@@ -110,26 +110,49 @@ let TO_PLAYER_SEGUE_ID = "To Now Playing"
 let ErrorDomain = Bundle.main.bundleIdentifier!
 let CoreDataFailureCode = -9999
 
-enum ClipFilter: String {
-    case allPodcasts = "All Podcasts"
-    case episode = "Episode"
-    case podcast = "Podcast"
-    case subscribed = "Subscribed"
+enum SortByOptions: String {
+    case top = "top"
+    case recent = "recent"
     
-    var text:String {
+    var text: String {
         get {
             switch self {
-            case .allPodcasts:
-                return "All Podcasts"
-            case .episode:
-                return "Episode"
-            case .podcast:
-                return "Podcast"
-            case .subscribed:
-                return "Subscribed"
+            case .top:
+                return "Top"
+            case .recent:
+                return "Recent"
             }
         }
     }
+}
+
+enum SortingTimeRange: String {
+    case hour = "hour"
+    case day = "day"
+    case week = "week"
+    case month = "month"
+    case year = "year"
+    case allTime = "allTime"
+    
+    var text: String {
+        get {
+            switch self {
+            case .hour:
+                return "Hour"
+            case .day:
+                return "Day"
+            case .week:
+                return "Week"
+            case .month:
+                return "Month"
+            case .year:
+                return "Year"
+            case .allTime:
+                return "All Time"
+            }
+        }
+    }
+    
 }
 
 enum ClipSorting: String {
@@ -161,7 +184,7 @@ enum ClipSorting: String {
             }
         }
     }
-
+    
     var requestParam: String {
         get {
             switch self {
@@ -182,52 +205,29 @@ enum ClipSorting: String {
             }
         }
     }
-        
+    
 }
 
-enum SortByOptions: String {
-    case top = "top"
-    case recent = "recent"
+enum ClipFilter: String {
+    case allPodcasts = "All Podcasts"
+    case episode = "Episode"
+    case podcast = "Podcast"
+    case subscribed = "Subscribed"
     
-    var title: String {
+    var text:String {
         get {
             switch self {
-            case .top:
-                return "Top"
-            case .recent:
-                return "Recent"
+            case .allPodcasts:
+                return "All Podcasts"
+            case .episode:
+                return "Episode"
+            case .podcast:
+                return "Podcast"
+            case .subscribed:
+                return "Subscribed"
             }
         }
     }
-}
-
-enum SortingTimeRange: String {
-    case hour = "hour"
-    case day = "day"
-    case week = "week"
-    case month = "month"
-    case year = "year"
-    case allTime = "allTime"
-    
-    var title: String {
-        get {
-            switch self {
-            case .hour:
-                return "Hour"
-            case .day:
-                return "Day"
-            case .week:
-                return "Week"
-            case .month:
-                return "Month"
-            case .year:
-                return "Year"
-            case .allTime:
-                return "All Time"
-            }
-        }
-    }
-    
 }
 
 enum EpisodesFilter: String {
@@ -271,7 +271,7 @@ enum EpisodeActions: String {
     case download = "Download"
     case play = "Play"
     
-    var title:String {
+    var text:String {
         get {
             switch self {
             case .stream:

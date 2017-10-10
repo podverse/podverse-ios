@@ -69,8 +69,6 @@ class ClipsTableViewController: PVViewController {
     override func viewWillAppear(_ animated: Bool) {
         self.tableViewHeader.filterTitle = self.filterTypeSelected.text
         self.tableViewHeader.sortingTitle = self.sortingTypeSelected.text
-        self.tableViewHeader.delegate = self
-        self.tableViewHeader.setupViews()
     }
     
     @IBAction func retryButtonTouched(_ sender: Any) {
@@ -91,13 +89,7 @@ class ClipsTableViewController: PVViewController {
         
         if self.filterTypeSelected == .subscribed {
 
-            let moc = CoreDataHelper.createMOCForThread(threadType: .privateThread)
-            var subscribedPodcastFeedUrls = [String]()
-            let subscribedPodcastsArray = CoreDataHelper.fetchEntities(className:"Podcast", predicate: nil, moc:moc) as! [Podcast]
-
-            for podcast in subscribedPodcastsArray {
-                subscribedPodcastFeedUrls.append(podcast.feedUrl)
-            }
+            let subscribedPodcastFeedUrls = Podcast.retrieveSubscribedUrls()
 
             if subscribedPodcastFeedUrls.count < 1 {
                 self.reloadClipData()

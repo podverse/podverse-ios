@@ -76,6 +76,18 @@ class Podcast: NSManagedObject {
         }
     }
     
+    static func retrieveSubscribedUrls() -> [String] {
+        let moc = CoreDataHelper.createMOCForThread(threadType: .privateThread)
+        var subscribedPodcastFeedUrls = [String]()
+        let subscribedPodcastsArray = CoreDataHelper.fetchEntities(className:"Podcast", predicate: nil, moc:moc) as! [Podcast]
+        
+        for podcast in subscribedPodcastsArray {
+            subscribedPodcastFeedUrls.append(podcast.feedUrl)
+        }
+        
+        return subscribedPodcastFeedUrls
+    }
+    
     /**
      Retrieves the image of a specific Podcast channel. This method takes 4 optional arguements and returns
      the image related to the podcast tied with one of the first three parameters.
