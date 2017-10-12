@@ -227,13 +227,13 @@ extension ClipsTableViewController:FilterSelectionProtocol {
         
         let alert = UIAlertController(title: "Clips From", message: nil, preferredStyle: .actionSheet)
         
-        alert.addAction(UIAlertAction(title: "Subscribed", style: .default, handler: { action in
+        alert.addAction(UIAlertAction(title: ClipFilter.subscribed.text, style: .default, handler: { action in
             self.resetClipQuery()
             self.filterTypeSelected = .subscribed
             self.retrieveClips()
         }))
         
-        alert.addAction(UIAlertAction(title: "All Podcasts", style: .default, handler: { action in
+        alert.addAction(UIAlertAction(title: ClipFilter.allPodcasts.text, style: .default, handler: { action in
             self.resetClipQuery()
             self.filterTypeSelected = .allPodcasts
             self.retrieveClips()
