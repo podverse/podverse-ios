@@ -111,10 +111,10 @@ class ClipsTableViewController: PVViewController {
     }
     
     func checkForConnectvity() {
-        var message = "No clips available"
+        var message = ErrorMessages.noClipsAvailable.text
         
         if self.reachability.hasInternetConnection() == false {
-            message = "You must connect to the internet to load clips."
+            message = ErrorMessages.noClipsInternet.text
         }
         
         if let noDataView = self.view.subviews.first(where: { $0.tag == kNoDataViewTag}) {

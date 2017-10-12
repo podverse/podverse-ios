@@ -287,3 +287,29 @@ enum EpisodeActions: String {
         
     }
 }
+
+enum ErrorMessages: String {
+    case noClipsAvailable
+    case noClipsInternet
+    case noPlaylistsAvailable
+    case noPlaylistsInternet
+    case noPlaylistsNotLoggedIn
+    
+    var text: String {
+        get {
+            switch self {
+            case .noClipsAvailable:
+                return "No clips available"
+            case .noClipsInternet:
+                return "No internet connection"
+            case .noPlaylistsAvailable:
+                return "No playlists available"
+            case .noPlaylistsInternet:
+                return "No internet connection"
+            case .noPlaylistsNotLoggedIn:
+                return "Login to view your playlists"
+            }
+        }
+    }
+    
+}
