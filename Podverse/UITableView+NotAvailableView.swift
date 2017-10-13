@@ -8,7 +8,18 @@
 
 import UIKit
 
-extension UIViewController {    
+extension UIViewController {
+    
+    func showNoDataView() {
+        let noDataView = self.view.viewWithTag(kNoDataViewTag)
+        noDataView?.isHidden = false
+    }
+    
+    func hideNoDataView() {
+        let noDataView = self.view.viewWithTag(kNoDataViewTag)
+        noDataView?.isHidden = true
+    }
+    
     func addNoDataViewWithMessage(_ message:String, buttonTitle:String? = nil, buttonImage:UIImage? = nil, retryPressed:Selector? = nil) {
         let noDataView = UIView()
         let noDataTextLabel = UILabel()

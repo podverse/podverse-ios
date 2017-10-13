@@ -43,7 +43,6 @@ class ClipsTableViewController: PVViewController {
         super.viewDidLoad()
         
         activityIndicator.hidesWhenStopped = true
-        showIndicator()
         
         self.tableViewHeader.delegate = self
         self.tableViewHeader.setupViews()
@@ -67,12 +66,12 @@ class ClipsTableViewController: PVViewController {
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        self.tableViewHeader.filterTitle = self.filterTypeSelected.text
-        self.tableViewHeader.sortingTitle = self.sortingTypeSelected.text
+        super.viewWillAppear(animated)
+        checkForConnectvity()
     }
     
-    @IBAction func retryButtonTouched(_ sender: Any) {
-        showIndicator()
+    func resetAndRetrieveClips() {
+        resetClipQuery()
         retrieveClips()
     }
     
@@ -85,6 +84,14 @@ class ClipsTableViewController: PVViewController {
     }
     
     func retrieveClips() {
+        
+        if checkForConnectvity() == false {
+            return
+        }
+        
+        self.hideNoDataView()
+        self.activityIndicator.startAnimating()
+        
         self.clipQueryPage += 1
         
         if self.filterTypeSelected == .subscribed {
@@ -110,11 +117,17 @@ class ClipsTableViewController: PVViewController {
         
     }
     
-    func checkForConnectvity() {
+    func checkForConnectvity() -> Bool? {
+        
         var message = ErrorMessages.noClipsAvailable.text
         
         if self.reachability.hasInternetConnection() == false {
             message = ErrorMessages.noClipsInternet.text
+            self.activityIndicator.stopAnimating()
+            self.showNoDataView()
+            self.tableView.isHidden = true
+        } else {
+            return true
         }
         
         if let noDataView = self.view.subviews.first(where: { $0.tag == kNoDataViewTag}) {
@@ -123,16 +136,21 @@ class ClipsTableViewController: PVViewController {
             }
         }
         else {
-            self.addNoDataViewWithMessage(message, buttonTitle: "Retry", buttonImage: nil, retryPressed: #selector(ClipsTableViewController.retrieveClips))   
+            self.addNoDataViewWithMessage(message, buttonTitle: "Retry", buttonImage: nil, retryPressed: #selector(ClipsTableViewController.resetAndRetrieveClips))
         }
+        
+        return false
     }
     
     func reloadClipData(mediaRefs: [MediaRef]? = nil) {
+        
+        self.activityIndicator.stopAnimating()
         self.clipQueryIsLoading = false
         self.clipQueryActivityIndicator.stopAnimating()
         
         guard let mediaRefArray = mediaRefs, mediaRefArray.count > 0 || clipsArray.count > 0 else {
             self.tableView.isHidden = true
+            self.showNoDataView()
             return
         }
         
@@ -147,15 +165,11 @@ class ClipsTableViewController: PVViewController {
             self.clipsArray.append(mediaRef)
         }
         
-        self.activityIndicator.stopAnimating()
         self.tableView.isHidden = false
         self.tableView.reloadData()
+        
     }
     
-    func showIndicator() {
-        activityIndicator.startAnimating()
-        activityIndicator.isHidden = false
-    }
 }
 
 extension ClipsTableViewController:UITableViewDelegate, UITableViewDataSource {
