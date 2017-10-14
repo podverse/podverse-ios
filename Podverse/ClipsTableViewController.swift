@@ -65,11 +65,6 @@ class ClipsTableViewController: PVViewController {
         retrieveClips()
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        checkForConnectvity()
-    }
-    
     func resetAndRetrieveClips() {
         resetClipQuery()
         retrieveClips()
@@ -117,18 +112,33 @@ class ClipsTableViewController: PVViewController {
         
     }
     
-    func checkForConnectvity() -> Bool? {
+    func checkForConnectvity() -> Bool {
         
-        var message = ErrorMessages.noClipsAvailable.text
+        var message = ErrorMessages.noClipsInternet.text
         
         if self.reachability.hasInternetConnection() == false {
-            message = ErrorMessages.noClipsInternet.text
-            self.activityIndicator.stopAnimating()
-            self.showNoDataView()
-            self.tableView.isHidden = true
+            loadNoDataView(message: message, buttonTitle: "Retry")
+            return false
         } else {
             return true
         }
+        
+    }
+    
+    func checkForClipResults(mediaRefs: [MediaRef]?) -> Bool {
+        
+        var message = ErrorMessages.noClipsAvailable.text
+        
+        guard let mediaRefs = mediaRefs, mediaRefs.count > 0 else {
+            loadNoDataView(message: message, buttonTitle: nil)
+            return false
+        }
+        
+        return true
+        
+    }
+    
+    func loadNoDataView(message: String, buttonTitle: String?) {
         
         if let noDataView = self.view.subviews.first(where: { $0.tag == kNoDataViewTag}) {
             if let messageView = noDataView.subviews.first(where: {$0 is UILabel}), let messageLabel = messageView as? UILabel {
@@ -136,10 +146,13 @@ class ClipsTableViewController: PVViewController {
             }
         }
         else {
-            self.addNoDataViewWithMessage(message, buttonTitle: "Retry", buttonImage: nil, retryPressed: #selector(ClipsTableViewController.resetAndRetrieveClips))
+            self.addNoDataViewWithMessage(message, buttonTitle: buttonTitle, buttonImage: nil, retryPressed: #selector(ClipsTableViewController.resetAndRetrieveClips))
         }
         
-        return false
+        self.activityIndicator.stopAnimating()
+        self.tableView.isHidden = true
+        showNoDataView()
+        
     }
     
     func reloadClipData(mediaRefs: [MediaRef]? = nil) {
@@ -148,20 +161,18 @@ class ClipsTableViewController: PVViewController {
         self.clipQueryIsLoading = false
         self.clipQueryActivityIndicator.stopAnimating()
         
-        guard let mediaRefArray = mediaRefs, mediaRefArray.count > 0 || clipsArray.count > 0 else {
-            self.tableView.isHidden = true
-            self.showNoDataView()
+        guard checkForClipResults(mediaRefs: mediaRefs) == true || checkForClipResults(mediaRefs: self.clipsArray) == true, let mediaRefs = mediaRefs else {
             return
         }
         
-        guard mediaRefArray.count > 0 else {
+        guard checkForClipResults(mediaRefs: mediaRefs) == true else {
             self.clipQueryEndOfResultsReached = true
             self.clipQueryActivityIndicator.stopAnimating()
             self.clipQueryMessage.isHidden = false
             return
         }
         
-        for mediaRef in mediaRefArray {
+        for mediaRef in mediaRefs {
             self.clipsArray.append(mediaRef)
         }
         
