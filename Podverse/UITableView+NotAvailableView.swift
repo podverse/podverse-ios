@@ -20,21 +20,22 @@ extension UIViewController {
         noDataView?.isHidden = true
     }
     
-    func addNoDataViewWithMessage(_ message:String, buttonTitle:String? = nil, buttonImage:UIImage? = nil, retryPressed:Selector? = nil) {
+    func addNoDataViewWithMessage(_ message:String, buttonTitle:String? = nil, buttonImage:UIImage? = nil, retryPressed:Selector? = nil, isBlackBg:Bool = false) {
         let noDataView = UIView()
         let noDataTextLabel = UILabel()
         let actionButton = UIButton()
         
         noDataView.translatesAutoresizingMaskIntoConstraints = false
-        noDataView.backgroundColor = .white
+        noDataView.backgroundColor = isBlackBg ? .black : .white
         noDataView.tag = kNoDataViewTag
         actionButton.translatesAutoresizingMaskIntoConstraints = false
         noDataTextLabel.translatesAutoresizingMaskIntoConstraints = false
         
         noDataTextLabel.text = message
+        noDataTextLabel.textColor = isBlackBg ? .white : .black
         noDataTextLabel.numberOfLines = 5
         actionButton.setTitle(buttonTitle, for: .normal)
-        actionButton.setTitleColor(.black, for: .normal)
+        actionButton.setTitleColor(isBlackBg ? .white : .black, for: .normal)
         
         if let image = buttonImage {
             actionButton.setImage(image, for: .normal)

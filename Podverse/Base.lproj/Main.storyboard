@@ -2494,6 +2494,20 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="oFb-l0-vam">
+                                <rect key="frame" x="0.0" y="64" width="375" height="603"/>
+                                <subviews>
+                                    <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="T0a-VP-hBf">
+                                        <rect key="frame" x="168.5" y="283" width="37" height="37"/>
+                                        <color key="color" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                    </activityIndicatorView>
+                                </subviews>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstItem="T0a-VP-hBf" firstAttribute="centerX" secondItem="oFb-l0-vam" secondAttribute="centerX" id="LID-ad-4Vm"/>
+                                    <constraint firstItem="T0a-VP-hBf" firstAttribute="centerY" secondItem="oFb-l0-vam" secondAttribute="centerY" id="RnT-Pn-mb6"/>
+                                </constraints>
+                            </view>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="145" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="AtU-cy-hVq">
                                 <rect key="frame" x="0.0" y="64" width="375" height="603"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -2688,19 +2702,25 @@
                         </subviews>
                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
+                            <constraint firstItem="3dk-BJ-97w" firstAttribute="top" secondItem="oFb-l0-vam" secondAttribute="bottom" id="0Md-h7-ae2"/>
                             <constraint firstItem="2Be-OV-8O0" firstAttribute="top" secondItem="Pxr-g3-o0n" secondAttribute="bottom" id="CVd-kO-EuF"/>
                             <constraint firstItem="AtU-cy-hVq" firstAttribute="top" secondItem="2Be-OV-8O0" secondAttribute="bottom" id="HCZ-89-mFQ"/>
                             <constraint firstItem="AtU-cy-hVq" firstAttribute="leading" secondItem="MBd-jM-R1p" secondAttribute="leading" id="MeY-yL-NfT"/>
+                            <constraint firstItem="3dk-BJ-97w" firstAttribute="top" secondItem="oFb-l0-vam" secondAttribute="bottom" id="NYc-Kh-BD9"/>
+                            <constraint firstAttribute="trailing" secondItem="oFb-l0-vam" secondAttribute="trailing" id="NjO-wJ-6zq"/>
+                            <constraint firstItem="oFb-l0-vam" firstAttribute="leading" secondItem="MBd-jM-R1p" secondAttribute="leading" id="TlY-ZU-uiX"/>
+                            <constraint firstAttribute="trailing" secondItem="oFb-l0-vam" secondAttribute="trailing" id="XAb-LR-uy2"/>
                             <constraint firstAttribute="trailing" secondItem="AtU-cy-hVq" secondAttribute="trailing" id="Xs4-3V-afH"/>
                             <constraint firstItem="3dk-BJ-97w" firstAttribute="top" secondItem="AtU-cy-hVq" secondAttribute="bottom" id="fK1-Ml-LxH"/>
-                            <constraint firstItem="T0a-VP-hBf" firstAttribute="centerY" secondItem="MBd-jM-R1p" secondAttribute="centerY" id="l3K-YM-bfV"/>
+                            <constraint firstItem="oFb-l0-vam" firstAttribute="top" secondItem="2Be-OV-8O0" secondAttribute="bottom" id="fLa-7w-3kb"/>
+                            <constraint firstItem="oFb-l0-vam" firstAttribute="leading" secondItem="MBd-jM-R1p" secondAttribute="leading" id="iOQ-vh-uJQ"/>
                             <constraint firstAttribute="trailing" secondItem="2Be-OV-8O0" secondAttribute="trailing" constant="-1" id="nX8-Hp-Qw2"/>
                             <constraint firstItem="2Be-OV-8O0" firstAttribute="leading" secondItem="MBd-jM-R1p" secondAttribute="leading" constant="-1" id="nzZ-7Y-l7a"/>
-                            <constraint firstItem="T0a-VP-hBf" firstAttribute="centerX" secondItem="MBd-jM-R1p" secondAttribute="centerX" id="r38-U7-foV"/>
                         </constraints>
                     </view>
                     <connections>
                         <outlet property="activityIndicator" destination="T0a-VP-hBf" id="wbN-ra-Zl5"/>
+                        <outlet property="activityView" destination="oFb-l0-vam" id="JxX-iK-e8Y"/>
                         <outlet property="tableView" destination="AtU-cy-hVq" id="y9k-YP-i6g"/>
                         <outlet property="tableViewHeader" destination="2Be-OV-8O0" id="Jvw-hw-EFL"/>
                     </connections>
@@ -2708,6 +2728,7 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="q9j-4Z-vhy" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="4513" y="-1451"/>
+            <point key="canvasLocation" x="4512.8000000000002" y="-1451.4242878560722"/>
         </scene>
         <!--About Playing Item View Controller-->
         <scene sceneID="LYP-TJ-nMV">

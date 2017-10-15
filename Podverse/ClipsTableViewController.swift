@@ -140,7 +140,7 @@ class ClipsTableViewController: PVViewController {
     
     func checkForConnectvity() -> Bool {
         
-        var message = ErrorMessages.noClipsInternet.text
+        let message = ErrorMessages.noClipsInternet.text
         
         if self.reachability.hasInternetConnection() == false {
             loadNoDataView(message: message, buttonTitle: "Retry")
@@ -153,7 +153,7 @@ class ClipsTableViewController: PVViewController {
     
     func checkForResults(mediaRefs: [MediaRef]?) -> Bool {
         
-        var message = ErrorMessages.noClipsAvailable.text
+        let message = ErrorMessages.noClipsAvailable.text
         
         guard let mediaRefs = mediaRefs, mediaRefs.count > 0 else {
             loadNoDataView(message: message, buttonTitle: nil)

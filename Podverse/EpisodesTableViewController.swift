@@ -204,7 +204,7 @@ class EpisodesTableViewController: PVViewController {
     }
     
     func retrieveClips() {
-            
+        
         guard checkForConnectivity() else {
             return
         }
