@@ -2696,9 +2696,6 @@
                                     <constraint firstAttribute="height" constant="44" id="aiD-m3-Ck4"/>
                                 </constraints>
                             </view>
-                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="T0a-VP-hBf">
-                                <rect key="frame" x="169" y="315" width="37" height="37"/>
-                            </activityIndicatorView>
                         </subviews>
                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
@@ -2727,7 +2724,6 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="q9j-4Z-vhy" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="4513" y="-1451"/>
             <point key="canvasLocation" x="4512.8000000000002" y="-1451.4242878560722"/>
         </scene>
         <!--About Playing Item View Controller-->

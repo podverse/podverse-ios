@@ -240,7 +240,7 @@ class EpisodesTableViewController: PVViewController {
     
     func checkForConnectivity() -> Bool {
         
-        let message = ErrorMessages.noClipsInternet.text
+        let message = Strings.Errors.noClipsInternet
         
         if self.reachability.hasInternetConnection() == false {
             loadNoDataView(message: message, buttonTitle: "Retry", buttonPressed: #selector(EpisodesTableViewController.reloadEpisodeOrClipData))
@@ -253,7 +253,7 @@ class EpisodesTableViewController: PVViewController {
     
     func checkForClipResults(mediaRefs: [MediaRef]?) -> Bool {
         
-        let message = ErrorMessages.noEpisodeClipsAvailable.text
+        let message = Strings.Errors.noEpisodeClipsAvailable
         
         guard let mediaRefs = mediaRefs, mediaRefs.count > 0 else {
             loadNoDataView(message: message, buttonTitle: nil, buttonPressed: #selector(EpisodesTableViewController.reloadEpisodeOrClipData))
@@ -266,7 +266,7 @@ class EpisodesTableViewController: PVViewController {
     
     func checkForDownloadedEpisodeResults(episodes: [Episode]?) -> Bool {
         
-        var message = ErrorMessages.noDownloadedEpisodesAvailable.text
+        var message = Strings.Errors.noDownloadedEpisodesAvailable
         
         guard let episodes = episodes, episodes.count > 0 else {
             loadNoDataView(message: message, buttonTitle: "Show All Episodes", buttonPressed: #selector(EpisodesTableViewController.loadAllEpisodeData))
@@ -279,7 +279,7 @@ class EpisodesTableViewController: PVViewController {
     
     func checkForAllEpisodeResults(episodes: [Episode]?) -> Bool {
         
-        var message = ErrorMessages.noEpisodesAvailable.text
+        var message = Strings.Errors.noEpisodesAvailable
         
         guard let episodes = episodes, episodes.count > 0 else {
             loadNoDataView(message: message, buttonTitle: nil, buttonPressed: #selector(EpisodesTableViewController.reloadEpisodeData))
@@ -485,7 +485,7 @@ extension EpisodesTableViewController {
 extension EpisodesTableViewController:FilterSelectionProtocol {
     func filterButtonTapped() {
         
-        let alert = UIAlertController(title: "Show", message: nil, preferredStyle: .alert)
+        let alert = UIAlertController(title: "Show", message: nil, preferredStyle: .actionSheet)
         
         alert.addAction(UIAlertAction(title: EpisodesFilter.downloaded.text, style: .default, handler: { action in
             self.filterTypeSelected = .downloaded

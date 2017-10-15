@@ -236,7 +236,7 @@ class EpisodeTableViewController: PVViewController {
     
     func checkForConnectivity() -> Bool {
         
-        let message = ErrorMessages.noClipsInternet.text
+        let message = Strings.Errors.noClipsInternet
         
         if self.reachability.hasInternetConnection() == false {
             loadNoDataView(message: message, buttonTitle: "Retry", buttonPressed: #selector(EpisodeTableViewController.reloadShowNotesOrClipData))
@@ -249,7 +249,7 @@ class EpisodeTableViewController: PVViewController {
     
     func checkForClipResults(mediaRefs: [MediaRef]?) -> Bool {
         
-        let message = ErrorMessages.noEpisodeClipsAvailable.text
+        let message = Strings.Errors.noEpisodeClipsAvailable
         
         guard let mediaRefs = mediaRefs, mediaRefs.count > 0 else {
             loadNoDataView(message: message, buttonTitle: nil, buttonPressed: #selector(EpisodeTableViewController.reloadShowNotesOrClipData))

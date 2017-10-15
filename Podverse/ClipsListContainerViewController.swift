@@ -126,7 +126,7 @@ class ClipsListContainerViewController: UIViewController {
     
     func checkForConnectivity() -> Bool {
         
-        let message = ErrorMessages.noClipsInternet.text
+        let message = Strings.Errors.noClipsInternet
         
         if self.reachability.hasInternetConnection() == false {
             loadNoDataView(message: message, buttonTitle: "Retry")
@@ -139,7 +139,7 @@ class ClipsListContainerViewController: UIViewController {
     
     func checkForClipResults(mediaRefs: [MediaRef]?) -> Bool {
         
-        let message = ErrorMessages.noClipsAvailable.text
+        let message = Strings.Errors.noClipsAvailable
         
         guard let mediaRefs = mediaRefs, mediaRefs.count > 0 else {
             loadNoDataView(message: message, buttonTitle: nil)
@@ -151,7 +151,7 @@ class ClipsListContainerViewController: UIViewController {
     }
     
     func checkForConnectvity() -> Bool {
-        let message = ErrorMessages.noClipsInternet.text
+        let message = Strings.Errors.noClipsInternet
         
         if self.reachability.hasInternetConnection() == false {
             loadNoDataView(message: message, buttonTitle: "Retry")

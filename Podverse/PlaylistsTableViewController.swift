@@ -45,7 +45,7 @@ class PlaylistsTableViewController: PVViewController {
     
     func checkForAuthorization() -> Bool {
         
-        var message = ErrorMessages.noPlaylistsNotLoggedIn.text
+        var message = Strings.Errors.noPlaylistsNotLoggedIn
         var buttonTitle = "Login"
         let selector = #selector(PlaylistsTableViewController.presentLogin)
         
@@ -61,7 +61,7 @@ class PlaylistsTableViewController: PVViewController {
     }
     
     func checkForConnectivity() -> Bool {
-        var message = ErrorMessages.noPlaylistsInternet.text
+        var message = Strings.Errors.noPlaylistsInternet
         var buttonTitle = "Retry"
         var selector:Selector = #selector(PlaylistsTableViewController.retrievePlaylists)
         
@@ -76,7 +76,7 @@ class PlaylistsTableViewController: PVViewController {
     
     func checkForResults(playlists: [Playlist]?) -> Bool {
         
-        var message = ErrorMessages.noPlaylistsAvailable.text
+        var message = Strings.Errors.noPlaylistsAvailable
         
         guard let playlists = playlists, playlists.count > 0 else {
             loadNoDataView(message: message, buttonTitle: nil, buttonPressed: nil)
