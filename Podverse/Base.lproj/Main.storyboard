@@ -940,6 +940,29 @@
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="130" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="VOa-dX-ejH">
                                 <rect key="frame" x="0.0" y="204" width="375" height="414"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <view key="tableFooterView" contentMode="scaleToFill" id="ZfV-H5-Bm9">
+                                    <rect key="frame" x="0.0" y="283" width="375" height="44"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                    <subviews>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="End of Clips" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fVU-F5-afy">
+                                            <rect key="frame" x="144" y="13" width="87" height="19.5"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="p7G-J3-fHw">
+                                            <rect key="frame" x="169" y="4" width="37" height="37"/>
+                                            <color key="color" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                                        </activityIndicatorView>
+                                    </subviews>
+                                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                    <constraints>
+                                        <constraint firstItem="fVU-F5-afy" firstAttribute="centerX" secondItem="ZfV-H5-Bm9" secondAttribute="centerX" id="LXM-u4-2L1"/>
+                                        <constraint firstItem="p7G-J3-fHw" firstAttribute="centerX" secondItem="ZfV-H5-Bm9" secondAttribute="centerX" id="Wvw-AP-VjI"/>
+                                        <constraint firstItem="fVU-F5-afy" firstAttribute="centerY" secondItem="ZfV-H5-Bm9" secondAttribute="centerY" id="mJ9-hq-gdX"/>
+                                        <constraint firstItem="p7G-J3-fHw" firstAttribute="centerY" secondItem="ZfV-H5-Bm9" secondAttribute="centerY" id="zO8-xo-fHe"/>
+                                    </constraints>
+                                </view>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="episodeCell" rowHeight="138" id="AM8-s1-2g7" customClass="EpisodeTableViewCell" customModule="Podverse" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="28" width="375" height="138"/>
@@ -1177,6 +1200,9 @@
                         <outlet property="autoDownloadLabel" destination="TnX-z2-VIN" id="jUQ-rY-nCP"/>
                         <outlet property="autoDownloadSwitch" destination="yez-rs-zzS" id="u4r-5a-L2r"/>
                         <outlet property="bottomButton" destination="VOa-dX-ejH" id="akg-G5-uRs"/>
+                        <outlet property="clipQueryActivityIndicator" destination="p7G-J3-fHw" id="nmi-5B-rNU"/>
+                        <outlet property="clipQueryMessage" destination="fVU-F5-afy" id="HPz-bI-B8N"/>
+                        <outlet property="clipQueryStatusView" destination="ZfV-H5-Bm9" id="rcN-tW-vcI"/>
                         <outlet property="headerImageView" destination="W2q-RV-W1m" id="y4A-4E-KUw"/>
                         <outlet property="headerPodcastTitle" destination="4bn-tB-LUD" id="iII-EY-sLo"/>
                         <outlet property="tableView" destination="VOa-dX-ejH" id="QWe-WP-Gqg"/>
@@ -1276,6 +1302,29 @@
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="Joz-5V-gKg">
                                 <rect key="frame" x="0.0" y="204" width="375" height="414"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <view key="tableFooterView" contentMode="scaleToFill" id="Dio-qG-VCk">
+                                    <rect key="frame" x="0.0" y="114" width="375" height="44"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                    <subviews>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="End of Clips" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="sGw-Th-DgA">
+                                            <rect key="frame" x="144" y="13" width="87" height="19.5"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="DVI-6g-nDE">
+                                            <rect key="frame" x="169" y="4" width="37" height="37"/>
+                                            <color key="color" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                                        </activityIndicatorView>
+                                    </subviews>
+                                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                    <constraints>
+                                        <constraint firstItem="DVI-6g-nDE" firstAttribute="centerX" secondItem="Dio-qG-VCk" secondAttribute="centerX" id="044-ot-nnL"/>
+                                        <constraint firstItem="sGw-Th-DgA" firstAttribute="centerY" secondItem="Dio-qG-VCk" secondAttribute="centerY" id="BMQ-2R-nel"/>
+                                        <constraint firstItem="sGw-Th-DgA" firstAttribute="centerX" secondItem="Dio-qG-VCk" secondAttribute="centerX" id="Fxf-3g-gp8"/>
+                                        <constraint firstItem="DVI-6g-nDE" firstAttribute="centerY" secondItem="Dio-qG-VCk" secondAttribute="centerY" id="mfO-F5-cFk"/>
+                                    </constraints>
+                                </view>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="cell" rowHeight="86" id="OKD-gv-YuA" customClass="ClipEpisodeTableViewCell" customModule="Podverse" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="28" width="375" height="86"/>
@@ -1373,6 +1422,9 @@
                     <connections>
                         <outlet property="activityIndicator" destination="mVQ-Fd-SWv" id="NGh-sU-nN3"/>
                         <outlet property="activityView" destination="XWy-gm-emm" id="IcK-eJ-EF3"/>
+                        <outlet property="clipQueryActivityIndicator" destination="sGw-Th-DgA" id="iXK-q0-aa0"/>
+                        <outlet property="clipQueryMessage" destination="sGw-Th-DgA" id="cCk-w8-3DY"/>
+                        <outlet property="clipQueryStatusView" destination="Dio-qG-VCk" id="UUG-u6-0uu"/>
                         <outlet property="episodeTitle" destination="CvL-FW-4lp" id="6nT-3Q-jGF"/>
                         <outlet property="headerImageView" destination="h38-tb-FZe" id="1jm-rD-uQ1"/>
                         <outlet property="localMultiButton" destination="VWl-i7-LTW" id="xMP-kj-gYq"/>
@@ -2511,6 +2563,29 @@
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="145" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="AtU-cy-hVq">
                                 <rect key="frame" x="0.0" y="64" width="375" height="603"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                <view key="tableFooterView" contentMode="scaleToFill" id="8p2-6X-yTT">
+                                    <rect key="frame" x="0.0" y="373" width="375" height="44"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                    <subviews>
+                                        <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="yWh-QE-9yt">
+                                            <rect key="frame" x="169" y="4" width="37" height="37"/>
+                                            <color key="color" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        </activityIndicatorView>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="End of clips" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Gdi-AW-Mgg">
+                                            <rect key="frame" x="145" y="13" width="85" height="19.5"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                            <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                    <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                                    <constraints>
+                                        <constraint firstItem="Gdi-AW-Mgg" firstAttribute="centerY" secondItem="8p2-6X-yTT" secondAttribute="centerY" id="1uY-IL-J1D"/>
+                                        <constraint firstItem="yWh-QE-9yt" firstAttribute="centerX" secondItem="8p2-6X-yTT" secondAttribute="centerX" id="ObI-vt-b60"/>
+                                        <constraint firstItem="yWh-QE-9yt" firstAttribute="centerY" secondItem="8p2-6X-yTT" secondAttribute="centerY" id="g5I-Zo-p2b"/>
+                                        <constraint firstItem="Gdi-AW-Mgg" firstAttribute="centerX" secondItem="8p2-6X-yTT" secondAttribute="centerX" id="v0p-LZ-USL"/>
+                                    </constraints>
+                                </view>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="clipCell" rowHeight="142" id="HJL-jy-AWZ" customClass="ClipTableViewCell" customModule="Podverse" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="28" width="375" height="142"/>
@@ -2718,6 +2793,9 @@
                     <connections>
                         <outlet property="activityIndicator" destination="T0a-VP-hBf" id="wbN-ra-Zl5"/>
                         <outlet property="activityView" destination="oFb-l0-vam" id="JxX-iK-e8Y"/>
+                        <outlet property="clipActivityIndicator" destination="yWh-QE-9yt" id="sGg-uQ-0HE"/>
+                        <outlet property="clipQueryMessage" destination="Gdi-AW-Mgg" id="0lh-kJ-5wh"/>
+                        <outlet property="clipQueryStatusView" destination="8p2-6X-yTT" id="ZL2-Za-eAn"/>
                         <outlet property="tableView" destination="AtU-cy-hVq" id="y9k-YP-i6g"/>
                         <outlet property="tableViewHeader" destination="2Be-OV-8O0" id="Jvw-hw-EFL"/>
                     </connections>

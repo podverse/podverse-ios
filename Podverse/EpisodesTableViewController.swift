@@ -34,6 +34,10 @@ class EpisodesTableViewController: PVViewController {
         }
     }
     
+    var clipQueryPage:Int = 0
+    var clipQueryIsLoading:Bool = false
+    var clipQueryEndOfResultsReached:Bool = false
+    
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     @IBOutlet weak var activityView: UIView!
     @IBOutlet weak var autoDownloadLabel: UILabel!
@@ -44,6 +48,10 @@ class EpisodesTableViewController: PVViewController {
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var tableViewHeader: FiltersTableHeaderView!
     
+    @IBOutlet weak var clipQueryActivityIndicator: UIActivityIndicatorView!
+    @IBOutlet weak var clipQueryMessage: UILabel!
+    @IBOutlet weak var clipQueryStatusView: UIView!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -53,6 +61,9 @@ class EpisodesTableViewController: PVViewController {
         
         self.tableViewHeader.delegate = self
         self.tableViewHeader.setupViews()
+        
+        self.clipQueryActivityIndicator.hidesWhenStopped = true
+        self.clipQueryMessage.isHidden = true
         
         if let savedFilterType = UserDefaults.standard.value(forKey: kEpisodesTableFilterType) as? String, let episodesFilterType = EpisodesFilter(rawValue: savedFilterType) {
             self.filterTypeSelected = episodesFilterType
@@ -203,6 +214,19 @@ class EpisodesTableViewController: PVViewController {
         
     }
     
+    func resetAndRetrieveClips() {
+        resetClipQuery()
+        retrieveClips()
+    }
+    
+    func resetClipQuery() {
+        self.clipsArray.removeAll()
+        self.clipQueryPage = 0
+        self.clipQueryIsLoading = true
+        self.clipQueryEndOfResultsReached = false
+        self.tableView.reloadData()
+    }
+    
     func retrieveClips() {
         
         guard checkForConnectivity() else {
@@ -216,8 +240,10 @@ class EpisodesTableViewController: PVViewController {
         self.activityIndicator.startAnimating()
         self.activityView.isHidden = false
         
+        self.clipQueryPage += 1
+        
         if let feedUrl = feedUrl {
-            MediaRef.retrieveMediaRefsFromServer(podcastFeedUrls: [feedUrl], sortingType: self.sortingTypeSelected, page: 1) { (mediaRefs) -> Void in
+            MediaRef.retrieveMediaRefsFromServer(podcastFeedUrls: [feedUrl], sortingType: self.sortingTypeSelected, page: self.clipQueryPage) { (mediaRefs) -> Void in
                 self.reloadClipData(mediaRefs)
             }
         }
@@ -225,10 +251,25 @@ class EpisodesTableViewController: PVViewController {
     
     func reloadClipData(_ mediaRefs: [MediaRef]? = nil) {
         
-        guard let mediaRefs = mediaRefs, checkForClipResults(mediaRefs: mediaRefs) else {
+        self.clipQueryIsLoading = false
+        self.clipQueryActivityIndicator.stopAnimating()
+        
+        if !checkForClipResults(mediaRefs: mediaRefs) && checkForClipResults(mediaRefs: self.clipsArray) {
+            self.clipQueryEndOfResultsReached = true
+            self.clipQueryMessage.isHidden = false
             return
         }
+        
+        guard checkForClipResults(mediaRefs: mediaRefs) || checkForClipResults(mediaRefs: self.clipsArray) else {
+            return
+        }
+        
+        guard checkForClipResults(mediaRefs: mediaRefs) || checkForClipResults(mediaRefs: self.clipsArray), let mediaRefs = mediaRefs else {
+            return
+        }
+        
 
+        
         for mediaRef in mediaRefs {
             self.clipsArray.append(mediaRef)
         }
@@ -439,6 +480,18 @@ extension EpisodesTableViewController: UITableViewDataSource, UITableViewDelegat
         }
         
     }
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        // Bottom Refresh
+        if scrollView == self.tableView {
+            if ((scrollView.contentOffset.y + scrollView.frame.size.height) >= scrollView.contentSize.height) && !self.clipQueryIsLoading && !self.clipQueryEndOfResultsReached {
+                self.clipQueryIsLoading = true
+                self.clipQueryActivityIndicator.startAnimating()
+                self.retrieveClips()
+            }
+        }
+    }
+    
 }
 
 extension EpisodesTableViewController {
@@ -488,16 +541,19 @@ extension EpisodesTableViewController:FilterSelectionProtocol {
         let alert = UIAlertController(title: "Show", message: nil, preferredStyle: .actionSheet)
         
         alert.addAction(UIAlertAction(title: EpisodesFilter.downloaded.text, style: .default, handler: { action in
+            self.resetClipQuery()
             self.filterTypeSelected = .downloaded
             self.reloadEpisodeData()
         }))
         
         alert.addAction(UIAlertAction(title: EpisodesFilter.allEpisodes.text, style: .default, handler: { action in
+            self.resetClipQuery()
             self.filterTypeSelected = .allEpisodes
             self.reloadEpisodeData()
         }))
         
         alert.addAction(UIAlertAction(title: EpisodesFilter.clips.text, style: .default, handler: { action in
+            self.resetClipQuery()
             self.filterTypeSelected = .clips
             self.retrieveClips()
         }))

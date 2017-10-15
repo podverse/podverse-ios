@@ -30,9 +30,8 @@ class ClipsTableViewController: PVViewController {
     var clipQueryIsLoading: Bool = false
     var clipQueryEndOfResultsReached: Bool = false
     
-    @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
-    
+    @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var tableViewHeader: FiltersTableHeaderView!
     
     @IBOutlet weak var clipQueryActivityIndicator: UIActivityIndicatorView!
@@ -114,7 +113,6 @@ class ClipsTableViewController: PVViewController {
     
     func reloadClipData(mediaRefs: [MediaRef]? = nil) {
         
-        self.activityIndicator.stopAnimating()
         self.clipQueryIsLoading = false
         self.clipQueryActivityIndicator.stopAnimating()
         
@@ -124,7 +122,6 @@ class ClipsTableViewController: PVViewController {
         
         guard checkForResults(mediaRefs: mediaRefs) else {
             self.clipQueryEndOfResultsReached = true
-            self.clipQueryActivityIndicator.stopAnimating()
             self.clipQueryMessage.isHidden = false
             return
         }
@@ -186,6 +183,13 @@ class ClipsTableViewController: PVViewController {
         
     }
     
+    override func goToNowPlaying () {
+        if let mediaPlayerVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "MediaPlayerVC") as? MediaPlayerViewController {
+            self.pvMediaPlayer.shouldAutoplayOnce = true
+            self.navigationController?.pushViewController(mediaPlayerVC, animated: true)
+        }
+    }
+    
 }
 
 extension ClipsTableViewController:UITableViewDelegate, UITableViewDataSource {
@@ -240,13 +244,6 @@ extension ClipsTableViewController:UITableViewDelegate, UITableViewDataSource {
                 self.clipQueryActivityIndicator.startAnimating()
                 self.retrieveClips()
             }
-        }
-    }
-    
-    override func goToNowPlaying () {
-        if let mediaPlayerVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "MediaPlayerVC") as? MediaPlayerViewController {
-            self.pvMediaPlayer.shouldAutoplayOnce = true
-            self.navigationController?.pushViewController(mediaPlayerVC, animated: true)
         }
     }
     

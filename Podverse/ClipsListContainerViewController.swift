@@ -39,6 +39,10 @@ class ClipsListContainerViewController: UIViewController {
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var tableViewHeader: FiltersTableHeaderView!
     
+    @IBOutlet weak var clipActivityIndicator: UIActivityIndicatorView!
+    @IBOutlet weak var clipQueryMessage: UILabel!
+    @IBOutlet weak var clipQueryStatusView: UIView!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         

@@ -48,6 +48,10 @@ class EpisodeTableViewController: PVViewController {
     @IBOutlet weak var tableViewHeader: FiltersTableHeaderView!
     @IBOutlet weak var webView: UIWebView!
     
+    @IBOutlet weak var clipQueryActivityIndicator: UILabel!
+    @IBOutlet weak var clipQueryMessage: UILabel!
+    @IBOutlet weak var clipQueryStatusView: UIView!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
