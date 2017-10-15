@@ -13,19 +13,6 @@ class ClipsTableViewController: PVViewController {
     var clipsArray = [MediaRef]()
     let reachability = PVReachability.shared
     
-    @IBOutlet weak var tableView: UITableView!
-    @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
-    
-    @IBOutlet weak var tableViewHeader: FiltersTableHeaderView!
-    
-    @IBOutlet weak var clipQueryActivityIndicator: UIActivityIndicatorView!
-    @IBOutlet weak var clipQueryMessage: UILabel!
-    @IBOutlet weak var clipQueryStatusView: UIView!
-    
-    var clipQueryPage: Int = 0
-    var clipQueryIsLoading: Bool = false
-    var clipQueryEndOfResultsReached: Bool = false
-    
     var filterTypeSelected: ClipFilter = .allPodcasts {
         didSet {
             self.tableViewHeader.filterTitle = self.filterTypeSelected.text
@@ -38,6 +25,19 @@ class ClipsTableViewController: PVViewController {
             UserDefaults.standard.set(sortingTypeSelected.text, forKey: kClipsTableSortingType)
         }
     }
+    
+    var clipQueryPage: Int = 0
+    var clipQueryIsLoading: Bool = false
+    var clipQueryEndOfResultsReached: Bool = false
+    
+    @IBOutlet weak var tableView: UITableView!
+    @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
+    
+    @IBOutlet weak var tableViewHeader: FiltersTableHeaderView!
+    
+    @IBOutlet weak var clipQueryActivityIndicator: UIActivityIndicatorView!
+    @IBOutlet weak var clipQueryMessage: UILabel!
+    @IBOutlet weak var clipQueryStatusView: UIView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -112,6 +112,32 @@ class ClipsTableViewController: PVViewController {
         
     }
     
+    func reloadClipData(mediaRefs: [MediaRef]? = nil) {
+        
+        self.activityIndicator.stopAnimating()
+        self.clipQueryIsLoading = false
+        self.clipQueryActivityIndicator.stopAnimating()
+        
+        guard checkForResults(mediaRefs: mediaRefs) || checkForResults(mediaRefs: self.clipsArray), let mediaRefs = mediaRefs else {
+            return
+        }
+        
+        guard checkForResults(mediaRefs: mediaRefs) else {
+            self.clipQueryEndOfResultsReached = true
+            self.clipQueryActivityIndicator.stopAnimating()
+            self.clipQueryMessage.isHidden = false
+            return
+        }
+        
+        for mediaRef in mediaRefs {
+            self.clipsArray.append(mediaRef)
+        }
+        
+        self.tableView.isHidden = false
+        self.tableView.reloadData()
+        
+    }
+    
     func checkForConnectvity() -> Bool {
         
         var message = ErrorMessages.noClipsInternet.text
@@ -125,7 +151,7 @@ class ClipsTableViewController: PVViewController {
         
     }
     
-    func checkForClipResults(mediaRefs: [MediaRef]?) -> Bool {
+    func checkForResults(mediaRefs: [MediaRef]?) -> Bool {
         
         var message = ErrorMessages.noClipsAvailable.text
         
@@ -157,32 +183,6 @@ class ClipsTableViewController: PVViewController {
         self.activityIndicator.stopAnimating()
         self.tableView.isHidden = true
         showNoDataView()
-        
-    }
-    
-    func reloadClipData(mediaRefs: [MediaRef]? = nil) {
-        
-        self.activityIndicator.stopAnimating()
-        self.clipQueryIsLoading = false
-        self.clipQueryActivityIndicator.stopAnimating()
-        
-        guard checkForClipResults(mediaRefs: mediaRefs) == true || checkForClipResults(mediaRefs: self.clipsArray) == true, let mediaRefs = mediaRefs else {
-            return
-        }
-        
-        guard checkForClipResults(mediaRefs: mediaRefs) == true else {
-            self.clipQueryEndOfResultsReached = true
-            self.clipQueryActivityIndicator.stopAnimating()
-            self.clipQueryMessage.isHidden = false
-            return
-        }
-        
-        for mediaRef in mediaRefs {
-            self.clipsArray.append(mediaRef)
-        }
-        
-        self.tableView.isHidden = false
-        self.tableView.reloadData()
         
     }
     

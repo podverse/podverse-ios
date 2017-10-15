@@ -34,6 +34,8 @@ class EpisodesTableViewController: PVViewController {
         }
     }
     
+    @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
+    @IBOutlet weak var activityView: UIView!
     @IBOutlet weak var autoDownloadLabel: UILabel!
     @IBOutlet weak var autoDownloadSwitch: UISwitch!
     @IBOutlet weak var bottomButton: UITableView!
@@ -44,6 +46,8 @@ class EpisodesTableViewController: PVViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        activityIndicator.hidesWhenStopped = true
         
         self.tableViewHeader.delegate = self
         self.tableViewHeader.setupViews()
@@ -115,76 +119,10 @@ class EpisodesTableViewController: PVViewController {
         }
     }
     
-    func retrieveClips() {
-        self.episodesArray.removeAll()
-        self.tableView.reloadData()
-        
-        if let feedUrl = feedUrl {
-            MediaRef.retrieveMediaRefsFromServer(podcastFeedUrls: [feedUrl], sortingType: self.sortingTypeSelected, page: 1) { (mediaRefs) -> Void in
-                
-                self.clipsArray.removeAll()
-                
-                if let mediaRefs = mediaRefs {
-                    self.clipsArray = mediaRefs
-                }
-                
-                self.reloadClipData()
-            }
-        }
-    }
-    
-    func reloadClipData() {
-        // TODO: Handle infinite scroll logic here
-        
-        self.tableView.reloadData()
-    }
-    
-    func reloadEpisodeData() {
-        
-        if let feedUrl = feedUrl, let podcast = Podcast.podcastForFeedUrl(feedUrlString: feedUrl, managedObjectContext: moc) {
-            
-            self.episodesArray.removeAll()
-            
-            if self.filterTypeSelected == .downloaded {
-                episodesArray = Array(podcast.episodes.filter { $0.fileName != nil } )
-                let downloadingEpisodes = DownloadingEpisodeList.shared.downloadingEpisodes.filter({$0.podcastFeedUrl == podcast.feedUrl})
-
-                for dlEpisode in downloadingEpisodes {
-                    if let mediaUrl = dlEpisode.mediaUrl, let episode = Episode.episodeForMediaUrl(mediaUrlString: mediaUrl, managedObjectContext: self.moc), !episodesArray.contains(episode) {
-                        episodesArray.append(episode)
-                    }
-                }
-            } else if self.filterTypeSelected == .allEpisodes {
-                episodesArray = Array(podcast.episodes)
-            }
-            
-            episodesArray.sort(by: { (prevEp, nextEp) -> Bool in
-                if let prevTimeInterval = prevEp.pubDate, let nextTimeInterval = nextEp.pubDate {
-                    return (prevTimeInterval > nextTimeInterval)
-                }
-                
-                return false
-            })
-            
-            self.tableView.reloadData()
-            
-        }
-
-    }
-    
-    func reloadEpisodeOrClipData() {
-        if self.filterTypeSelected == .clips {
-            retrieveClips()
-        } else {
-            reloadEpisodeData()
-        }
-    }
-    
-
     func downloadPlay(sender: UIButton) {
         if let cell = sender.superview?.superview as? EpisodeTableViewCell,
-           let indexRow = self.tableView.indexPath(for: cell)?.row {
-        
+            let indexRow = self.tableView.indexPath(for: cell)?.row {
+            
             let episode = episodesArray[indexRow]
             if episode.fileName != nil {
                 
@@ -201,7 +139,7 @@ class EpisodesTableViewController: PVViewController {
                 if let item = playerHistoryItem {
                     pvMediaPlayer.loadPlayerHistoryItem(item: item)
                 }
-
+                
             } else {
                 if reachability.hasWiFiConnection() == false {
                     showInternetNeededAlertWithDesciription(message: "Connect to WiFi to download an episode.")
@@ -210,6 +148,173 @@ class EpisodesTableViewController: PVViewController {
                 PVDownloader.shared.startDownloadingEpisode(episode: episode)
             }
         }
+    }
+    
+    func reloadEpisodeOrClipData() {
+        if self.filterTypeSelected == .clips {
+            retrieveClips()
+        } else {
+            reloadEpisodeData()
+        }
+    }
+    
+    func loadAllEpisodeData() {
+        self.filterTypeSelected = .allEpisodes
+        reloadEpisodeData()
+    }
+    
+    func reloadEpisodeData() {
+        
+        self.hideNoDataView()
+        self.tableView.isHidden = false
+        
+        if let feedUrl = feedUrl, let podcast = Podcast.podcastForFeedUrl(feedUrlString: feedUrl, managedObjectContext: moc) {
+            
+            self.episodesArray.removeAll()
+            
+            if self.filterTypeSelected == .downloaded {
+                episodesArray = Array(podcast.episodes.filter { $0.fileName != nil } )
+                let downloadingEpisodes = DownloadingEpisodeList.shared.downloadingEpisodes.filter({$0.podcastFeedUrl == podcast.feedUrl})
+                
+                for dlEpisode in downloadingEpisodes {
+                    if let mediaUrl = dlEpisode.mediaUrl, let episode = Episode.episodeForMediaUrl(mediaUrlString: mediaUrl, managedObjectContext: self.moc), !episodesArray.contains(episode) {
+                        episodesArray.append(episode)
+                    }
+                }
+                
+                guard checkForDownloadedEpisodeResults(episodes: episodesArray) else {
+                    return
+                }
+                
+            } else if self.filterTypeSelected == .allEpisodes {
+                episodesArray = Array(podcast.episodes)
+                
+                guard checkForAllEpisodeResults(episodes: episodesArray) else {
+                    return
+                }
+            }
+            
+            episodesArray.sort(by: { (prevEp, nextEp) -> Bool in
+                if let prevTimeInterval = prevEp.pubDate, let nextTimeInterval = nextEp.pubDate {
+                    return (prevTimeInterval > nextTimeInterval)
+                }
+                
+                return false
+            })
+            
+            self.tableView.reloadData()
+            
+        }
+        
+    }
+    
+    func retrieveClips() {
+        
+        guard checkForConnectivity() else {
+            return
+        }
+
+        self.episodesArray.removeAll()
+        self.tableView.reloadData()
+        
+        self.hideNoDataView()
+        self.activityIndicator.startAnimating()
+        self.activityView.isHidden = false
+        
+        if let feedUrl = feedUrl {
+            MediaRef.retrieveMediaRefsFromServer(podcastFeedUrls: [feedUrl], sortingType: self.sortingTypeSelected, page: 1) { (mediaRefs) -> Void in
+                self.reloadClipData(mediaRefs)
+            }
+        }
+    }
+    
+    func reloadClipData(_ mediaRefs: [MediaRef]? = nil) {
+        
+        guard let mediaRefs = mediaRefs, checkForClipResults(mediaRefs: mediaRefs) else {
+            return
+        }
+
+        for mediaRef in mediaRefs {
+            self.clipsArray.append(mediaRef)
+        }
+        
+        self.tableView.isHidden = false
+        self.tableView.reloadData()
+    }
+    
+    func checkForConnectivity() -> Bool {
+        
+        var message = ErrorMessages.noClipsInternet.text
+        
+        if self.reachability.hasInternetConnection() == false {
+            loadNoDataView(message: message, buttonTitle: "Retry", buttonPressed: #selector(EpisodesTableViewController.reloadEpisodeOrClipData))
+            return false
+        } else {
+            return true
+        }
+        
+    }
+    
+    func checkForClipResults(mediaRefs: [MediaRef]?) -> Bool {
+        
+        var message = ErrorMessages.noEpisodeClipsAvailable.text
+        
+        guard let mediaRefs = mediaRefs, mediaRefs.count > 0 else {
+            loadNoDataView(message: message, buttonTitle: nil, buttonPressed: #selector(EpisodesTableViewController.reloadEpisodeOrClipData))
+            return false
+        }
+        
+        return true
+        
+    }
+    
+    func checkForDownloadedEpisodeResults(episodes: [Episode]?) -> Bool {
+        
+        var message = ErrorMessages.noDownloadedEpisodesAvailable.text
+        
+        guard let episodes = episodes, episodes.count > 0 else {
+            loadNoDataView(message: message, buttonTitle: "Show All Episodes", buttonPressed: #selector(EpisodesTableViewController.loadAllEpisodeData))
+            return false
+        }
+        
+        return true
+        
+    }
+    
+    func checkForAllEpisodeResults(episodes: [Episode]?) -> Bool {
+        
+        var message = ErrorMessages.noEpisodesAvailable.text
+        
+        guard let episodes = episodes, episodes.count > 0 else {
+            loadNoDataView(message: message, buttonTitle: nil, buttonPressed: #selector(EpisodesTableViewController.reloadEpisodeData))
+            return false
+        }
+        
+        return true
+        
+    }
+    
+    func loadNoDataView(message: String, buttonTitle: String?, buttonPressed: Selector?) {
+        
+        if let noDataView = self.view.subviews.first(where: { $0.tag == kNoDataViewTag}) {
+            
+            if let messageView = noDataView.subviews.first(where: {$0 is UILabel}), let messageLabel = messageView as? UILabel {
+                messageLabel.text = message
+            }
+            
+            if let buttonView = noDataView.subviews.first(where: {$0 is UIButton}), let button = buttonView as? UIButton {
+                button.setTitle(buttonTitle, for: .normal)
+            }
+        }
+        else {
+            self.addNoDataViewWithMessage(message, buttonTitle: buttonTitle, buttonImage: nil, retryPressed: buttonPressed)
+        }
+        
+        self.activityIndicator.stopAnimating()
+        self.activityView.isHidden = true
+        self.tableView.isHidden = true
+        showNoDataView()
+        
     }
 
     override func goToNowPlaying () {
@@ -326,6 +431,10 @@ extension EpisodesTableViewController: UITableViewDataSource, UITableViewDelegat
                 }
                 
                 PVDeleter.deleteEpisode(episodeId: episodeToEdit.objectID, fileOnly: true, shouldCallNotificationMethod: true)
+                
+                if self.filterTypeSelected == .downloaded {
+                    self.checkForDownloadedEpisodeResults(episodes: self.episodesArray)
+                }
             })
             
             return [deleteAction]

@@ -291,6 +291,9 @@ enum EpisodeActions: String {
 enum ErrorMessages: String {
     case noClipsAvailable
     case noClipsInternet
+    case noDownloadedEpisodesAvailable
+    case noEpisodeClipsAvailable
+    case noEpisodesAvailable
     case noPlaylistsAvailable
     case noPlaylistsInternet
     case noPlaylistsNotLoggedIn
@@ -302,6 +305,12 @@ enum ErrorMessages: String {
                 return "No clips available"
             case .noClipsInternet:
                 return "No internet connection"
+            case .noDownloadedEpisodesAvailable:
+                return "No downloaded episodes available"
+            case .noEpisodeClipsAvailable:
+                return "No clips available for this episode"
+            case .noEpisodesAvailable:
+                return "No episodes available"
             case .noPlaylistsAvailable:
                 return "No playlists available"
             case .noPlaylistsInternet:
