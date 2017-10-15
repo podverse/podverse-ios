@@ -266,7 +266,7 @@ class EpisodesTableViewController: PVViewController {
     
     func checkForDownloadedEpisodeResults(episodes: [Episode]?) -> Bool {
         
-        var message = Strings.Errors.noDownloadedEpisodesAvailable
+        let message = Strings.Errors.noDownloadedEpisodesAvailable
         
         guard let episodes = episodes, episodes.count > 0 else {
             loadNoDataView(message: message, buttonTitle: "Show All Episodes", buttonPressed: #selector(EpisodesTableViewController.loadAllEpisodeData))
@@ -279,7 +279,7 @@ class EpisodesTableViewController: PVViewController {
     
     func checkForAllEpisodeResults(episodes: [Episode]?) -> Bool {
         
-        var message = Strings.Errors.noEpisodesAvailable
+        let message = Strings.Errors.noEpisodesAvailable
         
         guard let episodes = episodes, episodes.count > 0 else {
             loadNoDataView(message: message, buttonTitle: nil, buttonPressed: #selector(EpisodesTableViewController.reloadEpisodeData))

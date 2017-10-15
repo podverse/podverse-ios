@@ -290,18 +290,6 @@ enum EpisodeActions: String {
 
 struct Strings {
     
-    var text: String {
-        get {
-            switch self {
-            case .noClipsAvailable:
-                return "No clips available"
-            case .noClipsInternet:
-                return "No internet connection"
-            case .noDownloadedEpisodesAvailable:
-                return "No downloaded episodes available"
-            case .noEpisodeClipsAvailable:
-                return "No clips available for this episode"
-            case .noEpisodesAvailable:
     struct Errors {
         static let noClipsAvailable = "No clips available"
         static let noClipsInternet = "No internet connection"
