@@ -597,10 +597,20 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="7LK-Aw-ucR">
-                                <rect key="frame" x="169" y="315" width="37" height="37"/>
-                                <color key="color" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
-                            </activityIndicatorView>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="2Dd-55-kHp">
+                                <rect key="frame" x="0.0" y="108" width="375" height="510"/>
+                                <subviews>
+                                    <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="7LK-Aw-ucR">
+                                        <rect key="frame" x="169" y="236.5" width="37" height="37"/>
+                                        <color key="color" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                                    </activityIndicatorView>
+                                </subviews>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstItem="7LK-Aw-ucR" firstAttribute="centerY" secondItem="2Dd-55-kHp" secondAttribute="centerY" id="Mgx-g9-JHf"/>
+                                    <constraint firstItem="7LK-Aw-ucR" firstAttribute="centerX" secondItem="2Dd-55-kHp" secondAttribute="centerX" id="iFb-Za-Y4h"/>
+                                </constraints>
+                            </view>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="107" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="vEq-k2-ABP">
                                 <rect key="frame" x="0.0" y="108" width="375" height="510"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -738,9 +748,11 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="DLu-7b-kTd" firstAttribute="leading" secondItem="gIq-dg-S0t" secondAttribute="leading" id="1MQ-TV-S8T"/>
-                            <constraint firstItem="7LK-Aw-ucR" firstAttribute="centerX" secondItem="gIq-dg-S0t" secondAttribute="centerX" id="6E4-z1-pw8"/>
+                            <constraint firstItem="2Dd-55-kHp" firstAttribute="top" secondItem="DLu-7b-kTd" secondAttribute="bottom" id="4fY-ke-7m2"/>
                             <constraint firstItem="DLu-7b-kTd" firstAttribute="top" secondItem="vOH-XF-B6x" secondAttribute="bottom" id="E7Y-0v-9hD"/>
-                            <constraint firstItem="7LK-Aw-ucR" firstAttribute="centerY" secondItem="gIq-dg-S0t" secondAttribute="centerY" id="XuK-Ml-RmX"/>
+                            <constraint firstItem="2Dd-55-kHp" firstAttribute="leading" secondItem="gIq-dg-S0t" secondAttribute="leading" id="E8n-CF-jBu"/>
+                            <constraint firstAttribute="trailing" secondItem="2Dd-55-kHp" secondAttribute="trailing" id="QCf-rx-biB"/>
+                            <constraint firstItem="teL-qA-mOZ" firstAttribute="top" secondItem="2Dd-55-kHp" secondAttribute="bottom" id="cWE-Lk-VrG"/>
                             <constraint firstItem="teL-qA-mOZ" firstAttribute="top" secondItem="vEq-k2-ABP" secondAttribute="bottom" id="egC-Pu-QM9"/>
                             <constraint firstItem="vEq-k2-ABP" firstAttribute="top" secondItem="DLu-7b-kTd" secondAttribute="bottom" id="hAD-7K-PK4"/>
                             <constraint firstAttribute="trailing" secondItem="DLu-7b-kTd" secondAttribute="trailing" id="l0q-yU-KDV"/>
@@ -751,6 +763,7 @@
                     <navigationItem key="navigationItem" id="RfP-ff-YV2"/>
                     <connections>
                         <outlet property="activityIndicator" destination="7LK-Aw-ucR" id="ANo-oe-Fym"/>
+                        <outlet property="activityView" destination="2Dd-55-kHp" id="KV6-9P-71l"/>
                         <outlet property="clipQueryActivityIndicator" destination="L1D-a2-v2P" id="uSX-jn-Fh2"/>
                         <outlet property="clipQueryMessage" destination="Vtf-wU-mlR" id="hkh-Qt-BZ2"/>
                         <outlet property="clipQueryStatusView" destination="2f0-Qz-hhE" id="wcQ-DN-pn1"/>
@@ -1319,10 +1332,10 @@
                                     </subviews>
                                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                     <constraints>
-                                        <constraint firstItem="DVI-6g-nDE" firstAttribute="centerX" secondItem="Dio-qG-VCk" secondAttribute="centerX" id="044-ot-nnL"/>
+                                        <constraint firstItem="DVI-6g-nDE" firstAttribute="centerY" secondItem="Dio-qG-VCk" secondAttribute="centerY" id="2vl-co-LAq"/>
                                         <constraint firstItem="sGw-Th-DgA" firstAttribute="centerY" secondItem="Dio-qG-VCk" secondAttribute="centerY" id="BMQ-2R-nel"/>
                                         <constraint firstItem="sGw-Th-DgA" firstAttribute="centerX" secondItem="Dio-qG-VCk" secondAttribute="centerX" id="Fxf-3g-gp8"/>
-                                        <constraint firstItem="DVI-6g-nDE" firstAttribute="centerY" secondItem="Dio-qG-VCk" secondAttribute="centerY" id="mfO-F5-cFk"/>
+                                        <constraint firstItem="DVI-6g-nDE" firstAttribute="centerX" secondItem="Dio-qG-VCk" secondAttribute="centerX" id="lLB-VB-3sT"/>
                                     </constraints>
                                 </view>
                                 <prototypes>
@@ -1422,7 +1435,7 @@
                     <connections>
                         <outlet property="activityIndicator" destination="mVQ-Fd-SWv" id="NGh-sU-nN3"/>
                         <outlet property="activityView" destination="XWy-gm-emm" id="IcK-eJ-EF3"/>
-                        <outlet property="clipQueryActivityIndicator" destination="sGw-Th-DgA" id="iXK-q0-aa0"/>
+                        <outlet property="clipQueryActivityIndicator" destination="DVI-6g-nDE" id="k3q-Pz-SIy"/>
                         <outlet property="clipQueryMessage" destination="sGw-Th-DgA" id="cCk-w8-3DY"/>
                         <outlet property="clipQueryStatusView" destination="Dio-qG-VCk" id="UUG-u6-0uu"/>
                         <outlet property="episodeTitle" destination="CvL-FW-4lp" id="6nT-3Q-jGF"/>
@@ -2793,7 +2806,7 @@
                     <connections>
                         <outlet property="activityIndicator" destination="T0a-VP-hBf" id="wbN-ra-Zl5"/>
                         <outlet property="activityView" destination="oFb-l0-vam" id="JxX-iK-e8Y"/>
-                        <outlet property="clipActivityIndicator" destination="yWh-QE-9yt" id="sGg-uQ-0HE"/>
+                        <outlet property="clipQueryActivityIndicator" destination="yWh-QE-9yt" id="vWo-Gx-LN1"/>
                         <outlet property="clipQueryMessage" destination="Gdi-AW-Mgg" id="0lh-kJ-5wh"/>
                         <outlet property="clipQueryStatusView" destination="8p2-6X-yTT" id="ZL2-Za-eAn"/>
                         <outlet property="tableView" destination="AtU-cy-hVq" id="y9k-YP-i6g"/>

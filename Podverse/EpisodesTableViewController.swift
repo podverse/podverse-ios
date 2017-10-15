@@ -16,19 +16,23 @@ class EpisodesTableViewController: PVViewController {
     
     var filterTypeSelected: EpisodesFilter = .downloaded {
         didSet {
+            self.resetClipQuery()
             self.tableViewHeader.filterTitle = self.filterTypeSelected.text
             UserDefaults.standard.set(filterTypeSelected.text, forKey: kEpisodesTableFilterType)
             
             if filterTypeSelected == .clips {
                 self.tableViewHeader.sortingButton.isHidden = false
+                self.clipQueryStatusView.isHidden = false
             } else {
                 self.tableViewHeader.sortingButton.isHidden = true
+                self.clipQueryStatusView.isHidden = true
             }
         }
     }
     
     var sortingTypeSelected: ClipSorting = .topWeek {
         didSet {
+            self.resetClipQuery()
             self.tableViewHeader.sortingTitle = sortingTypeSelected.text
             UserDefaults.standard.set(sortingTypeSelected.text, forKey: kEpisodesTableSortingType)
         }
@@ -112,19 +116,6 @@ class EpisodesTableViewController: PVViewController {
         }
     }
     
-    func loadPodcastHeader() {
-        if let feedUrl = feedUrl, let podcast = Podcast.podcastForFeedUrl(feedUrlString: feedUrl, managedObjectContext: moc) {
-            
-            self.headerPodcastTitle.text = podcast.title
-            
-            self.headerImageView.image = Podcast.retrievePodcastImage(podcastImageURLString: podcast.imageUrl, feedURLString: podcast.feedUrl, managedObjectID: podcast.objectID, completion: { _ in
-                self.headerImageView.sd_setImage(with: URL(string: podcast.imageUrl ?? ""), placeholderImage: #imageLiteral(resourceName: "PodverseIcon"))
-            })
-            
-            self.autoDownloadSwitch.isOn = podcast.shouldAutoDownload() ? true : false
-        }
-    }
-    
     func downloadPlay(sender: UIButton) {
         if let cell = sender.superview?.superview as? EpisodeTableViewCell,
             let indexRow = self.tableView.indexPath(for: cell)?.row {
@@ -153,6 +144,19 @@ class EpisodesTableViewController: PVViewController {
                 }
                 PVDownloader.shared.startDownloadingEpisode(episode: episode)
             }
+        }
+    }
+    
+    func loadPodcastHeader() {
+        if let feedUrl = feedUrl, let podcast = Podcast.podcastForFeedUrl(feedUrlString: feedUrl, managedObjectContext: moc) {
+            
+            self.headerPodcastTitle.text = podcast.title
+            
+            self.headerImageView.image = Podcast.retrievePodcastImage(podcastImageURLString: podcast.imageUrl, feedURLString: podcast.feedUrl, managedObjectID: podcast.objectID, completion: { _ in
+                self.headerImageView.sd_setImage(with: URL(string: podcast.imageUrl ?? ""), placeholderImage: #imageLiteral(resourceName: "PodverseIcon"))
+            })
+            
+            self.autoDownloadSwitch.isOn = podcast.shouldAutoDownload() ? true : false
         }
     }
     
@@ -216,16 +220,12 @@ class EpisodesTableViewController: PVViewController {
         
     }
     
-    func resetAndRetrieveClips() {
-        resetClipQuery()
-        retrieveClips()
-    }
-    
     func resetClipQuery() {
         self.clipsArray.removeAll()
         self.clipQueryPage = 0
         self.clipQueryIsLoading = true
         self.clipQueryEndOfResultsReached = false
+        self.clipQueryMessage.isHidden = true
         self.tableView.reloadData()
     }
     
@@ -240,8 +240,10 @@ class EpisodesTableViewController: PVViewController {
         self.tableView.reloadData()
         
         self.hideNoDataView()
-        self.activityIndicator.startAnimating()
-        self.activityView.isHidden = false
+        
+        if self.clipQueryPage == 0 {
+            showActivityIndicator()
+        }
         
         self.clipQueryPage += 1
         
@@ -254,6 +256,7 @@ class EpisodesTableViewController: PVViewController {
     
     func reloadClipData(_ mediaRefs: [MediaRef]? = nil) {
         
+        hideActivityIndicator()
         self.clipQueryIsLoading = false
         self.clipQueryActivityIndicator.stopAnimating()
         
@@ -293,9 +296,8 @@ class EpisodesTableViewController: PVViewController {
             self.addNoDataViewWithMessage(message, buttonTitle: buttonTitle, buttonImage: nil, retryPressed: buttonPressed)
         }
         
-        self.activityIndicator.stopAnimating()
-        self.activityView.isHidden = true
         self.tableView.isHidden = true
+        
         showNoDataView()
         
     }
@@ -305,7 +307,7 @@ class EpisodesTableViewController: PVViewController {
     }
     
     func loadNoClipsMessage() {
-        loadNoDataView(message: Strings.Errors.noPodcastClipsAvailable, buttonTitle: nil, buttonPressed: #selector(EpisodesTableViewController.reloadEpisodeOrClipData))
+        loadNoDataView(message: Strings.Errors.noPodcastClipsAvailable, buttonTitle: nil, buttonPressed: nil)
     }
     
     func loadNoEpisodesMessage() {
@@ -314,6 +316,17 @@ class EpisodesTableViewController: PVViewController {
     
     func loadNoDownloadedEpisodesMessage() {
         loadNoDataView(message: Strings.Errors.noDownloadedEpisodesAvailable, buttonTitle: "Show All Episodes", buttonPressed: #selector(EpisodesTableViewController.loadAllEpisodeData))
+    }
+    
+    func showActivityIndicator() {
+        self.tableView.isHidden = true
+        self.activityIndicator.startAnimating()
+        self.activityView.isHidden = false
+    }
+    
+    func hideActivityIndicator() {
+        self.activityIndicator.stopAnimating()
+        self.activityView.isHidden = true
     }
 
     override func goToNowPlaying () {
@@ -445,7 +458,7 @@ extension EpisodesTableViewController: UITableViewDataSource, UITableViewDelegat
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         // Bottom Refresh
-        if scrollView == self.tableView {
+        if scrollView == self.tableView && self.filterTypeSelected == .clips {
             if ((scrollView.contentOffset.y + scrollView.frame.size.height) >= scrollView.contentSize.height) && !self.clipQueryIsLoading && !self.clipQueryEndOfResultsReached {
                 self.clipQueryIsLoading = true
                 self.clipQueryActivityIndicator.startAnimating()
@@ -503,19 +516,16 @@ extension EpisodesTableViewController:FilterSelectionProtocol {
         let alert = UIAlertController(title: "Show", message: nil, preferredStyle: .actionSheet)
         
         alert.addAction(UIAlertAction(title: EpisodesFilter.downloaded.text, style: .default, handler: { action in
-            self.resetClipQuery()
             self.filterTypeSelected = .downloaded
             self.reloadEpisodeData()
         }))
         
         alert.addAction(UIAlertAction(title: EpisodesFilter.allEpisodes.text, style: .default, handler: { action in
-            self.resetClipQuery()
             self.filterTypeSelected = .allEpisodes
             self.reloadEpisodeData()
         }))
         
         alert.addAction(UIAlertAction(title: EpisodesFilter.clips.text, style: .default, handler: { action in
-            self.resetClipQuery()
             self.filterTypeSelected = .clips
             self.retrieveClips()
         }))
