@@ -80,7 +80,7 @@ class ClipsTableViewController: PVViewController {
     
     func retrieveClips() {
         
-        if checkForConnectvity() == false {
+        guard checkForConnectvity() == true else {
             return
         }
         
@@ -141,8 +141,13 @@ class ClipsTableViewController: PVViewController {
     func loadNoDataView(message: String, buttonTitle: String?) {
         
         if let noDataView = self.view.subviews.first(where: { $0.tag == kNoDataViewTag}) {
+            
             if let messageView = noDataView.subviews.first(where: {$0 is UILabel}), let messageLabel = messageView as? UILabel {
                 messageLabel.text = message
+            }
+            
+            if let buttonView = noDataView.subviews.first(where: {$0 is UIButton}), let button = buttonView as? UIButton {
+                button.setTitle(buttonTitle, for: .normal)
             }
         }
         else {
