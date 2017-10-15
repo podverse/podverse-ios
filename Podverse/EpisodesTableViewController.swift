@@ -254,9 +254,17 @@ class EpisodesTableViewController: PVViewController {
     
     func reloadClipData(_ mediaRefs: [MediaRef]? = nil) {
         
-
-        guard let mediaRefs = mediaRefs, checkForResults(results: mediaRefs) else {
-            self.loadNoClipsMessage()
+        self.clipQueryIsLoading = false
+        self.clipQueryActivityIndicator.stopAnimating()
+        
+        guard checkForResults(results: mediaRefs) || checkForResults(results: self.clipsArray), let mediaRefs = mediaRefs else {
+            loadNoClipsMessage()
+            return
+        }
+        
+        guard checkForResults(results: mediaRefs) else {
+            self.clipQueryEndOfResultsReached = true
+            self.clipQueryMessage.isHidden = false
             return
         }
         
@@ -297,7 +305,7 @@ class EpisodesTableViewController: PVViewController {
     }
     
     func loadNoClipsMessage() {
-        loadNoDataView(message: Strings.Errors.noEpisodeClipsAvailable, buttonTitle: nil, buttonPressed: #selector(EpisodesTableViewController.reloadEpisodeOrClipData))
+        loadNoDataView(message: Strings.Errors.noPodcastClipsAvailable, buttonTitle: nil, buttonPressed: #selector(EpisodesTableViewController.reloadEpisodeOrClipData))
     }
     
     func loadNoEpisodesMessage() {

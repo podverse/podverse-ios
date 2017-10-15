@@ -299,6 +299,7 @@ struct Strings {
         static let noPlaylistsAvailable = "No playlists available"
         static let noPlaylistsInternet = "No internet connection"
         static let noPlaylistsNotLoggedIn = "Login to view your playlists"
+        static let noPodcastClipsAvailable = "No clips available for this podcast"
     }
     
 }

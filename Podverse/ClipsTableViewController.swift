@@ -99,20 +99,20 @@ class ClipsTableViewController: PVViewController {
             }
 
             MediaRef.retrieveMediaRefsFromServer(podcastFeedUrls: subscribedPodcastFeedUrls, sortingType: self.sortingTypeSelected, page: self.clipQueryPage) { (mediaRefs) -> Void in
-                self.reloadClipData(mediaRefs: mediaRefs)
+                self.reloadClipData(mediaRefs)
             }
 
         } else {
 
             MediaRef.retrieveMediaRefsFromServer(sortingType: self.sortingTypeSelected, page: self.clipQueryPage) { (mediaRefs) -> Void in
-                self.reloadClipData(mediaRefs: mediaRefs)
+                self.reloadClipData(mediaRefs)
             }
 
         }
         
     }
     
-    func reloadClipData(mediaRefs: [MediaRef]? = nil) {
+    func reloadClipData(_ mediaRefs: [MediaRef]? = nil) {
         
         self.clipQueryIsLoading = false
         self.clipQueryActivityIndicator.stopAnimating()
