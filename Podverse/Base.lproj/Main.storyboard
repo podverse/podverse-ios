@@ -1199,6 +1199,20 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="XWy-gm-emm">
+                                <rect key="frame" x="0.0" y="204" width="375" height="414"/>
+                                <subviews>
+                                    <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="mVQ-Fd-SWv">
+                                        <rect key="frame" x="169" y="189" width="37" height="37"/>
+                                        <color key="color" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                                    </activityIndicatorView>
+                                </subviews>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstItem="mVQ-Fd-SWv" firstAttribute="centerX" secondItem="XWy-gm-emm" secondAttribute="centerX" id="JQk-OL-Sba"/>
+                                    <constraint firstItem="mVQ-Fd-SWv" firstAttribute="centerY" secondItem="XWy-gm-emm" secondAttribute="centerY" id="ib2-NH-6Cz"/>
+                                </constraints>
+                            </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="0X2-EF-0J0">
                                 <rect key="frame" x="0.0" y="64" width="375" height="96"/>
                                 <subviews>
@@ -1342,17 +1356,23 @@
                             <constraint firstItem="Joz-5V-gKg" firstAttribute="leading" secondItem="8Hz-yB-qEo" secondAttribute="leading" id="QxS-lx-opw"/>
                             <constraint firstItem="0X2-EF-0J0" firstAttribute="leading" secondItem="8Hz-yB-qEo" secondAttribute="leading" id="Vfp-1i-BjW"/>
                             <constraint firstItem="cjT-ys-I6K" firstAttribute="top" secondItem="20a-4v-p8l" secondAttribute="bottom" id="X3Y-d1-z8g"/>
+                            <constraint firstItem="Soc-Pt-G0Q" firstAttribute="top" secondItem="XWy-gm-emm" secondAttribute="bottom" id="Ztg-IU-7Ef"/>
                             <constraint firstItem="Soc-Pt-G0Q" firstAttribute="top" secondItem="Joz-5V-gKg" secondAttribute="bottom" id="ald-wq-IZc"/>
+                            <constraint firstItem="XWy-gm-emm" firstAttribute="leading" secondItem="8Hz-yB-qEo" secondAttribute="leading" id="biI-yn-n6f"/>
+                            <constraint firstItem="XWy-gm-emm" firstAttribute="top" secondItem="20a-4v-p8l" secondAttribute="bottom" id="eTf-S0-Gag"/>
                             <constraint firstItem="20a-4v-p8l" firstAttribute="leading" secondItem="8Hz-yB-qEo" secondAttribute="leading" id="eTf-sT-kg3"/>
                             <constraint firstItem="cjT-ys-I6K" firstAttribute="leading" secondItem="8Hz-yB-qEo" secondAttribute="leading" id="kyQ-kt-HVS"/>
                             <constraint firstItem="Joz-5V-gKg" firstAttribute="top" secondItem="20a-4v-p8l" secondAttribute="bottom" id="nNq-h0-1H3"/>
                             <constraint firstItem="20a-4v-p8l" firstAttribute="top" secondItem="0X2-EF-0J0" secondAttribute="bottom" id="rL4-86-6oq"/>
                             <constraint firstAttribute="trailing" secondItem="cjT-ys-I6K" secondAttribute="trailing" id="rYD-9q-TMf"/>
+                            <constraint firstAttribute="trailing" secondItem="XWy-gm-emm" secondAttribute="trailing" id="xBS-mj-gUU"/>
                             <constraint firstItem="0X2-EF-0J0" firstAttribute="top" secondItem="22f-KB-CMp" secondAttribute="bottom" id="yhJ-Hk-95f"/>
                             <constraint firstAttribute="trailing" secondItem="Joz-5V-gKg" secondAttribute="trailing" id="z8i-Vg-FSj"/>
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="activityIndicator" destination="mVQ-Fd-SWv" id="NGh-sU-nN3"/>
+                        <outlet property="activityView" destination="XWy-gm-emm" id="IcK-eJ-EF3"/>
                         <outlet property="episodeTitle" destination="CvL-FW-4lp" id="6nT-3Q-jGF"/>
                         <outlet property="headerImageView" destination="h38-tb-FZe" id="1jm-rD-uQ1"/>
                         <outlet property="localMultiButton" destination="VWl-i7-LTW" id="xMP-kj-gYq"/>

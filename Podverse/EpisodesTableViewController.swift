@@ -47,7 +47,9 @@ class EpisodesTableViewController: PVViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        activityIndicator.hidesWhenStopped = true
+        setupNotificationListeners()
+        
+        self.activityIndicator.hidesWhenStopped = true
         
         self.tableViewHeader.delegate = self
         self.tableViewHeader.setupViews()
@@ -68,13 +70,6 @@ class EpisodesTableViewController: PVViewController {
         
         reloadEpisodeOrClipData()
         
-        setupNotificationListeners()
-        
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        self.tableViewHeader.filterTitle = self.filterTypeSelected.text
-        self.tableViewHeader.sortingTitle = self.sortingTypeSelected.text
     }
     
     deinit {
@@ -209,7 +204,7 @@ class EpisodesTableViewController: PVViewController {
     }
     
     func retrieveClips() {
-        
+            
         guard checkForConnectivity() else {
             return
         }
@@ -240,11 +235,12 @@ class EpisodesTableViewController: PVViewController {
         
         self.tableView.isHidden = false
         self.tableView.reloadData()
+        
     }
     
     func checkForConnectivity() -> Bool {
         
-        var message = ErrorMessages.noClipsInternet.text
+        let message = ErrorMessages.noClipsInternet.text
         
         if self.reachability.hasInternetConnection() == false {
             loadNoDataView(message: message, buttonTitle: "Retry", buttonPressed: #selector(EpisodesTableViewController.reloadEpisodeOrClipData))
@@ -257,7 +253,7 @@ class EpisodesTableViewController: PVViewController {
     
     func checkForClipResults(mediaRefs: [MediaRef]?) -> Bool {
         
-        var message = ErrorMessages.noEpisodeClipsAvailable.text
+        let message = ErrorMessages.noEpisodeClipsAvailable.text
         
         guard let mediaRefs = mediaRefs, mediaRefs.count > 0 else {
             loadNoDataView(message: message, buttonTitle: nil, buttonPressed: #selector(EpisodesTableViewController.reloadEpisodeOrClipData))
