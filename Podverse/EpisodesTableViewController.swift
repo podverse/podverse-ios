@@ -188,14 +188,16 @@ class EpisodesTableViewController: PVViewController {
                     }
                 }
                 
-                guard checkForDownloadedEpisodeResults(episodes: episodesArray) else {
+                guard checkForResults(results: episodesArray) else {
+                    self.loadNoDownloadedEpisodesMessage()
                     return
                 }
                 
             } else if self.filterTypeSelected == .allEpisodes {
                 episodesArray = Array(podcast.episodes)
                 
-                guard checkForAllEpisodeResults(episodes: episodesArray) else {
+                guard checkForResults(results: episodesArray) else {
+                    self.loadNoEpisodesMessage()
                     return
                 }
             }
@@ -230,6 +232,7 @@ class EpisodesTableViewController: PVViewController {
     func retrieveClips() {
         
         guard checkForConnectivity() else {
+            loadNoInternetMessage()
             return
         }
 
@@ -251,24 +254,11 @@ class EpisodesTableViewController: PVViewController {
     
     func reloadClipData(_ mediaRefs: [MediaRef]? = nil) {
         
-        self.clipQueryIsLoading = false
-        self.clipQueryActivityIndicator.stopAnimating()
-        
-        if !checkForClipResults(mediaRefs: mediaRefs) && checkForClipResults(mediaRefs: self.clipsArray) {
-            self.clipQueryEndOfResultsReached = true
-            self.clipQueryMessage.isHidden = false
-            return
-        }
-        
-        guard checkForClipResults(mediaRefs: mediaRefs) || checkForClipResults(mediaRefs: self.clipsArray) else {
-            return
-        }
-        
-        guard checkForClipResults(mediaRefs: mediaRefs) || checkForClipResults(mediaRefs: self.clipsArray), let mediaRefs = mediaRefs else {
-            return
-        }
-        
 
+        guard let mediaRefs = mediaRefs, checkForResults(results: mediaRefs) else {
+            self.loadNoClipsMessage()
+            return
+        }
         
         for mediaRef in mediaRefs {
             self.clipsArray.append(mediaRef)
@@ -276,58 +266,6 @@ class EpisodesTableViewController: PVViewController {
         
         self.tableView.isHidden = false
         self.tableView.reloadData()
-        
-    }
-    
-    func checkForConnectivity() -> Bool {
-        
-        let message = Strings.Errors.noClipsInternet
-        
-        if self.reachability.hasInternetConnection() == false {
-            loadNoDataView(message: message, buttonTitle: "Retry", buttonPressed: #selector(EpisodesTableViewController.reloadEpisodeOrClipData))
-            return false
-        } else {
-            return true
-        }
-        
-    }
-    
-    func checkForClipResults(mediaRefs: [MediaRef]?) -> Bool {
-        
-        let message = Strings.Errors.noEpisodeClipsAvailable
-        
-        guard let mediaRefs = mediaRefs, mediaRefs.count > 0 else {
-            loadNoDataView(message: message, buttonTitle: nil, buttonPressed: #selector(EpisodesTableViewController.reloadEpisodeOrClipData))
-            return false
-        }
-        
-        return true
-        
-    }
-    
-    func checkForDownloadedEpisodeResults(episodes: [Episode]?) -> Bool {
-        
-        let message = Strings.Errors.noDownloadedEpisodesAvailable
-        
-        guard let episodes = episodes, episodes.count > 0 else {
-            loadNoDataView(message: message, buttonTitle: "Show All Episodes", buttonPressed: #selector(EpisodesTableViewController.loadAllEpisodeData))
-            return false
-        }
-        
-        return true
-        
-    }
-    
-    func checkForAllEpisodeResults(episodes: [Episode]?) -> Bool {
-        
-        let message = Strings.Errors.noEpisodesAvailable
-        
-        guard let episodes = episodes, episodes.count > 0 else {
-            loadNoDataView(message: message, buttonTitle: nil, buttonPressed: #selector(EpisodesTableViewController.reloadEpisodeData))
-            return false
-        }
-        
-        return true
         
     }
     
@@ -352,6 +290,22 @@ class EpisodesTableViewController: PVViewController {
         self.tableView.isHidden = true
         showNoDataView()
         
+    }
+
+    func loadNoInternetMessage() {
+        loadNoDataView(message: Strings.Errors.noClipsInternet, buttonTitle: "Retry", buttonPressed: #selector(EpisodesTableViewController.reloadEpisodeOrClipData))
+    }
+    
+    func loadNoClipsMessage() {
+        loadNoDataView(message: Strings.Errors.noEpisodeClipsAvailable, buttonTitle: nil, buttonPressed: #selector(EpisodesTableViewController.reloadEpisodeOrClipData))
+    }
+    
+    func loadNoEpisodesMessage() {
+        loadNoDataView(message: Strings.Errors.noEpisodesAvailable, buttonTitle: nil, buttonPressed: nil)
+    }
+    
+    func loadNoDownloadedEpisodesMessage() {
+        loadNoDataView(message: Strings.Errors.noDownloadedEpisodesAvailable, buttonTitle: "Show All Episodes", buttonPressed: #selector(EpisodesTableViewController.loadAllEpisodeData))
     }
 
     override func goToNowPlaying () {
@@ -469,8 +423,8 @@ extension EpisodesTableViewController: UITableViewDataSource, UITableViewDelegat
                 
                 PVDeleter.deleteEpisode(episodeId: episodeToEdit.objectID, fileOnly: true, shouldCallNotificationMethod: true)
                 
-                if self.filterTypeSelected == .downloaded {
-                    self.checkForDownloadedEpisodeResults(episodes: self.episodesArray)
+                if self.filterTypeSelected == .downloaded && self.episodesArray.count < 1 {
+                    self.loadNoDownloadedEpisodesMessage()
                 }
             })
             

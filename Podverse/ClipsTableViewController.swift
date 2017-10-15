@@ -79,7 +79,8 @@ class ClipsTableViewController: PVViewController {
     
     func retrieveClips() {
         
-        guard checkForConnectvity() == true else {
+        guard checkForConnectivity() else {
+            loadNoInternetMessage()
             return
         }
         
@@ -116,11 +117,12 @@ class ClipsTableViewController: PVViewController {
         self.clipQueryIsLoading = false
         self.clipQueryActivityIndicator.stopAnimating()
         
-        guard checkForResults(mediaRefs: mediaRefs) || checkForResults(mediaRefs: self.clipsArray), let mediaRefs = mediaRefs else {
+        guard checkForResults(results: mediaRefs) || checkForResults(results: self.clipsArray), let mediaRefs = mediaRefs else {
+            loadNoClipsMessage()
             return
         }
         
-        guard checkForResults(mediaRefs: mediaRefs) else {
+        guard checkForResults(results: mediaRefs) else {
             self.clipQueryEndOfResultsReached = true
             self.clipQueryMessage.isHidden = false
             return
@@ -134,33 +136,7 @@ class ClipsTableViewController: PVViewController {
         self.tableView.reloadData()
         
     }
-    
-    func checkForConnectvity() -> Bool {
-        
-        let message = Strings.Errors.noClipsInternet
-        
-        if self.reachability.hasInternetConnection() == false {
-            loadNoDataView(message: message, buttonTitle: "Retry")
-            return false
-        } else {
-            return true
-        }
-        
-    }
-    
-    func checkForResults(mediaRefs: [MediaRef]?) -> Bool {
-        
-        let message = Strings.Errors.noClipsAvailable
-        
-        guard let mediaRefs = mediaRefs, mediaRefs.count > 0 else {
-            loadNoDataView(message: message, buttonTitle: nil)
-            return false
-        }
-        
-        return true
-        
-    }
-    
+
     func loadNoDataView(message: String, buttonTitle: String?) {
         
         if let noDataView = self.view.subviews.first(where: { $0.tag == kNoDataViewTag}) {
@@ -181,6 +157,14 @@ class ClipsTableViewController: PVViewController {
         self.tableView.isHidden = true
         showNoDataView()
         
+    }
+    
+    func loadNoClipsMessage() {
+        loadNoDataView(message: Strings.Errors.noClipsAvailable, buttonTitle: nil)
+    }
+    
+    func loadNoInternetMessage() {
+        loadNoDataView(message: Strings.Errors.noClipsInternet, buttonTitle: "Retry")
     }
     
     override func goToNowPlaying () {
@@ -241,6 +225,7 @@ extension ClipsTableViewController:UITableViewDelegate, UITableViewDataSource {
         if scrollView == self.tableView {
             if ((scrollView.contentOffset.y + scrollView.frame.size.height) >= scrollView.contentSize.height) && !self.clipQueryIsLoading && !self.clipQueryEndOfResultsReached {
                 self.clipQueryIsLoading = true
+                self.clipQueryMessage.isHidden = true
                 self.clipQueryActivityIndicator.startAnimating()
                 self.retrieveClips()
             }
