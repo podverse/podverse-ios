@@ -201,6 +201,7 @@ class EpisodeTableViewController: PVViewController {
     func retrieveClips() {
         
         guard checkForConnectivity() else {
+            loadNoInternetMessage()
             return
         }
         
@@ -221,7 +222,8 @@ class EpisodeTableViewController: PVViewController {
     
     func reloadClipData(_ mediaRefs: [MediaRef]? = nil) {
         
-        guard let mediaRefs = mediaRefs, checkForClipResults(mediaRefs: mediaRefs) else {
+        guard let mediaRefs = mediaRefs, checkForResults(results: mediaRefs) else {
+            loadNoClipsMessage()
             return
         }
         
@@ -231,32 +233,6 @@ class EpisodeTableViewController: PVViewController {
         
         self.tableView.isHidden = false
         self.tableView.reloadData()
-        
-    }
-    
-    func checkForConnectivity() -> Bool {
-        
-        let message = Strings.Errors.noClipsInternet
-        
-        if self.reachability.hasInternetConnection() == false {
-            loadNoDataView(message: message, buttonTitle: "Retry", buttonPressed: #selector(EpisodeTableViewController.reloadShowNotesOrClipData))
-            return false
-        } else {
-            return true
-        }
-        
-    }
-    
-    func checkForClipResults(mediaRefs: [MediaRef]?) -> Bool {
-        
-        let message = Strings.Errors.noEpisodeClipsAvailable
-        
-        guard let mediaRefs = mediaRefs, mediaRefs.count > 0 else {
-            loadNoDataView(message: message, buttonTitle: nil, buttonPressed: #selector(EpisodeTableViewController.reloadShowNotesOrClipData))
-            return false
-        }
-        
-        return true
         
     }
     
@@ -281,6 +257,14 @@ class EpisodeTableViewController: PVViewController {
         self.tableView.isHidden = true
         showNoDataView()
         
+    }
+    
+    func loadNoInternetMessage() {
+        loadNoDataView(message: Strings.Errors.noClipsInternet, buttonTitle: "Retry", buttonPressed: #selector(EpisodeTableViewController.reloadShowNotesOrClipData))
+    }
+    
+    func loadNoClipsMessage() {
+        loadNoDataView(message: Strings.Errors.noEpisodeClipsAvailable, buttonTitle: nil, buttonPressed: #selector(EpisodeTableViewController.reloadShowNotesOrClipData))
     }
     
     override func goToNowPlaying () {

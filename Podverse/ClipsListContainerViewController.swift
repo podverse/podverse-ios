@@ -66,7 +66,8 @@ class ClipsListContainerViewController: UIViewController {
     
     func retrieveClips() {
         
-        guard checkForConnectvity() else {
+        guard checkForConnectivity() else {
+            loadNoInternetMessage()
             return
         }
         
@@ -111,7 +112,8 @@ class ClipsListContainerViewController: UIViewController {
     
     func reloadClipData(mediaRefs: [MediaRef]? = nil) {
         
-        guard let mediaRefs = mediaRefs, checkForClipResults(mediaRefs: mediaRefs) else {
+        guard let mediaRefs = mediaRefs, checkForResults(results: mediaRefs) else {
+            loadNoClipsMessage()
             return
         }
         
@@ -122,43 +124,6 @@ class ClipsListContainerViewController: UIViewController {
         self.tableView.isHidden = false
         self.tableView.reloadData()
         
-    }
-    
-    func checkForConnectivity() -> Bool {
-        
-        let message = Strings.Errors.noClipsInternet
-        
-        if self.reachability.hasInternetConnection() == false {
-            loadNoDataView(message: message, buttonTitle: "Retry")
-            return false
-        } else {
-            return true
-        }
-        
-    }
-    
-    func checkForClipResults(mediaRefs: [MediaRef]?) -> Bool {
-        
-        let message = Strings.Errors.noClipsAvailable
-        
-        guard let mediaRefs = mediaRefs, mediaRefs.count > 0 else {
-            loadNoDataView(message: message, buttonTitle: nil)
-            return false
-        }
-        
-        return true
-        
-    }
-    
-    func checkForConnectvity() -> Bool {
-        let message = Strings.Errors.noClipsInternet
-        
-        if self.reachability.hasInternetConnection() == false {
-            loadNoDataView(message: message, buttonTitle: "Retry")
-            return false
-        }
-        
-        return true
     }
     
     func loadNoDataView(message: String, buttonTitle: String?) {
@@ -182,6 +147,14 @@ class ClipsListContainerViewController: UIViewController {
         self.tableView.isHidden = true
         showNoDataView()
         
+    }
+    
+    func loadNoInternetMessage() {
+        loadNoDataView(message: Strings.Errors.noClipsInternet, buttonTitle: "Retry")
+    }
+    
+    func loadNoClipsMessage() {
+        loadNoDataView(message: Strings.Errors.noClipsAvailable, buttonTitle: nil)
     }
     
 }
