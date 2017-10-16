@@ -91,6 +91,7 @@ class PVMediaPlayer: NSObject {
     var shouldSetupClip: Bool = false
     var shouldStartFromTime: Int64 = 0
     var shouldStopAtEndTime: Int64 = 0
+    var hasErrored: Bool = false
     
     var progress:Double {
         return self.audioPlayer.duration > 0 ? self.audioPlayer.progress : Double(self.shouldStartFromTime)
@@ -308,7 +309,13 @@ class PVMediaPlayer: NSObject {
         
         self.delegate?.playerHistoryItemLoadingBegan()
         
-        self.audioPlayer.pause()
+        // Pausing before attempting to play seems to help with playback issues.
+        // If the audioPlayer was last in the errored state, attempting to pause will cause the app to crash.
+        if self.hasErrored {
+            self.hasErrored = false
+        } else {
+            self.audioPlayer.pause()
+        }
         
         // If you are loading a clip, or an episode from the beginning, the item.lastPlaybackPosition will be overridden in the observeValue or seek method.
         if let lastPlaybackPosition = item.lastPlaybackPosition, !self.shouldSetupClip {
@@ -394,6 +401,7 @@ class PVMediaPlayer: NSObject {
                 }
                 
                 if self.audioPlayer.state == .error {
+                    self.hasErrored = true
                     self.delegate?.playerHistoryItemErrored()
                     return
                 }
@@ -442,7 +450,7 @@ class PVMediaPlayer: NSObject {
                     self.delegate?.playerHistoryItemLoaded()
                 }
                 
-                if self.audioPlayer.state == .stopped {
+                if self.audioPlayer.state == .stopped, !self.hasErrored {
                     return
                 }
                 
