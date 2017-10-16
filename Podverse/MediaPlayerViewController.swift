@@ -42,8 +42,6 @@ class MediaPlayerViewController: PVViewController {
     override func viewDidLoad() {
         setupContainerView()
         
-        pvMediaPlayer.delegate = self
-        
         let share = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.action, target: self, action: #selector(showShareMenu))
         let makeClip = UIBarButtonItem(title: "Make Clip", style: .plain, target: self, action: #selector(showMakeClip))
         let addToPlaylist = UIBarButtonItem(title: "Add to Playlist", style: .plain, target: self, action: #selector(showAddToPlaylist))
@@ -76,6 +74,7 @@ class MediaPlayerViewController: PVViewController {
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        pvMediaPlayer.delegate = self
         togglePlayIcon()
         updateTime()
     }
@@ -85,12 +84,10 @@ class MediaPlayerViewController: PVViewController {
     }
     
     fileprivate func addObservers() {
-        self.addObserver(self, forKeyPath: #keyPath(audioPlayer.state), options: [.new], context: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(pause), name: .playerHasFinished, object: nil)
     }
     
     fileprivate func removeObservers() {
-        self.removeObserver(self, forKeyPath: #keyPath(audioPlayer.state))
         NotificationCenter.default.removeObserver(self, name: .playerHasFinished, object: nil)
     }
     
@@ -205,13 +202,21 @@ class MediaPlayerViewController: PVViewController {
     
     func togglePlayIcon() {
         DispatchQueue.main.async {
-            if self.audioPlayer.state == STKAudioPlayerState.buffering || self.audioPlayer.state == STKAudioPlayerState.error || self.pvMediaPlayer.shouldSetupClip {
-                self.activityIndicator.isHidden = false
-                self.play.isHidden = true
-            } else if self.audioPlayer.state == STKAudioPlayerState.playing {
+            if self.audioPlayer.state == .stopped || self.audioPlayer.state == .paused {
+                self.activityIndicator.isHidden = true
+                self.play.setImage(UIImage(named:"Play"), for: .normal)
+                self.play.isHidden = false
+            } else if self.audioPlayer.state == .error {
+                self.activityIndicator.isHidden = true
+                self.play.setImage(UIImage(named:"AppIcon"), for: .normal)
+                self.play.isHidden = false
+            } else if self.audioPlayer.state == .playing && !self.pvMediaPlayer.shouldSetupClip && self.pvMediaPlayer.shouldStartFromTime == 0 {
                 self.activityIndicator.isHidden = true
                 self.play.setImage(UIImage(named:"Pause"), for: .normal)
                 self.play.isHidden = false
+            } else if self.audioPlayer.state == .buffering || self.pvMediaPlayer.shouldSetupClip || self.pvMediaPlayer.shouldStartFromTime > 0 {
+                self.activityIndicator.isHidden = false
+                self.play.isHidden = true
             } else {
                 self.activityIndicator.isHidden = true
                 self.play.setImage(UIImage(named:"Play"), for: .normal)
@@ -235,40 +240,20 @@ class MediaPlayerViewController: PVViewController {
         }
     }
     
-    @objc private func updateTime () {
+    @objc func updateTime () {
         DispatchQueue.main.async {
-            if self.audioPlayer.state == STKAudioPlayerState.buffering {
-                self.showPendingTime()
-            } else {
-                
-                var playbackPosition = 0.0
-                if self.pvMediaPlayer.progress > 0 {
-                    playbackPosition = self.pvMediaPlayer.progress
-                } else if let dur = self.pvMediaPlayer.duration {
-                    playbackPosition = Double(self.progress.value) * dur
-                }
-                
-                self.currentTime.text = Int64(playbackPosition).toMediaPlayerString()
-                
-                if let dur = self.pvMediaPlayer.duration {
-                    self.duration.text = Int64(dur).toMediaPlayerString()
-                    self.progress.value = Float(playbackPosition / dur)
-                }
+            var playbackPosition = 0.0
+            if self.pvMediaPlayer.progress > 0 {
+                playbackPosition = self.pvMediaPlayer.progress
+            } else if let dur = self.pvMediaPlayer.duration {
+                playbackPosition = Double(self.progress.value) * dur
             }
-        }
-    }
-    
-    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
-        if let keyPath = keyPath {
-            if keyPath == #keyPath(audioPlayer.state) {
-                if self.audioPlayer.state == STKAudioPlayerState.playing || audioPlayer.state == STKAudioPlayerState.paused {
-                    self.togglePlayIcon()
-                    self.updateTime()
-                }
-                
-                if self.audioPlayer.state == STKAudioPlayerState.error {
-                    print("ERROR AUDIOPLAYER ERROR STATE")
-                }
+            
+            self.currentTime.text = Int64(playbackPosition).toMediaPlayerString()
+            
+            if let dur = self.pvMediaPlayer.duration {
+                self.duration.text = Int64(dur).toMediaPlayerString()
+                self.progress.value = Float(playbackPosition / dur)
             }
         }
     }
@@ -484,24 +469,36 @@ class MediaPlayerViewController: PVViewController {
 
 extension MediaPlayerViewController:PVMediaPlayerUIDelegate {
     
-    func mediaPlayerButtonStateChanged(showPlayerButton: Bool) {}
+    func playerHistoryItemBuffering() {
+        self.togglePlayIcon()
+    }
+    
+    func playerHistoryItemErrored() {
+        self.togglePlayIcon()
+    }
+    
+    func playerHistoryItemLoaded() {
+        DispatchQueue.main.async {
+            self.setupClipFlags()
+            self.updateTime()
+        }
+        
+        self.togglePlayIcon()
+    }
     
     func playerHistoryItemLoadingBegan() {
         DispatchQueue.main.async {
             self.startTimeFlagView.isHidden = true
             self.endTimeFlagView.isHidden = true
             self.populatePlayerInfo()
-            self.togglePlayIcon()
             self.showPendingTime()
         }
         
+        self.togglePlayIcon()
     }
     
-    func playerHistoryItemLoaded() {
-        DispatchQueue.main.async {
-            self.setupClipFlags()
-            self.togglePlayIcon()
-        }
+    func playerHistoryItemPaused() {
+        self.togglePlayIcon()
     }
     
 }
