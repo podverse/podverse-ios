@@ -42,8 +42,6 @@ class MediaPlayerViewController: PVViewController {
     override func viewDidLoad() {
         setupContainerView()
         
-        pvMediaPlayer.delegate = self
-        
         let share = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.action, target: self, action: #selector(showShareMenu))
         let makeClip = UIBarButtonItem(title: "Make Clip", style: .plain, target: self, action: #selector(showMakeClip))
         let addToPlaylist = UIBarButtonItem(title: "Add to Playlist", style: .plain, target: self, action: #selector(showAddToPlaylist))
@@ -76,6 +74,7 @@ class MediaPlayerViewController: PVViewController {
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        pvMediaPlayer.delegate = self
         togglePlayIcon()
         updateTime()
     }
@@ -203,7 +202,7 @@ class MediaPlayerViewController: PVViewController {
     
     func togglePlayIcon() {
         DispatchQueue.main.async {
-            if self.audioPlayer.state == .stopped {
+            if self.audioPlayer.state == .stopped || self.audioPlayer.state == .paused {
                 self.activityIndicator.isHidden = true
                 self.play.setImage(UIImage(named:"Play"), for: .normal)
                 self.play.isHidden = false
@@ -470,36 +469,36 @@ class MediaPlayerViewController: PVViewController {
 
 extension MediaPlayerViewController:PVMediaPlayerUIDelegate {
     
-    func mediaPlayerButtonStateChanged(showPlayerButton: Bool) {}
+    func playerHistoryItemBuffering() {
+        self.togglePlayIcon()
+    }
+    
+    func playerHistoryItemErrored() {
+        self.togglePlayIcon()
+    }
+    
+    func playerHistoryItemLoaded() {
+        DispatchQueue.main.async {
+            self.setupClipFlags()
+            self.updateTime()
+        }
+        
+        self.togglePlayIcon()
+    }
     
     func playerHistoryItemLoadingBegan() {
         DispatchQueue.main.async {
             self.startTimeFlagView.isHidden = true
             self.endTimeFlagView.isHidden = true
             self.populatePlayerInfo()
-            self.togglePlayIcon()
             self.showPendingTime()
         }
+        
+        self.togglePlayIcon()
     }
     
-    func playerHistoryItemBuffering() {
-        DispatchQueue.main.async {
-            self.togglePlayIcon()
-        }
-    }
-    
-    func playerHistoryItemErrored() {
-        DispatchQueue.main.async {
-            self.togglePlayIcon()
-        }
-    }
-    
-    func playerHistoryItemLoaded() {
-        DispatchQueue.main.async {
-            self.setupClipFlags()
-            self.togglePlayIcon()
-            self.updateTime()
-        }
+    func playerHistoryItemPaused() {
+        self.togglePlayIcon()
     }
     
 }

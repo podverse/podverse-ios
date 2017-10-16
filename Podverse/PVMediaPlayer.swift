@@ -68,11 +68,11 @@ enum PlayingSpeed {
 }
 
 protocol PVMediaPlayerUIDelegate {
-    func mediaPlayerButtonStateChanged(showPlayerButton:Bool)
     func playerHistoryItemBuffering()
     func playerHistoryItemErrored()
     func playerHistoryItemLoaded()
     func playerHistoryItemLoadingBegan()
+    func playerHistoryItemPaused()
 }
 
 class PVMediaPlayer: NSObject {
@@ -292,7 +292,6 @@ class PVMediaPlayer: NSObject {
         if let episodeMediaUrl = episodeMediaUrl, let url = URL(string: episodeMediaUrl) {
             let asset = AVURLAsset(url: url, options: nil)
             self.duration = CMTimeGetSeconds(asset.duration)
-            self.delegate?.playerHistoryItemLoaded()
         } else {
             self.duration = self.audioPlayer.duration
         }
@@ -312,7 +311,7 @@ class PVMediaPlayer: NSObject {
         self.audioPlayer.pause()
         
         // If you are loading a clip, or an episode from the beginning, the item.lastPlaybackPosition will be overridden in the observeValue or seek method.
-        if let lastPlaybackPosition = item.lastPlaybackPosition {
+        if let lastPlaybackPosition = item.lastPlaybackPosition, !self.shouldSetupClip {
             self.shouldStartFromTime = lastPlaybackPosition
         }
         
@@ -389,13 +388,18 @@ class PVMediaPlayer: NSObject {
         if let keyPath = keyPath, let item = self.nowPlayingItem {
             if keyPath == #keyPath(audioPlayer.state) {
                 
+                if self.audioPlayer.state == .buffering {
+                    self.delegate?.playerHistoryItemBuffering()
+                    return
+                }
+                
                 if self.audioPlayer.state == .error {
                     self.delegate?.playerHistoryItemErrored()
                     return
                 }
                 
-                if self.audioPlayer.state == .buffering {
-                    self.delegate?.playerHistoryItemBuffering()
+                if self.audioPlayer.state == .paused {
+                    self.delegate?.playerHistoryItemPaused()
                     return
                 }
                 
@@ -418,6 +422,7 @@ class PVMediaPlayer: NSObject {
                             if self.shouldStartFromTime > 0 {
                                 self.audioPlayer.seek(toTime: Double(self.shouldStartFromTime))
                                 self.shouldStartFromTime = 0
+                                self.delegate?.playerHistoryItemLoaded()
                             }
                             
                             return
@@ -425,6 +430,7 @@ class PVMediaPlayer: NSObject {
                         } else if self.shouldStartFromTime > 0 {
                             self.audioPlayer.seek(toTime: Double(self.shouldStartFromTime))
                             self.shouldStartFromTime = 0
+                            self.delegate?.playerHistoryItemLoaded()
                             return
                         }
                         

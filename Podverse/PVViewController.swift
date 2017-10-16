@@ -33,6 +33,7 @@ class PVViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        pvMediaPlayer.delegate = self.tabBarController?.playerView
         toggleNowPlayingBar()
     }
     
@@ -75,6 +76,8 @@ class PVViewController: UIViewController {
             tabbarVC.playerView.podcastImageView.image = Podcast.retrievePodcastImage(podcastImageURLString: currentItem.podcastImageUrl, feedURLString: currentItem.podcastFeedUrl, managedObjectID: nil, completion: { _ in
                 tabbarVC.playerView.podcastImageView.sd_setImage(with: URL(string: currentItem.podcastImageUrl ?? ""), placeholderImage: #imageLiteral(resourceName: "PodverseIcon"))
             })
+            
+            tabbarVC.playerView.togglePlayIcon()
             
             completion(true)
         }
