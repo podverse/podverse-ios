@@ -20,6 +20,8 @@ class PlaylistsTableViewController: PVViewController {
         super.viewDidLoad()
         self.activityIndicator.hidesWhenStopped = true
         
+        PVAuth.shared.delegate = self
+        
         loadPlaylistData()
     }
     
@@ -29,16 +31,16 @@ class PlaylistsTableViewController: PVViewController {
     }
     
     func checkAuthorizationAndConnectivity() {
-        var message = "No playlists available"
+        var message = ErrorMessages.noPlaylistsAvailable.text
         var buttonTitle = "Retry"
         var selector:Selector = #selector(PlaylistsTableViewController.loadPlaylistData)
         let isLoggedIn = PVAuth.userIsLoggedIn
         
         if self.reachability.hasInternetConnection() == false {
-            message = "You must connect to the internet to load playlists."
+            message = ErrorMessages.noPlaylistsInternet.text
         }
         else if !isLoggedIn {
-            message = "You must be logged in to access playlists."
+            message = ErrorMessages.noPlaylistsNotLoggedIn.text
             buttonTitle = "Login"
 
             selector = #selector(PlaylistsTableViewController.presentLogin)
@@ -139,4 +141,10 @@ extension PlaylistsTableViewController:UITableViewDelegate, UITableViewDataSourc
         }
     }
     
+}
+
+extension PlaylistsTableViewController:PVAuthDelegate {
+    func loggedInSuccessfully() {
+        self.loadPlaylistData()
+    }
 }

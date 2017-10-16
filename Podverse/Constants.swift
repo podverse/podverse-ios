@@ -101,6 +101,8 @@ let kFinishedAllParsingPodcasts = "finishedAllParsingPodcasts"
 
 let kFinishedParsingPodcast = "finishedParsingPodcast"
 
+let kNoShowNotesMessage = "No show notes available for this episode."
+
 let rootPath = NSSearchPathForDirectoriesInDomains(FileManager.SearchPathDirectory.documentDirectory, .userDomainMask, true)[0]
 
 let TO_PLAYER_SEGUE_ID = "To Now Playing"
@@ -108,26 +110,49 @@ let TO_PLAYER_SEGUE_ID = "To Now Playing"
 let ErrorDomain = Bundle.main.bundleIdentifier!
 let CoreDataFailureCode = -9999
 
-enum ClipFilter: String {
-    case allPodcasts = "All Podcasts"
-    case episode = "Episode"
-    case podcast = "Podcast"
-    case subscribed = "Subscribed"
+enum SortByOptions: String {
+    case top = "top"
+    case recent = "recent"
     
-    var text:String {
+    var text: String {
         get {
             switch self {
-            case .allPodcasts:
-                return "All Podcasts"
-            case .episode:
-                return "Episode"
-            case .podcast:
-                return "Podcast"
-            case .subscribed:
-                return "Subscribed"
+            case .top:
+                return "Top"
+            case .recent:
+                return "Recent"
             }
         }
     }
+}
+
+enum SortingTimeRange: String {
+    case hour = "hour"
+    case day = "day"
+    case week = "week"
+    case month = "month"
+    case year = "year"
+    case allTime = "allTime"
+    
+    var text: String {
+        get {
+            switch self {
+            case .hour:
+                return "Hour"
+            case .day:
+                return "Day"
+            case .week:
+                return "Week"
+            case .month:
+                return "Month"
+            case .year:
+                return "Year"
+            case .allTime:
+                return "All Time"
+            }
+        }
+    }
+    
 }
 
 enum ClipSorting: String {
@@ -159,7 +184,7 @@ enum ClipSorting: String {
             }
         }
     }
-
+    
     var requestParam: String {
         get {
             switch self {
@@ -180,36 +205,29 @@ enum ClipSorting: String {
             }
         }
     }
-        
+    
 }
 
-enum SortingTimeRange: String {
-    case hour = "hour"
-    case day = "day"
-    case week = "week"
-    case month = "month"
-    case year = "year"
-    case allTime = "allTime"
+enum ClipFilter: String {
+    case allPodcasts = "All Podcasts"
+    case episode = "Episode"
+    case podcast = "Podcast"
+    case subscribed = "Subscribed"
     
-    var text: String {
+    var text:String {
         get {
             switch self {
-            case .hour:
-                return "past hour"
-            case .day:
-                return "past day"
-            case .week:
-                return "past week"
-            case .month:
-                return "past month"
-            case .year:
-                return "past year"
-            case .allTime:
-                return "all time"
+            case .allPodcasts:
+                return "All Podcasts"
+            case .episode:
+                return "Episode"
+            case .podcast:
+                return "Podcast"
+            case .subscribed:
+                return "Subscribed"
             }
         }
     }
-    
 }
 
 enum EpisodesFilter: String {
@@ -245,4 +263,53 @@ enum EpisodeFilter: String {
             }
         }
     }
+}
+
+enum EpisodeActions: String {
+    case stream = "Stream"
+    case downloading = "Downloading"
+    case download = "Download"
+    case play = "Play"
+    
+    var text:String {
+        get {
+            switch self {
+            case .stream:
+                return "Stream"
+            case .downloading:
+                return "Downloading"
+            case .download:
+                return "Download"
+            case .play:
+                return "Play"
+            }
+        }
+        
+    }
+}
+
+enum ErrorMessages: String {
+    case noClipsAvailable
+    case noClipsInternet
+    case noPlaylistsAvailable
+    case noPlaylistsInternet
+    case noPlaylistsNotLoggedIn
+    
+    var text: String {
+        get {
+            switch self {
+            case .noClipsAvailable:
+                return "No clips available"
+            case .noClipsInternet:
+                return "No internet connection"
+            case .noPlaylistsAvailable:
+                return "No playlists available"
+            case .noPlaylistsInternet:
+                return "No internet connection"
+            case .noPlaylistsNotLoggedIn:
+                return "Login to view your playlists"
+            }
+        }
+    }
+    
 }

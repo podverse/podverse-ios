@@ -69,8 +69,6 @@ class ClipsTableViewController: PVViewController {
     override func viewWillAppear(_ animated: Bool) {
         self.tableViewHeader.filterTitle = self.filterTypeSelected.text
         self.tableViewHeader.sortingTitle = self.sortingTypeSelected.text
-        self.tableViewHeader.delegate = self
-        self.tableViewHeader.setupViews()
     }
     
     @IBAction func retryButtonTouched(_ sender: Any) {
@@ -91,13 +89,7 @@ class ClipsTableViewController: PVViewController {
         
         if self.filterTypeSelected == .subscribed {
 
-            let moc = CoreDataHelper.createMOCForThread(threadType: .privateThread)
-            var subscribedPodcastFeedUrls = [String]()
-            let subscribedPodcastsArray = CoreDataHelper.fetchEntities(className:"Podcast", predicate: nil, moc:moc) as! [Podcast]
-
-            for podcast in subscribedPodcastsArray {
-                subscribedPodcastFeedUrls.append(podcast.feedUrl)
-            }
+            let subscribedPodcastFeedUrls = Podcast.retrieveSubscribedUrls()
 
             if subscribedPodcastFeedUrls.count < 1 {
                 self.reloadClipData()
@@ -119,10 +111,10 @@ class ClipsTableViewController: PVViewController {
     }
     
     func checkForConnectvity() {
-        var message = "No clips available"
+        var message = ErrorMessages.noClipsAvailable.text
         
         if self.reachability.hasInternetConnection() == false {
-            message = "You must connect to the internet to load clips."
+            message = ErrorMessages.noClipsInternet.text
         }
         
         if let noDataView = self.view.subviews.first(where: { $0.tag == kNoDataViewTag}) {
@@ -235,13 +227,13 @@ extension ClipsTableViewController:FilterSelectionProtocol {
         
         let alert = UIAlertController(title: "Clips From", message: nil, preferredStyle: .actionSheet)
         
-        alert.addAction(UIAlertAction(title: "Subscribed", style: .default, handler: { action in
+        alert.addAction(UIAlertAction(title: ClipFilter.subscribed.text, style: .default, handler: { action in
             self.resetClipQuery()
             self.filterTypeSelected = .subscribed
             self.retrieveClips()
         }))
         
-        alert.addAction(UIAlertAction(title: "All Podcasts", style: .default, handler: { action in
+        alert.addAction(UIAlertAction(title: ClipFilter.allPodcasts.text, style: .default, handler: { action in
             self.resetClipQuery()
             self.filterTypeSelected = .allPodcasts
             self.retrieveClips()
@@ -267,35 +259,22 @@ extension ClipsTableViewController:FilterSelectionProtocol {
         self.tableViewHeader.showSortByTimeRangeMenu(vc: self)
     }
     
-    func sortByTopHour() { }
-    
-    func sortByTopDay() {
+    func sortByTopWithTimeRange(timeRange: SortingTimeRange) {
         self.resetClipQuery()
-        self.sortingTypeSelected = .topDay
+        
+        if timeRange == .day {
+            self.sortingTypeSelected = .topDay
+        } else if timeRange == .week {
+            self.sortingTypeSelected = .topWeek
+        } else if timeRange == .month {
+            self.sortingTypeSelected = .topMonth
+        } else if timeRange == .year {
+            self.sortingTypeSelected = .topYear
+        } else if timeRange == .allTime {
+            self.sortingTypeSelected = .topAllTime
+        }
+        
         self.retrieveClips()
     }
     
-    func sortByTopWeek() {
-        self.resetClipQuery()
-        self.sortingTypeSelected = .topWeek
-        self.retrieveClips()
-    }
-    
-    func sortByTopMonth() {
-        self.resetClipQuery()
-        self.sortingTypeSelected = .topMonth
-        self.retrieveClips()
-    }
-    
-    func sortByTopYear() {
-        self.resetClipQuery()
-        self.sortingTypeSelected = .topYear
-        self.retrieveClips()
-    }
-    
-    func sortByTopAllTime() {
-        self.resetClipQuery()
-        self.sortingTypeSelected = .topAllTime
-        self.retrieveClips()
-    }
 }

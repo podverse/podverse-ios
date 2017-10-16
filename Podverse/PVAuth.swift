@@ -10,10 +10,15 @@ import Lock
 import Auth0
 import CoreData
 
+protocol PVAuthDelegate {
+    func loggedInSuccessfully()
+}
 
 class PVAuth: NSObject {
     
     static let shared = PVAuth()
+    
+    var delegate:PVAuthDelegate?
     
     static var userIsLoggedIn:Bool {
         return UserDefaults.standard.value(forKey: "idToken") != nil
@@ -97,6 +102,8 @@ class PVAuth: NSObject {
         if let userName = userName {
             UserDefaults.standard.set(userName, forKey: "userName")
         }
+        
+        self.delegate?.loggedInSuccessfully()
     }
     
     func removeUserInfo() {

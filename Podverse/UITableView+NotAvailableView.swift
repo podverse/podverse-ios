@@ -21,6 +21,7 @@ extension UIViewController {
         noDataTextLabel.translatesAutoresizingMaskIntoConstraints = false
         
         noDataTextLabel.text = message
+        noDataTextLabel.numberOfLines = 5
         actionButton.setTitle(buttonTitle, for: .normal)
         actionButton.setTitleColor(.black, for: .normal)
         
@@ -105,9 +106,12 @@ extension UIViewController {
                                                             attribute:.centerX,
                                                             multiplier:1,
                                                             constant:0)
+        
+        let labelWidthConstraint = NSLayoutConstraint(item: noDataTextLabel, attribute: .width, relatedBy: .lessThanOrEqual, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: 300)
 
         allConstraints.append(labelVerticalConstraint)
         allConstraints.append(labelHorizontalConstraint)
+        allConstraints.append(labelWidthConstraint)
         allConstraints.append(buttonHorizontalConstraint)
         allConstraints.append(buttonVerticalConstraint)
 
