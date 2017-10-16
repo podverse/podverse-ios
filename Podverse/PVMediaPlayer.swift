@@ -69,6 +69,8 @@ enum PlayingSpeed {
 
 protocol PVMediaPlayerUIDelegate {
     func mediaPlayerButtonStateChanged(showPlayerButton:Bool)
+    func playerHistoryItemBuffering()
+    func playerHistoryItemErrored()
     func playerHistoryItemLoaded()
     func playerHistoryItemLoadingBegan()
 }
@@ -307,6 +309,8 @@ class PVMediaPlayer: NSObject {
         
         self.delegate?.playerHistoryItemLoadingBegan()
         
+        self.audioPlayer.pause()
+        
         // If you are loading a clip, or an episode from the beginning, the item.lastPlaybackPosition will be overridden in the observeValue or seek method.
         if let lastPlaybackPosition = item.lastPlaybackPosition {
             self.shouldStartFromTime = lastPlaybackPosition
@@ -324,9 +328,7 @@ class PVMediaPlayer: NSObject {
         }
         
         let moc = CoreDataHelper.createMOCForThread(threadType: .mainThread)
-        
-        self.audioPlayer.pause()
-        
+                
         if let episodeMediaUrlString = item.episodeMediaUrl, let episodeMediaUrl = URL(string: episodeMediaUrlString) {
             
             let episodesPredicate = NSPredicate(format: "mediaUrl == %@", episodeMediaUrlString)
@@ -387,7 +389,17 @@ class PVMediaPlayer: NSObject {
         if let keyPath = keyPath, let item = self.nowPlayingItem {
             if keyPath == #keyPath(audioPlayer.state) {
                 
-                if self.audioPlayer.state == STKAudioPlayerState.playing || self.audioPlayer.state == STKAudioPlayerState.buffering {
+                if self.audioPlayer.state == .error {
+                    self.delegate?.playerHistoryItemErrored()
+                    return
+                }
+                
+                if self.audioPlayer.state == .buffering {
+                    self.delegate?.playerHistoryItemBuffering()
+                    return
+                }
+                
+                if self.audioPlayer.state == .playing {
                     
                     if self.audioPlayer.duration > 0 {
                         updateDuration(episodeMediaUrl: nil)
@@ -408,22 +420,23 @@ class PVMediaPlayer: NSObject {
                                 self.shouldStartFromTime = 0
                             }
                             
+                            return
                             
                         } else if self.shouldStartFromTime > 0 {
                             self.audioPlayer.seek(toTime: Double(self.shouldStartFromTime))
+                            self.shouldStartFromTime = 0
+                            return
                         }
                         
                     }
                     
                 }
                 
-                if self.audioPlayer.state == STKAudioPlayerState.error, let item = self.nowPlayingItem {
-                    self.loadPlayerHistoryItem(item: item)
-                    return
+                if self.audioPlayer.state == .playing && !self.shouldSetupClip && self.shouldStartFromTime == 0 {
+                    self.delegate?.playerHistoryItemLoaded()
                 }
                 
-                if self.audioPlayer.state == STKAudioPlayerState.playing {
-                    self.delegate?.playerHistoryItemLoaded()
+                if self.audioPlayer.state == .stopped {
                     return
                 }
                 

@@ -85,15 +85,19 @@ class NowPlayingBar:UIView {
     
     func togglePlayIcon() {
         DispatchQueue.main.async {
-            if self.audioPlayer.state == STKAudioPlayerState.buffering || self.audioPlayer.state == STKAudioPlayerState.error || self.pvMediaPlayer.shouldSetupClip {
-                self.activityIndicator.startAnimating()
+            if self.audioPlayer.state == STKAudioPlayerState.error {
+                self.activityIndicator.isHidden = true
+                self.playButton.setImage(UIImage(named:"AppIcon"), for: .normal)
+                self.playButton.isHidden = true
+            } else if self.audioPlayer.state == STKAudioPlayerState.buffering || self.pvMediaPlayer.shouldSetupClip {
+                self.activityIndicator.isHidden = false
                 self.playButton.isHidden = true
             } else if self.audioPlayer.state == STKAudioPlayerState.playing {
-                self.activityIndicator.stopAnimating()
+                self.activityIndicator.isHidden = true
                 self.playButton.setImage(UIImage(named:"Pause"), for: .normal)
                 self.playButton.isHidden = false
             } else {
-                self.activityIndicator.stopAnimating()
+                self.activityIndicator.isHidden = true
                 self.playButton.setImage(UIImage(named:"Play"), for: .normal)
                 self.playButton.isHidden = false
             }
@@ -123,8 +127,17 @@ extension NowPlayingBar:PVMediaPlayerUIDelegate {
         self.togglePlayIcon()
     }
     
+    func playerHistoryItemBuffering() {
+        self.togglePlayIcon()
+    }
+    
+    func playerHistoryItemErrored() {
+        self.togglePlayIcon()
+    }
+    
     func playerHistoryItemLoaded() {
         self.togglePlayIcon()
     }
+    
     
 }
