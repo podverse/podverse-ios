@@ -79,7 +79,7 @@ extension FindTableViewController:UITableViewDelegate, UITableViewDataSource {
                 self.performSegue(withIdentifier: "Search for Podcasts", sender: tableView)
             }
             else {
-                if reachability.hasInternetConnection() == false {
+                if !checkForConnectivity() {
                     showInternetNeededAlertWithDesciription(message: "Connect to WiFi or cellular data to add podcast by RSS URL.")
                     return
                 }

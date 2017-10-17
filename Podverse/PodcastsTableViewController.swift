@@ -65,7 +65,7 @@ class PodcastsTableViewController: PVViewController, AutoDownloadProtocol {
     }
     
     @objc fileprivate func refreshPodcastFeeds() {
-        if reachability.hasInternetConnection() == false && refreshControl.isRefreshing == true {
+        if checkForConnectivity() == false && refreshControl.isRefreshing == true {
             showInternetNeededAlertWithDesciription(message:"Connect to WiFi or cellular data to parse podcast feeds.")
             self.refreshControl.endRefreshing()
             return
