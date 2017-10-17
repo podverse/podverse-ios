@@ -36,27 +36,13 @@ class NowPlayingBar:UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupView()
-        addObservers()
         self.activityIndicator.hidesWhenStopped = true
     }
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         setupView()
-        addObservers()
         self.activityIndicator.hidesWhenStopped = true
-    }
-    
-    deinit {
-        removeObservers()
-    }
-    
-    fileprivate func addObservers() {
-        self.addObserver(self, forKeyPath: #keyPath(audioPlayer.state), options: [.new], context: nil)
-    }
-    
-    fileprivate func removeObservers() {
-        self.removeObserver(self, forKeyPath: #keyPath(audioPlayer.state))
     }
     
     private func setupView() {
@@ -85,45 +71,50 @@ class NowPlayingBar:UIView {
     
     func togglePlayIcon() {
         DispatchQueue.main.async {
-            if self.audioPlayer.state == STKAudioPlayerState.buffering || self.audioPlayer.state == STKAudioPlayerState.error || self.pvMediaPlayer.shouldSetupClip {
-                self.activityIndicator.startAnimating()
-                self.playButton.isHidden = true
-            } else if self.audioPlayer.state == STKAudioPlayerState.playing {
-                self.activityIndicator.stopAnimating()
+            if self.audioPlayer.state == .stopped || self.audioPlayer.state == .paused {
+                self.activityIndicator.isHidden = true
+                self.playButton.setImage(UIImage(named:"Play"), for: .normal)
+                self.playButton.isHidden = false
+            } else if self.audioPlayer.state == .error {
+                self.activityIndicator.isHidden = true
+                self.playButton.setImage(UIImage(named:"AppIcon"), for: .normal)
+                self.playButton.isHidden = false
+            } else if self.audioPlayer.state == .playing && !self.pvMediaPlayer.shouldSetupClip && self.pvMediaPlayer.shouldStartFromTime == 0 {
+                self.activityIndicator.isHidden = true
                 self.playButton.setImage(UIImage(named:"Pause"), for: .normal)
                 self.playButton.isHidden = false
+            } else if self.audioPlayer.state == .buffering || self.pvMediaPlayer.shouldSetupClip || self.pvMediaPlayer.shouldStartFromTime > 0 {
+                self.activityIndicator.isHidden = false
+                self.playButton.isHidden = true
             } else {
-                self.activityIndicator.stopAnimating()
+                self.activityIndicator.isHidden = true
                 self.playButton.setImage(UIImage(named:"Play"), for: .normal)
                 self.playButton.isHidden = false
             }
         }
     }
     
-    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
-        if let keyPath = keyPath {
-            if keyPath == #keyPath(audioPlayer.state) {
-                if self.audioPlayer.state == STKAudioPlayerState.playing || audioPlayer.state == STKAudioPlayerState.paused {
-                    self.togglePlayIcon()
-                }
-                
-                if self.audioPlayer.state == STKAudioPlayerState.error {
-                    print("ERROR AUDIOPLAYER ERROR STATE")
-                }
-            }
-        }
-    }
 }
 
 extension NowPlayingBar:PVMediaPlayerUIDelegate {
     
-    func mediaPlayerButtonStateChanged(showPlayerButton: Bool) {}
+    func playerHistoryItemBuffering() {
+        self.togglePlayIcon()
+    }
+    
+    func playerHistoryItemErrored() {
+        self.togglePlayIcon()
+    }
+    
+    func playerHistoryItemLoaded() {
+        self.togglePlayIcon()
+    }
     
     func playerHistoryItemLoadingBegan() {
         self.togglePlayIcon()
     }
     
-    func playerHistoryItemLoaded() {
+    func playerHistoryItemPaused() {
         self.togglePlayIcon()
     }
     
