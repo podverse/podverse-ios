@@ -38,18 +38,22 @@ class EpisodeTableViewController: PVViewController {
         }
     }
     
+    @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
+    @IBOutlet weak var activityView: UIView!
     @IBOutlet weak var episodeTitle: UILabel!
     @IBOutlet weak var headerImageView: UIImageView!
-
     @IBOutlet weak var localMultiButton: UIButton!
     @IBOutlet weak var streamButton: UIButton!
-    
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var tableViewHeader: FiltersTableHeaderView!
     @IBOutlet weak var webView: UIWebView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        setupNotificationListeners()
+        
+        self.activityIndicator.hidesWhenStopped = true
         
         self.tableViewHeader.delegate = self
         self.tableViewHeader.setupViews()
@@ -66,8 +70,6 @@ class EpisodeTableViewController: PVViewController {
             self.sortingTypeSelected = .topWeek
         }
         
-        setupNotificationListeners()
-        
         loadPodcastHeader()
         
         reloadShowNotesOrClipData()
@@ -76,11 +78,6 @@ class EpisodeTableViewController: PVViewController {
     
     deinit {
         removeObservers()
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        self.tableViewHeader.filterTitle = self.filterTypeSelected.text
-        self.tableViewHeader.sortingTitle = self.sortingTypeSelected.text
     }
     
     override func viewWillLayoutSubviews() {
@@ -100,6 +97,16 @@ class EpisodeTableViewController: PVViewController {
         NotificationCenter.default.removeObserver(self, name: .downloadResumed, object: nil)
         NotificationCenter.default.removeObserver(self, name: .downloadPaused, object: nil)
         NotificationCenter.default.removeObserver(self, name: .downloadFinished, object: nil)
+    }
+    
+    @IBAction func stream(_ sender: Any) {
+        if let mediaUrl = self.mediaUrl, let episode = Episode.episodeForMediaUrl(mediaUrlString: mediaUrl, managedObjectContext: self.moc) {
+            let item = playerHistoryManager.convertEpisodeToPlayerHistoryItem(episode: episode)
+            
+            goToNowPlaying()
+            
+            self.pvMediaPlayer.loadPlayerHistoryItem(item: item)
+        }
     }
     
     @IBAction func downloadPlay(_ sender: Any) {
@@ -130,16 +137,6 @@ class EpisodeTableViewController: PVViewController {
                 PVDownloader.shared.startDownloadingEpisode(episode: episode)
             }
             
-        }
-    }
-    
-    @IBAction func stream(_ sender: Any) {
-        if let mediaUrl = self.mediaUrl, let episode = Episode.episodeForMediaUrl(mediaUrlString: mediaUrl, managedObjectContext: self.moc) {
-            let item = playerHistoryManager.convertEpisodeToPlayerHistoryItem(episode: episode)
-            
-            goToNowPlaying()
-            
-            self.pvMediaPlayer.loadPlayerHistoryItem(item: item)
         }
     }
     
@@ -176,31 +173,6 @@ class EpisodeTableViewController: PVViewController {
         }
     }
     
-    func retrieveClips() {
-        
-        self.webView.isHidden = true
-        self.tableView.isHidden = false
-        
-        if let mediaUrl = self.mediaUrl {
-            MediaRef.retrieveMediaRefsFromServer(episodeMediaUrl: mediaUrl, sortingType: self.sortingTypeSelected, page: 1) { (mediaRefs) -> Void in
-                
-                self.clipsArray.removeAll()
-                
-                if let mediaRefs = mediaRefs {
-                    self.clipsArray = mediaRefs
-                }
-                
-                self.reloadClipData()
-            }
-        }
-        
-    }
-    
-    func reloadClipData() {
-        // TODO: Handle infinite scroll logic here
-        self.tableView.reloadData()
-    }
-    
     func reloadShowNotes() {
         self.clipsArray.removeAll()
         
@@ -224,6 +196,75 @@ class EpisodeTableViewController: PVViewController {
             self.tableView.isHidden = true
             self.webView.isHidden = false
         }
+    }
+    
+    func retrieveClips() {
+        
+        guard checkForConnectivity() else {
+            loadNoInternetMessage()
+            return
+        }
+        
+        self.webView.isHidden = true
+        self.tableView.isHidden = false
+        
+        self.hideNoDataView()
+        self.activityIndicator.startAnimating()
+        self.activityView.isHidden = false
+        
+        if let mediaUrl = self.mediaUrl {
+            MediaRef.retrieveMediaRefsFromServer(episodeMediaUrl: mediaUrl, sortingType: self.sortingTypeSelected, page: 1) { (mediaRefs) -> Void in
+                self.reloadClipData(mediaRefs)
+            }
+        }
+        
+    }
+    
+    func reloadClipData(_ mediaRefs: [MediaRef]? = nil) {
+        
+        guard let mediaRefs = mediaRefs, checkForResults(results: mediaRefs) else {
+            loadNoClipsMessage()
+            return
+        }
+        
+        for mediaRef in mediaRefs {
+            self.clipsArray.append(mediaRef)
+        }
+        
+        self.tableView.isHidden = false
+        self.tableView.reloadData()
+        
+    }
+    
+    func loadNoDataView(message: String, buttonTitle: String?, buttonPressed: Selector?) {
+        
+        if let noDataView = self.view.subviews.first(where: { $0.tag == kNoDataViewTag}) {
+            
+            if let messageView = noDataView.subviews.first(where: {$0 is UILabel}), let messageLabel = messageView as? UILabel {
+                messageLabel.text = message
+            }
+            
+            if let buttonView = noDataView.subviews.first(where: {$0 is UIButton}), let button = buttonView as? UIButton {
+                button.setTitle(buttonTitle, for: .normal)
+            }
+        }
+        else {
+            self.addNoDataViewWithMessage(message, buttonTitle: buttonTitle, buttonImage: nil, retryPressed: buttonPressed)
+        }
+        
+        self.activityIndicator.stopAnimating()
+        self.activityView.isHidden = true
+        self.tableView.isHidden = true
+        showNoDataView()
+        
+    }
+    
+    func loadNoInternetMessage() {
+        loadNoDataView(message: Strings.Errors.noClipsInternet, buttonTitle: "Retry", buttonPressed: #selector(EpisodeTableViewController.reloadShowNotesOrClipData))
+    }
+    
+    func loadNoClipsMessage() {
+        loadNoDataView(message: Strings.Errors.noEpisodeClipsAvailable, buttonTitle: nil, buttonPressed: #selector(EpisodeTableViewController.reloadShowNotesOrClipData))
     }
     
     override func goToNowPlaying () {

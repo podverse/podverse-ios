@@ -78,7 +78,7 @@ class AddToPlaylistViewController: UIViewController {
     
     func showCreatePlaylist() {
         
-        if self.reachability.hasInternetConnection() == false {
+        if !checkForConnectivity() {
             self.showStatusMessage(message: "You must connect to the internet to create a playlist.")
             return
         }
@@ -108,7 +108,7 @@ class AddToPlaylistViewController: UIViewController {
     
     func reloadPlaylistData(playlists: [Playlist]? = nil) {
         
-        if self.reachability.hasInternetConnection() == false {
+        if !checkForConnectivity() {
             self.showStatusMessage(message: "You must connect to the internet to load playlists.")
             return
         }

@@ -288,28 +288,17 @@ enum EpisodeActions: String {
     }
 }
 
-enum ErrorMessages: String {
-    case noClipsAvailable
-    case noClipsInternet
-    case noPlaylistsAvailable
-    case noPlaylistsInternet
-    case noPlaylistsNotLoggedIn
+struct Strings {
     
-    var text: String {
-        get {
-            switch self {
-            case .noClipsAvailable:
-                return "No clips available"
-            case .noClipsInternet:
-                return "No internet connection"
-            case .noPlaylistsAvailable:
-                return "No playlists available"
-            case .noPlaylistsInternet:
-                return "No internet connection"
-            case .noPlaylistsNotLoggedIn:
-                return "Login to view your playlists"
-            }
-        }
+    struct Errors {
+        static let noClipsAvailable = "No clips available"
+        static let noClipsInternet = "No internet connection"
+        static let noDownloadedEpisodesAvailable = "No downloaded episodes available"
+        static let noEpisodeClipsAvailable = "No clips available for this episode"
+        static let noEpisodesAvailable = "No episodes available"
+        static let noPlaylistsAvailable = "No playlists available"
+        static let noPlaylistsInternet = "No internet connection"
+        static let noPlaylistsNotLoggedIn = "Login to view your playlists"
     }
     
 }

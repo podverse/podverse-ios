@@ -15,10 +15,6 @@ protocol ClipsListDelegate:class {
 
 class ClipsListContainerViewController: UIViewController {
 
-    @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
-    @IBOutlet weak var tableView: UITableView!
-    @IBOutlet weak var tableViewHeader: FiltersTableHeaderView!
-    
     var clipsArray = [MediaRef]()
     weak var delegate:ClipsListDelegate?
     let pvMediaPlayer = PVMediaPlayer.shared
@@ -38,16 +34,20 @@ class ClipsListContainerViewController: UIViewController {
         }
     }
     
+    @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
+    @IBOutlet weak var activityView: UIView!
+    @IBOutlet weak var tableView: UITableView!
+    @IBOutlet weak var tableViewHeader: FiltersTableHeaderView!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        activityIndicator.hidesWhenStopped = true
         
         self.tableViewHeader.delegate = self
         self.tableViewHeader.setupViews(isBlackBg: true)
         
         self.tableView.separatorColor = .darkGray
-        
-        activityIndicator.hidesWhenStopped = true
-        showIndicator()
         
         if let savedFilterType = UserDefaults.standard.value(forKey: kClipsListFilterType) as? String, let sFilterType = ClipFilter(rawValue: savedFilterType) {
             self.filterTypeSelected = sFilterType
@@ -64,112 +64,99 @@ class ClipsListContainerViewController: UIViewController {
         retrieveClips()
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        checkForConnectvity()
-    }
-    
-    func retrieveClipsAllPodcasts() {
-        MediaRef.retrieveMediaRefsFromServer(sortingType: self.sortingTypeSelected) { (mediaRefs) -> Void in
-            self.reloadClipData(mediaRefs: mediaRefs)
-        }
-        
-        self.filterTypeSelected = .allPodcasts
-        UserDefaults.standard.set(ClipFilter.allPodcasts.text, forKey: kClipsListFilterType)
-    }
-    
-    func retrieveClipsSubscribed() {
-        let subscribedPodcastFeedUrls = Podcast.retrieveSubscribedUrls()
-        
-        MediaRef.retrieveMediaRefsFromServer(episodeMediaUrl: nil, podcastFeedUrls: subscribedPodcastFeedUrls, sortingType: self.sortingTypeSelected) { (mediaRefs) -> Void in
-            self.reloadClipData(mediaRefs: mediaRefs)
-        }
-        
-        self.filterTypeSelected = .subscribed
-        UserDefaults.standard.set(ClipFilter.subscribed.text, forKey: kClipsListFilterType)
-    }
-    
-    func retrieveClipsPodcast(feedUrl: String) {
-        MediaRef.retrieveMediaRefsFromServer(podcastFeedUrls: [feedUrl], sortingType: self.sortingTypeSelected) { (mediaRefs) -> Void in
-            self.reloadClipData(mediaRefs: mediaRefs)
-        }
-        
-        self.filterTypeSelected = .podcast
-        UserDefaults.standard.set(ClipFilter.podcast.text, forKey: kClipsListFilterType)
-    }
-    
-    func retrieveClipsEpisode(mediaUrl: String) {
-        MediaRef.retrieveMediaRefsFromServer(episodeMediaUrl: mediaUrl, sortingType: self.sortingTypeSelected) { (mediaRefs) -> Void in
-            self.reloadClipData(mediaRefs: mediaRefs)
-        }
-        
-        self.filterTypeSelected = .episode
-        UserDefaults.standard.set(ClipFilter.episode.text, forKey: kClipsListFilterType)
-    }
-    
     func retrieveClips() {
-        showIndicator()
-        if let item = pvMediaPlayer.nowPlayingItem {
-            if self.filterTypeSelected == .allPodcasts {
-                retrieveClipsAllPodcasts()
-            } else if self.filterTypeSelected == .subscribed {
-                retrieveClipsSubscribed()
-            } else if self.filterTypeSelected == .podcast, let podcastFeedUrl = item.podcastFeedUrl {
-                retrieveClipsPodcast(feedUrl: podcastFeedUrl)
-            } else if let mediaUrl = item.episodeMediaUrl {
-                retrieveClipsEpisode(mediaUrl: mediaUrl)
-            }
-        }
-        else {
-            retrieveClipsAllPodcasts()
-        }
-    }
-    
-    func checkForConnectvity() {
-        var message = "No clips available"
         
-        if self.reachability.hasInternetConnection() == false {
-            message = "You must connect to the internet to load clips."
+        guard checkForConnectivity() else {
+            loadNoInternetMessage()
+            return
         }
         
-        if let noDataView = self.view.subviews.first(where: { $0.tag == kNoDataViewTag}) {
-            if let messageView = noDataView.subviews.first(where: {$0 is UILabel}), let messageLabel = messageView as? UILabel {
-                messageLabel.text = message
+        self.hideNoDataView()
+        self.activityIndicator.startAnimating()
+        self.activityView.isHidden = false
+        
+        if self.filterTypeSelected == .episode, let item = pvMediaPlayer.nowPlayingItem, let mediaUrl = item.episodeMediaUrl {
+            
+            MediaRef.retrieveMediaRefsFromServer(episodeMediaUrl: mediaUrl, sortingType: self.sortingTypeSelected) { (mediaRefs) -> Void in
+                self.reloadClipData(mediaRefs: mediaRefs)
             }
-        }
-        else {
-            self.addNoDataViewWithMessage(message, buttonTitle: "Retry", buttonImage: nil, retryPressed: #selector(ClipsListContainerViewController.retrieveClips))
-            if let noDataView = self.view.subviews.first(where: { $0.tag == kNoDataViewTag}) {
-                noDataView.backgroundColor = .black
-                if let messageView = noDataView.subviews.first(where: {$0 is UILabel}), let messageLabel = messageView as? UILabel {
-                    messageLabel.textColor = .white
-                }
-                
-                if let retryView = noDataView.subviews.first(where: {$0 is UIButton}), let retryButton = retryView as? UIButton {
-                    retryButton.setTitleColor(.white, for: .normal)
-                }
+            
+        } else if self.filterTypeSelected == .podcast, let item = pvMediaPlayer.nowPlayingItem, let feedUrl = item.podcastFeedUrl {
+            
+            MediaRef.retrieveMediaRefsFromServer(podcastFeedUrls: [feedUrl], sortingType: self.sortingTypeSelected) { (mediaRefs) -> Void in
+                self.reloadClipData(mediaRefs: mediaRefs)
             }
+            
+        } else if self.filterTypeSelected == .subscribed {
+            
+            let subscribedPodcastFeedUrls = Podcast.retrieveSubscribedUrls()
+            
+            if subscribedPodcastFeedUrls.count < 1 {
+                self.reloadClipData()
+                return
+            }
+            
+            MediaRef.retrieveMediaRefsFromServer(episodeMediaUrl: nil, podcastFeedUrls: subscribedPodcastFeedUrls, sortingType: self.sortingTypeSelected) { (mediaRefs) -> Void in
+                self.reloadClipData(mediaRefs: mediaRefs)
+            }
+            
+        } else {
+            
+            MediaRef.retrieveMediaRefsFromServer(sortingType: self.sortingTypeSelected) { (mediaRefs) -> Void in
+                self.reloadClipData(mediaRefs: mediaRefs)
+            }
+            
         }
+        
     }
     
     func reloadClipData(mediaRefs: [MediaRef]? = nil) {
         
-        self.tableView.isHidden = true
+        guard let mediaRefs = mediaRefs, checkForResults(results: mediaRefs) else {
+            loadNoClipsMessage()
+            return
+        }
         
-        if let mediaRefArray = mediaRefs, mediaRefArray.count > 0 {
-            self.clipsArray = mediaRefArray
+        for mediaRef in mediaRefs {
+            self.clipsArray.append(mediaRef)
+        }
+        
+        self.tableView.isHidden = false
+        self.tableView.reloadData()
+        
+    }
+    
+    func loadNoDataView(message: String, buttonTitle: String?) {
+        
+        if let noDataView = self.view.subviews.first(where: { $0.tag == kNoDataViewTag}) {
             
-            self.tableView.isHidden = false
+            if let messageView = noDataView.subviews.first(where: {$0 is UILabel}), let messageLabel = messageView as? UILabel {
+                messageLabel.text = message
+            }
+            
+            if let buttonView = noDataView.subviews.first(where: {$0 is UIButton}), let button = buttonView as? UIButton {
+                button.setTitle(buttonTitle, for: .normal)
+            }
+        }
+        else {
+            self.addNoDataViewWithMessage(message, buttonTitle: buttonTitle, buttonImage: nil, retryPressed: #selector(ClipsListContainerViewController.retrieveClips), isBlackBg: true)
         }
         
         self.activityIndicator.stopAnimating()
-        self.tableView.reloadData()
+        self.activityView.isHidden = true
+        self.tableView.isHidden = true
+        showNoDataView()
+        
     }
     
-    func showIndicator() {
-        activityIndicator.startAnimating()
-        activityIndicator.isHidden = false
+    func loadNoInternetMessage() {
+        loadNoDataView(message: Strings.Errors.noClipsInternet, buttonTitle: "Retry")
     }
+    
+    func loadNoClipsMessage() {
+        loadNoDataView(message: Strings.Errors.noClipsAvailable, buttonTitle: nil)
+    }
+    
 }
 
 extension ClipsListContainerViewController:UITableViewDelegate, UITableViewDataSource {
@@ -257,23 +244,23 @@ extension ClipsListContainerViewController: FilterSelectionProtocol {
         let alert = UIAlertController(title: "Clips From", message: nil, preferredStyle: .actionSheet)
         
         alert.addAction(UIAlertAction(title: ClipFilter.episode.text, style: .default, handler: { action in
-            if let item = self.pvMediaPlayer.nowPlayingItem, let mediaUrl = item.episodeMediaUrl {
-                self.retrieveClipsEpisode(mediaUrl: mediaUrl)
-            }
+            self.filterTypeSelected = .episode
+            self.retrieveClips()
         }))
         
         alert.addAction(UIAlertAction(title: ClipFilter.podcast.text, style: .default, handler: { action in
-            if let item = self.pvMediaPlayer.nowPlayingItem, let podcastFeedUrl = item.podcastFeedUrl {
-                self.retrieveClipsPodcast(feedUrl: podcastFeedUrl)
-            }
+            self.filterTypeSelected = .podcast
+            self.retrieveClips()
         }))
         
         alert.addAction(UIAlertAction(title: ClipFilter.subscribed.text, style: .default, handler: { action in
-            self.retrieveClipsSubscribed()
+            self.filterTypeSelected = .subscribed
+            self.retrieveClips()
         }))
         
         alert.addAction(UIAlertAction(title: ClipFilter.allPodcasts.text, style: .default, handler: { action in
-            self.retrieveClipsAllPodcasts()
+            self.filterTypeSelected = .allPodcasts
+            self.retrieveClips()
         }))
         
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))

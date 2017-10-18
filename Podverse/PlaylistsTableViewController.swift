@@ -22,43 +22,106 @@ class PlaylistsTableViewController: PVViewController {
         
         PVAuth.shared.delegate = self
         
-        loadPlaylistData()
+        retrievePlaylists()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        checkAuthorizationAndConnectivity()
     }
     
-    func checkAuthorizationAndConnectivity() {
-        var message = ErrorMessages.noPlaylistsAvailable.text
-        var buttonTitle = "Retry"
-        var selector:Selector = #selector(PlaylistsTableViewController.loadPlaylistData)
+    func retrievePlaylists() {
+        
+        guard checkForConnectivity(), checkForAuthorization() else {
+            return
+        }
+        
+        self.hideNoDataView()
+        self.activityIndicator.startAnimating()
+        
+        Playlist.retrievePlaylistsFromServer() { (playlists) -> Void in
+            self.reloadPlaylistData(playlists: playlists)
+        }
+    }
+    
+    func checkForAuthorization() -> Bool {
+        
+        var message = Strings.Errors.noPlaylistsNotLoggedIn
+        var buttonTitle = "Login"
+        let selector = #selector(PlaylistsTableViewController.presentLogin)
+        
         let isLoggedIn = PVAuth.userIsLoggedIn
         
-        if self.reachability.hasInternetConnection() == false {
-            message = ErrorMessages.noPlaylistsInternet.text
-        }
-        else if !isLoggedIn {
-            message = ErrorMessages.noPlaylistsNotLoggedIn.text
-            buttonTitle = "Login"
-
-            selector = #selector(PlaylistsTableViewController.presentLogin)
+        guard PVAuth.userIsLoggedIn else {
+            loadNoDataView(message: message, buttonTitle: buttonTitle, buttonPressed: selector)
+            return false
         }
         
+        return true
+        
+    }
+    
+    func checkForConnectivity() -> Bool {
+        var message = Strings.Errors.noPlaylistsInternet
+        var buttonTitle = "Retry"
+        var selector:Selector = #selector(PlaylistsTableViewController.retrievePlaylists)
+        
+        guard checkForConnectivity() else {
+            loadNoDataView(message: message, buttonTitle: buttonTitle, buttonPressed: selector)
+            return false
+        }
+        
+        return true
+        
+    }
+    
+    func checkForResults(playlists: [Playlist]?) -> Bool {
+        
+        var message = Strings.Errors.noPlaylistsAvailable
+        
+        guard let playlists = playlists, playlists.count > 0 else {
+            loadNoDataView(message: message, buttonTitle: nil, buttonPressed: nil)
+            return false
+        }
+        
+        return true
+        
+    }
+    
+    func loadNoDataView(message: String, buttonTitle: String?, buttonPressed: Selector?) {
+        
         if let noDataView = self.view.subviews.first(where: { $0.tag == kNoDataViewTag}) {
-            if let actionButtonView = noDataView.subviews.first(where: {$0 is UIButton}), let actionButton = actionButtonView as? UIButton {
-                actionButton.setTitle(buttonTitle, for: .normal)
-                actionButton.addTarget(self, action: selector, for: .touchUpInside)
-            }
             
             if let messageView = noDataView.subviews.first(where: {$0 is UILabel}), let messageLabel = messageView as? UILabel {
                 messageLabel.text = message
             }
+            
+            if let buttonView = noDataView.subviews.first(where: {$0 is UIButton}), let button = buttonView as? UIButton {
+                button.setTitle(buttonTitle, for: .normal)
+            }
+            
         }
         else {
-            self.addNoDataViewWithMessage(message, buttonTitle: buttonTitle, buttonImage: nil, retryPressed: selector)
+            self.addNoDataViewWithMessage(message, buttonTitle: buttonTitle, buttonImage: nil, retryPressed: buttonPressed)
         }
+        
+        self.activityIndicator.stopAnimating()
+        self.tableView.isHidden = true
+        showNoDataView()
+        
+    }
+    
+    func reloadPlaylistData(playlists: [Playlist]? = nil) {
+        
+        self.activityIndicator.stopAnimating()
+        
+        guard checkForResults(playlists: playlists), let playlists = playlists else {
+            return
+        }
+    
+        self.playlistsArray = playlists
+        
+        self.tableView.isHidden = false
+        self.tableView.reloadData()
     }
     
     func presentLogin() {
@@ -68,30 +131,6 @@ class PlaylistsTableViewController: PVViewController {
         }
     }
     
-    func loadPlaylistData() {
-        Playlist.retrievePlaylistsFromServer() { (playlists) -> Void in
-            self.showIndicator()
-            self.reloadPlaylistData(playlists: playlists)
-        }
-    }
-    
-    func reloadPlaylistData(playlists: [Playlist]? = nil) {
-        self.tableView.isHidden = true
-
-        if let pArray = playlists, pArray.count > 0 {
-            self.playlistsArray = pArray
-            self.tableView.isHidden = false
-        }
-        
-        self.activityIndicator.stopAnimating()
-        self.tableView.reloadData()
-    }
-    
-    func showIndicator() {
-        self.activityIndicator.startAnimating()
-        self.activityIndicator.isHidden = false
-    }
-
 }
 
 extension PlaylistsTableViewController:UITableViewDelegate, UITableViewDataSource {
@@ -145,6 +184,6 @@ extension PlaylistsTableViewController:UITableViewDelegate, UITableViewDataSourc
 
 extension PlaylistsTableViewController:PVAuthDelegate {
     func loggedInSuccessfully() {
-        self.loadPlaylistData()
+        self.retrievePlaylists()
     }
 }

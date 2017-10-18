@@ -13,19 +13,6 @@ class ClipsTableViewController: PVViewController {
     var clipsArray = [MediaRef]()
     let reachability = PVReachability.shared
     
-    @IBOutlet weak var tableView: UITableView!
-    @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
-    
-    @IBOutlet weak var tableViewHeader: FiltersTableHeaderView!
-    
-    @IBOutlet weak var clipQueryActivityIndicator: UIActivityIndicatorView!
-    @IBOutlet weak var clipQueryMessage: UILabel!
-    @IBOutlet weak var clipQueryStatusView: UIView!
-    
-    var clipQueryPage: Int = 0
-    var clipQueryIsLoading: Bool = false
-    var clipQueryEndOfResultsReached: Bool = false
-    
     var filterTypeSelected: ClipFilter = .allPodcasts {
         didSet {
             self.tableViewHeader.filterTitle = self.filterTypeSelected.text
@@ -39,11 +26,23 @@ class ClipsTableViewController: PVViewController {
         }
     }
     
+    var clipQueryPage: Int = 0
+    var clipQueryIsLoading: Bool = false
+    var clipQueryEndOfResultsReached: Bool = false
+    
+    @IBOutlet weak var tableView: UITableView!
+    @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
+    
+    @IBOutlet weak var tableViewHeader: FiltersTableHeaderView!
+    
+    @IBOutlet weak var clipQueryActivityIndicator: UIActivityIndicatorView!
+    @IBOutlet weak var clipQueryMessage: UILabel!
+    @IBOutlet weak var clipQueryStatusView: UIView!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         activityIndicator.hidesWhenStopped = true
-        showIndicator()
         
         self.tableViewHeader.delegate = self
         self.tableViewHeader.setupViews()
@@ -66,13 +65,8 @@ class ClipsTableViewController: PVViewController {
         retrieveClips()
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        self.tableViewHeader.filterTitle = self.filterTypeSelected.text
-        self.tableViewHeader.sortingTitle = self.sortingTypeSelected.text
-    }
-    
-    @IBAction func retryButtonTouched(_ sender: Any) {
-        showIndicator()
+    func resetAndRetrieveClips() {
+        resetClipQuery()
         retrieveClips()
     }
     
@@ -85,6 +79,15 @@ class ClipsTableViewController: PVViewController {
     }
     
     func retrieveClips() {
+        
+        guard checkForConnectivity() else {
+            loadNoInternetMessage()
+            return
+        }
+        
+        self.hideNoDataView()
+        self.activityIndicator.startAnimating()
+        
         self.clipQueryPage += 1
         
         if self.filterTypeSelected == .subscribed {
@@ -110,52 +113,70 @@ class ClipsTableViewController: PVViewController {
         
     }
     
-    func checkForConnectvity() {
-        var message = ErrorMessages.noClipsAvailable.text
-        
-        if self.reachability.hasInternetConnection() == false {
-            message = ErrorMessages.noClipsInternet.text
-        }
-        
-        if let noDataView = self.view.subviews.first(where: { $0.tag == kNoDataViewTag}) {
-            if let messageView = noDataView.subviews.first(where: {$0 is UILabel}), let messageLabel = messageView as? UILabel {
-                messageLabel.text = message
-            }
-        }
-        else {
-            self.addNoDataViewWithMessage(message, buttonTitle: "Retry", buttonImage: nil, retryPressed: #selector(ClipsTableViewController.retrieveClips))   
-        }
-    }
-    
     func reloadClipData(mediaRefs: [MediaRef]? = nil) {
+        
+        self.activityIndicator.stopAnimating()
         self.clipQueryIsLoading = false
         self.clipQueryActivityIndicator.stopAnimating()
         
-        guard let mediaRefArray = mediaRefs, mediaRefArray.count > 0 || clipsArray.count > 0 else {
-            self.tableView.isHidden = true
+        guard checkForResults(results: mediaRefs) || checkForResults(results: self.clipsArray), let mediaRefs = mediaRefs else {
+            loadNoClipsMessage()
             return
         }
         
-        guard mediaRefArray.count > 0 else {
+        guard checkForResults(results: mediaRefs) else {
             self.clipQueryEndOfResultsReached = true
             self.clipQueryActivityIndicator.stopAnimating()
             self.clipQueryMessage.isHidden = false
             return
         }
         
-        for mediaRef in mediaRefArray {
+        for mediaRef in mediaRefs {
             self.clipsArray.append(mediaRef)
         }
         
-        self.activityIndicator.stopAnimating()
         self.tableView.isHidden = false
         self.tableView.reloadData()
+        
+    }
+
+    func loadNoDataView(message: String, buttonTitle: String?) {
+        
+        if let noDataView = self.view.subviews.first(where: { $0.tag == kNoDataViewTag}) {
+            
+            if let messageView = noDataView.subviews.first(where: {$0 is UILabel}), let messageLabel = messageView as? UILabel {
+                messageLabel.text = message
+            }
+            
+            if let buttonView = noDataView.subviews.first(where: {$0 is UIButton}), let button = buttonView as? UIButton {
+                button.setTitle(buttonTitle, for: .normal)
+            }
+        }
+        else {
+            self.addNoDataViewWithMessage(message, buttonTitle: buttonTitle, buttonImage: nil, retryPressed: #selector(ClipsTableViewController.resetAndRetrieveClips))
+        }
+        
+        self.activityIndicator.stopAnimating()
+        self.tableView.isHidden = true
+        showNoDataView()
+        
     }
     
-    func showIndicator() {
-        activityIndicator.startAnimating()
-        activityIndicator.isHidden = false
+    func loadNoClipsMessage() {
+        loadNoDataView(message: Strings.Errors.noClipsAvailable, buttonTitle: nil)
     }
+    
+    func loadNoInternetMessage() {
+        loadNoDataView(message: Strings.Errors.noClipsInternet, buttonTitle: "Retry")
+    }
+    
+    override func goToNowPlaying () {
+        if let mediaPlayerVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "MediaPlayerVC") as? MediaPlayerViewController {
+            self.pvMediaPlayer.shouldAutoplayOnce = true
+            self.navigationController?.pushViewController(mediaPlayerVC, animated: true)
+        }
+    }
+    
 }
 
 extension ClipsTableViewController:UITableViewDelegate, UITableViewDataSource {
@@ -207,16 +228,10 @@ extension ClipsTableViewController:UITableViewDelegate, UITableViewDataSource {
         if scrollView == self.tableView {
             if ((scrollView.contentOffset.y + scrollView.frame.size.height) >= scrollView.contentSize.height) && !self.clipQueryIsLoading && !self.clipQueryEndOfResultsReached {
                 self.clipQueryIsLoading = true
+                self.clipQueryMessage.isHidden = true
                 self.clipQueryActivityIndicator.startAnimating()
                 self.retrieveClips()
             }
-        }
-    }
-    
-    override func goToNowPlaying () {
-        if let mediaPlayerVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "MediaPlayerVC") as? MediaPlayerViewController {
-            self.pvMediaPlayer.shouldAutoplayOnce = true
-            self.navigationController?.pushViewController(mediaPlayerVC, animated: true)
         }
     }
     
