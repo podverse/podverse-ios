@@ -18,6 +18,7 @@ class EpisodeTableViewController: PVViewController {
     
     var filterTypeSelected: EpisodeFilter = .showNotes {
         didSet {
+            self.resetClipQuery()
             self.tableViewHeader.filterTitle = self.filterTypeSelected.text
             UserDefaults.standard.set(filterTypeSelected.text, forKey: kEpisodeTableFilterType)
             
@@ -33,10 +34,15 @@ class EpisodeTableViewController: PVViewController {
     
     var sortingTypeSelected: ClipSorting = .topWeek {
         didSet {
+            self.resetClipQuery()
             self.tableViewHeader.sortingTitle = sortingTypeSelected.text
             UserDefaults.standard.set(sortingTypeSelected.text, forKey: kEpisodeTableSortingType)
         }
     }
+    
+    var clipQueryPage:Int = 0
+    var clipQueryIsLoading:Bool = false
+    var clipQueryEndOfResultsReached:Bool = false
     
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     @IBOutlet weak var activityView: UIView!
@@ -48,8 +54,14 @@ class EpisodeTableViewController: PVViewController {
     @IBOutlet weak var tableViewHeader: FiltersTableHeaderView!
     @IBOutlet weak var webView: UIWebView!
     
+    @IBOutlet weak var clipQueryActivityIndicator: UIActivityIndicatorView!
+    @IBOutlet weak var clipQueryMessage: UILabel!
+    @IBOutlet weak var clipQueryStatusView: UIView!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        self.title = "Episode"
         
         setupNotificationListeners()
         
@@ -57,6 +69,9 @@ class EpisodeTableViewController: PVViewController {
         
         self.tableViewHeader.delegate = self
         self.tableViewHeader.setupViews()
+        
+        self.clipQueryActivityIndicator.hidesWhenStopped = true
+        self.clipQueryMessage.isHidden = true
         
         if let savedFilterType = UserDefaults.standard.value(forKey: kEpisodeTableFilterType) as? String, let episodeFilterType = EpisodeFilter(rawValue: savedFilterType) {
             self.filterTypeSelected = episodeFilterType
@@ -174,7 +189,11 @@ class EpisodeTableViewController: PVViewController {
     }
     
     func reloadShowNotes() {
-        self.clipsArray.removeAll()
+        
+        self.hideNoDataView()
+        self.webView.delegate = self
+        self.webView.isHidden = false
+        self.tableView.isHidden = true
         
         if let mediaUrl = self.mediaUrl, let episode = Episode.episodeForMediaUrl(mediaUrlString: mediaUrl, managedObjectContext: self.moc) {
             
@@ -191,11 +210,17 @@ class EpisodeTableViewController: PVViewController {
                 
             }
             
-            self.webView.delegate = self
-            
-            self.tableView.isHidden = true
-            self.webView.isHidden = false
         }
+        
+    }
+    
+    func resetClipQuery() {
+        self.clipsArray.removeAll()
+        self.clipQueryPage = 0
+        self.clipQueryIsLoading = true
+        self.clipQueryEndOfResultsReached = false
+        self.clipQueryMessage.isHidden = true
+        self.tableView.reloadData()
     }
     
     func retrieveClips() {
@@ -209,11 +234,15 @@ class EpisodeTableViewController: PVViewController {
         self.tableView.isHidden = false
         
         self.hideNoDataView()
-        self.activityIndicator.startAnimating()
-        self.activityView.isHidden = false
+        
+        if self.clipQueryPage == 0 {
+            showActivityIndicator()
+        }
+        
+        self.clipQueryPage += 1
         
         if let mediaUrl = self.mediaUrl {
-            MediaRef.retrieveMediaRefsFromServer(episodeMediaUrl: mediaUrl, sortingType: self.sortingTypeSelected, page: 1) { (mediaRefs) -> Void in
+            MediaRef.retrieveMediaRefsFromServer(episodeMediaUrl: mediaUrl, sortingType: self.sortingTypeSelected, page: self.clipQueryPage) { (mediaRefs) -> Void in
                 self.reloadClipData(mediaRefs)
             }
         }
@@ -222,8 +251,18 @@ class EpisodeTableViewController: PVViewController {
     
     func reloadClipData(_ mediaRefs: [MediaRef]? = nil) {
         
-        guard let mediaRefs = mediaRefs, checkForResults(results: mediaRefs) else {
+        hideActivityIndicator()
+        self.clipQueryIsLoading = false
+        self.clipQueryActivityIndicator.stopAnimating()
+        
+        guard checkForResults(results: mediaRefs) || checkForResults(results: self.clipsArray), let mediaRefs = mediaRefs else {
             loadNoClipsMessage()
+            return
+        }
+        
+        guard checkForResults(results: mediaRefs) else {
+            self.clipQueryEndOfResultsReached = true
+            self.clipQueryMessage.isHidden = false
             return
         }
         
@@ -252,9 +291,6 @@ class EpisodeTableViewController: PVViewController {
             self.addNoDataViewWithMessage(message, buttonTitle: buttonTitle, buttonImage: nil, retryPressed: buttonPressed)
         }
         
-        self.activityIndicator.stopAnimating()
-        self.activityView.isHidden = true
-        self.tableView.isHidden = true
         showNoDataView()
         
     }
@@ -264,7 +300,18 @@ class EpisodeTableViewController: PVViewController {
     }
     
     func loadNoClipsMessage() {
-        loadNoDataView(message: Strings.Errors.noEpisodeClipsAvailable, buttonTitle: nil, buttonPressed: #selector(EpisodeTableViewController.reloadShowNotesOrClipData))
+        loadNoDataView(message: Strings.Errors.noEpisodeClipsAvailable, buttonTitle: nil, buttonPressed: nil)
+    }
+    
+    func showActivityIndicator() {
+        self.tableView.isHidden = true
+        self.activityIndicator.startAnimating()
+        self.activityView.isHidden = false
+    }
+    
+    func hideActivityIndicator() {
+        self.activityIndicator.stopAnimating()
+        self.activityView.isHidden = true
     }
     
     override func goToNowPlaying () {
@@ -320,6 +367,17 @@ extension EpisodeTableViewController: UITableViewDataSource, UITableViewDelegate
         let playerHistoryItem = self.playerHistoryManager.convertMediaRefToPlayerHistoryItem(mediaRef: clip)
         self.goToNowPlaying()
         self.pvMediaPlayer.loadPlayerHistoryItem(item: playerHistoryItem)
+    }
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        // Bottom Refresh
+        if scrollView == self.tableView && self.filterTypeSelected == .clips {
+            if ((scrollView.contentOffset.y + scrollView.frame.size.height) >= scrollView.contentSize.height) && !self.clipQueryIsLoading && !self.clipQueryEndOfResultsReached {
+                self.clipQueryIsLoading = true
+                self.clipQueryActivityIndicator.startAnimating()
+                self.retrieveClips()
+            }
+        }
     }
     
 }

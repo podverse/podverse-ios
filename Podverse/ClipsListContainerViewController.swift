@@ -22,6 +22,7 @@ class ClipsListContainerViewController: UIViewController {
     
     var filterTypeSelected: ClipFilter = .episode {
         didSet {
+            self.resetClipQuery()
             self.tableViewHeader.filterTitle = filterTypeSelected.text
             UserDefaults.standard.set(filterTypeSelected.text, forKey: kClipsListFilterType)
         }
@@ -29,15 +30,24 @@ class ClipsListContainerViewController: UIViewController {
     
     var sortingTypeSelected: ClipSorting = .topWeek {
         didSet {
+            self.resetClipQuery()
             self.tableViewHeader.sortingTitle = sortingTypeSelected.text
             UserDefaults.standard.set(sortingTypeSelected.text, forKey: kClipsListSortingType)
         }
     }
     
+    var clipQueryPage: Int = 0
+    var clipQueryIsLoading: Bool = false
+    var clipQueryEndOfResultsReached: Bool = false
+    
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     @IBOutlet weak var activityView: UIView!
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var tableViewHeader: FiltersTableHeaderView!
+    
+    @IBOutlet weak var clipQueryActivityIndicator: UIActivityIndicatorView!
+    @IBOutlet weak var clipQueryMessage: UILabel!
+    @IBOutlet weak var clipQueryStatusView: UIView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -48,6 +58,9 @@ class ClipsListContainerViewController: UIViewController {
         self.tableViewHeader.setupViews(isBlackBg: true)
         
         self.tableView.separatorColor = .darkGray
+        
+        self.clipQueryActivityIndicator.hidesWhenStopped = true
+        self.clipQueryMessage.isHidden = true
         
         if let savedFilterType = UserDefaults.standard.value(forKey: kClipsListFilterType) as? String, let sFilterType = ClipFilter(rawValue: savedFilterType) {
             self.filterTypeSelected = sFilterType
@@ -64,6 +77,15 @@ class ClipsListContainerViewController: UIViewController {
         retrieveClips()
     }
     
+    func resetClipQuery() {
+        self.clipsArray.removeAll()
+        self.clipQueryPage = 0
+        self.clipQueryIsLoading = true
+        self.clipQueryEndOfResultsReached = false
+        self.clipQueryMessage.isHidden = true
+        self.tableView.reloadData()
+    }
+    
     func retrieveClips() {
         
         guard checkForConnectivity() else {
@@ -72,19 +94,23 @@ class ClipsListContainerViewController: UIViewController {
         }
         
         self.hideNoDataView()
-        self.activityIndicator.startAnimating()
-        self.activityView.isHidden = false
+        
+        if self.clipQueryPage == 0 {
+            showActivityIndicator()
+        }
+        
+        self.clipQueryPage += 1
         
         if self.filterTypeSelected == .episode, let item = pvMediaPlayer.nowPlayingItem, let mediaUrl = item.episodeMediaUrl {
             
-            MediaRef.retrieveMediaRefsFromServer(episodeMediaUrl: mediaUrl, sortingType: self.sortingTypeSelected) { (mediaRefs) -> Void in
-                self.reloadClipData(mediaRefs: mediaRefs)
+            MediaRef.retrieveMediaRefsFromServer(episodeMediaUrl: mediaUrl, sortingType: self.sortingTypeSelected, page: self.clipQueryPage) { (mediaRefs) -> Void in
+                self.reloadClipData(mediaRefs)
             }
             
         } else if self.filterTypeSelected == .podcast, let item = pvMediaPlayer.nowPlayingItem, let feedUrl = item.podcastFeedUrl {
             
-            MediaRef.retrieveMediaRefsFromServer(podcastFeedUrls: [feedUrl], sortingType: self.sortingTypeSelected) { (mediaRefs) -> Void in
-                self.reloadClipData(mediaRefs: mediaRefs)
+            MediaRef.retrieveMediaRefsFromServer(podcastFeedUrls: [feedUrl], sortingType: self.sortingTypeSelected, page: self.clipQueryPage) { (mediaRefs) -> Void in
+                self.reloadClipData(mediaRefs)
             }
             
         } else if self.filterTypeSelected == .subscribed {
@@ -96,24 +122,34 @@ class ClipsListContainerViewController: UIViewController {
                 return
             }
             
-            MediaRef.retrieveMediaRefsFromServer(episodeMediaUrl: nil, podcastFeedUrls: subscribedPodcastFeedUrls, sortingType: self.sortingTypeSelected) { (mediaRefs) -> Void in
-                self.reloadClipData(mediaRefs: mediaRefs)
+            MediaRef.retrieveMediaRefsFromServer(episodeMediaUrl: nil, podcastFeedUrls: subscribedPodcastFeedUrls, sortingType: self.sortingTypeSelected, page: self.clipQueryPage) { (mediaRefs) -> Void in
+                self.reloadClipData(mediaRefs)
             }
             
         } else {
             
-            MediaRef.retrieveMediaRefsFromServer(sortingType: self.sortingTypeSelected) { (mediaRefs) -> Void in
-                self.reloadClipData(mediaRefs: mediaRefs)
+            MediaRef.retrieveMediaRefsFromServer(sortingType: self.sortingTypeSelected, page: self.clipQueryPage) { (mediaRefs) -> Void in
+                self.reloadClipData(mediaRefs)
             }
             
         }
         
     }
     
-    func reloadClipData(mediaRefs: [MediaRef]? = nil) {
+    func reloadClipData(_ mediaRefs: [MediaRef]? = nil) {
         
-        guard let mediaRefs = mediaRefs, checkForResults(results: mediaRefs) else {
+        hideActivityIndicator()
+        self.clipQueryIsLoading = false
+        self.clipQueryActivityIndicator.stopAnimating()
+        
+        guard checkForResults(results: mediaRefs) || checkForResults(results: self.clipsArray), let mediaRefs = mediaRefs else {
             loadNoClipsMessage()
+            return
+        }
+        
+        guard checkForResults(results: mediaRefs) else {
+            self.clipQueryEndOfResultsReached = true
+            self.clipQueryMessage.isHidden = false
             return
         }
         
@@ -126,7 +162,7 @@ class ClipsListContainerViewController: UIViewController {
         
     }
     
-    func loadNoDataView(message: String, buttonTitle: String?) {
+    func loadNoDataView(message: String, buttonTitle: String?, buttonPressed: Selector?) {
         
         if let noDataView = self.view.subviews.first(where: { $0.tag == kNoDataViewTag}) {
             
@@ -139,22 +175,29 @@ class ClipsListContainerViewController: UIViewController {
             }
         }
         else {
-            self.addNoDataViewWithMessage(message, buttonTitle: buttonTitle, buttonImage: nil, retryPressed: #selector(ClipsListContainerViewController.retrieveClips), isBlackBg: true)
+            self.addNoDataViewWithMessage(message, buttonTitle: buttonTitle, buttonImage: nil, retryPressed: buttonPressed)
         }
         
-        self.activityIndicator.stopAnimating()
-        self.activityView.isHidden = true
-        self.tableView.isHidden = true
         showNoDataView()
         
     }
     
     func loadNoInternetMessage() {
-        loadNoDataView(message: Strings.Errors.noClipsInternet, buttonTitle: "Retry")
+        loadNoDataView(message: Strings.Errors.noClipsInternet, buttonTitle: "Retry", buttonPressed: #selector(ClipsListContainerViewController.retrieveClips))
     }
     
     func loadNoClipsMessage() {
-        loadNoDataView(message: Strings.Errors.noClipsAvailable, buttonTitle: nil)
+        loadNoDataView(message: Strings.Errors.noClipsAvailable, buttonTitle: nil, buttonPressed: nil)
+    }
+    
+    func showActivityIndicator() {
+        self.activityIndicator.startAnimating()
+        self.activityView.isHidden = false
+    }
+    
+    func hideActivityIndicator() {
+        self.activityIndicator.stopAnimating()
+        self.activityView.isHidden = true
     }
     
 }
@@ -234,6 +277,17 @@ extension ClipsListContainerViewController:UITableViewDelegate, UITableViewDataS
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         self.tableView.deselectRow(at: indexPath, animated: true)
         self.delegate?.didSelectClip(clip: self.clipsArray[indexPath.row])
+    }
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        // Bottom Refresh
+        if scrollView == self.tableView {
+            if ((scrollView.contentOffset.y + scrollView.frame.size.height) >= scrollView.contentSize.height) && !self.clipQueryIsLoading && !self.clipQueryEndOfResultsReached {
+                self.clipQueryIsLoading = true
+                self.clipQueryActivityIndicator.startAnimating()
+                self.retrieveClips()
+            }
+        }
     }
 }
 

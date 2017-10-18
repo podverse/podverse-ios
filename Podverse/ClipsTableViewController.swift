@@ -15,12 +15,14 @@ class ClipsTableViewController: PVViewController {
     
     var filterTypeSelected: ClipFilter = .allPodcasts {
         didSet {
+            self.resetClipQuery()
             self.tableViewHeader.filterTitle = self.filterTypeSelected.text
             UserDefaults.standard.set(filterTypeSelected.text, forKey: kClipsTableFilterType)
         }
     }
     var sortingTypeSelected: ClipSorting = .topWeek {
         didSet {
+            self.resetClipQuery()
             self.tableViewHeader.sortingTitle = sortingTypeSelected.text
             UserDefaults.standard.set(sortingTypeSelected.text, forKey: kClipsTableSortingType)
         }
@@ -30,9 +32,9 @@ class ClipsTableViewController: PVViewController {
     var clipQueryIsLoading: Bool = false
     var clipQueryEndOfResultsReached: Bool = false
     
-    @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
-    
+    @IBOutlet weak var activityView: UIView!
+    @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var tableViewHeader: FiltersTableHeaderView!
     
     @IBOutlet weak var clipQueryActivityIndicator: UIActivityIndicatorView!
@@ -49,7 +51,7 @@ class ClipsTableViewController: PVViewController {
         
         self.clipQueryActivityIndicator.hidesWhenStopped = true
         self.clipQueryMessage.isHidden = true
-        
+
         if let savedFilterType = UserDefaults.standard.value(forKey: kClipsTableFilterType) as? String, let clipFilterType = ClipFilter(rawValue: savedFilterType) {
             self.filterTypeSelected = clipFilterType
         } else {
@@ -63,6 +65,7 @@ class ClipsTableViewController: PVViewController {
         }
         
         retrieveClips()
+        
     }
     
     func resetAndRetrieveClips() {
@@ -75,6 +78,7 @@ class ClipsTableViewController: PVViewController {
         self.clipQueryPage = 0
         self.clipQueryIsLoading = true
         self.clipQueryEndOfResultsReached = false
+        self.clipQueryMessage.isHidden = true
         self.tableView.reloadData()
     }
     
@@ -86,7 +90,10 @@ class ClipsTableViewController: PVViewController {
         }
         
         self.hideNoDataView()
-        self.activityIndicator.startAnimating()
+        
+        if self.clipQueryPage == 0 {
+            showActivityIndicator()
+        }
         
         self.clipQueryPage += 1
         
@@ -100,22 +107,22 @@ class ClipsTableViewController: PVViewController {
             }
 
             MediaRef.retrieveMediaRefsFromServer(podcastFeedUrls: subscribedPodcastFeedUrls, sortingType: self.sortingTypeSelected, page: self.clipQueryPage) { (mediaRefs) -> Void in
-                self.reloadClipData(mediaRefs: mediaRefs)
+                self.reloadClipData(mediaRefs)
             }
 
         } else {
 
             MediaRef.retrieveMediaRefsFromServer(sortingType: self.sortingTypeSelected, page: self.clipQueryPage) { (mediaRefs) -> Void in
-                self.reloadClipData(mediaRefs: mediaRefs)
+                self.reloadClipData(mediaRefs)
             }
 
         }
         
     }
     
-    func reloadClipData(mediaRefs: [MediaRef]? = nil) {
+    func reloadClipData(_ mediaRefs: [MediaRef]? = nil) {
         
-        self.activityIndicator.stopAnimating()
+        hideActivityIndicator()
         self.clipQueryIsLoading = false
         self.clipQueryActivityIndicator.stopAnimating()
         
@@ -126,7 +133,6 @@ class ClipsTableViewController: PVViewController {
         
         guard checkForResults(results: mediaRefs) else {
             self.clipQueryEndOfResultsReached = true
-            self.clipQueryActivityIndicator.stopAnimating()
             self.clipQueryMessage.isHidden = false
             return
         }
@@ -140,7 +146,7 @@ class ClipsTableViewController: PVViewController {
         
     }
 
-    func loadNoDataView(message: String, buttonTitle: String?) {
+    func loadNoDataView(message: String, buttonTitle: String?, buttonPressed: Selector?) {
         
         if let noDataView = self.view.subviews.first(where: { $0.tag == kNoDataViewTag}) {
             
@@ -153,21 +159,30 @@ class ClipsTableViewController: PVViewController {
             }
         }
         else {
-            self.addNoDataViewWithMessage(message, buttonTitle: buttonTitle, buttonImage: nil, retryPressed: #selector(ClipsTableViewController.resetAndRetrieveClips))
+            self.addNoDataViewWithMessage(message, buttonTitle: buttonTitle, buttonImage: nil, retryPressed: buttonPressed)
         }
         
-        self.activityIndicator.stopAnimating()
-        self.tableView.isHidden = true
         showNoDataView()
         
     }
     
-    func loadNoClipsMessage() {
-        loadNoDataView(message: Strings.Errors.noClipsAvailable, buttonTitle: nil)
+    func loadNoInternetMessage() {
+        loadNoDataView(message: Strings.Errors.noClipsInternet, buttonTitle: "Retry", buttonPressed: #selector(ClipsTableViewController.resetAndRetrieveClips))
     }
     
-    func loadNoInternetMessage() {
-        loadNoDataView(message: Strings.Errors.noClipsInternet, buttonTitle: "Retry")
+    func loadNoClipsMessage() {
+        loadNoDataView(message: Strings.Errors.noClipsAvailable, buttonTitle: nil, buttonPressed: nil)
+    }
+    
+    func showActivityIndicator() {
+        self.tableView.isHidden = true
+        self.activityIndicator.startAnimating()
+        self.activityView.isHidden = false
+    }
+    
+    func hideActivityIndicator() {
+        self.activityIndicator.stopAnimating()
+        self.activityView.isHidden = true
     }
     
     override func goToNowPlaying () {
@@ -228,7 +243,6 @@ extension ClipsTableViewController:UITableViewDelegate, UITableViewDataSource {
         if scrollView == self.tableView {
             if ((scrollView.contentOffset.y + scrollView.frame.size.height) >= scrollView.contentSize.height) && !self.clipQueryIsLoading && !self.clipQueryEndOfResultsReached {
                 self.clipQueryIsLoading = true
-                self.clipQueryMessage.isHidden = true
                 self.clipQueryActivityIndicator.startAnimating()
                 self.retrieveClips()
             }
@@ -243,13 +257,11 @@ extension ClipsTableViewController:FilterSelectionProtocol {
         let alert = UIAlertController(title: "Clips From", message: nil, preferredStyle: .actionSheet)
         
         alert.addAction(UIAlertAction(title: ClipFilter.subscribed.text, style: .default, handler: { action in
-            self.resetClipQuery()
             self.filterTypeSelected = .subscribed
             self.retrieveClips()
         }))
         
         alert.addAction(UIAlertAction(title: ClipFilter.allPodcasts.text, style: .default, handler: { action in
-            self.resetClipQuery()
             self.filterTypeSelected = .allPodcasts
             self.retrieveClips()
         }))
