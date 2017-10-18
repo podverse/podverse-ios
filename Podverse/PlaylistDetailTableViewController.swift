@@ -50,7 +50,7 @@ class PlaylistDetailTableViewController: PVViewController {
     }
     
     func reloadPlaylistData(playlist: Playlist?) {
-        if self.reachability.hasInternetConnection() == false {
+        if !checkForConnectivity() {
             self.showStatusMessage(message: "You must connect to the internet to load this playlist.")
             return
         }
@@ -149,7 +149,7 @@ extension PlaylistDetailTableViewController:UITableViewDelegate, UITableViewData
         
         let deleteAction = UITableViewRowAction(style: .default, title: "Remove", handler: {action, indexpath in
             
-            if self.reachability.hasInternetConnection() == false {
+            if !checkForConnectivity() {
                 self.showStatusMessage(message: "You must connect to the internet to remove playlist items.")
                 return
             }

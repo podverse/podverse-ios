@@ -65,7 +65,7 @@ class PlaylistsTableViewController: PVViewController {
         let buttonTitle = "Retry"
         let selector:Selector = #selector(PlaylistsTableViewController.retrievePlaylists)
         
-        guard self.reachability.hasInternetConnection() else {
+        guard checkForConnectivity() else {
             loadNoDataView(message: message, buttonTitle: buttonTitle, buttonPressed: selector)
             return false
         }
