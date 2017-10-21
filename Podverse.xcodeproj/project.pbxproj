@@ -13,6 +13,7 @@
 		300CF2561F305D53006C397D /* URL+Converters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 300CF2551F305D53006C397D /* URL+Converters.swift */; };
 		301E0E541F96F9510062BEA4 /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 301E0E531F96F9510062BEA4 /* Utilities.swift */; };
 		302D55111EC157960032D0A0 /* PVViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 302D55101EC157960032D0A0 /* PVViewController.swift */; };
+		303D1CCC1F9BE7F600F25CDF /* AudiosearchEpisodesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 303D1CCB1F9BE7F600F25CDF /* AudiosearchEpisodesViewController.swift */; };
 		3048E8881EDA7124001AADCE /* MediaRef.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3048E8871EDA7124001AADCE /* MediaRef.swift */; };
 		3048E88A1EDD1B1A001AADCE /* Int64+MediaPlayerString.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3048E8891EDD1B1A001AADCE /* Int64+MediaPlayerString.swift */; };
 		305119891F57D57500BD9FCE /* MakeClipTitleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 305119881F57D57500BD9FCE /* MakeClipTitleViewController.swift */; };
@@ -119,6 +120,7 @@
 		300CF2551F305D53006C397D /* URL+Converters.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "URL+Converters.swift"; sourceTree = "<group>"; };
 		301E0E531F96F9510062BEA4 /* Utilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utilities.swift; sourceTree = "<group>"; };
 		302D55101EC157960032D0A0 /* PVViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PVViewController.swift; sourceTree = "<group>"; };
+		303D1CCB1F9BE7F600F25CDF /* AudiosearchEpisodesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudiosearchEpisodesViewController.swift; sourceTree = "<group>"; };
 		3048E8871EDA7124001AADCE /* MediaRef.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MediaRef.swift; sourceTree = "<group>"; };
 		3048E8891EDD1B1A001AADCE /* Int64+MediaPlayerString.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Int64+MediaPlayerString.swift"; sourceTree = "<group>"; };
 		305119881F57D57500BD9FCE /* MakeClipTitleViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MakeClipTitleViewController.swift; sourceTree = "<group>"; };
@@ -270,6 +272,7 @@
 				E7299F111F19368400AB3168 /* AboutPlayingItemViewController.swift */,
 				30026D8A1F0B322000043D79 /* AboutViewController.swift */,
 				30A56B1F1F5247C7007513F6 /* AddToPlaylistViewController.swift */,
+				303D1CCB1F9BE7F600F25CDF /* AudiosearchEpisodesViewController.swift */,
 				E7AD9A971EDDF7160093F051 /* ClipsListContainerViewController.swift */,
 				3097AA8C1EE7BEC900AD0ED0 /* ClipsTableViewController.swift */,
 				3097AA901EE7C7D200AD0ED0 /* DownloadsTableViewController.swift */,
@@ -848,6 +851,7 @@
 				3051488B1ED27251009BC839 /* PlayerHistoryItem.swift in Sources */,
 				E7B2A5A11E123E9900AAE036 /* PVAuth.swift in Sources */,
 				E753028B1E072F160007B6F7 /* String+RemoveHTMLCharacters.swift in Sources */,
+				303D1CCC1F9BE7F600F25CDF /* AudiosearchEpisodesViewController.swift in Sources */,
 				E7D25BCC1E0F176C00B60368 /* PVDeleter.swift in Sources */,
 				E7AD9A981EDDF7160093F051 /* ClipsListContainerViewController.swift in Sources */,
 				302D55111EC157960032D0A0 /* PVViewController.swift in Sources */,

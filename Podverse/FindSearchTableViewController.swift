@@ -30,17 +30,6 @@ class FindSearchTableViewController: PVViewController {
         // Dispose of any resources that can be recreated.
     }
     
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
 }
 
 extension FindSearchTableViewController: UITableViewDataSource, UITableViewDelegate {
@@ -95,7 +84,7 @@ extension FindSearchTableViewController: UITableViewDataSource, UITableViewDeleg
             }))
             
             podcastActions.addAction(UIAlertAction(title: "Episodes", style: .default, handler: { action in
-                // TODO segue to episodes page
+                self.performSegue(withIdentifier: "Show Audiosearch Episodes", sender: nil)
             }))
             
             podcastActions.addAction(UIAlertAction(title: "Clips", style: .default, handler: { action in
@@ -105,6 +94,15 @@ extension FindSearchTableViewController: UITableViewDataSource, UITableViewDeleg
             podcastActions.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
             
             self.present(podcastActions, animated: true, completion: nil)
+        }
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "Show Audiosearch Episodes" {
+            if let audiosearchEpisodesVC = segue.destination as? AudiosearchEpisodesViewController, let indexPath = self.tableView.indexPathForSelectedRow, indexPath.row < self.searchResults.count {
+                let podcast = searchResults[indexPath.row]
+                audiosearchEpisodesVC.audiosearchId = podcast.id
+            }
         }
     }
     

@@ -67,4 +67,27 @@ class AudiosearchPodcast {
         return podcast
     }
     
+    static func retrievePodcastFromServer(id: Int64?, completion: @escaping (_ podcast:AudiosearchPodcast?) -> Void) {
+        
+        if let id = id {
+            
+            AudioSearchClientSwift.retrievePodcast(id: id, onCompletion: { serviceResponse in
+                
+                if let response = serviceResponse.0, let podcast = AudiosearchPodcast.convertJSONToAudiosearchPodcast(response) {
+                    completion(podcast)
+                }
+                
+                if let error = serviceResponse.1 {
+                    print(error.localizedDescription)
+                    completion(nil)
+                }
+                
+            })
+            
+        } else {
+            completion(nil)
+        }
+        
+    }
+    
 }

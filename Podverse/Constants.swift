@@ -290,6 +290,38 @@ enum EpisodeActions: String {
     }
 }
 
+enum AudiosearchEpisodesFilter:String {
+    case allEpisodes = "All Episodes"
+    case clips = "Clips"
+    
+    var text:String {
+        get {
+            switch self {
+            case .allEpisodes:
+                return "All Episodes"
+            case .clips:
+                return "Clips"
+            }
+        }
+    }
+}
+
+enum AudiosearchEpisodeFilter:String {
+    case allEpisodes = "Show Notes"
+    case clips = "Clips"
+    
+    var text:String {
+        get {
+            switch self {
+            case .allEpisodes:
+                return "Show Notes"
+            case .clips:
+                return "Clips"
+            }
+        }
+    }
+}
+
 struct Strings {
     
     struct Errors {

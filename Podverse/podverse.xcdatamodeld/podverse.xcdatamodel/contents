@@ -15,7 +15,6 @@
         <relationship name="podcast" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Podcast" inverseName="episodes" inverseEntity="Podcast" syncable="YES"/>
     </entity>
     <entity name="Podcast" representedClassName=".Podcast" syncable="YES">
-        <attribute name="audiosearchId" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="author" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="categories" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="feedUrl" optional="YES" attributeType="String" syncable="YES"/>
@@ -34,6 +33,6 @@
     </entity>
     <elements>
         <element name="Episode" positionX="-290" positionY="207" width="128" height="225"/>
-        <element name="Podcast" positionX="520" positionY="54" width="128" height="285"/>
+        <element name="Podcast" positionX="520" positionY="54" width="128" height="270"/>
     </elements>
 </model>
