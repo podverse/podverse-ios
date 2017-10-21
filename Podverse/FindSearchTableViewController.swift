@@ -99,9 +99,11 @@ extension FindSearchTableViewController: UITableViewDataSource, UITableViewDeleg
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "Show Audiosearch Episodes" {
-            if let audiosearchEpisodesVC = segue.destination as? AudiosearchEpisodesViewController, let indexPath = self.tableView.indexPathForSelectedRow, indexPath.row < self.searchResults.count {
+            if let audiosearchPodcastVC = segue.destination as? AudiosearchPodcastViewController, let indexPath = self.tableView.indexPathForSelectedRow, indexPath.row < self.searchResults.count {
                 let podcast = searchResults[indexPath.row]
-                audiosearchEpisodesVC.audiosearchId = podcast.id
+                audiosearchPodcastVC.audiosearchId = podcast.id
+                audiosearchPodcastVC.feedUrl = podcast.rssUrl
+                audiosearchPodcastVC.filterTypeOverride = .about
             }
         }
     }

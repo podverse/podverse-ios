@@ -97,7 +97,7 @@ class EpisodeTableViewController: PVViewController {
     
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
-        self.webView.scrollView.contentInset = UIEdgeInsets.zero;
+        self.webView.scrollView.contentInset = UIEdgeInsets.zero
     }
     
     fileprivate func setupNotificationListeners() {

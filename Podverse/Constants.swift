@@ -103,6 +103,8 @@ let kFinishedParsingPodcast = "finishedParsingPodcast"
 
 let kNoShowNotesMessage = "No show notes available for this episode."
 
+let kNoPodcastAboutMessage = "No information available for this podcast."
+
 let rootPath = NSSearchPathForDirectoriesInDomains(FileManager.SearchPathDirectory.documentDirectory, .userDomainMask, true)[0]
 
 let TO_PLAYER_SEGUE_ID = "To Now Playing"
@@ -290,31 +292,15 @@ enum EpisodeActions: String {
     }
 }
 
-enum AudiosearchEpisodesFilter:String {
-    case allEpisodes = "All Episodes"
+enum AudiosearchPodcastFilter:String {
+    case about = "About"
     case clips = "Clips"
     
     var text:String {
         get {
             switch self {
-            case .allEpisodes:
-                return "All Episodes"
-            case .clips:
-                return "Clips"
-            }
-        }
-    }
-}
-
-enum AudiosearchEpisodeFilter:String {
-    case allEpisodes = "Show Notes"
-    case clips = "Clips"
-    
-    var text:String {
-        get {
-            switch self {
-            case .allEpisodes:
-                return "Show Notes"
+            case .about:
+                return "About"
             case .clips:
                 return "Clips"
             }
