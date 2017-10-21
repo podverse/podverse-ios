@@ -62,6 +62,9 @@ class AudiosearchPodcastViewController: PVViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        self.filterTypeSelected = self.filterTypeOverride
+        self.sortingTypeSelected = .topWeek
+        
         self.headerActivityIndicator.hidesWhenStopped = true
         
         self.statusActivityIndicator.hidesWhenStopped = true
@@ -74,8 +77,10 @@ class AudiosearchPodcastViewController: PVViewController {
         
         loadPodcastData()
         
-        self.filterTypeSelected = self.filterTypeOverride
-        self.sortingTypeSelected = .topWeek
+        if self.filterTypeSelected == .clips {
+            retrieveClips()
+        }
+        
     }
     
     override func viewWillLayoutSubviews() {
@@ -96,7 +101,7 @@ class AudiosearchPodcastViewController: PVViewController {
                 self.loadPodcastHeader(podcast)
                 self.loadAbout(podcast)
             })
-            
+
         }
         
     }
@@ -154,7 +159,9 @@ class AudiosearchPodcastViewController: PVViewController {
                     
                 }
                 
-                self.showAbout()
+                if self.filterTypeSelected == .about {
+                    self.showAbout()
+                }
                 
             }
         }

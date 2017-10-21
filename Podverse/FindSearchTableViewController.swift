@@ -80,15 +80,11 @@ extension FindSearchTableViewController: UITableViewDataSource, UITableViewDeleg
             }
             
             podcastActions.addAction(UIAlertAction(title: "About", style: .default, handler: { action in
-                // TODO segue to about page
-            }))
-            
-            podcastActions.addAction(UIAlertAction(title: "Episodes", style: .default, handler: { action in
-                self.performSegue(withIdentifier: "Show Audiosearch Episodes", sender: nil)
+                self.performSegue(withIdentifier: "Show Audiosearch Podcast About", sender: nil)
             }))
             
             podcastActions.addAction(UIAlertAction(title: "Clips", style: .default, handler: { action in
-                // TODO segue to podcast clip's page
+                self.performSegue(withIdentifier: "Show Audiosearch Podcast Clips", sender: nil)
             }))
             
             podcastActions.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
@@ -98,12 +94,21 @@ extension FindSearchTableViewController: UITableViewDataSource, UITableViewDeleg
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == "Show Audiosearch Episodes" {
+        if segue.identifier == "Show Audiosearch Podcast About" {
             if let audiosearchPodcastVC = segue.destination as? AudiosearchPodcastViewController, let indexPath = self.tableView.indexPathForSelectedRow, indexPath.row < self.searchResults.count {
                 let podcast = searchResults[indexPath.row]
                 audiosearchPodcastVC.audiosearchId = podcast.id
                 audiosearchPodcastVC.feedUrl = podcast.rssUrl
                 audiosearchPodcastVC.filterTypeOverride = .about
+            }
+        }
+        
+        if segue.identifier == "Show Audiosearch Podcast Clips" {
+            if let audiosearchPodcastVC = segue.destination as? AudiosearchPodcastViewController, let indexPath = self.tableView.indexPathForSelectedRow, indexPath.row < self.searchResults.count {
+                let podcast = searchResults[indexPath.row]
+                audiosearchPodcastVC.audiosearchId = podcast.id
+                audiosearchPodcastVC.feedUrl = podcast.rssUrl
+                audiosearchPodcastVC.filterTypeOverride = .clips
             }
         }
     }

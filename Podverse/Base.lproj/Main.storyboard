@@ -918,7 +918,8 @@
                     <connections>
                         <outlet property="searchBar" destination="9Y3-05-PT3" id="uOq-j9-y9g"/>
                         <outlet property="tableView" destination="DkR-3F-oNH" id="DgV-kd-djn"/>
-                        <segue destination="1hU-oK-T3A" kind="show" identifier="Show Audiosearch Episodes" id="UX7-d9-2wT"/>
+                        <segue destination="1hU-oK-T3A" kind="show" identifier="Show Audiosearch Podcast About" id="UX7-d9-2wT"/>
+                        <segue destination="1hU-oK-T3A" kind="show" identifier="Show Audiosearch Podcast Clips" id="zre-Be-w3d"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="5Om-Qs-rRw" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -3094,4 +3095,7 @@
         <image name="Tab-Podcasts" width="25" height="25"/>
         <image name="banner" width="337" height="61"/>
     </resources>
+    <inferredMetricsTieBreakers>
+        <segue reference="zre-Be-w3d"/>
+    </inferredMetricsTieBreakers>
 </document>
