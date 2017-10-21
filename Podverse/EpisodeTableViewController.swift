@@ -158,7 +158,7 @@ class EpisodeTableViewController: PVViewController {
     func loadPodcastHeader() {
         if let feedUrl = feedUrl, let podcast = Podcast.podcastForFeedUrl(feedUrlString: feedUrl, managedObjectContext: moc), let mediaUrl = mediaUrl, let episode = Episode.episodeForMediaUrl(mediaUrlString: mediaUrl, managedObjectContext: moc) {
             
-            episodeTitle.text = episode.title
+            self.episodeTitle.text = episode.title
             
             self.headerImageView.image = Podcast.retrievePodcastImage(podcastImageURLString: podcast.imageUrl, feedURLString: podcast.feedUrl, managedObjectID: podcast.objectID, completion: { _ in
                 self.headerImageView.sd_setImage(with: URL(string: podcast.imageUrl ?? ""), placeholderImage: #imageLiteral(resourceName: "PodverseIcon"))
@@ -177,6 +177,7 @@ class EpisodeTableViewController: PVViewController {
                 self.streamButton.isHidden = true
                 self.localMultiButton.setTitle(EpisodeActions.play.text, for: .normal)
             }
+
         }
     }
     

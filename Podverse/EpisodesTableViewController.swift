@@ -7,8 +7,9 @@ protocol AutoDownloadProtocol: NSObjectProtocol {
 
 class EpisodesTableViewController: PVViewController {
     
-    weak var delegate: AutoDownloadProtocol?
+    var audiosearchId:Int64?
     var clipsArray = [MediaRef]()
+    weak var delegate: AutoDownloadProtocol?
     var episodesArray = [Episode]()
     var feedUrl: String?
     let moc = CoreDataHelper.createMOCForThread(threadType: .privateThread)

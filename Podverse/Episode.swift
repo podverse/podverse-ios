@@ -31,7 +31,7 @@ class Episode: NSManagedObject {
         
         return episodeSet?.first
     }
-    
+        
     static let episodeKey = "episode"
     
 }

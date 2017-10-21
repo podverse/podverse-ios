@@ -5,7 +5,7 @@
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13173"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13174"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -1637,7 +1637,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="fGB-Qi-zBQ" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3201" y="-677"/>
+            <point key="canvasLocation" x="3452" y="-709"/>
         </scene>
         <!--Make Clip-->
         <scene sceneID="ze6-CL-MaB">
@@ -1890,7 +1890,7 @@
                     </connections>
                 </panGestureRecognizer>
             </objects>
-            <point key="canvasLocation" x="4062" y="-677"/>
+            <point key="canvasLocation" x="4313" y="-709"/>
         </scene>
         <!--Make Clip-->
         <scene sceneID="5Vm-Nu-AZd">
@@ -2045,7 +2045,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="KqU-qJ-MKr" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="4953" y="-677"/>
+            <point key="canvasLocation" x="5204" y="-709"/>
         </scene>
         <!--Media Player View Controller-->
         <scene sceneID="UQ2-yh-9RT">
@@ -2291,7 +2291,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="i6M-Yi-mpb" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3614" y="-1450"/>
+            <point key="canvasLocation" x="3865" y="-1482"/>
         </scene>
         <!--Playlists-->
         <scene sceneID="WnP-eH-wLR">
@@ -2815,7 +2815,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="q9j-4Z-vhy" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="4512.8000000000002" y="-1451.4242878560722"/>
+            <point key="canvasLocation" x="4764" y="-1484"/>
         </scene>
         <!--About Playing Item View Controller-->
         <scene sceneID="LYP-TJ-nMV">
@@ -2850,7 +2850,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="UME-eU-Cea" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="5382" y="-1451"/>
+            <point key="canvasLocation" x="5633" y="-1484"/>
         </scene>
     </scenes>
     <resources>

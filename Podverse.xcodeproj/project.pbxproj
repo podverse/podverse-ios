@@ -88,7 +88,7 @@
 		E7D25BCE1E0F184800B60368 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7D25BCD1E0F184800B60368 /* Constants.swift */; };
 		E7D25BD11E0F1CB000B60368 /* CoreDataHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7D25BD01E0F1CB000B60368 /* CoreDataHelper.swift */; };
 		E7D25BD41E0F23DB00B60368 /* Data+ResizeImageData.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7D25BD31E0F23DB00B60368 /* Data+ResizeImageData.swift */; };
-		E7D25BD91E0F2DF800B60368 /* PodcastSearchResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7D25BD81E0F2DF800B60368 /* PodcastSearchResult.swift */; };
+		E7D25BD91E0F2DF800B60368 /* AudiosearchPodcast.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7D25BD81E0F2DF800B60368 /* AudiosearchPodcast.swift */; };
 		E7D25BDC1E0F30C500B60368 /* podverse.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = E7D25BDA1E0F30C500B60368 /* podverse.xcdatamodeld */; };
 		E7E4714D1F1BD2A6007E66EF /* UITabbarController+PlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7E4714C1F1BD2A6007E66EF /* UITabbarController+PlayerView.swift */; };
 		FC4E08D5665E18150E3D9F47 /* Pods_Podverse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4B29D6346E600E88926FE2B2 /* Pods_Podverse.framework */; };
@@ -206,7 +206,7 @@
 		E7D25BCD1E0F184800B60368 /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		E7D25BD01E0F1CB000B60368 /* CoreDataHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreDataHelper.swift; sourceTree = "<group>"; };
 		E7D25BD31E0F23DB00B60368 /* Data+ResizeImageData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Data+ResizeImageData.swift"; sourceTree = "<group>"; };
-		E7D25BD81E0F2DF800B60368 /* PodcastSearchResult.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PodcastSearchResult.swift; sourceTree = "<group>"; };
+		E7D25BD81E0F2DF800B60368 /* AudiosearchPodcast.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudiosearchPodcast.swift; sourceTree = "<group>"; };
 		E7D25BDB1E0F30C500B60368 /* podverse.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = podverse.xcdatamodel; sourceTree = "<group>"; };
 		E7E4714C1F1BD2A6007E66EF /* UITabbarController+PlayerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UITabbarController+PlayerView.swift"; sourceTree = "<group>"; };
 		F4ADFD588BD638518A3B7020 /* Pods-PodverseUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PodverseUITests.release.xcconfig"; path = "Pods/Target Support Files/Pods-PodverseUITests/Pods-PodverseUITests.release.xcconfig"; sourceTree = "<group>"; };
@@ -341,6 +341,7 @@
 		E776A0151E04CB430062FDEB /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				E7D25BD81E0F2DF800B60368 /* AudiosearchPodcast.swift */,
 				E76C49C91E0F950E00F81217 /* DownloadingEpisode.swift */,
 				E7D25BC51E0F141500B60368 /* Episode.swift */,
 				3048E8871EDA7124001AADCE /* MediaRef.swift */,
@@ -348,7 +349,6 @@
 				E7D25BC91E0F16B700B60368 /* Playlist.swift */,
 				3051488A1ED27251009BC839 /* PlayerHistoryItem.swift */,
 				E7D25BC31E0F13D300B60368 /* Podcast.swift */,
-				E7D25BD81E0F2DF800B60368 /* PodcastSearchResult.swift */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -790,7 +790,7 @@
 				E7B2A5AC1E162B8500AAE036 /* String+Formatters.swift in Sources */,
 				E7B2A5971E11F95C00AAE036 /* PVMediaPlayer.swift in Sources */,
 				309BFE161F0A04F8008D101B /* Array+rearrange.swift in Sources */,
-				E7D25BD91E0F2DF800B60368 /* PodcastSearchResult.swift in Sources */,
+				E7D25BD91E0F2DF800B60368 /* AudiosearchPodcast.swift in Sources */,
 				E7B01EC31F8497CE00F61CB7 /* FiltersTableHeaderView.swift in Sources */,
 				E7D25BD11E0F1CB000B60368 /* CoreDataHelper.swift in Sources */,
 				E73AAFC91F7218FC0029EA77 /* UITableView+NotAvailableView.swift in Sources */,

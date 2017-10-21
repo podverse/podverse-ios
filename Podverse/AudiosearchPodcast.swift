@@ -1,5 +1,5 @@
 //
-//  PodcastSearchResult.swift
+//  AudiosearchPodcast.swift
 //  Podverse
 //
 //  Created by Creon on 12/24/16.
@@ -8,8 +8,8 @@
 
 import Foundation
 
-class PodcastSearchResult {
-    var id: String?
+class AudiosearchPodcast {
+    var id: Int64?
     var buzzScore: String?
     var categories: String?
     var description: String?
@@ -22,11 +22,10 @@ class PodcastSearchResult {
     var title: String?
     var webProfiles: String?
     
-    
-    static func convertJSONToSearchResult (json: AnyObject) -> PodcastSearchResult? {
-        let podcast = PodcastSearchResult()
+    static func convertJSONToAudiosearchPodcast (_ json: AnyObject) -> AudiosearchPodcast? {
+        let podcast = AudiosearchPodcast()
         
-        podcast.id = json["id"] as? String
+        podcast.id = json["id"] as? Int64
         
         podcast.buzzScore = json["buzz_score"] as? String
         
@@ -67,4 +66,5 @@ class PodcastSearchResult {
         
         return podcast
     }
+    
 }
