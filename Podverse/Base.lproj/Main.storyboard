@@ -1168,6 +1168,13 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
+                            <webView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="zuu-LB-Oaw">
+                                <rect key="frame" x="0.0" y="204" width="375" height="414"/>
+                                <color key="backgroundColor" red="0.36078431370000003" green="0.38823529410000002" blue="0.4039215686" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <connections>
+                                    <outlet property="delegate" destination="DYF-Bg-yz8" id="GKd-NI-Cul"/>
+                                </connections>
+                            </webView>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="PyK-Wl-Tyq">
                                 <rect key="frame" x="0.0" y="204" width="375" height="414"/>
                                 <subviews>
@@ -1424,17 +1431,21 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstAttribute="trailing" secondItem="x3o-LX-P4g" secondAttribute="trailing" id="0Jy-Cl-qgb"/>
+                            <constraint firstItem="zuu-LB-Oaw" firstAttribute="leading" secondItem="yDx-lL-sZ5" secondAttribute="leading" id="1Ow-Ic-ADx"/>
                             <constraint firstItem="PyK-Wl-Tyq" firstAttribute="leading" secondItem="yDx-lL-sZ5" secondAttribute="leading" id="8AH-pE-IoV"/>
                             <constraint firstItem="VOa-dX-ejH" firstAttribute="leading" secondItem="yDx-lL-sZ5" secondAttribute="leading" id="9Bm-rh-jJr"/>
                             <constraint firstItem="VlY-V6-PlY" firstAttribute="top" secondItem="PyK-Wl-Tyq" secondAttribute="bottom" id="9LX-bW-dcR"/>
                             <constraint firstAttribute="trailing" secondItem="PyK-Wl-Tyq" secondAttribute="trailing" id="LOU-0o-4HJ"/>
+                            <constraint firstItem="VlY-V6-PlY" firstAttribute="top" secondItem="zuu-LB-Oaw" secondAttribute="bottom" id="N5C-GO-xQ0"/>
                             <constraint firstAttribute="trailing" secondItem="yDP-ef-HEq" secondAttribute="trailing" id="RZo-gL-fD2"/>
                             <constraint firstItem="VlY-V6-PlY" firstAttribute="top" secondItem="VOa-dX-ejH" secondAttribute="bottom" id="YCb-uU-WyV"/>
                             <constraint firstItem="yDP-ef-HEq" firstAttribute="top" secondItem="lmW-yQ-hym" secondAttribute="bottom" id="bDA-Mf-pfp"/>
                             <constraint firstItem="yDP-ef-HEq" firstAttribute="leading" secondItem="yDx-lL-sZ5" secondAttribute="leading" id="cr2-27-0yp"/>
+                            <constraint firstAttribute="trailing" secondItem="zuu-LB-Oaw" secondAttribute="trailing" id="dBI-yj-JKF"/>
                             <constraint firstItem="VOa-dX-ejH" firstAttribute="top" secondItem="x3o-LX-P4g" secondAttribute="bottom" id="huu-L8-yLZ"/>
                             <constraint firstItem="x3o-LX-P4g" firstAttribute="leading" secondItem="yDx-lL-sZ5" secondAttribute="leading" id="jJ7-sz-OiT"/>
                             <constraint firstItem="PyK-Wl-Tyq" firstAttribute="top" secondItem="x3o-LX-P4g" secondAttribute="bottom" id="k8Y-ap-PIn"/>
+                            <constraint firstItem="zuu-LB-Oaw" firstAttribute="top" secondItem="x3o-LX-P4g" secondAttribute="bottom" id="sYa-NT-hgq"/>
                             <constraint firstItem="x3o-LX-P4g" firstAttribute="top" secondItem="yDP-ef-HEq" secondAttribute="bottom" id="vrz-ps-ZEx"/>
                             <constraint firstAttribute="trailing" secondItem="VOa-dX-ejH" secondAttribute="trailing" id="yAw-ZG-imb"/>
                         </constraints>
@@ -1452,6 +1463,7 @@
                         <outlet property="headerPodcastTitle" destination="4bn-tB-LUD" id="iII-EY-sLo"/>
                         <outlet property="tableView" destination="VOa-dX-ejH" id="QWe-WP-Gqg"/>
                         <outlet property="tableViewHeader" destination="x3o-LX-P4g" id="NI1-PX-ihS"/>
+                        <outlet property="webView" destination="zuu-LB-Oaw" id="ILO-36-4Y5"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="6Xm-6J-YIW" userLabel="First Responder" sceneMemberID="firstResponder"/>

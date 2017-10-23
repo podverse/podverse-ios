@@ -123,6 +123,7 @@ class AudiosearchPodcastViewController: PVViewController {
     }
     
     func loadPodcastHeader(_ podcast: AudiosearchPodcast?) {
+        
         DispatchQueue.main.async {
             if let podcast = podcast {
                 self.headerPodcastTitle.text = podcast.title

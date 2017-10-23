@@ -52,6 +52,7 @@ class EpisodesTableViewController: PVViewController {
     @IBOutlet weak var headerPodcastTitle: UILabel!
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var tableViewHeader: FiltersTableHeaderView!
+    @IBOutlet weak var webView: UIWebView!
     
     @IBOutlet weak var clipQueryActivityIndicator: UIActivityIndicatorView!
     @IBOutlet weak var clipQueryMessage: UILabel!
@@ -86,6 +87,13 @@ class EpisodesTableViewController: PVViewController {
         
         reloadEpisodeOrClipData()
         
+        loadAbout()
+        
+    }
+    
+    override func viewWillLayoutSubviews() {
+        super.viewWillLayoutSubviews()
+        self.webView.scrollView.contentInset = UIEdgeInsets.zero
     }
     
     deinit {
@@ -168,6 +176,45 @@ class EpisodesTableViewController: PVViewController {
             reloadEpisodeData()
         }
     }
+    
+    func loadAbout() {
+        if let feedUrl = feedUrl, let podcast = Podcast.podcastForFeedUrl(feedUrlString: feedUrl, managedObjectContext: moc) {
+            
+            self.webView.delegate = self
+            
+            var htmlString = ""
+            
+            htmlString += "<strong>" + podcast.title + "</strong>"
+            htmlString += "<br><br>"
+
+            if let categories = podcast.categories {
+                htmlString += "<i>" + categories + "</i>"
+                htmlString += "<br><br>"
+            }
+            
+            if let summary = podcast.summary {
+                
+                if summary.trimmingCharacters(in: .whitespacesAndNewlines).characters.count == 0 {
+                    htmlString += kNoPodcastAboutMessage
+                } else {
+                    htmlString += summary
+                }
+                
+                htmlString += "<br><br>"
+                
+            }
+            
+            htmlString += "<br><br>" // add extra line breaks so NowPlayingBar doesn't cover the about text
+            
+            self.webView.loadHTMLString(htmlString.formatHtmlString(isWhiteBg: true), baseURL: nil)
+            
+            if self.filterTypeSelected == .about {
+                self.showAbout()
+            }
+        }
+    }
+    
+    
     
     func loadAllEpisodeData() {
         self.filterTypeSelected = .allEpisodes
@@ -319,10 +366,20 @@ class EpisodesTableViewController: PVViewController {
         loadNoDataView(message: Strings.Errors.noDownloadedEpisodesAvailable, buttonTitle: "Show All Episodes", buttonPressed: #selector(EpisodesTableViewController.loadAllEpisodeData))
     }
     
+    func showAbout() {
+        DispatchQueue.main.async {
+            self.hideNoDataView()
+            self.activityView.isHidden = true
+            self.tableView.isHidden = true
+            self.webView.isHidden = false
+        }
+    }
+    
     func showActivityIndicator() {
-        self.tableView.isHidden = true
         self.activityIndicator.startAnimating()
         self.activityView.isHidden = false
+        self.tableView.isHidden = true
+        self.webView.isHidden = true
     }
     
     func hideActivityIndicator() {
@@ -511,10 +568,32 @@ extension EpisodesTableViewController {
 
 }
 
+extension EpisodesTableViewController:UIWebViewDelegate {
+    func webView(_ webView: UIWebView, shouldStartLoadWith request: URLRequest, navigationType: UIWebViewNavigationType) -> Bool {
+        if navigationType == UIWebViewNavigationType.linkClicked {
+            if let url = request.url {
+                UIApplication.shared.openURL(url)
+            }
+            return false
+        }
+        return true
+    }
+}
+
 extension EpisodesTableViewController:FilterSelectionProtocol {
     func filterButtonTapped() {
         
         let alert = UIAlertController(title: "Show", message: nil, preferredStyle: .actionSheet)
+        
+        alert.addAction(UIAlertAction(title: EpisodesFilter.about.text, style: .default, handler: { action in
+            self.filterTypeSelected = .about
+            self.showAbout()
+        }))
+        
+        alert.addAction(UIAlertAction(title: EpisodesFilter.clips.text, style: .default, handler: { action in
+            self.filterTypeSelected = .clips
+            self.retrieveClips()
+        }))
         
         alert.addAction(UIAlertAction(title: EpisodesFilter.downloaded.text, style: .default, handler: { action in
             self.filterTypeSelected = .downloaded
@@ -524,11 +603,6 @@ extension EpisodesTableViewController:FilterSelectionProtocol {
         alert.addAction(UIAlertAction(title: EpisodesFilter.allEpisodes.text, style: .default, handler: { action in
             self.filterTypeSelected = .allEpisodes
             self.reloadEpisodeData()
-        }))
-        
-        alert.addAction(UIAlertAction(title: EpisodesFilter.clips.text, style: .default, handler: { action in
-            self.filterTypeSelected = .clips
-            self.retrieveClips()
         }))
         
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))

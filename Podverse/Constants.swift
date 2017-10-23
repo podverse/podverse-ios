@@ -235,6 +235,7 @@ enum ClipFilter: String {
 }
 
 enum EpisodesFilter: String {
+    case about = "About"
     case downloaded = "Downloaded"
     case allEpisodes = "All Episodes"
     case clips = "Clips"
@@ -242,6 +243,8 @@ enum EpisodesFilter: String {
     var text:String {
         get {
             switch self {
+            case .about:
+                return "About"
             case .downloaded:
                 return "Downloaded"
             case .allEpisodes:

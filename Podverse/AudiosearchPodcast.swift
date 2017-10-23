@@ -18,9 +18,7 @@ class AudiosearchPodcast {
     var imageUrl: String?
     var network: String?
     var rssUrl: String?
-    var scFeed: String?
     var title: String?
-    var webProfiles: String?
     
     static func convertJSONToAudiosearchPodcast (_ json: AnyObject) -> AudiosearchPodcast? {
         let podcast = AudiosearchPodcast()
@@ -60,9 +58,8 @@ class AudiosearchPodcast {
         }
         
         podcast.rssUrl = json["rss_url"] as? String
-        podcast.scFeed = json["sc_feed"] as? String
+        
         podcast.title = json["title"] as? String
-        podcast.webProfiles = json["web_profiles"] as? String
         
         return podcast
     }
