@@ -62,6 +62,8 @@ class AudiosearchPodcastViewController: PVViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        self.title = "Preview"
+        
         self.filterTypeSelected = self.filterTypeOverride
         self.sortingTypeSelected = .topWeek
         
@@ -146,18 +148,43 @@ class AudiosearchPodcastViewController: PVViewController {
                 
                 self.webView.delegate = self
                 
-                if var summary = podcast.description {
+                var htmlString = ""
+                
+                if let title = podcast.title {
+                    htmlString += "<strong>" + title + "</strong>"
+                    htmlString += "<br><br>"
+                }
+                
+                if let categories = podcast.categories {
+                    htmlString += "<i>" + categories + "</i>"
+                    htmlString += "<br><br>"
+                }
+                
+//                if let hosts = podcast.hosts {
+//                    htmlString += "Hosts: " + hosts
+//                    htmlString += "<br><br>"
+//                }
+//
+//                if let network = podcast.network {
+//                    htmlString += "Network: " + network
+//                    htmlString += "<br><br>"
+//                }
+                
+                if let description = podcast.description {
                     
-                    if summary.trimmingCharacters(in: .whitespacesAndNewlines).characters.count == 0 {
-                        summary += kNoPodcastAboutMessage
-                        self.webView.loadHTMLString(summary.formatHtmlString(isWhiteBg: true), baseURL: nil)
+                    if description.trimmingCharacters(in: .whitespacesAndNewlines).characters.count == 0 {
+                        htmlString += kNoPodcastAboutMessage
                     } else {
-                        // add linebreaks to account for the NowPlayingBar on the bottom of the screen
-                        summary += "<br><br>"
-                        self.webView.loadHTMLString(summary.formatHtmlString(isWhiteBg: true), baseURL: nil)
+                        htmlString += description
                     }
                     
+                    htmlString += "<br><br>"
+                    
                 }
+                
+                htmlString += "<br><br>" // add extra line breaks so NowPlayingBar doesn't cover the about text
+                
+                self.webView.loadHTMLString(htmlString.formatHtmlString(isWhiteBg: true), baseURL: nil)
                 
                 if self.filterTypeSelected == .about {
                     self.showAbout()
