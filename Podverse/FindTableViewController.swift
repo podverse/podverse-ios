@@ -14,7 +14,7 @@ class FindTableViewController: PVViewController {
     
     let reachability = PVReachability.shared
     
-    let findSearchArray = ["Search", "Add Podcast by RSS"]
+    let findSearchArray = ["Search", "Add Podcast by RSS", "Browse by Category", "Browse by Network"]
     
     var podcastVC:PodcastsTableViewController? {
         get {
@@ -30,23 +30,7 @@ class FindTableViewController: PVViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
     }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
     
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
 }
 
 extension FindTableViewController:UITableViewDelegate, UITableViewDataSource {
@@ -77,6 +61,12 @@ extension FindTableViewController:UITableViewDelegate, UITableViewDataSource {
         if indexPath.section == 0 {
             if indexPath.row == 0 {
                 self.performSegue(withIdentifier: "Search for Podcasts", sender: tableView)
+            }
+            else if indexPath.section == 1 {
+                self.performSegue(withIdentifier: "Browse by Category", sender: tableView)
+            }
+            else if indexPath.section == 2 {
+                self.performSegue(withIdentifier: "Browse by Network", sender: tableView)
             }
             else {
                 if !checkForConnectivity() {

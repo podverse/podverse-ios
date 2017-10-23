@@ -227,6 +227,14 @@ extension PodcastsTableViewController {
     
     override func podcastDeleted(_ notification:Notification) {
         super.podcastDeleted(notification)
+        
+        // Make sure subscribedPodcastsArray is up to date. The app may crash if the tableView row count becomes inaccurate.
+        self.subscribedPodcastsArray = CoreDataHelper.fetchEntities(className:"Podcast", predicate: nil, moc:moc) as! [Podcast]
+        
+        if self.subscribedPodcastsArray.count < 1 {
+            self.tableView.reloadData()
+        }
+        
         if let feedUrl = notification.userInfo?["feedUrl"] as? String, let index = self.subscribedPodcastsArray.index(where: { $0.feedUrl == feedUrl }) {
             DispatchQueue.main.async {
                 self.tableView.deleteRows(at: [IndexPath(row: index, section: 0)], with: .automatic)

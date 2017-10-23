@@ -62,7 +62,7 @@ class AudiosearchPodcastViewController: PVViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.title = "Preview"
+        self.title = "Preview Page"
         
         self.filterTypeSelected = self.filterTypeOverride
         self.sortingTypeSelected = .topWeek
@@ -76,6 +76,10 @@ class AudiosearchPodcastViewController: PVViewController {
         
         self.clipQueryActivityIndicator.hidesWhenStopped = true
         self.clipQueryMessage.isHidden = true
+        
+        var isSubscribed = PVSubscriber.checkIfSubscribed(feedUrlString: self.feedUrl)
+        
+        loadSubscribeButton(isSubscribed)
         
         loadPodcastData()
         
@@ -91,11 +95,20 @@ class AudiosearchPodcastViewController: PVViewController {
     }
     
     @IBAction func subscribeTapped(_ sender: Any) {
-        print("TODO: subscribe to podcast")
+        
+        var isSubscribed = PVSubscriber.checkIfSubscribed(feedUrlString: self.feedUrl)
+        
+        if isSubscribed {
+            PVDeleter.deletePodcast(podcastId: nil, feedUrl: self.feedUrl)
+        } else {
+            PVSubscriber.subscribeToPodcast(feedUrlString: self.feedUrl)
+        }
+        
+        loadSubscribeButton(!isSubscribed)
+        
     }
     
     func loadPodcastData() {
-        
         if let id = self.audiosearchId {
             showPodcastHeaderActivity()
             
@@ -105,7 +118,14 @@ class AudiosearchPodcastViewController: PVViewController {
             })
 
         }
-        
+    }
+    
+    func loadSubscribeButton(_ isSubscribed:Bool) {
+        if isSubscribed {
+            self.headerSubscribe.setTitle("Unsubscribe", for: .normal)
+        } else {
+            self.headerSubscribe.setTitle("Subscribe", for: .normal)
+        }
     }
     
     func showPodcastHeaderActivity() {
