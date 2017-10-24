@@ -68,7 +68,7 @@ class AudiosearchPodcast {
         
         if let id = id {
             
-            AudioSearchClientSwift.retrievePodcast(id: id, onCompletion: { serviceResponse in
+            AudioSearchClientSwift.retrievePodcast(id: id, { serviceResponse in
                 
                 if let response = serviceResponse.0, let podcast = AudiosearchPodcast.convertJSONToAudiosearchPodcast(response) {
                     completion(podcast)

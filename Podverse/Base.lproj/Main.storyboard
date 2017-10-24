@@ -791,11 +791,11 @@
                                 <rect key="frame" x="0.0" y="64" width="375" height="554"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="Cell" rowHeight="92" id="k7P-Gx-24r">
-                                        <rect key="frame" x="0.0" y="28" width="375" height="92"/>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="Cell" rowHeight="44" id="k7P-Gx-24r">
+                                        <rect key="frame" x="0.0" y="28" width="375" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="k7P-Gx-24r" id="Tmx-s2-mrm">
-                                            <rect key="frame" x="0.0" y="0.0" width="375" height="92"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                         </tableViewCellContentView>
                                     </tableViewCell>
@@ -818,6 +818,7 @@
                     <connections>
                         <outlet property="tableView" destination="rZ5-gI-Z44" id="H80-rd-y9W"/>
                         <segue destination="m7o-YY-e40" kind="show" identifier="Search for Podcasts" id="Yxr-Hr-TVv"/>
+                        <segue destination="W0q-iR-HPv" kind="show" identifier="Show Browse Groups" id="0Wj-IC-NBe"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="gxH-qg-89B" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -925,6 +926,76 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="5Om-Qs-rRw" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1681" y="-313"/>
+            <point key="canvasLocation" x="2148" y="-745"/>
+        </scene>
+        <!--Find Browse Groups View Controller-->
+        <scene sceneID="x8b-jY-hBJ">
+            <objects>
+                <viewController id="W0q-iR-HPv" customClass="FindBrowseGroupsViewController" customModule="Podverse" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="8c5-7u-egg"/>
+                        <viewControllerLayoutGuide type="bottom" id="cX5-Zp-91a"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="UsY-Va-jwW">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="dE8-Uq-w4t">
+                                <rect key="frame" x="0.0" y="64" width="375" height="554"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <prototypes>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="cell" id="eNd-0S-Srp">
+                                        <rect key="frame" x="0.0" y="28" width="375" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="eNd-0S-Srp" id="j4G-lZ-MGy">
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                </prototypes>
+                                <connections>
+                                    <outlet property="dataSource" destination="W0q-iR-HPv" id="xWH-L5-szT"/>
+                                    <outlet property="delegate" destination="W0q-iR-HPv" id="oCY-ey-RmS"/>
+                                </connections>
+                            </tableView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="dE8-Uq-w4t" firstAttribute="top" secondItem="8c5-7u-egg" secondAttribute="bottom" id="1TJ-lS-eky"/>
+                            <constraint firstItem="dE8-Uq-w4t" firstAttribute="leading" secondItem="UsY-Va-jwW" secondAttribute="leading" id="FYm-tG-Sjr"/>
+                            <constraint firstAttribute="trailing" secondItem="dE8-Uq-w4t" secondAttribute="trailing" id="a7t-vo-jzu"/>
+                            <constraint firstItem="cX5-Zp-91a" firstAttribute="top" secondItem="dE8-Uq-w4t" secondAttribute="bottom" id="nnG-du-RAj"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="tableView" destination="dE8-Uq-w4t" id="xcS-hc-kIV"/>
+                        <segue destination="30W-MM-Uym" kind="show" identifier="Show Browse Podcasts" id="9QQ-Gp-4oz"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="IJw-zx-F3i" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2148" y="-54.422788605697157"/>
+        </scene>
+        <!--Find Browse Podcasts View Controller-->
+        <scene sceneID="1zK-zc-Mut">
+            <objects>
+                <viewController id="30W-MM-Uym" customClass="FindBrowsePodcastsViewController" customModule="Podverse" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="Cpe-dI-brC"/>
+                        <viewControllerLayoutGuide type="bottom" id="kLJ-Vt-fY9"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="1r6-vy-cBG">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                    <connections>
+                        <segue destination="W0q-iR-HPv" kind="show" identifier="Show Browse Groups" id="Mm5-i2-owD"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Wjj-Rr-JT4" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="3078" y="-54"/>
         </scene>
         <!--Audiosearch Podcast View Controller-->
         <scene sceneID="Aqj-WK-IPL">
@@ -1154,7 +1225,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="MYc-uG-xw1" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2613.5999999999999" y="-313.49325337331339"/>
+            <point key="canvasLocation" x="3078" y="-745"/>
         </scene>
         <!--Episodes Table View Controller-->
         <scene sceneID="VYj-C9-p5k">
@@ -1881,7 +1952,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="fGB-Qi-zBQ" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="5007" y="-707"/>
+            <point key="canvasLocation" x="3991" y="-1704"/>
         </scene>
         <!--Make Clip-->
         <scene sceneID="ze6-CL-MaB">
@@ -2134,7 +2205,7 @@
                     </connections>
                 </panGestureRecognizer>
             </objects>
-            <point key="canvasLocation" x="5866" y="-707"/>
+            <point key="canvasLocation" x="4850" y="-1704"/>
         </scene>
         <!--Make Clip-->
         <scene sceneID="5Vm-Nu-AZd">
@@ -2289,7 +2360,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="KqU-qJ-MKr" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="6759" y="-707"/>
+            <point key="canvasLocation" x="5743" y="-1704"/>
         </scene>
         <!--Media Player View Controller-->
         <scene sceneID="UQ2-yh-9RT">
@@ -2535,7 +2606,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="i6M-Yi-mpb" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="5418" y="-1479"/>
+            <point key="canvasLocation" x="4402" y="-2476"/>
         </scene>
         <!--Playlists-->
         <scene sceneID="WnP-eH-wLR">
@@ -3059,7 +3130,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="q9j-4Z-vhy" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="6319" y="-1486"/>
+            <point key="canvasLocation" x="5303" y="-2483"/>
         </scene>
         <!--About Playing Item View Controller-->
         <scene sceneID="LYP-TJ-nMV">
@@ -3094,7 +3165,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="UME-eU-Cea" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="7186" y="-1486"/>
+            <point key="canvasLocation" x="6170" y="-2483"/>
         </scene>
     </scenes>
     <resources>
@@ -3108,6 +3179,7 @@
         <image name="banner" width="337" height="61"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="zre-Be-w3d"/>
+        <segue reference="UX7-d9-2wT"/>
+        <segue reference="0Wj-IC-NBe"/>
     </inferredMetricsTieBreakers>
 </document>

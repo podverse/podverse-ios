@@ -17,9 +17,6 @@ class FindSearchTableViewController: PVViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        AudioSearchClientSwift.getAudiosearchAccessToken()
-        
         tableView.delegate = self
         tableView.dataSource = self
         searchBar.delegate = self
