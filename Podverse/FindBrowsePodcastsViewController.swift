@@ -23,12 +23,15 @@ class FindBrowsePodcastsViewController: PVViewController {
         var params = Dictionary<String,String>()
         
         if let categoryName = categoryName {
-            params["filters[category.name]"] = categoryName
+            params["filters[categories.name]"] = categoryName
         } else if let networkName = networkName {
             params["filters[network.name]"] = networkName
         }
         
-        AudioSearchClientSwift.search(query: "show", params: params, type: "shows") { (serviceResponse) in
+        params["sort_by"] = "buzz_score"
+        params["sort_order"] = "desc"
+        
+        AudioSearchClientSwift.search(query: "*", params: params, type: "shows") { (serviceResponse) in
             
             self.podcasts.removeAll()
             
@@ -71,6 +74,10 @@ extension FindBrowsePodcastsViewController: UITableViewDataSource, UITableViewDe
         return self.groupTitle
     }
     
+    func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 96.5
+    }
+    
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 96.5
     }
@@ -82,15 +89,15 @@ extension FindBrowsePodcastsViewController: UITableViewDataSource, UITableViewDe
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = self.tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! PodcastSearchResultTableViewCell
         
-//        let podcast = self.podcasts[indexPath.row]
-//
-//        cell.title.text = podcast.title
-//        cell.network.text = podcast.network
-//        cell.categories.text = podcast.categories
-//
-//        cell.pvImage.image = Podcast.retrievePodcastImage(podcastImageURLString: podcast.imageThumbUrl, feedURLString: podcast.rssUrl, managedObjectID: nil, completion: { _ in
-//            cell.pvImage.sd_setImage(with: URL(string: podcast.imageThumbUrl ?? ""), placeholderImage: #imageLiteral(resourceName: "PodverseIcon"))
-//        })
+        let podcast = self.podcasts[indexPath.row]
+
+        cell.title.text = podcast.title
+        cell.network.text = podcast.network
+        cell.categories.text = podcast.categories
+
+        cell.pvImage.image = Podcast.retrievePodcastImage(podcastImageURLString: podcast.imageThumbUrl, feedURLString: podcast.rssUrl, managedObjectID: nil, completion: { _ in
+            cell.pvImage.sd_setImage(with: URL(string: podcast.imageThumbUrl ?? ""), placeholderImage: #imageLiteral(resourceName: "PodverseIcon"))
+        })
         
         return cell
     }
@@ -101,9 +108,25 @@ extension FindBrowsePodcastsViewController: UITableViewDataSource, UITableViewDe
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == "Show Browse Groups", let findBrowseGroupsVC = segue.destination as? FindBrowseGroupsViewController {
-            // Do stuff
+        
+        if segue.identifier == "Show Audiosearch Podcast About" {
+            if let audiosearchPodcastVC = segue.destination as? AudiosearchPodcastViewController, let indexPath = self.tableView.indexPathForSelectedRow, indexPath.row < self.podcasts.count {
+                let podcast = podcasts[indexPath.row]
+                audiosearchPodcastVC.audiosearchId = podcast.id
+                audiosearchPodcastVC.feedUrl = podcast.rssUrl
+                audiosearchPodcastVC.filterTypeOverride = .about
+            }
         }
+        
+        if segue.identifier == "Show Audiosearch Podcast Clips" {
+            if let audiosearchPodcastVC = segue.destination as? AudiosearchPodcastViewController, let indexPath = self.tableView.indexPathForSelectedRow, indexPath.row < self.podcasts.count {
+                let podcast = podcasts[indexPath.row]
+                audiosearchPodcastVC.audiosearchId = podcast.id
+                audiosearchPodcastVC.feedUrl = podcast.rssUrl
+                audiosearchPodcastVC.filterTypeOverride = .clips
+            }
+        }
+        
     }
     
 }

@@ -991,13 +991,59 @@
                                 <rect key="frame" x="0.0" y="64" width="375" height="554"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="cell" id="KBE-pk-ye2" customClass="PodcastSearchResultTableViewCell" customModule="Podverse" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="28" width="375" height="44"/>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="cell" rowHeight="96" id="KBE-pk-ye2" customClass="PodcastSearchResultTableViewCell" customModule="Podverse" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="28" width="375" height="96"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="KBE-pk-ye2" id="Npt-1U-hEH">
-                                            <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="95.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="FFX-gJ-b51">
+                                                    <rect key="frame" x="0.0" y="0.0" width="96" height="96"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="height" constant="96" id="TeS-bi-G7T"/>
+                                                        <constraint firstAttribute="width" constant="96" id="b3n-Yo-lGo"/>
+                                                    </constraints>
+                                                </imageView>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Podcast Title" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rwf-dY-5gp">
+                                                    <rect key="frame" x="108" y="7" width="259" height="19.5"/>
+                                                    <fontDescription key="fontDescription" type="system" weight="medium" pointSize="16"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Categories" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="PcD-iZ-BI8">
+                                                    <rect key="frame" x="108" y="70" width="259" height="17"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                                    <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Network" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="w5O-qu-ova">
+                                                    <rect key="frame" x="108" y="49" width="259" height="17"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                                    <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="w5O-qu-ova" firstAttribute="trailing" secondItem="Npt-1U-hEH" secondAttribute="trailingMargin" id="6Lu-vv-t49"/>
+                                                <constraint firstItem="FFX-gJ-b51" firstAttribute="top" secondItem="Npt-1U-hEH" secondAttribute="top" id="8xc-dm-Dem"/>
+                                                <constraint firstItem="rwf-dY-5gp" firstAttribute="leading" secondItem="FFX-gJ-b51" secondAttribute="trailing" constant="12" id="FlF-fn-3eQ"/>
+                                                <constraint firstItem="w5O-qu-ova" firstAttribute="leading" secondItem="FFX-gJ-b51" secondAttribute="trailing" constant="12" id="J8u-2B-bov"/>
+                                                <constraint firstItem="PcD-iZ-BI8" firstAttribute="leading" secondItem="FFX-gJ-b51" secondAttribute="trailing" constant="12" id="M5b-Ot-ORP"/>
+                                                <constraint firstItem="FFX-gJ-b51" firstAttribute="leading" secondItem="Npt-1U-hEH" secondAttribute="leading" id="Ngl-7j-UnV"/>
+                                                <constraint firstAttribute="bottomMargin" secondItem="PcD-iZ-BI8" secondAttribute="bottom" constant="0.5" id="RE5-Nb-XGF"/>
+                                                <constraint firstItem="PcD-iZ-BI8" firstAttribute="trailing" secondItem="Npt-1U-hEH" secondAttribute="trailingMargin" id="dkP-sV-PWc"/>
+                                                <constraint firstAttribute="trailing" secondItem="rwf-dY-5gp" secondAttribute="trailing" constant="8" id="f8i-yh-2Up"/>
+                                                <constraint firstItem="PcD-iZ-BI8" firstAttribute="top" secondItem="w5O-qu-ova" secondAttribute="bottom" constant="4" id="jSL-hM-Yz2"/>
+                                                <constraint firstItem="rwf-dY-5gp" firstAttribute="top" secondItem="Npt-1U-hEH" secondAttribute="top" constant="7" id="unh-qv-ggl"/>
+                                            </constraints>
                                         </tableViewCellContentView>
+                                        <connections>
+                                            <outlet property="categories" destination="PcD-iZ-BI8" id="top-6x-xzP"/>
+                                            <outlet property="network" destination="w5O-qu-ova" id="OXf-GT-ivw"/>
+                                            <outlet property="pvImage" destination="FFX-gJ-b51" id="Q6d-bD-WyU"/>
+                                            <outlet property="title" destination="rwf-dY-5gp" id="N4w-b4-h90"/>
+                                        </connections>
                                     </tableViewCell>
                                 </prototypes>
                                 <connections>
@@ -1016,6 +1062,8 @@
                     </view>
                     <connections>
                         <outlet property="tableView" destination="Hqi-My-7gW" id="tci-jQ-Cd7"/>
+                        <segue destination="1hU-oK-T3A" kind="show" identifier="Show Audiosearch Podcast About" id="7y1-hz-W8U"/>
+                        <segue destination="1hU-oK-T3A" kind="show" identifier="Show Audiosearch Podcast Clips" id="SU9-3d-tZS"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Wjj-Rr-JT4" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -3204,6 +3252,6 @@
         <image name="banner" width="337" height="61"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="UX7-d9-2wT"/>
+        <segue reference="SU9-3d-tZS"/>
     </inferredMetricsTieBreakers>
 </document>
