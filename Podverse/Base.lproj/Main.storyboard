@@ -2448,7 +2448,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="XV8-p8-n0p">
-                                <rect key="frame" x="-1" y="168" width="377" height="328"/>
+                                <rect key="frame" x="-1" y="156" width="377" height="340"/>
                             </containerView>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="xgo-aW-bmE">
                                 <rect key="frame" x="0.0" y="567" width="375" height="100"/>
@@ -2547,7 +2547,7 @@
                                 </constraints>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="i1e-q4-aop">
-                                <rect key="frame" x="0.0" y="32" width="375" height="96"/>
+                                <rect key="frame" x="0.0" y="20" width="375" height="96"/>
                                 <subviews>
                                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="dKh-qP-chs">
                                         <rect key="frame" x="279" y="0.0" width="96" height="96"/>
@@ -2568,12 +2568,22 @@
                                         <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                         <nil key="highlightedColor"/>
                                     </label>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="phg-dO-vOx">
+                                        <rect key="frame" x="0.0" y="0.0" width="375" height="1"/>
+                                        <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="0.5" id="70e-ze-XlO"/>
+                                        </constraints>
+                                    </view>
                                 </subviews>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="96" id="4aZ-KU-lMM"/>
+                                    <constraint firstItem="phg-dO-vOx" firstAttribute="top" secondItem="i1e-q4-aop" secondAttribute="top" id="53s-Cw-6fB"/>
                                     <constraint firstItem="dKh-qP-chs" firstAttribute="leading" secondItem="fJD-IK-w03" secondAttribute="trailing" constant="12" id="9pQ-nd-pfU"/>
+                                    <constraint firstAttribute="trailing" secondItem="phg-dO-vOx" secondAttribute="trailing" id="JS0-2f-b1z"/>
                                     <constraint firstItem="dKh-qP-chs" firstAttribute="top" secondItem="i1e-q4-aop" secondAttribute="top" id="Jz7-nT-DSD"/>
+                                    <constraint firstItem="phg-dO-vOx" firstAttribute="leading" secondItem="i1e-q4-aop" secondAttribute="leading" id="KhR-KL-y2B"/>
                                     <constraint firstItem="fJD-IK-w03" firstAttribute="top" secondItem="i1e-q4-aop" secondAttribute="top" constant="8" id="MVM-fh-9ib"/>
                                     <constraint firstItem="9El-7Y-kCh" firstAttribute="top" secondItem="fJD-IK-w03" secondAttribute="bottom" constant="8" id="aqB-El-VFv"/>
                                     <constraint firstItem="dKh-qP-chs" firstAttribute="leading" secondItem="9El-7Y-kCh" secondAttribute="trailing" constant="12" id="fKo-mp-tbE"/>
@@ -2601,7 +2611,7 @@
                                 </connections>
                             </slider>
                             <pageControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" numberOfPages="2" translatesAutoresizingMaskIntoConstraints="NO" id="09J-Zt-eRz">
-                                <rect key="frame" x="168" y="128" width="40" height="40"/>
+                                <rect key="frame" x="168" y="116" width="40" height="40"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="40" id="PhD-UC-xnR"/>
                                     <constraint firstAttribute="height" constant="40" id="chr-Fj-hub"/>
@@ -2652,7 +2662,7 @@
                             <constraint firstItem="09J-Zt-eRz" firstAttribute="centerX" secondItem="N8d-St-BhC" secondAttribute="centerX" id="pRP-6w-IJD"/>
                             <constraint firstAttribute="trailing" secondItem="Gf5-u2-hI0" secondAttribute="trailing" constant="12" id="uxV-aU-wdf"/>
                             <constraint firstItem="uTA-rm-Ib9" firstAttribute="top" secondItem="Yv3-Oc-a1n" secondAttribute="bottom" constant="4" id="wzP-Vp-tqm"/>
-                            <constraint firstItem="i1e-q4-aop" firstAttribute="top" secondItem="d5T-eo-vSh" secondAttribute="bottom" constant="12" id="zpt-ga-iIB"/>
+                            <constraint firstItem="i1e-q4-aop" firstAttribute="top" secondItem="d5T-eo-vSh" secondAttribute="bottom" id="zpt-ga-iIB"/>
                         </constraints>
                     </view>
                     <connections>
@@ -2679,7 +2689,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="i6M-Yi-mpb" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="4402" y="-2476"/>
+            <point key="canvasLocation" x="4400.8000000000002" y="-2476.0119940029986"/>
         </scene>
         <!--Playlists-->
         <scene sceneID="WnP-eH-wLR">
