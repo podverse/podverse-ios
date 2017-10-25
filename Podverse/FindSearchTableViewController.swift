@@ -15,6 +15,10 @@ class FindSearchTableViewController: PVViewController {
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var searchBar: UISearchBar!
     
+    override func viewDidLoad() {
+        self.searchBar.delegate = self
+    }
+    
 }
 
 extension FindSearchTableViewController: UITableViewDataSource, UITableViewDelegate {
