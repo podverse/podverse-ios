@@ -925,7 +925,6 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="5Om-Qs-rRw" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1681" y="-313"/>
             <point key="canvasLocation" x="2148" y="-745"/>
         </scene>
         <!--Find Browse Groups View Controller-->
@@ -987,15 +986,41 @@
                     <view key="view" contentMode="scaleToFill" id="1r6-vy-cBG">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="Hqi-My-7gW">
+                                <rect key="frame" x="0.0" y="64" width="375" height="554"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <prototypes>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="cell" id="KBE-pk-ye2" customClass="PodcastSearchResultTableViewCell" customModule="Podverse" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="28" width="375" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="KBE-pk-ye2" id="Npt-1U-hEH">
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                </prototypes>
+                                <connections>
+                                    <outlet property="dataSource" destination="30W-MM-Uym" id="jDZ-Ss-ubD"/>
+                                    <outlet property="delegate" destination="30W-MM-Uym" id="Ico-w1-qUR"/>
+                                </connections>
+                            </tableView>
+                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstAttribute="trailing" secondItem="Hqi-My-7gW" secondAttribute="trailing" id="734-72-19q"/>
+                            <constraint firstItem="Hqi-My-7gW" firstAttribute="top" secondItem="Cpe-dI-brC" secondAttribute="bottom" id="Bwl-jN-X4h"/>
+                            <constraint firstItem="Hqi-My-7gW" firstAttribute="leading" secondItem="1r6-vy-cBG" secondAttribute="leading" id="jJT-sC-idK"/>
+                            <constraint firstItem="kLJ-Vt-fY9" firstAttribute="top" secondItem="Hqi-My-7gW" secondAttribute="bottom" id="ySg-Zy-S9r"/>
+                        </constraints>
                     </view>
                     <connections>
-                        <segue destination="W0q-iR-HPv" kind="show" identifier="Show Browse Groups" id="Mm5-i2-owD"/>
+                        <outlet property="tableView" destination="Hqi-My-7gW" id="tci-jQ-Cd7"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Wjj-Rr-JT4" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3078" y="-54"/>
+            <point key="canvasLocation" x="3077.5999999999999" y="-54.422788605697157"/>
         </scene>
         <!--Audiosearch Podcast View Controller-->
         <scene sceneID="Aqj-WK-IPL">
@@ -3180,6 +3205,5 @@
     </resources>
     <inferredMetricsTieBreakers>
         <segue reference="UX7-d9-2wT"/>
-        <segue reference="0Wj-IC-NBe"/>
     </inferredMetricsTieBreakers>
 </document>

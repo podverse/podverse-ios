@@ -77,4 +77,33 @@ extension FindBrowseGroupsViewController:UITableViewDelegate, UITableViewDataSou
         return cell
     }
     
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let sender = self.shouldLoadCategories ? "Categories" : "Networks"
+        self.performSegue(withIdentifier: "Show Browse Podcasts", sender: sender)
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "Show Browse Podcasts", let findBrowsePodcastsVC = segue.destination as? FindBrowsePodcastsViewController, let indexPath = self.tableView.indexPathForSelectedRow {
+            
+            if let sender = sender as? String, sender == "Categories" {
+                if indexPath.row < self.categories.count {
+                    let category = self.categories[indexPath.row]
+                    if let name = category.name {
+                        findBrowsePodcastsVC.groupTitle = name
+                        findBrowsePodcastsVC.categoryName = name
+                    }
+                }
+            } else {
+                if indexPath.row < self.networks.count {
+                    let network = self.networks[indexPath.row]
+                    if let name = network.name {
+                        findBrowsePodcastsVC.groupTitle = name
+                        findBrowsePodcastsVC.networkName = name
+                    }
+                }
+            }
+            
+        }
+    }
+    
 }

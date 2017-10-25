@@ -9,23 +9,11 @@
 import UIKit
 
 class FindSearchTableViewController: PVViewController {
+    
+    var searchResults = [AudiosearchPodcast]()
 
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var searchBar: UISearchBar!
-    
-    var searchResults = [AudiosearchPodcast]()
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        tableView.delegate = self
-        tableView.dataSource = self
-        searchBar.delegate = self
-    }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
     
 }
 
@@ -36,13 +24,13 @@ extension FindSearchTableViewController: UITableViewDataSource, UITableViewDeleg
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return searchResults.count
+        return self.searchResults.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! PodcastSearchResultTableViewCell
         
-        let podcast = searchResults[indexPath.row]
+        let podcast = self.searchResults[indexPath.row]
         
         cell.title.text = podcast.title
         cell.network.text = podcast.network
@@ -56,38 +44,8 @@ extension FindSearchTableViewController: UITableViewDataSource, UITableViewDeleg
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let podcast = searchResults[indexPath.row]
-        if let feedUrl = podcast.rssUrl {
-            var isSubscribed = false
-            
-            if let _ = Podcast.podcastForFeedUrl(feedUrlString: feedUrl) {
-                isSubscribed = true
-            }
-            
-            let podcastActions = UIAlertController(title: "", message: "", preferredStyle: .actionSheet)
-            
-            if isSubscribed == true {
-                podcastActions.addAction(UIAlertAction(title: "Unsubscribe", style: .default, handler: { action in
-                    PVDeleter.deletePodcast(podcastId: nil, feedUrl: feedUrl)
-                }))
-            } else {
-                podcastActions.addAction(UIAlertAction(title: "Subscribe", style: .default, handler: { action in
-                    PVSubscriber.subscribeToPodcast(feedUrlString: feedUrl)
-                }))
-            }
-            
-            podcastActions.addAction(UIAlertAction(title: "About", style: .default, handler: { action in
-                self.performSegue(withIdentifier: "Show Audiosearch Podcast About", sender: nil)
-            }))
-            
-            podcastActions.addAction(UIAlertAction(title: "Clips", style: .default, handler: { action in
-                self.performSegue(withIdentifier: "Show Audiosearch Podcast Clips", sender: nil)
-            }))
-            
-            podcastActions.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
-            
-            self.present(podcastActions, animated: true, completion: nil)
-        }
+        let podcast = self.searchResults[indexPath.row]
+        AudiosearchPodcast.showAudiosearchPodcastActions(podcast: podcast, vc: self)
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
