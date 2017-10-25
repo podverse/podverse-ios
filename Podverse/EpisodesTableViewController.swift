@@ -19,7 +19,6 @@ class EpisodesTableViewController: PVViewController {
         didSet {
             self.resetClipQuery()
             self.tableViewHeader.filterTitle = self.filterTypeSelected.text
-            UserDefaults.standard.set(filterTypeSelected.text, forKey: kEpisodesTableFilterType)
             
             if filterTypeSelected == .clips {
                 self.tableViewHeader.sortingButton.isHidden = false
@@ -71,11 +70,7 @@ class EpisodesTableViewController: PVViewController {
         self.clipQueryActivityIndicator.hidesWhenStopped = true
         self.clipQueryMessage.isHidden = true
         
-        if let savedFilterType = UserDefaults.standard.value(forKey: kEpisodesTableFilterType) as? String, let episodesFilterType = EpisodesFilter(rawValue: savedFilterType) {
-            self.filterTypeSelected = episodesFilterType
-        } else {
-            self.filterTypeSelected = .downloaded
-        }
+        self.filterTypeSelected = .downloaded
         
         if let savedSortingType = UserDefaults.standard.value(forKey: kEpisodesTableSortingType) as? String, let episodesSortingType = ClipSorting(rawValue: savedSortingType) {
             self.sortingTypeSelected = episodesSortingType
