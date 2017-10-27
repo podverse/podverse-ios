@@ -18,13 +18,11 @@ extension Notification.Name {
 }
 
 enum PlayingSpeed {
-    case quarter, half, threeQuarts, regular, timeAndQuarter, timeAndHalf, double, doubleAndHalf
+    case half, threeQuarts, regular, timeAndQuarter, timeAndHalf, double
     
     var speedText:String {
         get {
             switch self {
-            case .quarter:
-                return ".25x"
             case .half:
                 return ".5x"
             case .threeQuarts:
@@ -37,8 +35,6 @@ enum PlayingSpeed {
                 return "1.5x"
             case .double:
                 return "2x"
-            case .doubleAndHalf:
-                return "2.5x"
             }
         }
     }
@@ -46,8 +42,6 @@ enum PlayingSpeed {
     var speedValue:Float {
         get {
             switch self {
-            case .quarter:
-                return 0.25
             case .half:
                 return 0.5
             case .threeQuarts:
@@ -60,11 +54,10 @@ enum PlayingSpeed {
                 return 1.5
             case .double:
                 return 2
-            case .doubleAndHalf:
-                return 2.5
             }
         }
     }
+    
 }
 
 protocol PVMediaPlayerUIDelegate {
