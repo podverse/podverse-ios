@@ -175,7 +175,7 @@ class ClipsListContainerViewController: UIViewController {
             }
         }
         else {
-            self.addNoDataViewWithMessage(message, buttonTitle: buttonTitle, buttonImage: nil, retryPressed: buttonPressed)
+            self.addNoDataViewWithMessage(message, buttonTitle: buttonTitle, buttonImage: nil, retryPressed: buttonPressed, isBlackBg: true)
         }
         
         showNoDataView()

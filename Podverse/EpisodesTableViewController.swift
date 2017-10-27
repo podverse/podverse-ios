@@ -217,7 +217,7 @@ class EpisodesTableViewController: PVViewController {
     }
     
     func reloadEpisodeData() {
-        
+
         self.hideNoDataView()
         self.tableView.isHidden = false
         
@@ -242,7 +242,7 @@ class EpisodesTableViewController: PVViewController {
                 
             } else if self.filterTypeSelected == .allEpisodes {
                 episodesArray = Array(podcast.episodes)
-                
+
                 guard checkForResults(results: episodesArray) else {
                     self.loadNoEpisodesMessage()
                     return
