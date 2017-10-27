@@ -69,7 +69,7 @@ class AudioSearchClientSwift {
     }
     
     static func retrievePodcast(id: Int64, onCompletion: @escaping ServiceResponseAny) -> Void {
-        let urlString = "shows/" + String(id)
+        let urlString = "shows/\(id)"
         if let url = URL(string: urlString, relativeTo: AudiosearchBaseUrl) {
             let req = oauth2.request(forURL: url)
             loader.perform(request: req) { response in
@@ -86,7 +86,7 @@ class AudioSearchClientSwift {
     }
     
     static func retrieveEpisodes(podcastId: String, onCompletion: @escaping ServiceResponseAny) -> Void {
-        let urlString = "shows/" + podcastId + "/episodes"
+        let urlString = "shows/\(podcastId)/episodes"
         if let url = URL(string: urlString, relativeTo: AudiosearchBaseUrl) {
             let req = oauth2.request(forURL: url)
             loader.perform(request: req) { response in
