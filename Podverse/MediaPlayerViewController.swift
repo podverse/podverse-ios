@@ -274,7 +274,7 @@ class MediaPlayerViewController: PVViewController {
     func showAddToPlaylist() {
         
         if !checkForConnectivity() {
-            self.showInternetNeededAlertWithDesciription(message: "You must be connected to the internet to add to playlists.")
+            self.showInternetNeededAlertWithDescription(message: "You must be connected to the internet to add to playlists.")
             return
         }
         
@@ -299,7 +299,7 @@ class MediaPlayerViewController: PVViewController {
     func showMakeClip() {
         
         if !checkForConnectivity() {
-            self.showInternetNeededAlertWithDesciription(message: "You must be connected to the internet to make clips.")
+            self.showInternetNeededAlertWithDescription(message: "You must be connected to the internet to make clips.")
             return
         }
         

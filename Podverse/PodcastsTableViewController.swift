@@ -17,6 +17,7 @@ class PodcastsTableViewController: PVViewController, AutoDownloadProtocol {
     @IBOutlet weak var tableView: UITableView!
     
     let moc = CoreDataHelper.createMOCForThread(threadType: .mainThread)
+    let parsingPodcastsList = ParsingPodcastsList.shared
     let reachability = PVReachability.shared
     let refreshControl = UIRefreshControl()
     var subscribedPodcastsArray = [Podcast]()
@@ -65,9 +66,20 @@ class PodcastsTableViewController: PVViewController, AutoDownloadProtocol {
     }
     
     @objc fileprivate func refreshPodcastFeeds() {
-        if checkForConnectivity() == false && refreshControl.isRefreshing == true {
-            showInternetNeededAlertWithDesciription(message:"Connect to WiFi or cellular data to parse podcast feeds.")
-            self.refreshControl.endRefreshing()
+        
+        if parsingPodcastsList.urls.count > 0 {
+            return
+        }
+        
+        if checkForConnectivity() == false {
+            
+            if refreshControl.isRefreshing == true {
+                showInternetNeededAlertWithDescription(message:"Connect to WiFi or cellular data to parse podcast feeds.")
+                DispatchQueue.main.async {
+                    self.refreshControl.endRefreshing()
+                }
+            }
+            
             return
         }
         
@@ -83,7 +95,10 @@ class PodcastsTableViewController: PVViewController, AutoDownloadProtocol {
             }
         }
 
-        refreshControl.endRefreshing()
+        DispatchQueue.main.async {
+            self.refreshControl.endRefreshing()
+        }
+        
     }
     
     func loadPodcastData() {
@@ -244,9 +259,8 @@ extension PodcastsTableViewController {
     
     func refreshParsingStatus(_ notification:Notification) {
         DispatchQueue.main.async {
-            let podcastList = ParsingPodcastsList.shared
-            let total = podcastList.urls.count
-            let currentItem = podcastList.currentlyParsingItem
+            let total = self.parsingPodcastsList.urls.count
+            let currentItem = self.parsingPodcastsList.currentlyParsingItem
             
             if total > 0 && currentItem < total {
                 self.parseActivityIndicator.startAnimating()
