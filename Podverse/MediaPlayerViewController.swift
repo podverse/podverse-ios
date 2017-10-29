@@ -66,7 +66,10 @@ class MediaPlayerViewController: PVViewController {
         // If not autoplaying, then the pvMediaPlayer.duration should still be accurate, and we can set the clip flags immediately.
         if !pvMediaPlayer.shouldAutoplayOnce && !pvMediaPlayer.shouldAutoplayAlways {
             setupClipFlags()
+        } else if pvMediaPlayer.isItemLoaded && pvMediaPlayer.isInClipTimeRange() {
+            setupClipFlags()
         }
+        
     }
     
     deinit {
