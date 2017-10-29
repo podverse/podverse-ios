@@ -27,6 +27,7 @@ class MediaPlayerViewController: PVViewController {
     @IBOutlet weak var currentTime: UILabel!
     @IBOutlet weak var device: UIButton!
     @IBOutlet weak var duration: UILabel!
+    @IBOutlet weak var episodePubDate: UILabel!
     @IBOutlet weak var episodeTitle: UILabel!
     @IBOutlet weak var image: UIImageView!
     @IBOutlet weak var pageControl: UIPageControl!
@@ -220,8 +221,14 @@ class MediaPlayerViewController: PVViewController {
     
     func populatePlayerInfo() {
         if let item = self.pvMediaPlayer.nowPlayingItem {
-            podcastTitle.text = item.podcastTitle
-            episodeTitle.text = item.episodeTitle
+            self.podcastTitle.text = item.podcastTitle
+            self.episodeTitle.text = item.episodeTitle
+            
+            if let pubDate = item.episodePubDate {
+                self.episodePubDate.text = pubDate.toShortFormatString()
+            } else {
+                self.episodePubDate.text = ""
+            }
             
             image.image = Podcast.retrievePodcastImage(podcastImageURLString: item.podcastImageUrl, feedURLString: item.podcastFeedUrl, managedObjectID: nil, completion: { _ in
                 self.image.sd_setImage(with: URL(string: item.podcastImageUrl ?? ""), placeholderImage: #imageLiteral(resourceName: "PodverseIcon"))
