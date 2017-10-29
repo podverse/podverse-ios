@@ -456,8 +456,9 @@ class MediaPlayerViewController: PVViewController {
             self.startTimeFlagView.isHidden = false
             self.endTimeFlagView.isHidden = self.pvMediaPlayer.nowPlayingItem?.endTime == nil
             
-            self.startTimeLeadingConstraint.constant = (CGFloat(Double(startTime) / dur) * progress.frame.width) - sliderThumbWidthAdjustment
-            self.endTimeLeadingConstraint.constant = (CGFloat(Double(endTime) / dur) * progress.frame.width) - sliderThumbWidthAdjustment
+            // Use UIScreen.main.bounds.width because self.progress.frame.width was giving inconsistent sizes.
+            self.startTimeLeadingConstraint.constant = (CGFloat(Double(startTime) / dur) * UIScreen.main.bounds.width) - sliderThumbWidthAdjustment
+            self.endTimeLeadingConstraint.constant = (CGFloat(Double(endTime) / dur) * UIScreen.main.bounds.width) - sliderThumbWidthAdjustment
         }
         else {
             self.startTimeFlagView.isHidden = true
