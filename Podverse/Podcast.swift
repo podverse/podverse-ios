@@ -102,7 +102,7 @@ class Podcast: NSManagedObject {
      - managedObjectID: The managed object id of the podcast
      - completion: A completion block for the async functionality of fetchng the image from a url
      
-     - Returns: The podcast image that was fetched (Discradable)
+     - Returns: The podcast image that was fetched (Discardable)
      */
     @discardableResult static func retrievePodcastImage(podcastImageURLString:String? = nil, feedURLString:String? = nil, managedObjectID:NSManagedObjectID? = nil, completion:((_ podcastImage: UIImage?) -> Void)? = nil) -> UIImage? {
         
