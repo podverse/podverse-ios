@@ -2447,6 +2447,22 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
+                            <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="SBa-Dx-9rx">
+                                <rect key="frame" x="0.0" y="512" width="2" height="30"/>
+                                <color key="backgroundColor" red="1" green="0.91107144290289366" blue="0.20899878725641041" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="2" id="7O8-w3-u9w"/>
+                                    <constraint firstAttribute="height" constant="30" id="u2u-A5-up8"/>
+                                </constraints>
+                            </view>
+                            <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="c3H-2M-tIc">
+                                <rect key="frame" x="0.0" y="512" width="2" height="30"/>
+                                <color key="backgroundColor" red="1" green="0.91107144289999997" blue="0.20899878729999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="2" id="lYI-ym-pMD"/>
+                                    <constraint firstAttribute="height" constant="30" id="w7V-0W-Zat"/>
+                                </constraints>
+                            </view>
                             <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="XV8-p8-n0p">
                                 <rect key="frame" x="-1" y="156" width="377" height="340"/>
                             </containerView>
@@ -2620,22 +2636,6 @@
                                     <action selector="pageControlAction:" destination="fGh-hH-QQS" eventType="valueChanged" id="YP7-tE-dwL"/>
                                 </connections>
                             </pageControl>
-                            <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="c3H-2M-tIc">
-                                <rect key="frame" x="0.0" y="512" width="2" height="30"/>
-                                <color key="backgroundColor" red="1" green="0.91107144289999997" blue="0.20899878729999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="2" id="lYI-ym-pMD"/>
-                                    <constraint firstAttribute="height" constant="30" id="w7V-0W-Zat"/>
-                                </constraints>
-                            </view>
-                            <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="SBa-Dx-9rx">
-                                <rect key="frame" x="0.0" y="512" width="2" height="30"/>
-                                <color key="backgroundColor" red="1" green="0.91107144290289366" blue="0.20899878725641041" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="2" id="7O8-w3-u9w"/>
-                                    <constraint firstAttribute="height" constant="30" id="u2u-A5-up8"/>
-                                </constraints>
-                            </view>
                         </subviews>
                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
