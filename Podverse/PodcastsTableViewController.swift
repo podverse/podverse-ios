@@ -75,9 +75,7 @@ class PodcastsTableViewController: PVViewController, AutoDownloadProtocol {
             
             if refreshControl.isRefreshing == true {
                 showInternetNeededAlertWithDescription(message:"Connect to WiFi or cellular data to parse podcast feeds.")
-                DispatchQueue.main.async {
-                    self.refreshControl.endRefreshing()
-                }
+                self.refreshControl.endRefreshing()
             }
             
             return
@@ -95,9 +93,7 @@ class PodcastsTableViewController: PVViewController, AutoDownloadProtocol {
             }
         }
 
-        DispatchQueue.main.async {
-            self.refreshControl.endRefreshing()
-        }
+        self.refreshControl.endRefreshing()
         
     }
     
