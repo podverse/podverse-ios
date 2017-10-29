@@ -68,6 +68,7 @@ class PodcastsTableViewController: PVViewController, AutoDownloadProtocol {
     @objc fileprivate func refreshPodcastFeeds() {
         
         if parsingPodcastsList.urls.count > 0 {
+            self.refreshControl.endRefreshing()
             return
         }
         
