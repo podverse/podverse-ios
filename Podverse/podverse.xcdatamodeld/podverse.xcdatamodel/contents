@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="12141" systemVersion="16G29" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="13241" systemVersion="16G29" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="Episode" representedClassName=".Episode" syncable="YES">
         <attribute name="duration" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="fileName" optional="YES" attributeType="String" syncable="YES"/>
@@ -20,6 +20,7 @@
         <attribute name="feedUrl" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="imageData" optional="YES" attributeType="Binary" syncable="YES"/>
         <attribute name="imageThumbData" optional="YES" attributeType="Binary" syncable="YES"/>
+        <attribute name="imageThumbUrl" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="imageUrl" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="itunesImage" optional="YES" attributeType="Binary" syncable="YES"/>
         <attribute name="itunesImageUrl" optional="YES" attributeType="String" syncable="YES"/>
@@ -32,6 +33,6 @@
     </entity>
     <elements>
         <element name="Episode" positionX="-290" positionY="207" width="128" height="225"/>
-        <element name="Podcast" positionX="520" positionY="54" width="128" height="255"/>
+        <element name="Podcast" positionX="520" positionY="54" width="128" height="270"/>
     </elements>
 </model>

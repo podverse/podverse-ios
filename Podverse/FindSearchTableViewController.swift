@@ -13,7 +13,7 @@ class FindSearchTableViewController: PVViewController {
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var searchBar: UISearchBar!
     
-    var searchResults = [PodcastSearchResult]()
+    var searchResults = [AudiosearchPodcast]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -30,17 +30,6 @@ class FindSearchTableViewController: PVViewController {
         // Dispose of any resources that can be recreated.
     }
     
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
 }
 
 extension FindSearchTableViewController: UITableViewDataSource, UITableViewDelegate {
@@ -56,14 +45,14 @@ extension FindSearchTableViewController: UITableViewDataSource, UITableViewDeleg
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! PodcastSearchResultTableViewCell
         
-        let podcastSearchResult = searchResults[indexPath.row]
+        let podcast = searchResults[indexPath.row]
         
-        cell.title.text = podcastSearchResult.title
-        cell.network.text = podcastSearchResult.network
-        cell.categories.text = podcastSearchResult.categories
+        cell.title.text = podcast.title
+        cell.network.text = podcast.network
+        cell.categories.text = podcast.categories
         
-        cell.pvImage.image = Podcast.retrievePodcastImage(podcastImageURLString: podcastSearchResult.imageThumbUrl, feedURLString: podcastSearchResult.rssUrl, managedObjectID: nil, completion: { _ in
-            cell.pvImage.sd_setImage(with: URL(string: podcastSearchResult.imageThumbUrl ?? ""), placeholderImage: #imageLiteral(resourceName: "PodverseIcon"))
+        cell.pvImage.image = Podcast.retrievePodcastImage(podcastImageURLString: podcast.imageThumbUrl, feedURLString: podcast.rssUrl, managedObjectID: nil, completion: { _ in
+            cell.pvImage.sd_setImage(with: URL(string: podcast.imageThumbUrl ?? ""), placeholderImage: #imageLiteral(resourceName: "PodverseIcon"))
         })
         
         return cell
@@ -91,20 +80,36 @@ extension FindSearchTableViewController: UITableViewDataSource, UITableViewDeleg
             }
             
             podcastActions.addAction(UIAlertAction(title: "About", style: .default, handler: { action in
-                // TODO segue to about page
-            }))
-            
-            podcastActions.addAction(UIAlertAction(title: "Episodes", style: .default, handler: { action in
-                // TODO segue to podcast clip's page
+                self.performSegue(withIdentifier: "Show Audiosearch Podcast About", sender: nil)
             }))
             
             podcastActions.addAction(UIAlertAction(title: "Clips", style: .default, handler: { action in
-                // TODO segue to podcast clip's page
+                self.performSegue(withIdentifier: "Show Audiosearch Podcast Clips", sender: nil)
             }))
             
             podcastActions.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
             
             self.present(podcastActions, animated: true, completion: nil)
+        }
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "Show Audiosearch Podcast About" {
+            if let audiosearchPodcastVC = segue.destination as? AudiosearchPodcastViewController, let indexPath = self.tableView.indexPathForSelectedRow, indexPath.row < self.searchResults.count {
+                let podcast = searchResults[indexPath.row]
+                audiosearchPodcastVC.audiosearchId = podcast.id
+                audiosearchPodcastVC.feedUrl = podcast.rssUrl
+                audiosearchPodcastVC.filterTypeOverride = .about
+            }
+        }
+        
+        if segue.identifier == "Show Audiosearch Podcast Clips" {
+            if let audiosearchPodcastVC = segue.destination as? AudiosearchPodcastViewController, let indexPath = self.tableView.indexPathForSelectedRow, indexPath.row < self.searchResults.count {
+                let podcast = searchResults[indexPath.row]
+                audiosearchPodcastVC.audiosearchId = podcast.id
+                audiosearchPodcastVC.feedUrl = podcast.rssUrl
+                audiosearchPodcastVC.filterTypeOverride = .clips
+            }
         }
     }
     
@@ -131,7 +136,7 @@ extension FindSearchTableViewController: UISearchBarDelegate {
                     
                     if let results = response["results"] as? [AnyObject] {
                         for result in results {
-                            if let searchResult = PodcastSearchResult.convertJSONToSearchResult(json: result) {
+                            if let searchResult = AudiosearchPodcast.convertJSONToAudiosearchPodcast(result) {
                                 self.searchResults.append(searchResult)
                             }
                         }

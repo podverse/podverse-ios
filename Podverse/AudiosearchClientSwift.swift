@@ -67,5 +67,39 @@ class AudioSearchClientSwift {
             }
         }
     }
+    
+    static func retrievePodcast(id: Int64, onCompletion: @escaping ServiceResponseAny) -> Void {
+        let urlString = "shows/\(id)"
+        if let url = URL(string: urlString, relativeTo: AudiosearchBaseUrl) {
+            let req = oauth2.request(forURL: url)
+            loader.perform(request: req) { response in
+                do {
+                    if let result = try response.responseJSON() as? AnyObject {
+                        onCompletion(result, nil)
+                    }
+                }
+                catch {
+                    onCompletion(nil, error as NSError)
+                }
+            }
+        }
+    }
+    
+    static func retrieveEpisodes(podcastId: String, onCompletion: @escaping ServiceResponseAny) -> Void {
+        let urlString = "shows/\(podcastId)/episodes"
+        if let url = URL(string: urlString, relativeTo: AudiosearchBaseUrl) {
+            let req = oauth2.request(forURL: url)
+            loader.perform(request: req) { response in
+                do {
+                    if let result = try response.responseJSON() as? AnyObject {
+                        onCompletion(result, nil)
+                    }
+                }
+                catch {
+                    onCompletion(nil, error as NSError)
+                }
+            }
+        }
+    }
 
 }

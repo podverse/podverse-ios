@@ -103,12 +103,16 @@ let kFinishedParsingPodcast = "finishedParsingPodcast"
 
 let kNoShowNotesMessage = "No show notes available for this episode."
 
+let kNoPodcastAboutMessage = "No information available for this podcast."
+
 let rootPath = NSSearchPathForDirectoriesInDomains(FileManager.SearchPathDirectory.documentDirectory, .userDomainMask, true)[0]
 
 let TO_PLAYER_SEGUE_ID = "To Now Playing"
 
 let ErrorDomain = Bundle.main.bundleIdentifier!
 let CoreDataFailureCode = -9999
+
+let AudiosearchBaseUrl = URL(string: "https://www.audiosear.ch/api/")
 
 enum SortByOptions: String {
     case top = "top"
@@ -231,6 +235,7 @@ enum ClipFilter: String {
 }
 
 enum EpisodesFilter: String {
+    case about = "About"
     case downloaded = "Downloaded"
     case allEpisodes = "All Episodes"
     case clips = "Clips"
@@ -238,6 +243,8 @@ enum EpisodesFilter: String {
     var text:String {
         get {
             switch self {
+            case .about:
+                return "About"
             case .downloaded:
                 return "Downloaded"
             case .allEpisodes:
@@ -285,6 +292,22 @@ enum EpisodeActions: String {
             }
         }
         
+    }
+}
+
+enum AudiosearchPodcastFilter:String {
+    case about = "About"
+    case clips = "Clips"
+    
+    var text:String {
+        get {
+            switch self {
+            case .about:
+                return "About"
+            case .clips:
+                return "Clips"
+            }
+        }
     }
 }
 

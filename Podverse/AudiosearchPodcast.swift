@@ -1,5 +1,5 @@
 //
-//  PodcastSearchResult.swift
+//  AudiosearchPodcast.swift
 //  Podverse
 //
 //  Created by Creon on 12/24/16.
@@ -8,8 +8,8 @@
 
 import Foundation
 
-class PodcastSearchResult {
-    var id: String?
+class AudiosearchPodcast {
+    var id: Int64?
     var buzzScore: String?
     var categories: String?
     var description: String?
@@ -18,15 +18,12 @@ class PodcastSearchResult {
     var imageUrl: String?
     var network: String?
     var rssUrl: String?
-    var scFeed: String?
     var title: String?
-    var webProfiles: String?
     
-    
-    static func convertJSONToSearchResult (json: AnyObject) -> PodcastSearchResult? {
-        let podcast = PodcastSearchResult()
+    static func convertJSONToAudiosearchPodcast (_ json: AnyObject) -> AudiosearchPodcast? {
+        let podcast = AudiosearchPodcast()
         
-        podcast.id = json["id"] as? String
+        podcast.id = json["id"] as? Int64
         
         podcast.buzzScore = json["buzz_score"] as? String
         
@@ -61,10 +58,33 @@ class PodcastSearchResult {
         }
         
         podcast.rssUrl = json["rss_url"] as? String
-        podcast.scFeed = json["sc_feed"] as? String
+        
         podcast.title = json["title"] as? String
-        podcast.webProfiles = json["web_profiles"] as? String
         
         return podcast
     }
+    
+    static func retrievePodcastFromServer(id: Int64?, completion: @escaping (_ podcast:AudiosearchPodcast?) -> Void) {
+        
+        if let id = id {
+            
+            AudioSearchClientSwift.retrievePodcast(id: id, onCompletion: { serviceResponse in
+                
+                if let response = serviceResponse.0, let podcast = AudiosearchPodcast.convertJSONToAudiosearchPodcast(response) {
+                    completion(podcast)
+                }
+                
+                if let error = serviceResponse.1 {
+                    print(error.localizedDescription)
+                    completion(nil)
+                }
+                
+            })
+            
+        } else {
+            completion(nil)
+        }
+        
+    }
+    
 }
