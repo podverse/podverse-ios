@@ -73,7 +73,9 @@ class AudioSearchClientSwift {
             }
             components?.queryItems = queryItems as [URLQueryItem]
             
-            performAudiosearchApiRequest(components!.string!, onCompletion: onCompletion)
+            if let components = components, let str = components.string {
+                performAudiosearchApiRequest(str, onCompletion: onCompletion)
+            }
             
         }
     }
