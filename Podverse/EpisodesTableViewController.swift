@@ -226,12 +226,12 @@ class EpisodesTableViewController: PVViewController {
             self.episodesArray.removeAll()
             
             if self.filterTypeSelected == .downloaded {
-                episodesArray = Array(podcast.episodes.filter { $0.fileName != nil } )
+                self.episodesArray = Array(podcast.episodes.filter { $0.fileName != nil } )
                 let downloadingEpisodes = DownloadingEpisodeList.shared.downloadingEpisodes.filter({$0.podcastFeedUrl == podcast.feedUrl})
                 
                 for dlEpisode in downloadingEpisodes {
-                    if let mediaUrl = dlEpisode.mediaUrl, let episode = Episode.episodeForMediaUrl(mediaUrlString: mediaUrl, managedObjectContext: self.moc), !episodesArray.contains(episode) {
-                        episodesArray.append(episode)
+                    if let mediaUrl = dlEpisode.mediaUrl, let episode = Episode.episodeForMediaUrl(mediaUrlString: mediaUrl, managedObjectContext: self.moc), !self.episodesArray.contains(episode) {
+                        self.episodesArray.append(episode)
                     }
                 }
                 
@@ -241,9 +241,9 @@ class EpisodesTableViewController: PVViewController {
                 }
                 
             } else if self.filterTypeSelected == .allEpisodes {
-                episodesArray = Array(podcast.episodes)
+                self.episodesArray = Array(podcast.episodes)
 
-                guard checkForResults(results: episodesArray) else {
+                guard checkForResults(results: self.episodesArray) else {
                     self.loadNoEpisodesMessage()
                     return
                 }
