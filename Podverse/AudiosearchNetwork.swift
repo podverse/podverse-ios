@@ -36,9 +36,7 @@ class AudiosearchNetwork {
             
             if let response = serviceResponse.0, let networks = AudiosearchNetwork.convertJSONToAudiosearchNetworks(response) {
                 completion(networks)
-            }
-            
-            if let error = serviceResponse.1 {
+            } else if let error = serviceResponse.1 {
                 print(error.localizedDescription)
                 completion(nil)
             }

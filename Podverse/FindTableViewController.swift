@@ -95,14 +95,12 @@ extension FindTableViewController:UITableViewDelegate, UITableViewDataSource {
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == "Show Browse Groups", let sender = sender as? String {
-            let findBrowseGroupsVC = segue.destination as! FindBrowseGroupsViewController
-            
+        if segue.identifier == "Show Browse Groups", let sender = sender as? String, let findBrowseGroupsVC = segue.destination as? FindBrowseGroupsViewController {
             if sender == "Categories" {
                 findBrowseGroupsVC.shouldLoadCategories = true
             } else if sender == "Networks" {
                 findBrowseGroupsVC.shouldLoadNetworks = true
-            }
+            }            
         }
     }
     

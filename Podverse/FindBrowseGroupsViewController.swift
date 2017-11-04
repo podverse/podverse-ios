@@ -68,10 +68,10 @@ extension FindBrowseGroupsViewController:UITableViewDelegate, UITableViewDataSou
         
         if self.shouldLoadCategories {
             let title = self.categories[indexPath.row].name
-            cell.textLabel!.text = title
+            cell.textLabel?.text = title
         } else {
             let title = self.networks[indexPath.row].name
-            cell.textLabel!.text = title
+            cell.textLabel?.text = title
         }
         
         return cell
@@ -88,10 +88,8 @@ extension FindBrowseGroupsViewController:UITableViewDelegate, UITableViewDataSou
             if let sender = sender as? String, sender == "Categories" {
                 if indexPath.row < self.categories.count {
                     let category = self.categories[indexPath.row]
-                    if let name = category.name {
-                        findBrowsePodcastsVC.groupTitle = name
-                        findBrowsePodcastsVC.categoryName = name
-                    }
+                    findBrowsePodcastsVC.groupTitle = category.name
+                    findBrowsePodcastsVC.categoryName = category.name
                 }
             } else {
                 if indexPath.row < self.networks.count {
