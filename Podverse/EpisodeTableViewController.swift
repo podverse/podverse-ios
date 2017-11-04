@@ -146,7 +146,7 @@ class EpisodeTableViewController: PVViewController {
                 
             } else {
                 if reachability.hasWiFiConnection() == false {
-                    showInternetNeededAlertWithDesciription(message: "Connect to WiFi to download an episode.")
+                    showInternetNeededAlertWithDescription(message: "Connect to WiFi to download an episode.")
                     return
                 }
                 PVDownloader.shared.startDownloadingEpisode(episode: episode)

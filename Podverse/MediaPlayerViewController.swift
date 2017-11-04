@@ -27,6 +27,7 @@ class MediaPlayerViewController: PVViewController {
     @IBOutlet weak var currentTime: UILabel!
     @IBOutlet weak var device: UIButton!
     @IBOutlet weak var duration: UILabel!
+    @IBOutlet weak var episodePubDate: UILabel!
     @IBOutlet weak var episodeTitle: UILabel!
     @IBOutlet weak var image: UIImageView!
     @IBOutlet weak var pageControl: UIPageControl!
@@ -53,8 +54,6 @@ class MediaPlayerViewController: PVViewController {
         
         self.tabBarController?.hidePlayerView()
         
-        navigationController?.interactivePopGestureRecognizer?.isEnabled = false
-        
         addObservers()
         
         self.activityIndicator.startAnimating()
@@ -65,7 +64,10 @@ class MediaPlayerViewController: PVViewController {
         // If not autoplaying, then the pvMediaPlayer.duration should still be accurate, and we can set the clip flags immediately.
         if !pvMediaPlayer.shouldAutoplayOnce && !pvMediaPlayer.shouldAutoplayAlways {
             setupClipFlags()
+        } else if pvMediaPlayer.isItemLoaded && pvMediaPlayer.isInClipTimeRange() {
+            setupClipFlags()
         }
+        
     }
     
     deinit {
@@ -74,6 +76,7 @@ class MediaPlayerViewController: PVViewController {
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        navigationController?.interactivePopGestureRecognizer?.isEnabled = false
         pvMediaPlayer.delegate = self
         togglePlayIcon()
         updateTime()
@@ -220,8 +223,14 @@ class MediaPlayerViewController: PVViewController {
     
     func populatePlayerInfo() {
         if let item = self.pvMediaPlayer.nowPlayingItem {
-            podcastTitle.text = item.podcastTitle
-            episodeTitle.text = item.episodeTitle
+            self.podcastTitle.text = item.podcastTitle
+            self.episodeTitle.text = item.episodeTitle
+            
+            if let pubDate = item.episodePubDate {
+                self.episodePubDate.text = pubDate.toShortFormatString()
+            } else {
+                self.episodePubDate.text = ""
+            }
             
             image.image = Podcast.retrievePodcastImage(podcastImageURLString: item.podcastImageUrl, feedURLString: item.podcastFeedUrl, managedObjectID: nil, completion: { _ in
                 self.image.sd_setImage(with: URL(string: item.podcastImageUrl ?? ""), placeholderImage: #imageLiteral(resourceName: "PodverseIcon"))
@@ -274,7 +283,7 @@ class MediaPlayerViewController: PVViewController {
     func showAddToPlaylist() {
         
         if !checkForConnectivity() {
-            self.showInternetNeededAlertWithDesciription(message: "You must be connected to the internet to add to playlists.")
+            self.showInternetNeededAlertWithDescription(message: "You must be connected to the internet to add to playlists.")
             return
         }
         
@@ -299,7 +308,7 @@ class MediaPlayerViewController: PVViewController {
     func showMakeClip() {
         
         if !checkForConnectivity() {
-            self.showInternetNeededAlertWithDesciription(message: "You must be connected to the internet to make clips.")
+            self.showInternetNeededAlertWithDescription(message: "You must be connected to the internet to make clips.")
             return
         }
         
@@ -449,8 +458,9 @@ class MediaPlayerViewController: PVViewController {
             self.startTimeFlagView.isHidden = false
             self.endTimeFlagView.isHidden = self.pvMediaPlayer.nowPlayingItem?.endTime == nil
             
-            self.startTimeLeadingConstraint.constant = (CGFloat(Double(startTime) / dur) * progress.frame.width) - sliderThumbWidthAdjustment
-            self.endTimeLeadingConstraint.constant = (CGFloat(Double(endTime) / dur) * progress.frame.width) - sliderThumbWidthAdjustment
+            // Use UIScreen.main.bounds.width because self.progress.frame.width was giving inconsistent sizes.
+            self.startTimeLeadingConstraint.constant = (CGFloat(Double(startTime) / dur) * UIScreen.main.bounds.width) - sliderThumbWidthAdjustment
+            self.endTimeLeadingConstraint.constant = (CGFloat(Double(endTime) / dur) * UIScreen.main.bounds.width) - sliderThumbWidthAdjustment
         }
         else {
             self.startTimeFlagView.isHidden = true

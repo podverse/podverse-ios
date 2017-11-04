@@ -400,7 +400,7 @@ extension AudiosearchPodcastViewController: UITableViewDataSource, UITableViewDe
 extension AudiosearchPodcastViewController:FilterSelectionProtocol {
     func filterButtonTapped() {
         
-        let alert = UIAlertController(title: "Show", message: nil, preferredStyle: .actionSheet)
+        let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         
         alert.addAction(UIAlertAction(title: AudiosearchPodcastFilter.about.text, style: .default, handler: { action in
             self.filterTypeSelected = .about

@@ -76,6 +76,7 @@ class PVMediaPlayer: NSObject {
     var clipTimer: Timer?
     var playbackTimer: Timer?
     var duration: Double?
+    var isItemLoaded = false
     var nowPlayingItem:PlayerHistoryItem?
     var delegate:PVMediaPlayerUIDelegate?
     var playerHistoryManager = PlayerHistory.manager
@@ -247,6 +248,25 @@ class PVMediaPlayer: NSObject {
         }
         
     }
+    
+    // If you seek before the startTime of a clip, this will return true. Returns false if a clip has an endTime, and the progress moves later than the endTime.
+    func isInClipTimeRange() -> Bool {
+        
+        guard let item = self.nowPlayingItem, item.isClip(), let startTime = item.startTime else {
+            return false
+        }
+        
+        guard let endTime = item.endTime else {
+            return true
+        }
+        
+        if self.audioPlayer.progress >= Double(endTime) {
+            return false
+        } else {
+            return true
+        }
+        
+    }
 
     func remoteControlReceivedWithEvent(event: UIEvent) {
         if event.type == UIEventType.remoteControl {
@@ -300,6 +320,7 @@ class PVMediaPlayer: NSObject {
         
         self.playerHistoryManager.addOrUpdateItem(item: nowPlayingItem)
         
+        self.isItemLoaded = false
         self.delegate?.playerHistoryItemLoadingBegan()
         
         // Pausing before attempting to play seems to help with playback issues.
@@ -423,6 +444,7 @@ class PVMediaPlayer: NSObject {
                             if self.shouldStartFromTime > 0 {
                                 self.audioPlayer.seek(toTime: Double(self.shouldStartFromTime))
                                 self.shouldStartFromTime = 0
+                                self.isItemLoaded = true
                                 self.delegate?.playerHistoryItemLoaded()
                             }
                             
@@ -431,6 +453,7 @@ class PVMediaPlayer: NSObject {
                         } else if self.shouldStartFromTime > 0 {
                             self.audioPlayer.seek(toTime: Double(self.shouldStartFromTime))
                             self.shouldStartFromTime = 0
+                            self.isItemLoaded = true
                             self.delegate?.playerHistoryItemLoaded()
                             return
                         }
@@ -440,6 +463,7 @@ class PVMediaPlayer: NSObject {
                 }
                 
                 if self.audioPlayer.state == .playing && !self.shouldSetupClip && self.shouldStartFromTime == 0 {
+                    self.isItemLoaded = true
                     self.delegate?.playerHistoryItemLoaded()
                 }
                 

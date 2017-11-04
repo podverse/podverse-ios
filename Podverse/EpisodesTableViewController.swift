@@ -143,7 +143,7 @@ class EpisodesTableViewController: PVViewController {
                 
             } else {
                 if reachability.hasWiFiConnection() == false {
-                    showInternetNeededAlertWithDesciription(message: "Connect to WiFi to download an episode.")
+                    showInternetNeededAlertWithDescription(message: "Connect to WiFi to download an episode.")
                     return
                 }
                 PVDownloader.shared.startDownloadingEpisode(episode: episode)
@@ -242,7 +242,7 @@ class EpisodesTableViewController: PVViewController {
                 
             } else if self.filterTypeSelected == .allEpisodes {
                 episodesArray = Array(podcast.episodes)
-                
+
                 guard checkForResults(results: episodesArray) else {
                     self.loadNoEpisodesMessage()
                     return
@@ -579,7 +579,7 @@ extension EpisodesTableViewController:UIWebViewDelegate {
 extension EpisodesTableViewController:FilterSelectionProtocol {
     func filterButtonTapped() {
         
-        let alert = UIAlertController(title: "Show", message: nil, preferredStyle: .actionSheet)
+        let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         
         alert.addAction(UIAlertAction(title: EpisodesFilter.about.text, style: .default, handler: { action in
             self.filterTypeSelected = .about

@@ -63,7 +63,7 @@ extension FindTableViewController:UITableViewDelegate, UITableViewDataSource {
             }
             else if indexPath.row == 1 {
                 if !checkForConnectivity() {
-                    showInternetNeededAlertWithDesciription(message: "Connect to WiFi or cellular data to add podcast by RSS URL.")
+                    showInternetNeededAlertWithDescription(message: "Connect to WiFi or cellular data to add podcast by RSS URL.")
                     return
                 }
                 let addByRSSAlert = UIAlertController(title: "Add Podcast by RSS Feed", message: "Type the RSS feed URL below.", preferredStyle: UIAlertControllerStyle.alert)
