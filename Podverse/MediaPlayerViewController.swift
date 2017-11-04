@@ -54,8 +54,6 @@ class MediaPlayerViewController: PVViewController {
         
         self.tabBarController?.hidePlayerView()
         
-        navigationController?.interactivePopGestureRecognizer?.isEnabled = false
-        
         addObservers()
         
         self.activityIndicator.startAnimating()
@@ -78,6 +76,7 @@ class MediaPlayerViewController: PVViewController {
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        navigationController?.interactivePopGestureRecognizer?.isEnabled = false
         pvMediaPlayer.delegate = self
         togglePlayIcon()
         updateTime()

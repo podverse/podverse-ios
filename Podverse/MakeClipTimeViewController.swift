@@ -20,6 +20,7 @@ class MakeClipTimeViewController: UIViewController, UITextFieldDelegate {
     var timer: Timer?
     
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
+    @IBOutlet weak var clearButton: UIButton!
     @IBOutlet weak var currentTime: UILabel!
     @IBOutlet weak var duration: UILabel!
     @IBOutlet weak var endPreview: UIButton!
@@ -34,6 +35,7 @@ class MakeClipTimeViewController: UIViewController, UITextFieldDelegate {
     @IBOutlet weak var nextButton: UIButton!
     
     override func viewWillAppear(_ animated: Bool) {
+        navigationController?.interactivePopGestureRecognizer?.isEnabled = false
         togglePlayIcon()
         updateTime()
     }
@@ -116,6 +118,13 @@ class MakeClipTimeViewController: UIViewController, UITextFieldDelegate {
             }
             
             self.pvMediaPlayer.play()
+        }
+    }
+    
+    @IBAction func clearEndTime(_ sender: Any) {
+        if let _ = self.endTime {
+            self.endTime = nil
+            self.endTimeInput.text = nil
         }
     }
     
