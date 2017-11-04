@@ -340,6 +340,7 @@ class EpisodesTableViewController: PVViewController {
         }
         
         self.tableView.isHidden = true
+        self.webView.isHidden = true
         
         showNoDataView()
         
