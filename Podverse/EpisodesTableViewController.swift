@@ -12,7 +12,7 @@ class EpisodesTableViewController: PVViewController {
     weak var delegate: AutoDownloadProtocol?
     var episodesArray = [Episode]()
     var feedUrl: String?
-    let moc = CoreDataHelper.createMOCForThread(threadType: .privateThread)
+    let moc = CoreDataHelper.createMOCForThread(threadType: .mainThread)
     let reachability = PVReachability.shared
     
     var filterTypeSelected: EpisodesFilter = .downloaded {
@@ -449,10 +449,10 @@ extension EpisodesTableViewController: UITableViewDataSource, UITableViewDelegat
                 cell.pubDate?.text = pubDate.toShortFormatString()
             }
             
-            if (DownloadingEpisodeList.shared.downloadingEpisodes.contains(where: {$0.mediaUrl == episode.mediaUrl})) {
-                cell.button.setTitle("DLing", for: .normal)
-            } else if episode.fileName != nil {
+            if episode.fileName != nil {
                 cell.button.setTitle("Play", for: .normal)
+            } else if (DownloadingEpisodeList.shared.downloadingEpisodes.contains(where: {$0.mediaUrl == episode.mediaUrl})) {
+                cell.button.setTitle("DLing", for: .normal)
             } else {
                 cell.button.setTitle("DL", for: .normal)
             }
