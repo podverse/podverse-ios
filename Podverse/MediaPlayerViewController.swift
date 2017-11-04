@@ -154,14 +154,7 @@ class MediaPlayerViewController: PVViewController {
             playerSpeedRate = .double
             break
         case .double:
-            playerSpeedRate = .doubleAndHalf
-            break
-        case .doubleAndHalf:
-            playerSpeedRate = .quarter
-            break
-        case .quarter:
             playerSpeedRate = .half
-            break
         case .half:
             playerSpeedRate = .threeQuarts
             break

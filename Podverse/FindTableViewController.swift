@@ -58,29 +58,22 @@ extension FindTableViewController:UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if indexPath.section == 0 {
             if indexPath.row == 0 {
                 self.performSegue(withIdentifier: "Search for Podcasts", sender: tableView)
             }
-            else if indexPath.section == 1 {
-                self.performSegue(withIdentifier: "Browse by Category", sender: tableView)
-            }
-            else if indexPath.section == 2 {
-                self.performSegue(withIdentifier: "Browse by Network", sender: tableView)
-            }
-            else {
+            else if indexPath.row == 1 {
                 if !checkForConnectivity() {
                     showInternetNeededAlertWithDesciription(message: "Connect to WiFi or cellular data to add podcast by RSS URL.")
                     return
                 }
                 let addByRSSAlert = UIAlertController(title: "Add Podcast by RSS Feed", message: "Type the RSS feed URL below.", preferredStyle: UIAlertControllerStyle.alert)
-
+                
                 addByRSSAlert.addTextField(configurationHandler: {(textField: UITextField!) in
                     textField.placeholder = "https://rssfeed.example.com/"
                 })
-
+                
                 addByRSSAlert.addAction(UIAlertAction(title: "Cancel", style: .default, handler: nil))
-
+                
                 addByRSSAlert.addAction(UIAlertAction(title: "Add", style: .default, handler: { (action: UIAlertAction!) in
                     if let textField = addByRSSAlert.textFields?[0], let text = textField.text {
                         PVSubscriber.subscribeToPodcast(feedUrlString: text)
@@ -88,18 +81,26 @@ extension FindTableViewController:UITableViewDelegate, UITableViewDataSource {
                 }))
                 
                 present(addByRSSAlert, animated: true, completion: nil)
+
             }
-        }
+            else if indexPath.row == 2 {
+                self.performSegue(withIdentifier: "Show Browse Groups", sender: "Categories")
+            }
+            else {
+                self.performSegue(withIdentifier: "Show Browse Groups", sender: "Networks")
+            }
+        
         tableView.deselectRow(at: indexPath, animated: true)
 
     }
     
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == TO_PLAYER_SEGUE_ID {
-//            TODO
-//            let mediaPlayerViewController = segue.destinationViewController as! MediaPlayerViewController
-//            mediaPlayerViewController.hidesBottomBarWhenPushed = true
+        if segue.identifier == "Show Browse Groups", let sender = sender as? String, let findBrowseGroupsVC = segue.destination as? FindBrowseGroupsViewController {
+            if sender == "Categories" {
+                findBrowseGroupsVC.shouldLoadCategories = true
+            } else if sender == "Networks" {
+                findBrowseGroupsVC.shouldLoadNetworks = true
+            }            
         }
     }
     

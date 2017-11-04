@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import UIKit
 
 class AudiosearchPodcast {
     var id: Int64?
@@ -68,7 +69,7 @@ class AudiosearchPodcast {
         
         if let id = id {
             
-            AudioSearchClientSwift.retrievePodcast(id: id, onCompletion: { serviceResponse in
+            AudioSearchClientSwift.retrievePodcast(id: id, { serviceResponse in
                 
                 if let response = serviceResponse.0, let podcast = AudiosearchPodcast.convertJSONToAudiosearchPodcast(response) {
                     completion(podcast)
@@ -85,6 +86,40 @@ class AudiosearchPodcast {
             completion(nil)
         }
         
+    }
+    
+    static func showAudiosearchPodcastActions(podcast: AudiosearchPodcast, vc: UIViewController) {
+        if let feedUrl = podcast.rssUrl {
+            var isSubscribed = false
+    
+            if let _ = Podcast.podcastForFeedUrl(feedUrlString: feedUrl) {
+            isSubscribed = true
+            }
+    
+            let podcastActions = UIAlertController(title: "", message: "", preferredStyle: .actionSheet)
+    
+            if isSubscribed == true {
+            podcastActions.addAction(UIAlertAction(title: "Unsubscribe", style: .default, handler: { action in
+            PVDeleter.deletePodcast(podcastId: nil, feedUrl: feedUrl)
+            }))
+            } else {
+            podcastActions.addAction(UIAlertAction(title: "Subscribe", style: .default, handler: { action in
+            PVSubscriber.subscribeToPodcast(feedUrlString: feedUrl)
+            }))
+            }
+    
+            podcastActions.addAction(UIAlertAction(title: "About", style: .default, handler: { action in
+            vc.performSegue(withIdentifier: "Show Audiosearch Podcast About", sender: nil)
+            }))
+    
+            podcastActions.addAction(UIAlertAction(title: "Clips", style: .default, handler: { action in
+            vc.performSegue(withIdentifier: "Show Audiosearch Podcast Clips", sender: nil)
+            }))
+    
+            podcastActions.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+    
+            vc.present(podcastActions, animated: true, completion: nil)
+        }
     }
     
 }

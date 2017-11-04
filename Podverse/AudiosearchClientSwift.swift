@@ -41,7 +41,27 @@ class AudioSearchClientSwift {
         }
     }
     
-    static func search(query: String, params: Dictionary<String,String>?, type: String, onCompletion: @escaping ServiceResponseAny) -> Void {
+    static func retrievePodcast(id: Int64, _ onCompletion: @escaping ServiceResponseAny) -> Void {
+        let urlString = "shows/" + String(id)
+        performAudiosearchApiRequest(urlString, onCompletion: onCompletion)
+    }
+    
+    static func retrieveEpisodes(podcastId: String, _ onCompletion: @escaping ServiceResponseAny) -> Void {
+        let urlString = "shows/" + podcastId + "/episodes"
+        performAudiosearchApiRequest(urlString, onCompletion: onCompletion)
+    }
+    
+    static func retrieveCategories(_ onCompletion: @escaping ServiceResponseAny) -> Void {
+        let urlString = "categories"
+        performAudiosearchApiRequest(urlString, expectArray: true, onCompletion: onCompletion)
+    }
+    
+    static func retrieveNetworks(_ onCompletion: @escaping ServiceResponseAny) -> Void {
+        let urlString = "networks"
+        performAudiosearchApiRequest(urlString, expectArray: true, onCompletion: onCompletion)
+    }
+    
+    static func search(query: String, params: Dictionary<String,String>?, type: String, _ onCompletion: @escaping ServiceResponseAny) -> Void {
         var queryItems: [NSURLQueryItem] = []
         if let query = query.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) {
             let queryString = "https://www.audiosear.ch/api/search/\(type)/\(query)"
@@ -52,31 +72,30 @@ class AudioSearchClientSwift {
                 }
             }
             components?.queryItems = queryItems as [URLQueryItem]
-            if let finalSearchUrl = URL(string: components!.string!) {
-                let req = oauth2.request(forURL: finalSearchUrl)
-                loader.perform(request: req) { response in
-                    do {
-                        if let result = try response.responseJSON() as? AnyObject {
-                            onCompletion(result, nil)
+            
+            if let components = components, let str = components.string {
+                performAudiosearchApiRequest(str, onCompletion: onCompletion)
+            }
+            
+        }
+    }
+    
+    static func performAudiosearchApiRequest(_ urlString: String?, expectArray:Bool = false, onCompletion: @escaping ServiceResponseAny) -> Void {
+        if let urlString = urlString, let url = URL(string: urlString, relativeTo: AudiosearchBaseUrl) {
+            let req = oauth2.request(forURL: url)
+            loader.perform(request: req) { response in
+                do {
+                    
+                    if expectArray {
+                        let data = try response.responseData()
+                        let json = try JSONSerialization.jsonObject(with: data, options: [])
+                        onCompletion(json as AnyObject, nil)
+                    } else {
+                        if let json = try response.responseJSON() as? AnyObject {
+                            onCompletion(json, nil)
                         }
                     }
-                    catch {
-                        onCompletion(nil, error as NSError)
-                    }
-                }
-            }
-        }
-    }
-    
-    static func retrievePodcast(id: Int64, onCompletion: @escaping ServiceResponseAny) -> Void {
-        let urlString = "shows/\(id)"
-        if let url = URL(string: urlString, relativeTo: AudiosearchBaseUrl) {
-            let req = oauth2.request(forURL: url)
-            loader.perform(request: req) { response in
-                do {
-                    if let result = try response.responseJSON() as? AnyObject {
-                        onCompletion(result, nil)
-                    }
+                    
                 }
                 catch {
                     onCompletion(nil, error as NSError)
@@ -85,21 +104,5 @@ class AudioSearchClientSwift {
         }
     }
     
-    static func retrieveEpisodes(podcastId: String, onCompletion: @escaping ServiceResponseAny) -> Void {
-        let urlString = "shows/\(podcastId)/episodes"
-        if let url = URL(string: urlString, relativeTo: AudiosearchBaseUrl) {
-            let req = oauth2.request(forURL: url)
-            loader.perform(request: req) { response in
-                do {
-                    if let result = try response.responseJSON() as? AnyObject {
-                        onCompletion(result, nil)
-                    }
-                }
-                catch {
-                    onCompletion(nil, error as NSError)
-                }
-            }
-        }
-    }
 
 }
