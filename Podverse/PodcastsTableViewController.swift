@@ -190,15 +190,12 @@ extension PodcastsTableViewController:UITableViewDelegate, UITableViewDataSource
     }
     
     func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
-        let podcastToEdit = subscribedPodcastsArray[indexPath.row]
+        let podcastToEdit = self.subscribedPodcastsArray[indexPath.row]
         
         let deleteAction = UITableViewRowAction(style: .default, title: "Delete", handler: {action, indexpath in
             self.subscribedPodcastsArray.remove(at: indexPath.row)
             self.tableView.deleteRows(at: [indexPath], with: .fade)
-            if self.pvMediaPlayer.nowPlayingItem?.podcastFeedUrl == podcastToEdit.feedUrl {
-                self.tabBarController?.hidePlayerView()
-            }
-            PVDeleter.deletePodcast(podcastId: podcastToEdit.objectID)
+            PVDeleter.deletePodcast(podcastId: podcastToEdit.objectID, feedUrl: podcastToEdit.feedUrl)
         })
         
         return [deleteAction]
@@ -246,22 +243,16 @@ extension PodcastsTableViewController {
         // Make sure subscribedPodcastsArray is up to date. The app may crash if the tableView row count becomes inaccurate.
         self.subscribedPodcastsArray = CoreDataHelper.fetchEntities(className:"Podcast", predicate: nil, moc:moc) as! [Podcast]
         
-        if self.subscribedPodcastsArray.count < 1 {
+        if self.subscribedPodcastsArray.isEmpty {
             self.tableView.reloadData()
-        }
-        
-        if let feedUrl = notification.userInfo?["feedUrl"] as? String, let index = self.subscribedPodcastsArray.index(where: { $0.feedUrl == feedUrl }) {
-            DispatchQueue.main.async {
-                self.tableView.deleteRows(at: [IndexPath(row: index, section: 0)], with: .automatic)
-            }
         }
     }
     
     func refreshParsingStatus(_ notification:Notification) {
-        DispatchQueue.main.async {
             let total = self.parsingPodcastsList.urls.count
             let currentItem = self.parsingPodcastsList.currentlyParsingItem
-            
+        
+        DispatchQueue.main.async {
             if total > 0 && currentItem < total {
                 self.parseActivityIndicator.startAnimating()
                 self.parseActivityIndicator.isHidden = false

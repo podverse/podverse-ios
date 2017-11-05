@@ -18,25 +18,31 @@ extension Notification.Name {
 class PVDeleter: NSObject {
     
     static func deletePodcast(podcastId: NSManagedObjectID?, feedUrl: String? = nil) {
-        let moc = CoreDataHelper.createMOCForThread(threadType: .privateThread)
-        
-        if let podcastId = podcastId, let podcast = CoreDataHelper.fetchEntityWithID(objectId: podcastId, moc: moc) as? Podcast {
-            podcast.removeFromAutoDownloadList()
-            deleteAllEpisodesFromPodcast(podcast: podcast)
-            moc.delete(podcast)
-            DispatchQueue.main.async {
-                NotificationCenter.default.post(name: .podcastDeleted, object: nil, userInfo: ["feedUrl": podcast.feedUrl as? Any])
+            let moc = CoreDataHelper.createMOCForThread(threadType: .mainThread)
+
+            var podcastToDelete:Podcast!
+            
+            if let podcastId = podcastId, let podcast = CoreDataHelper.fetchEntityWithID(objectId: podcastId, moc: moc) as? Podcast {
+                podcastToDelete = podcast
+            } else if let feedUrl = feedUrl, let podcast = Podcast.podcastForFeedUrl(feedUrlString: feedUrl, managedObjectContext: moc) {
+                podcastToDelete = podcast
             }
-        } else if let feedUrl = feedUrl, let podcast = Podcast.podcastForFeedUrl(feedUrlString: feedUrl, managedObjectContext: moc) {
-            podcast.removeFromAutoDownloadList()
-            deleteAllEpisodesFromPodcast(podcast: podcast)
-            moc.delete(podcast)
-            DispatchQueue.main.async {
-                NotificationCenter.default.post(name: .podcastDeleted, object: nil, userInfo: ["feedUrl": feedUrl as? Any])
+            else {
+                NotificationCenter.default.post(name: .podcastDeleted, 
+                                                object: nil, 
+                                                userInfo: ["feedUrl": feedUrl ?? ""])
+                return
             }
-        }
-        
-        moc.saveData(nil)
+            
+            podcastToDelete.removeFromAutoDownloadList()
+            deleteAllEpisodesFromPodcast(podcast: podcastToDelete)
+            moc.delete(podcastToDelete)
+            
+            moc.saveData({ 
+                DispatchQueue.main.async {
+                    NotificationCenter.default.post(name: .podcastDeleted, object: nil, userInfo: ["feedUrl": feedUrl ?? ""])
+                }
+            })
     }
     
     static func deleteAllEpisodesFromPodcast(podcast: Podcast) {
@@ -49,10 +55,9 @@ class PVDeleter: NSObject {
     static func deleteEpisode(episodeId: NSManagedObjectID, fileOnly: Bool = false, shouldCallNotificationMethod: Bool = false) {
         
         let pvMediaPlayer = PVMediaPlayer.shared
-        
+        let moc = CoreDataHelper.createMOCForThread(threadType: .privateThread)
+
         DispatchQueue.global().async {
-            let moc = CoreDataHelper.createMOCForThread(threadType: .privateThread)
-            
             if let episode = CoreDataHelper.fetchEntityWithID(objectId: episodeId, moc: moc) as? Episode {
                 let podcastFeedUrl = episode.podcast.feedUrl
                 let mediaUrl = episode.mediaUrl
@@ -81,10 +86,10 @@ class PVDeleter: NSObject {
                 }
                 
                 if fileOnly == false {
-                    CoreDataHelper.deleteItemFromCoreData(deleteObjectID: episode.objectID, moc: moc)
+                    moc.delete(episode)
                 }
                 
-                if var nowPlayingItem = PlayerHistory.manager.historyItems.first {
+                if let nowPlayingItem = PlayerHistory.manager.historyItems.first {
                     nowPlayingItem.hasReachedEnd = true
                     PlayerHistory.manager.addOrUpdateItem(item: nowPlayingItem)
                 }
@@ -94,12 +99,11 @@ class PVDeleter: NSObject {
                         PVDownloader.shared.decrementBadge()
                         
                         if shouldCallNotificationMethod == true {
-                            NotificationCenter.default.post(name: .episodeDeleted, object: nil, userInfo: ["mediaUrl":mediaUrl as? Any])
+                            NotificationCenter.default.post(name: .episodeDeleted, object: nil, userInfo: ["mediaUrl":mediaUrl ?? ""])
                         }
                     }
                 }
             }
-            
         }
 
     }
