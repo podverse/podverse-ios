@@ -23,7 +23,7 @@ class MoreTableViewController: PVViewController {
 extension MoreTableViewController:UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 4
+        return 3
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -40,8 +40,8 @@ extension MoreTableViewController:UITableViewDelegate, UITableViewDataSource {
             } else {
                 cell.textLabel?.text = "Log in"
             }
-        case 3:
-            cell.textLabel?.text = "Settings"
+//        case 3:
+//            cell.textLabel?.text = "Settings"
         default: break
         }
         
@@ -78,8 +78,8 @@ extension MoreTableViewController:UITableViewDelegate, UITableViewDataSource {
                     }
                 }
             }
-        case 3:
-            performSegue(withIdentifier: "Show Settings", sender: nil)
+//        case 3:
+//            performSegue(withIdentifier: "Show Settings", sender: nil)
         default: break
         }
         
