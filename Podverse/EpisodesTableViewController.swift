@@ -12,7 +12,7 @@ class EpisodesTableViewController: PVViewController {
     weak var delegate: AutoDownloadProtocol?
     var episodesArray = [Episode]()
     var feedUrl: String?
-    let moc = CoreDataHelper.createMOCForThread(threadType: .privateThread)
+    let moc = CoreDataHelper.createMOCForThread(threadType: .mainThread)
     let reachability = PVReachability.shared
     
     var filterTypeSelected: EpisodesFilter = .downloaded {
@@ -226,12 +226,12 @@ class EpisodesTableViewController: PVViewController {
             self.episodesArray.removeAll()
             
             if self.filterTypeSelected == .downloaded {
-                episodesArray = Array(podcast.episodes.filter { $0.fileName != nil } )
+                self.episodesArray = Array(podcast.episodes.filter { $0.fileName != nil } )
                 let downloadingEpisodes = DownloadingEpisodeList.shared.downloadingEpisodes.filter({$0.podcastFeedUrl == podcast.feedUrl})
                 
                 for dlEpisode in downloadingEpisodes {
-                    if let mediaUrl = dlEpisode.mediaUrl, let episode = Episode.episodeForMediaUrl(mediaUrlString: mediaUrl, managedObjectContext: self.moc), !episodesArray.contains(episode) {
-                        episodesArray.append(episode)
+                    if let mediaUrl = dlEpisode.mediaUrl, let episode = Episode.episodeForMediaUrl(mediaUrlString: mediaUrl, managedObjectContext: self.moc), !self.episodesArray.contains(episode) {
+                        self.episodesArray.append(episode)
                     }
                 }
                 
@@ -241,9 +241,9 @@ class EpisodesTableViewController: PVViewController {
                 }
                 
             } else if self.filterTypeSelected == .allEpisodes {
-                episodesArray = Array(podcast.episodes)
+                self.episodesArray = Array(podcast.episodes)
 
-                guard checkForResults(results: episodesArray) else {
+                guard checkForResults(results: self.episodesArray) else {
                     self.loadNoEpisodesMessage()
                     return
                 }
@@ -449,12 +449,20 @@ extension EpisodesTableViewController: UITableViewDataSource, UITableViewDelegat
                 cell.pubDate?.text = pubDate.toShortFormatString()
             }
             
-            if (DownloadingEpisodeList.shared.downloadingEpisodes.contains(where: {$0.mediaUrl == episode.mediaUrl})) {
-                cell.button.setTitle("DLing", for: .normal)
-            } else if episode.fileName != nil {
-                cell.button.setTitle("Play", for: .normal)
+            if episode.fileName != nil {
+                cell.activityIndicator.stopAnimating()
+                cell.activityView.isHidden = true
+                let playImage = UIImage(named: "play")
+                cell.button.setImage(playImage, for: .normal)
+            } else if (DownloadingEpisodeList.shared.downloadingEpisodes.contains(where: {$0.mediaUrl == episode.mediaUrl})) {
+                cell.activityIndicator.startAnimating()
+                cell.activityView.isHidden = false
+                cell.button.setImage(nil, for: .normal)
             } else {
-                cell.button.setTitle("DL", for: .normal)
+                cell.activityIndicator.stopAnimating()
+                cell.activityView.isHidden = true
+                let downloadImage = UIImage(named: "dl-cloud")
+                cell.button.setImage(downloadImage, for: .normal)
             }
             
             cell.button.addTarget(self, action: #selector(downloadPlay(sender:)), for: .touchUpInside)
@@ -581,16 +589,6 @@ extension EpisodesTableViewController:FilterSelectionProtocol {
         
         let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         
-        alert.addAction(UIAlertAction(title: EpisodesFilter.about.text, style: .default, handler: { action in
-            self.filterTypeSelected = .about
-            self.showAbout()
-        }))
-        
-        alert.addAction(UIAlertAction(title: EpisodesFilter.clips.text, style: .default, handler: { action in
-            self.filterTypeSelected = .clips
-            self.retrieveClips()
-        }))
-        
         alert.addAction(UIAlertAction(title: EpisodesFilter.downloaded.text, style: .default, handler: { action in
             self.filterTypeSelected = .downloaded
             self.reloadEpisodeData()
@@ -599,6 +597,16 @@ extension EpisodesTableViewController:FilterSelectionProtocol {
         alert.addAction(UIAlertAction(title: EpisodesFilter.allEpisodes.text, style: .default, handler: { action in
             self.filterTypeSelected = .allEpisodes
             self.reloadEpisodeData()
+        }))
+        
+        alert.addAction(UIAlertAction(title: EpisodesFilter.clips.text, style: .default, handler: { action in
+            self.filterTypeSelected = .clips
+            self.retrieveClips()
+        }))
+        
+        alert.addAction(UIAlertAction(title: EpisodesFilter.about.text, style: .default, handler: { action in
+            self.filterTypeSelected = .about
+            self.showAbout()
         }))
         
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))

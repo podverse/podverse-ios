@@ -40,6 +40,8 @@ class MediaPlayerViewController: PVViewController {
     @IBOutlet weak var startTimeLeadingConstraint: NSLayoutConstraint!
     @IBOutlet weak var endTimeLeadingConstraint: NSLayoutConstraint!
     
+    @IBOutlet weak var timeSkipForward: UIButton!
+    
     override func viewDidLoad() {
         setupContainerView()
         
@@ -47,6 +49,8 @@ class MediaPlayerViewController: PVViewController {
         let makeClip = UIBarButtonItem(title: "Make Clip", style: .plain, target: self, action: #selector(showMakeClip))
         let addToPlaylist = UIBarButtonItem(title: "Add to Playlist", style: .plain, target: self, action: #selector(showAddToPlaylist))
         navigationItem.rightBarButtonItems = [share, makeClip, addToPlaylist]
+        
+        setupButtons()
 
         self.progress.setThumbImage(#imageLiteral(resourceName: "SliderCurrentPosition"), for: .normal)
         
@@ -92,6 +96,11 @@ class MediaPlayerViewController: PVViewController {
     
     fileprivate func removeObservers() {
         NotificationCenter.default.removeObserver(self, name: .playerHasFinished, object: nil)
+    }
+    
+    func setupButtons() {
+        let skipForwardImage = UIImage(named: "forward-15")?.withRenderingMode(.alwaysTemplate)
+        self.timeSkipForward.setImage(skipForwardImage, for: .normal)
     }
     
     @IBAction func pageControlAction(_ sender: Any) {
@@ -200,22 +209,22 @@ class MediaPlayerViewController: PVViewController {
         DispatchQueue.main.async {
             if self.audioPlayer.state == .stopped || self.audioPlayer.state == .paused {
                 self.activityIndicator.isHidden = true
-                self.play.setImage(UIImage(named:"Play"), for: .normal)
+                self.play.setImage(UIImage(named:"play"), for: .normal)
                 self.play.isHidden = false
             } else if self.audioPlayer.state == .error {
                 self.activityIndicator.isHidden = true
                 self.play.setImage(UIImage(named:"AppIcon"), for: .normal)
                 self.play.isHidden = false
-            } else if self.audioPlayer.state == .playing && !self.pvMediaPlayer.shouldSetupClip && self.pvMediaPlayer.shouldStartFromTime == 0 {
+            } else if self.audioPlayer.state == .playing && !self.pvMediaPlayer.shouldSetupClip {
                 self.activityIndicator.isHidden = true
-                self.play.setImage(UIImage(named:"Pause"), for: .normal)
+                self.play.setImage(UIImage(named:"pause"), for: .normal)
                 self.play.isHidden = false
-            } else if self.audioPlayer.state == .buffering || self.pvMediaPlayer.shouldSetupClip || self.pvMediaPlayer.shouldStartFromTime > 0 {
+            } else if self.audioPlayer.state == .buffering || self.pvMediaPlayer.shouldSetupClip {
                 self.activityIndicator.isHidden = false
                 self.play.isHidden = true
             } else {
                 self.activityIndicator.isHidden = true
-                self.play.setImage(UIImage(named:"Play"), for: .normal)
+                self.play.setImage(UIImage(named:"play"), for: .normal)
                 self.play.isHidden = false
             }
         }
@@ -289,7 +298,7 @@ class MediaPlayerViewController: PVViewController {
         
         self.navigationItem.backBarButtonItem = UIBarButtonItem(title:"Player", style:.plain, target:nil, action:nil)
         
-        let addToPlaylistActions = UIAlertController(title: "Add to Playlist", message: "", preferredStyle: UIAlertControllerStyle.actionSheet)
+        let addToPlaylistActions = UIAlertController(title: nil, message: nil, preferredStyle: UIAlertControllerStyle.actionSheet)
         
         addToPlaylistActions.addAction(UIAlertAction(title: "Full Episode", style: .default, handler: { action in
             self.performSegue(withIdentifier: "Show Add to Playlist", sender: "Full Episode")

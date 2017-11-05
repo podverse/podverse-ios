@@ -31,7 +31,7 @@ class PlaylistsTableViewController: PVViewController {
     
     func retrievePlaylists() {
         
-        guard checkForConnectivity(), checkForAuthorization() else {
+        guard checkConnectivity(), checkForAuthorization() else {
             return
         }
         
@@ -60,7 +60,7 @@ class PlaylistsTableViewController: PVViewController {
         
     }
     
-    func checkForConnectivity() -> Bool {
+    func checkConnectivity() -> Bool {
         let message = Strings.Errors.noPlaylistsInternet
         let buttonTitle = "Retry"
         let selector:Selector = #selector(PlaylistsTableViewController.retrievePlaylists)
