@@ -450,11 +450,19 @@ extension EpisodesTableViewController: UITableViewDataSource, UITableViewDelegat
             }
             
             if episode.fileName != nil {
-                cell.button.setTitle("Play", for: .normal)
+                cell.activityIndicator.stopAnimating()
+                cell.activityView.isHidden = true
+                let playImage = UIImage(named: "play")
+                cell.button.setImage(playImage, for: .normal)
             } else if (DownloadingEpisodeList.shared.downloadingEpisodes.contains(where: {$0.mediaUrl == episode.mediaUrl})) {
-                cell.button.setTitle("DLing", for: .normal)
+                cell.activityIndicator.startAnimating()
+                cell.activityView.isHidden = false
+                cell.button.setImage(nil, for: .normal)
             } else {
-                cell.button.setTitle("DL", for: .normal)
+                cell.activityIndicator.stopAnimating()
+                cell.activityView.isHidden = true
+                let downloadImage = UIImage(named: "dl-cloud")
+                cell.button.setImage(downloadImage, for: .normal)
             }
             
             cell.button.addTarget(self, action: #selector(downloadPlay(sender:)), for: .touchUpInside)

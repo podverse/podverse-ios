@@ -2,17 +2,16 @@
   "images" : [
     {
       "idiom" : "universal",
-      "filename" : "fastforward-40.png",
+      "filename" : "skip.png",
       "scale" : "1x"
     },
     {
       "idiom" : "universal",
-      "filename" : "fastforward-80.png",
+      "filename" : "skip@2x.png",
       "scale" : "2x"
     },
     {
       "idiom" : "universal",
-      "filename" : "fastforward-100.png",
       "scale" : "3x"
     }
   ],
