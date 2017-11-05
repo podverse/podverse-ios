@@ -298,7 +298,7 @@ class MediaPlayerViewController: PVViewController {
         
         self.navigationItem.backBarButtonItem = UIBarButtonItem(title:"Player", style:.plain, target:nil, action:nil)
         
-        let addToPlaylistActions = UIAlertController(title: "Add to Playlist", message: "", preferredStyle: UIAlertControllerStyle.actionSheet)
+        let addToPlaylistActions = UIAlertController(title: nil, message: nil, preferredStyle: UIAlertControllerStyle.actionSheet)
         
         addToPlaylistActions.addAction(UIAlertAction(title: "Full Episode", style: .default, handler: { action in
             self.performSegue(withIdentifier: "Show Add to Playlist", sender: "Full Episode")
