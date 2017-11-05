@@ -558,13 +558,6 @@ extension EpisodesTableViewController {
     override func episodeDeleted(_ notification:Notification) {
         super.episodeDeleted(notification)
         self.moc.refreshAllObjects()
-        
-        if let mediaUrl = notification.userInfo?["mediaUrl"] as? String, let index = self.episodesArray.index(where: { $0.mediaUrl == mediaUrl }), let _ = tableView.cellForRow(at: IndexPath(row: index, section: 0)) as? EpisodeTableViewCell {
-            if self.filterTypeSelected == .downloaded {
-                self.episodesArray.remove(at: index)
-                self.tableView.deleteRows(at: [IndexPath(row: index, section: 0)], with: .automatic)
-            }
-        }
     }
 
 }
