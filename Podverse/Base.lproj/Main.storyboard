@@ -837,62 +837,63 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="oFP-8F-80U">
+                                <rect key="frame" x="0.0" y="120" width="375" height="498"/>
+                                <subviews>
+                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="Oxc-H8-Ozr">
+                                        <rect key="frame" x="169" y="231" width="37" height="37"/>
+                                        <subviews>
+                                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="mC1-1Q-fBp">
+                                                <rect key="frame" x="0.0" y="0.0" width="37" height="37"/>
+                                                <color key="color" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                                            </activityIndicatorView>
+                                        </subviews>
+                                    </stackView>
+                                </subviews>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstItem="Oxc-H8-Ozr" firstAttribute="centerX" secondItem="oFP-8F-80U" secondAttribute="centerX" id="VuG-uC-BOp"/>
+                                    <constraint firstItem="Oxc-H8-Ozr" firstAttribute="centerY" secondItem="oFP-8F-80U" secondAttribute="centerY" id="tXh-6n-XpD"/>
+                                </constraints>
+                            </view>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="95" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="DkR-3F-oNH">
-                                <rect key="frame" x="0.0" y="64" width="375" height="603"/>
+                                <rect key="frame" x="0.0" y="120" width="375" height="498"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <inset key="separatorInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
-                                <searchBar key="tableHeaderView" contentMode="redraw" id="9Y3-05-PT3">
-                                    <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
-                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
-                                    <textInputTraits key="textInputTraits"/>
-                                </searchBar>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="cell" rowHeight="96" id="2ZA-xr-FqU" customClass="PodcastSearchResultTableViewCell" customModule="Podverse" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="72" width="375" height="96"/>
+                                        <rect key="frame" x="0.0" y="28" width="375" height="96"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="2ZA-xr-FqU" id="5D8-yU-XcQ">
                                             <rect key="frame" x="0.0" y="0.0" width="375" height="96"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="rVM-pl-tJ8">
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="rVM-pl-tJ8">
                                                     <rect key="frame" x="0.0" y="0.0" width="96" height="96"/>
-                                                    <constraints>
-                                                        <constraint firstAttribute="height" constant="96" id="NbS-ps-7sa"/>
-                                                        <constraint firstAttribute="width" constant="96" id="OEo-ed-d6F"/>
-                                                    </constraints>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 </imageView>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Podcast Title" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ia6-hz-P3R">
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Podcast Title" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ia6-hz-P3R">
                                                     <rect key="frame" x="108" y="7" width="259" height="19.5"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <fontDescription key="fontDescription" type="system" weight="medium" pointSize="16"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Categories" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="uOf-ot-8bz">
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Categories" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="uOf-ot-8bz">
                                                     <rect key="frame" x="108" y="70" width="259" height="17"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                     <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Network" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="62w-JK-Sj7">
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Network" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="62w-JK-Sj7">
                                                     <rect key="frame" x="108" y="49" width="259" height="17"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                     <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                             </subviews>
-                                            <constraints>
-                                                <constraint firstItem="62w-JK-Sj7" firstAttribute="leading" secondItem="rVM-pl-tJ8" secondAttribute="trailing" constant="12" id="0S9-T8-gkP"/>
-                                                <constraint firstItem="Ia6-hz-P3R" firstAttribute="leading" secondItem="rVM-pl-tJ8" secondAttribute="trailing" constant="12" id="AuF-rD-V5X"/>
-                                                <constraint firstItem="uOf-ot-8bz" firstAttribute="leading" secondItem="rVM-pl-tJ8" secondAttribute="trailing" constant="12" id="DfG-sw-4V9"/>
-                                                <constraint firstItem="62w-JK-Sj7" firstAttribute="trailing" secondItem="5D8-yU-XcQ" secondAttribute="trailingMargin" id="GGG-SG-NT4"/>
-                                                <constraint firstAttribute="trailing" secondItem="Ia6-hz-P3R" secondAttribute="trailing" constant="8" id="TH8-eL-cP6"/>
-                                                <constraint firstItem="uOf-ot-8bz" firstAttribute="top" secondItem="62w-JK-Sj7" secondAttribute="bottom" constant="4" id="Tw2-yu-da8"/>
-                                                <constraint firstItem="rVM-pl-tJ8" firstAttribute="leading" secondItem="5D8-yU-XcQ" secondAttribute="leading" id="ayl-zO-3sx"/>
-                                                <constraint firstItem="rVM-pl-tJ8" firstAttribute="top" secondItem="5D8-yU-XcQ" secondAttribute="top" id="fUV-Zq-1MN"/>
-                                                <constraint firstItem="uOf-ot-8bz" firstAttribute="trailing" secondItem="5D8-yU-XcQ" secondAttribute="trailingMargin" id="iEJ-FZ-iyy"/>
-                                                <constraint firstAttribute="bottomMargin" secondItem="uOf-ot-8bz" secondAttribute="bottom" constant="0.5" id="reU-im-b2j"/>
-                                                <constraint firstItem="Ia6-hz-P3R" firstAttribute="top" secondItem="5D8-yU-XcQ" secondAttribute="top" constant="7" id="xLI-Fz-XCJ"/>
-                                            </constraints>
                                         </tableViewCellContentView>
                                         <connections>
                                             <outlet property="categories" destination="uOf-ot-8bz" id="ahe-j9-Zuh"/>
@@ -907,17 +908,30 @@
                                     <outlet property="delegate" destination="m7o-YY-e40" id="Foz-lK-gkd"/>
                                 </connections>
                             </tableView>
+                            <searchBar contentMode="redraw" translatesAutoresizingMaskIntoConstraints="NO" id="kfg-1h-FIy">
+                                <rect key="frame" x="0.0" y="64" width="375" height="56"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </searchBar>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstAttribute="bottom" secondItem="DkR-3F-oNH" secondAttribute="bottom" id="7ZM-Ww-RcH"/>
-                            <constraint firstAttribute="trailing" secondItem="DkR-3F-oNH" secondAttribute="trailing" id="j6e-ey-8Rt"/>
-                            <constraint firstItem="DkR-3F-oNH" firstAttribute="top" secondItem="tZp-nk-xA2" secondAttribute="bottom" id="vC6-4b-T8U"/>
-                            <constraint firstItem="DkR-3F-oNH" firstAttribute="leading" secondItem="ZR1-zg-2Sp" secondAttribute="leading" id="vRf-gu-cDN"/>
+                            <constraint firstItem="kfg-1h-FIy" firstAttribute="leading" secondItem="ZR1-zg-2Sp" secondAttribute="leading" id="8jF-df-SD9"/>
+                            <constraint firstItem="oFP-8F-80U" firstAttribute="leading" secondItem="ZR1-zg-2Sp" secondAttribute="leading" id="Al4-tf-m1B"/>
+                            <constraint firstItem="DkR-3F-oNH" firstAttribute="top" secondItem="kfg-1h-FIy" secondAttribute="bottom" id="Gf4-eE-K5h"/>
+                            <constraint firstAttribute="trailing" secondItem="kfg-1h-FIy" secondAttribute="trailing" id="KUC-pf-g3t"/>
+                            <constraint firstItem="6mS-Di-kY7" firstAttribute="top" secondItem="oFP-8F-80U" secondAttribute="bottom" id="QqT-VP-gue"/>
+                            <constraint firstItem="DkR-3F-oNH" firstAttribute="leading" secondItem="ZR1-zg-2Sp" secondAttribute="leading" id="S8e-KP-Icb"/>
+                            <constraint firstAttribute="trailing" secondItem="oFP-8F-80U" secondAttribute="trailing" id="TOd-gw-X5t"/>
+                            <constraint firstItem="kfg-1h-FIy" firstAttribute="top" secondItem="tZp-nk-xA2" secondAttribute="bottom" id="WRY-Tf-bt2"/>
+                            <constraint firstItem="oFP-8F-80U" firstAttribute="top" secondItem="kfg-1h-FIy" secondAttribute="bottom" id="Zc2-Ki-y3T"/>
+                            <constraint firstItem="6mS-Di-kY7" firstAttribute="top" secondItem="DkR-3F-oNH" secondAttribute="bottom" id="kOi-iB-kFh"/>
+                            <constraint firstAttribute="trailing" secondItem="DkR-3F-oNH" secondAttribute="trailing" id="qri-Hu-nJW"/>
                         </constraints>
                     </view>
                     <connections>
-                        <outlet property="searchBar" destination="9Y3-05-PT3" id="uOq-j9-y9g"/>
+                        <outlet property="activityIndicator" destination="mC1-1Q-fBp" id="78b-3y-VPi"/>
+                        <outlet property="activityView" destination="oFP-8F-80U" id="92k-9m-JV0"/>
+                        <outlet property="searchBar" destination="kfg-1h-FIy" id="BUe-uI-zk2"/>
                         <outlet property="tableView" destination="DkR-3F-oNH" id="DgV-kd-djn"/>
                         <segue destination="1hU-oK-T3A" kind="show" identifier="Show Audiosearch Podcast About" id="UX7-d9-2wT"/>
                         <segue destination="1hU-oK-T3A" kind="show" identifier="Show Audiosearch Podcast Clips" id="zre-Be-w3d"/>
@@ -925,7 +939,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="5Om-Qs-rRw" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2148" y="-745"/>
+            <point key="canvasLocation" x="2148" y="-745.27736131934034"/>
         </scene>
         <!--Find Browse Groups View Controller-->
         <scene sceneID="x8b-jY-hBJ">
@@ -3316,8 +3330,9 @@
         <image name="forward-15" width="30" height="30"/>
         <image name="play" width="30" height="30"/>
         <image name="skip" width="30" height="30"/>
+        <image name="skip-back" width="30" height="30"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="SU9-3d-tZS"/>
+        <segue reference="UX7-d9-2wT"/>
     </inferredMetricsTieBreakers>
 </document>

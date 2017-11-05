@@ -12,11 +12,54 @@ class FindSearchTableViewController: PVViewController {
     
     var searchResults = [AudiosearchPodcast]()
 
+    @IBOutlet weak var activityView: UIView!
+    @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var searchBar: UISearchBar!
     
     override func viewDidLoad() {
         self.searchBar.delegate = self
+        self.activityIndicator.hidesWhenStopped = true
+        self.tableView.isHidden = true
+    }
+    
+    func loadNoDataView(message: String, buttonTitle: String?, buttonPressed: Selector?) {
+        
+        if let noDataView = self.view.subviews.first(where: { $0.tag == kNoDataViewTag}) {
+            
+            if let messageView = noDataView.subviews.first(where: {$0 is UILabel}), let messageLabel = messageView as? UILabel {
+                messageLabel.text = message
+            }
+            
+            if let buttonView = noDataView.subviews.first(where: {$0 is UIButton}), let button = buttonView as? UIButton {
+                button.setTitle(buttonTitle, for: .normal)
+            }
+        }
+        else {
+            self.addNoDataViewWithMessage(message, buttonTitle: buttonTitle, buttonImage: nil, retryPressed: buttonPressed)
+        }
+        
+        showNoDataView()
+        
+    }
+    
+    func loadNoInternetMessage() {
+        loadNoDataView(message: Strings.Errors.noClipsInternet, buttonTitle: "Retry", buttonPressed: #selector(ClipsTableViewController.resetAndRetrieveClips))
+    }
+    
+    func loadNoResultsMessage() {
+        loadNoDataView(message: Strings.Errors.noSearchResultsFound, buttonTitle: nil, buttonPressed: nil)
+    }
+    
+    func showActivityIndicator() {
+        self.tableView.isHidden = true
+        self.activityIndicator.startAnimating()
+        self.activityView.isHidden = false
+    }
+    
+    func hideActivityIndicator() {
+        self.activityIndicator.stopAnimating()
+        self.activityView.isHidden = true
     }
     
 }
@@ -82,17 +125,20 @@ extension FindSearchTableViewController: UISearchBarDelegate {
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         searchBar.resignFirstResponder()
         
+        self.searchResults.removeAll()
+        
         if let text = searchBar.text {
+            
+            guard checkForConnectivity() else {
+                loadNoInternetMessage()
+                return
+            }
+            
+            showActivityIndicator()
+            
             AudioSearchClientSwift.search(query: text, params: nil, type: "shows") { (serviceResponse) in
                 
-                self.searchResults.removeAll()
-                
                 if let response = serviceResponse.0 {
-                    //                let page = response["page"] as? String
-                    //                let query = response["query"] as? String
-                    //                let results_per_page = response["results_per_page"] as? String
-                    //                let total_results = response["total_results"] as? String
-                    
                     if let results = response["results"] as? [AnyObject] {
                         for result in results {
                             if let searchResult = AudiosearchPodcast.convertJSONToAudiosearchPodcast(result) {
@@ -100,16 +146,23 @@ extension FindSearchTableViewController: UISearchBarDelegate {
                             }
                         }
                     }
-                    
-                    DispatchQueue.main.async {
-                        self.tableView.reloadData()
-                    }
                 }
                 
                 if let error = serviceResponse.1 {
                     print(error.localizedDescription)
                 }
                 
+                DispatchQueue.main.async {
+                    self.hideActivityIndicator()
+                    
+                    if self.searchResults.isEmpty {
+                        self.loadNoResultsMessage()
+                    } else {
+                        self.tableView.reloadData()
+                        self.tableView.isHidden = false
+                    }
+                    
+                }
             }
         }
         
