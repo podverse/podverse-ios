@@ -91,33 +91,33 @@ class AudiosearchPodcast {
     static func showAudiosearchPodcastActions(podcast: AudiosearchPodcast, vc: UIViewController) {
         if let feedUrl = podcast.rssUrl {
             var isSubscribed = false
-    
+            
             if let _ = Podcast.podcastForFeedUrl(feedUrlString: feedUrl) {
-            isSubscribed = true
+                isSubscribed = true
             }
-    
-            let podcastActions = UIAlertController(title: "", message: "", preferredStyle: .actionSheet)
-    
+            
+            let podcastActions = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+            
             if isSubscribed == true {
-            podcastActions.addAction(UIAlertAction(title: "Unsubscribe", style: .default, handler: { action in
-            PVDeleter.deletePodcast(podcastId: nil, feedUrl: feedUrl)
-            }))
+                podcastActions.addAction(UIAlertAction(title: "Unsubscribe", style: .default, handler: { action in
+                    PVDeleter.deletePodcast(podcastId: nil, feedUrl: feedUrl)
+                }))
             } else {
-            podcastActions.addAction(UIAlertAction(title: "Subscribe", style: .default, handler: { action in
-            PVSubscriber.subscribeToPodcast(feedUrlString: feedUrl)
-            }))
+                podcastActions.addAction(UIAlertAction(title: "Subscribe", style: .default, handler: { action in
+                    PVSubscriber.subscribeToPodcast(feedUrlString: feedUrl)
+                }))
             }
-    
+            
             podcastActions.addAction(UIAlertAction(title: "About", style: .default, handler: { action in
-            vc.performSegue(withIdentifier: "Show Audiosearch Podcast About", sender: nil)
+                vc.performSegue(withIdentifier: "Show Audiosearch Podcast About", sender: nil)
             }))
-    
+            
             podcastActions.addAction(UIAlertAction(title: "Clips", style: .default, handler: { action in
-            vc.performSegue(withIdentifier: "Show Audiosearch Podcast Clips", sender: nil)
+                vc.performSegue(withIdentifier: "Show Audiosearch Podcast Clips", sender: nil)
             }))
-    
+            
             podcastActions.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
-    
+            
             vc.present(podcastActions, animated: true, completion: nil)
         }
     }
