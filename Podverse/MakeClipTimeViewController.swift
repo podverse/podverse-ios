@@ -236,11 +236,11 @@ class MakeClipTimeViewController: UIViewController, UITextFieldDelegate {
                 self.play.isHidden = true
             } else if self.audioPlayer.state == STKAudioPlayerState.playing {
                 self.activityIndicator.isHidden = true
-                self.play.setImage(UIImage(named:"Pause"), for: .normal)
+                self.play.setImage(UIImage(named:"pause"), for: .normal)
                 self.play.isHidden = false
             } else {
                 self.activityIndicator.isHidden = true
-                self.play.setImage(UIImage(named:"Play"), for: .normal)
+                self.play.setImage(UIImage(named:"play"), for: .normal)
                 self.play.isHidden = false
             }
         }
@@ -304,7 +304,7 @@ class MakeClipTimeViewController: UIViewController, UITextFieldDelegate {
                 updateTime()
             } else {
                 let panPoint = pan.velocity(in: self.playbackControlView)
-                var newTime = (self.pvMediaPlayer.progress + Double(panPoint.x / 160.0))
+                var newTime = (self.pvMediaPlayer.progress + Double(panPoint.x / 180.0))
                 
                 if newTime <= 0 {
                     newTime = 0

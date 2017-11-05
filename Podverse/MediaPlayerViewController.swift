@@ -209,22 +209,22 @@ class MediaPlayerViewController: PVViewController {
         DispatchQueue.main.async {
             if self.audioPlayer.state == .stopped || self.audioPlayer.state == .paused {
                 self.activityIndicator.isHidden = true
-                self.play.setImage(UIImage(named:"Play"), for: .normal)
+                self.play.setImage(UIImage(named:"play"), for: .normal)
                 self.play.isHidden = false
             } else if self.audioPlayer.state == .error {
                 self.activityIndicator.isHidden = true
                 self.play.setImage(UIImage(named:"AppIcon"), for: .normal)
                 self.play.isHidden = false
-            } else if self.audioPlayer.state == .playing && !self.pvMediaPlayer.shouldSetupClip && self.pvMediaPlayer.shouldStartFromTime == 0 {
+            } else if self.audioPlayer.state == .playing && !self.pvMediaPlayer.shouldSetupClip {
                 self.activityIndicator.isHidden = true
-                self.play.setImage(UIImage(named:"Pause"), for: .normal)
+                self.play.setImage(UIImage(named:"pause"), for: .normal)
                 self.play.isHidden = false
-            } else if self.audioPlayer.state == .buffering || self.pvMediaPlayer.shouldSetupClip || self.pvMediaPlayer.shouldStartFromTime > 0 {
+            } else if self.audioPlayer.state == .buffering || self.pvMediaPlayer.shouldSetupClip {
                 self.activityIndicator.isHidden = false
                 self.play.isHidden = true
             } else {
                 self.activityIndicator.isHidden = true
-                self.play.setImage(UIImage(named:"Play"), for: .normal)
+                self.play.setImage(UIImage(named:"play"), for: .normal)
                 self.play.isHidden = false
             }
         }

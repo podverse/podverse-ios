@@ -589,14 +589,9 @@ extension EpisodesTableViewController:FilterSelectionProtocol {
         
         let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         
-        alert.addAction(UIAlertAction(title: EpisodesFilter.about.text, style: .default, handler: { action in
-            self.filterTypeSelected = .about
-            self.showAbout()
-        }))
-        
-        alert.addAction(UIAlertAction(title: EpisodesFilter.clips.text, style: .default, handler: { action in
-            self.filterTypeSelected = .clips
-            self.retrieveClips()
+        alert.addAction(UIAlertAction(title: EpisodesFilter.allEpisodes.text, style: .default, handler: { action in
+            self.filterTypeSelected = .allEpisodes
+            self.reloadEpisodeData()
         }))
         
         alert.addAction(UIAlertAction(title: EpisodesFilter.downloaded.text, style: .default, handler: { action in
@@ -604,9 +599,14 @@ extension EpisodesTableViewController:FilterSelectionProtocol {
             self.reloadEpisodeData()
         }))
         
-        alert.addAction(UIAlertAction(title: EpisodesFilter.allEpisodes.text, style: .default, handler: { action in
-            self.filterTypeSelected = .allEpisodes
-            self.reloadEpisodeData()
+        alert.addAction(UIAlertAction(title: EpisodesFilter.clips.text, style: .default, handler: { action in
+            self.filterTypeSelected = .clips
+            self.retrieveClips()
+        }))
+        
+        alert.addAction(UIAlertAction(title: EpisodesFilter.about.text, style: .default, handler: { action in
+            self.filterTypeSelected = .about
+            self.showAbout()
         }))
         
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))

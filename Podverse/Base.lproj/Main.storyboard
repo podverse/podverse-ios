@@ -2168,6 +2168,9 @@
                                         <fontDescription key="fontDescription" type="system" pointSize="16"/>
                                         <inset key="contentEdgeInsets" minX="10" minY="10" maxX="10" maxY="10"/>
                                         <state key="normal" title="Clear"/>
+                                        <connections>
+                                            <action selector="clearEndTime:" destination="zd7-Mp-9ff" eventType="touchUpInside" id="Vgb-UV-pey"/>
+                                        </connections>
                                     </button>
                                 </subviews>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -2218,7 +2221,7 @@
                                             <constraint firstAttribute="width" constant="104" id="N4y-xa-Tvy"/>
                                         </constraints>
                                         <inset key="imageEdgeInsets" minX="3" minY="0.0" maxX="0.0" maxY="0.0"/>
-                                        <state key="normal" image="Play"/>
+                                        <state key="normal" image="play"/>
                                         <connections>
                                             <action selector="play:" destination="zd7-Mp-9ff" eventType="touchUpInside" id="LO1-S2-f4a"/>
                                         </connections>
@@ -2517,7 +2520,7 @@
                                             <constraint firstAttribute="height" constant="60" id="UoU-CO-eAz"/>
                                         </constraints>
                                         <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                        <state key="normal" image="Play"/>
+                                        <state key="normal" image="play"/>
                                         <connections>
                                             <action selector="play:" destination="fGh-hH-QQS" eventType="touchUpInside" id="L4I-Ay-bWb"/>
                                         </connections>
@@ -2529,31 +2532,29 @@
                                             <constraint firstAttribute="width" constant="40" id="r8H-FT-2Hg"/>
                                         </constraints>
                                         <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                        <state key="normal" image="Skip"/>
+                                        <state key="normal" image="skip"/>
                                     </button>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mId-2b-yiM">
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mId-2b-yiM">
                                         <rect key="frame" x="237" y="10" width="40" height="40"/>
-                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="40" id="U8Z-Se-6ep"/>
                                             <constraint firstAttribute="width" constant="40" id="lJn-JD-DrT"/>
                                         </constraints>
                                         <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                        <state key="normal" backgroundImage="forward-15">
-                                            <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                        </state>
+                                        <state key="normal" image="forward-15"/>
                                         <connections>
                                             <action selector="timeJumpForward:" destination="fGh-hH-QQS" eventType="touchUpInside" id="3ke-uG-z9r"/>
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="xBK-no-JRj">
                                         <rect key="frame" x="97" y="10" width="40" height="40"/>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="40" id="Taj-Ek-7tV"/>
                                             <constraint firstAttribute="width" constant="40" id="kOC-YF-bNP"/>
                                         </constraints>
                                         <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                        <state key="normal" image="Previous"/>
+                                        <state key="normal" image="backward-15"/>
                                         <connections>
                                             <action selector="timeJumpBackward:" destination="fGh-hH-QQS" eventType="touchUpInside" id="EJG-0b-Eu8"/>
                                         </connections>
@@ -2565,7 +2566,7 @@
                                             <constraint firstAttribute="height" constant="40" id="bXX-1n-1Nd"/>
                                         </constraints>
                                         <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                        <state key="normal" image="Previous"/>
+                                        <state key="normal" image="skip-back"/>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7Cr-KC-kdT">
                                         <rect key="frame" x="52" y="60" width="44" height="30"/>
@@ -3307,14 +3308,14 @@
     </scenes>
     <resources>
         <image name="Blank52" width="47" height="47"/>
-        <image name="Play" width="40" height="40"/>
-        <image name="Previous" width="40" height="40"/>
-        <image name="Skip" width="40" height="40"/>
         <image name="Tab-Downloads" width="25" height="25"/>
         <image name="Tab-Find" width="25" height="25"/>
         <image name="Tab-Podcasts" width="25" height="25"/>
+        <image name="backward-15" width="30" height="30"/>
         <image name="banner" width="337" height="61"/>
         <image name="forward-15" width="30" height="30"/>
+        <image name="play" width="30" height="30"/>
+        <image name="skip" width="30" height="30"/>
     </resources>
     <inferredMetricsTieBreakers>
         <segue reference="SU9-3d-tZS"/>
