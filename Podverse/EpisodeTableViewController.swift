@@ -13,7 +13,7 @@ class EpisodeTableViewController: PVViewController {
     var clipsArray = [MediaRef]()
     var feedUrl: String?
     var mediaUrl: String?
-    let moc = CoreDataHelper.createMOCForThread(threadType: .privateThread)
+    let moc = CoreDataHelper.createMOCForThread(threadType: .mainThread)
     let reachability = PVReachability.shared
     
     var filterTypeSelected: EpisodeFilter = .showNotes {
@@ -164,18 +164,18 @@ class EpisodeTableViewController: PVViewController {
                 self.headerImageView.sd_setImage(with: URL(string: podcast.imageUrl ?? ""), placeholderImage: #imageLiteral(resourceName: "PodverseIcon"))
             })
             
-            // Set Stream / Download / Downloading / Play button titles
-            if (DownloadingEpisodeList.shared.downloadingEpisodes.contains(where: {$0.mediaUrl == mediaUrl})) {
+            // Set Play / Downloading / Download / Stream button titles
+            if episode.fileName != nil {
+                self.streamButton.isHidden = true
+                self.localMultiButton.setTitle(EpisodeActions.play.text, for: .normal)
+            } else if (DownloadingEpisodeList.shared.downloadingEpisodes.contains(where: {$0.mediaUrl == mediaUrl})) {
                 self.streamButton.isHidden = false
                 self.streamButton.setTitle(EpisodeActions.stream.text, for: .normal)
                 self.localMultiButton.setTitle(EpisodeActions.downloading.text, for: .normal)
-            } else if episode.fileName == nil {
+            } else {
                 self.streamButton.isHidden = false
                 self.streamButton.setTitle(EpisodeActions.stream.text, for: .normal)
                 self.localMultiButton.setTitle(EpisodeActions.download.text, for: .normal)
-            } else {
-                self.streamButton.isHidden = true
-                self.localMultiButton.setTitle(EpisodeActions.play.text, for: .normal)
             }
 
         }

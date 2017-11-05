@@ -1678,7 +1678,7 @@
                                         </constraints>
                                     </imageView>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Episode Title" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="CvL-FW-4lp">
-                                        <rect key="frame" x="108" y="8" width="259" height="19.5"/>
+                                        <rect key="frame" x="108" y="8" width="255" height="19.5"/>
                                         <fontDescription key="fontDescription" type="system" weight="medium" pointSize="16"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
@@ -1690,6 +1690,7 @@
                                             <constraint firstAttribute="height" constant="44" id="qV8-Mr-d5z"/>
                                         </constraints>
                                         <fontDescription key="fontDescription" type="system" weight="medium" pointSize="17"/>
+                                        <inset key="titleEdgeInsets" minX="0.0" minY="0.0" maxX="4" maxY="0.0"/>
                                         <state key="normal" title="Download"/>
                                         <connections>
                                             <action selector="downloadPlay:" destination="Q8B-A3-mxB" eventType="touchUpInside" id="g2F-zi-R2U"/>
@@ -1711,7 +1712,7 @@
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="96" id="2Fg-k7-54i"/>
-                                    <constraint firstAttribute="trailing" secondItem="CvL-FW-4lp" secondAttribute="trailing" constant="8" id="5N2-vE-JL4"/>
+                                    <constraint firstAttribute="trailing" secondItem="CvL-FW-4lp" secondAttribute="trailing" constant="12" id="5N2-vE-JL4"/>
                                     <constraint firstAttribute="bottom" secondItem="HWv-4U-yUj" secondAttribute="bottom" constant="4" id="A2t-iK-T9O"/>
                                     <constraint firstItem="HWv-4U-yUj" firstAttribute="leading" secondItem="h38-tb-FZe" secondAttribute="trailing" constant="12" id="AsH-2Z-E7v"/>
                                     <constraint firstAttribute="bottom" secondItem="VWl-i7-LTW" secondAttribute="bottom" constant="4" id="DI6-tS-eDJ"/>
