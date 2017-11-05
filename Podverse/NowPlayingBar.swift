@@ -79,11 +79,11 @@ class NowPlayingBar:UIView {
                 self.activityIndicator.isHidden = true
                 self.playButton.setImage(UIImage(named:"AppIcon"), for: .normal)
                 self.playButton.isHidden = false
-            } else if self.audioPlayer.state == .playing && !self.pvMediaPlayer.shouldSetupClip && self.pvMediaPlayer.shouldStartFromTime == 0 {
+            } else if self.audioPlayer.state == .playing && !self.pvMediaPlayer.shouldSetupClip {
                 self.activityIndicator.isHidden = true
                 self.playButton.setImage(UIImage(named:"pause"), for: .normal)
                 self.playButton.isHidden = false
-            } else if self.audioPlayer.state == .buffering || self.pvMediaPlayer.shouldSetupClip || self.pvMediaPlayer.shouldStartFromTime > 0 {
+            } else if self.audioPlayer.state == .buffering || self.pvMediaPlayer.shouldSetupClip {
                 self.activityIndicator.isHidden = false
                 self.playButton.isHidden = true
             } else {
