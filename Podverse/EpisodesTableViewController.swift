@@ -589,13 +589,13 @@ extension EpisodesTableViewController:FilterSelectionProtocol {
         
         let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         
-        alert.addAction(UIAlertAction(title: EpisodesFilter.allEpisodes.text, style: .default, handler: { action in
-            self.filterTypeSelected = .allEpisodes
+        alert.addAction(UIAlertAction(title: EpisodesFilter.downloaded.text, style: .default, handler: { action in
+            self.filterTypeSelected = .downloaded
             self.reloadEpisodeData()
         }))
         
-        alert.addAction(UIAlertAction(title: EpisodesFilter.downloaded.text, style: .default, handler: { action in
-            self.filterTypeSelected = .downloaded
+        alert.addAction(UIAlertAction(title: EpisodesFilter.allEpisodes.text, style: .default, handler: { action in
+            self.filterTypeSelected = .allEpisodes
             self.reloadEpisodeData()
         }))
         
