@@ -2131,14 +2131,26 @@
                                             <outlet property="delegate" destination="zd7-Mp-9ff" id="ywq-0L-ViQ"/>
                                         </connections>
                                     </textField>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dov-d5-Tqf">
+                                        <rect key="frame" x="121.5" y="4" width="58" height="40"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="58" id="WQT-OA-Jna"/>
+                                            <constraint firstAttribute="height" constant="40" id="bkd-SC-vGQ"/>
+                                        </constraints>
+                                        <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                        <inset key="contentEdgeInsets" minX="10" minY="10" maxX="10" maxY="10"/>
+                                        <state key="normal" title="Clear"/>
+                                    </button>
                                 </subviews>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <constraints>
                                     <constraint firstItem="4In-sC-hjV" firstAttribute="top" secondItem="xAh-CT-FSM" secondAttribute="top" id="3xK-z4-Wed"/>
                                     <constraint firstAttribute="height" constant="103" id="7sC-c5-tMe"/>
+                                    <constraint firstAttribute="trailing" secondItem="dov-d5-Tqf" secondAttribute="trailing" constant="8" id="85x-kR-C6q"/>
                                     <constraint firstItem="wM9-5c-vZO" firstAttribute="top" secondItem="4In-sC-hjV" secondAttribute="bottom" constant="8" id="GiJ-QM-lrf"/>
                                     <constraint firstItem="wM9-5c-vZO" firstAttribute="leading" secondItem="xAh-CT-FSM" secondAttribute="leading" constant="12" id="HTa-aY-DK0"/>
                                     <constraint firstItem="4In-sC-hjV" firstAttribute="leading" secondItem="xAh-CT-FSM" secondAttribute="leading" constant="4" id="ci9-rY-ASs"/>
+                                    <constraint firstItem="dov-d5-Tqf" firstAttribute="top" secondItem="xAh-CT-FSM" secondAttribute="top" constant="4" id="iZb-4D-qgB"/>
                                     <constraint firstAttribute="trailing" secondItem="wM9-5c-vZO" secondAttribute="trailing" constant="12" id="jg7-Wi-B5K"/>
                                 </constraints>
                             </view>
@@ -2257,6 +2269,7 @@
                     </view>
                     <connections>
                         <outlet property="activityIndicator" destination="QH5-8n-fHn" id="Icb-L0-PvK"/>
+                        <outlet property="clearButton" destination="dov-d5-Tqf" id="B6N-gs-2KQ"/>
                         <outlet property="currentTime" destination="TqT-XT-WqR" id="mJO-63-OGU"/>
                         <outlet property="duration" destination="viA-V7-R1t" id="0Lw-t3-blq"/>
                         <outlet property="endPreview" destination="4In-sC-hjV" id="iSo-pR-dsN"/>
@@ -2490,14 +2503,17 @@
                                         <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         <state key="normal" image="Skip"/>
                                     </button>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mId-2b-yiM">
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mId-2b-yiM">
                                         <rect key="frame" x="237" y="10" width="40" height="40"/>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="40" id="U8Z-Se-6ep"/>
                                             <constraint firstAttribute="width" constant="40" id="lJn-JD-DrT"/>
                                         </constraints>
                                         <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                        <state key="normal" image="Skip"/>
+                                        <state key="normal" backgroundImage="forward-15">
+                                            <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
                                         <connections>
                                             <action selector="timeJumpForward:" destination="fGh-hH-QQS" eventType="touchUpInside" id="3ke-uG-z9r"/>
                                         </connections>
@@ -2691,6 +2707,7 @@
                         <outlet property="speed" destination="7Cr-KC-kdT" id="cbh-bz-Vwn"/>
                         <outlet property="startTimeFlagView" destination="SBa-Dx-9rx" id="UzY-W5-l09"/>
                         <outlet property="startTimeLeadingConstraint" destination="Pjd-Ia-Lox" id="HCk-gJ-V8u"/>
+                        <outlet property="timeSkipForward" destination="mId-2b-yiM" id="LaZ-Fy-ikE"/>
                         <outlet property="view" destination="N8d-St-BhC" id="a5o-uf-OqS"/>
                         <segue destination="KLO-yl-1MA" kind="show" identifier="Show Add to Playlist" id="nDQ-g4-4ny"/>
                         <segue destination="zd7-Mp-9ff" kind="show" identifier="Show Make Clip Time" id="Dev-wo-Kx8"/>
@@ -3269,6 +3286,7 @@
         <image name="Tab-Find" width="25" height="25"/>
         <image name="Tab-Podcasts" width="25" height="25"/>
         <image name="banner" width="337" height="61"/>
+        <image name="forward-15" width="30" height="30"/>
     </resources>
     <inferredMetricsTieBreakers>
         <segue reference="SU9-3d-tZS"/>
