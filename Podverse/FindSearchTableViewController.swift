@@ -19,8 +19,13 @@ class FindSearchTableViewController: PVViewController {
     
     override func viewDidLoad() {
         self.searchBar.delegate = self
+        
         self.activityIndicator.hidesWhenStopped = true
+        hideActivityIndicator()
+        
         self.tableView.isHidden = true
+        
+        loadSearchForPodcastsMessage()
     }
     
     func loadNoDataView(message: String, buttonTitle: String?, buttonPressed: Selector?) {
@@ -49,6 +54,10 @@ class FindSearchTableViewController: PVViewController {
     
     func loadNoResultsMessage() {
         loadNoDataView(message: Strings.Errors.noSearchResultsFound, buttonTitle: nil, buttonPressed: nil)
+    }
+    
+    func loadSearchForPodcastsMessage() {
+        loadNoDataView(message: "Search for podcasts by title", buttonTitle: nil, buttonPressed: nil)
     }
     
     func showActivityIndicator() {
