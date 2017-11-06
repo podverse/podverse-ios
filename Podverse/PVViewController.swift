@@ -53,10 +53,8 @@ class PVViewController: UIViewController {
     
     func toggleNowPlayingBar() {
         self.updateNowPlayingBarData() { shouldShow in
-            let tabbarVC = self.tabBarController
-            
             if shouldShow {
-                tabbarVC?.showPlayerView()
+                self.tabBarController?.showPlayerView()
             } else {
                 self.tabBarController?.hidePlayerView()
             }
