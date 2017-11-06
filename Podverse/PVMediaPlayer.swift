@@ -191,8 +191,8 @@ class PVMediaPlayer: NSObject {
         let state = audioPlayer.state
         
         // If a clip has reached or exceeded it's end time playback position, the clip data will stay in the UI, the player will pause, and the next time the player attempts to play a Notification is dispatched telling the VCs to hide the clip data.
-        if self.shouldHideClipDataNextPlay && !isInClipTimeRange() {
-            removeClipDataFromNowPlayingItem()
+        if self.shouldHideClipDataNextPlay && !isInClipTimeRange(), let item = self.nowPlayingItem {
+            item.removeClipData()
             
             self.shouldStopAtEndTime = 0
             self.shouldHideClipDataNextPlay = false
@@ -329,16 +329,6 @@ class PVMediaPlayer: NSObject {
         } else {
             self.duration = self.audioPlayer.duration
         }
-    }
-    
-    func removeClipDataFromNowPlayingItem() {
-        self.nowPlayingItem?.clipTitle = nil
-        self.nowPlayingItem?.startTime = nil
-        self.nowPlayingItem?.endTime = nil
-        self.nowPlayingItem?.hasReachedEnd = false
-        self.nowPlayingItem?.mediaRefId = nil
-        self.nowPlayingItem?.ownerId = nil
-        self.nowPlayingItem?.ownerName = nil
     }
     
     func loadPlayerHistoryItem(item: PlayerHistoryItem) {
