@@ -224,8 +224,9 @@ class CoreDataHelper {
         let concurrencyType:NSManagedObjectContextConcurrencyType = threadType == .privateThread ? .privateQueueConcurrencyType : .mainQueueConcurrencyType
         
         let moc = NSManagedObjectContext(concurrencyType: concurrencyType)
-        CoreDataHelper.shared.managedObjectContext.refreshAllObjects()
-        moc.parent = CoreDataHelper.shared.managedObjectContext
+        let parent = CoreDataHelper.shared.managedObjectContext
+        parent.refreshAllObjects()
+        moc.parent = parent
         
         return moc
     }
