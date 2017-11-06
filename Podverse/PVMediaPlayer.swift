@@ -113,7 +113,8 @@ class PVMediaPlayer: NSObject {
             if let reasonKey = info[AVAudioSessionRouteChangeReasonKey] as? UInt {
                 let reason = AVAudioSessionRouteChangeReason(rawValue: reasonKey)
                 if reason == AVAudioSessionRouteChangeReason.oldDeviceUnavailable {
-                    // Headphones were unplugged and AVPlayer has paused, so set the Play/Pause icon to Pause
+                    // Headphones were unplugged, so the media player should pause
+                    pause()
                 }
             }
         }
@@ -155,10 +156,12 @@ class PVMediaPlayer: NSObject {
     
     fileprivate func addObservers() {
         self.addObserver(self, forKeyPath: #keyPath(audioPlayer.state), options: [.new], context: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(headphonesWereUnplugged), name: .AVAudioSessionRouteChange, object: AVAudioSession.sharedInstance())
     }
     
     fileprivate func removeObservers() {
         self.removeObserver(self, forKeyPath: #keyPath(audioPlayer.state))
+        NotificationCenter.default.removeObserver(self, name: .AVAudioSessionRouteChange, object: AVAudioSession.sharedInstance())
     }
     
     @objc private func stopAtEndTime() {
