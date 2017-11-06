@@ -225,8 +225,8 @@ class CoreDataHelper {
         
         let moc = NSManagedObjectContext(concurrencyType: concurrencyType)
         let parent = CoreDataHelper.shared.managedObjectContext
-        parent.refreshAllObjects()
         moc.parent = parent
+        moc.refreshObjects()
         
         return moc
     }
@@ -241,5 +241,10 @@ extension NSManagedObjectContext {
         catch {
            print("Could not save current context: ", error.localizedDescription) 
         }
+    }
+    
+    func refreshObjects() {
+        self.parent?.refreshAllObjects()
+        self.refreshAllObjects()
     }
 }

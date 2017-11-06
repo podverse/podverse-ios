@@ -101,8 +101,7 @@ class PodcastsTableViewController: PVViewController, AutoDownloadProtocol {
     }
     
     func loadPodcastData() {
-        self.moc.parent?.refreshAllObjects()
-        self.moc.refreshAllObjects()
+        self.moc.refreshObjects()
         self.subscribedPodcastsArray = CoreDataHelper.fetchEntities(className:"Podcast", predicate: nil, moc:moc) as! [Podcast]
         self.subscribedPodcastsArray.sort(by: { $0.title.removeArticles() < $1.title.removeArticles() } )
         
