@@ -267,13 +267,13 @@ class PlayerHistoryItem: NSObject, NSCoding {
     }
     
     func removeClipData() {
-        self.nowPlayingItem?.clipTitle = nil
-        self.nowPlayingItem?.startTime = nil
-        self.nowPlayingItem?.endTime = nil
-        self.nowPlayingItem?.hasReachedEnd = false
-        self.nowPlayingItem?.mediaRefId = nil
-        self.nowPlayingItem?.ownerId = nil
-        self.nowPlayingItem?.ownerName = nil
+        self.clipTitle = nil
+        self.startTime = nil
+        self.endTime = nil
+        self.hasReachedEnd = false
+        self.mediaRefId = nil
+        self.ownerId = nil
+        self.ownerName = nil
     }
     
 }
