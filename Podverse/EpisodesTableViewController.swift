@@ -500,13 +500,10 @@ extension EpisodesTableViewController: UITableViewDataSource, UITableViewDelegat
             let deleteAction = UITableViewRowAction(style: .default, title: "Delete", handler: {action, indexpath in
                 self.episodesArray.remove(at: indexPath.row)
                 self.tableView.deleteRows(at: [indexPath], with: .fade)
-                if self.pvMediaPlayer.nowPlayingItem?.episodeMediaUrl == episodeToEdit.mediaUrl {
-                    self.tabBarController?.hidePlayerView()
-                }
                 
                 PVDeleter.deleteEpisode(episodeId: episodeToEdit.objectID, fileOnly: true, shouldCallNotificationMethod: true)
                 
-                if self.filterTypeSelected == .downloaded && self.episodesArray.count < 1 {
+                if self.filterTypeSelected == .downloaded && self.episodesArray.isEmpty {
                     self.loadNoDownloadedEpisodesMessage()
                 }
             })
@@ -560,14 +557,7 @@ extension EpisodesTableViewController {
     
     override func episodeDeleted(_ notification:Notification) {
         super.episodeDeleted(notification)
-        
-        if let mediaUrl = notification.userInfo?["mediaUrl"] as? String, let index = self.episodesArray.index(where: { $0.mediaUrl == mediaUrl }), let _ = tableView.cellForRow(at: IndexPath(row: index, section: 0)) as? EpisodeTableViewCell {
-            if self.filterTypeSelected == .downloaded {
-                self.episodesArray.remove(at: index)
-                self.tableView.deleteRows(at: [IndexPath(row: index, section: 0)], with: .automatic)
-                self.moc.refreshAllObjects()
-            }
-        }
+        self.moc.refreshAllObjects()
     }
 
 }
