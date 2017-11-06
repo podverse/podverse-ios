@@ -120,6 +120,11 @@ class MediaPlayerViewController: PVViewController {
             switch touchEvent.phase {
             case .began:
                 removeTimer()
+            case .moved:
+                if let duration = self.pvMediaPlayer.duration {
+                    let newTime = Double(sender.value) * duration
+                    self.currentTime.text = PVTimeHelper.convertIntToHMSString(time: Int(newTime))
+                }
             case .ended:
                 if let duration = self.pvMediaPlayer.duration {
                     let newTime = Double(sender.value) * duration
