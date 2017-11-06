@@ -190,12 +190,13 @@ extension PodcastsTableViewController:UITableViewDelegate, UITableViewDataSource
     }
     
     func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
-        let podcastToEdit = self.subscribedPodcastsArray[indexPath.row]
+        let podcastToEditOid = self.subscribedPodcastsArray[indexPath.row].objectID
+        let podcastToEditFeedUrl = self.subscribedPodcastsArray[indexPath.row].feedUrl
         
         let deleteAction = UITableViewRowAction(style: .default, title: "Delete", handler: {action, indexpath in
             self.subscribedPodcastsArray.remove(at: indexPath.row)
-            self.tableView.deleteRows(at: [indexPath], with: .fade)
-            PVDeleter.deletePodcast(podcastId: podcastToEdit.objectID, feedUrl: podcastToEdit.feedUrl)
+            tableView.deleteRows(at: [indexPath], with: .fade)
+            PVDeleter.deletePodcast(podcastId: podcastToEditOid, feedUrl: podcastToEditFeedUrl)
         })
         
         return [deleteAction]
@@ -240,11 +241,11 @@ extension PodcastsTableViewController {
     override func podcastDeleted(_ notification:Notification) {
         super.podcastDeleted(notification)
         
-        // Make sure subscribedPodcastsArray is up to date. The app may crash if the tableView row count becomes inaccurate.
-        self.subscribedPodcastsArray = CoreDataHelper.fetchEntities(className:"Podcast", predicate: nil, moc:moc) as! [Podcast]
-        
-        if self.subscribedPodcastsArray.isEmpty {
-            self.tableView.reloadData()
+        if let feedUrl = notification.userInfo?["feedUrl"] as? String, let index = self.subscribedPodcastsArray.index(where: { $0.feedUrl == feedUrl }) {
+            DispatchQueue.main.async {
+                self.subscribedPodcastsArray.remove(at: index)
+                self.tableView.deleteRows(at: [IndexPath(row: index, section: 0)], with: .fade)
+            }
         }
     }
     
