@@ -166,7 +166,6 @@ class PVMediaPlayer: NSObject {
         if self.shouldStopAtEndTime > 0 {
             if let item = self.nowPlayingItem, let endTime = item.endTime {
                 if endTime > 0 && Int64(self.audioPlayer.progress) > endTime {
-                    self.shouldStopAtEndTime = 0
                     self.audioPlayer.pause()
                     self.shouldHideClipDataNextPlay = true
                     
@@ -189,14 +188,17 @@ class PVMediaPlayer: NSObject {
         let state = audioPlayer.state
         
         // If a clip has reached or exceeded it's end time playback position, the clip data will stay in the UI, the player will pause, and the next time the player attempts to play a Notification is dispatched telling the VCs to hide the clip data.
-        if self.shouldHideClipDataNextPlay {
+        if self.shouldHideClipDataNextPlay && !isInClipTimeRange() {
             removeClipDataFromNowPlayingItem()
+            
+            self.shouldStopAtEndTime = 0
+            self.shouldHideClipDataNextPlay = false
             
             DispatchQueue.main.async {
                 NotificationCenter.default.post(name: .hideClipData, object: nil, userInfo: nil)
             }
         }
-        self.shouldHideClipDataNextPlay = false
+        
         
         // If nothing loaded in the player, but playOrPause was pressed, then attempt to load and play the file.
         if checkIfNothingIsCurrentlyLoadedInPlayer() {
@@ -275,7 +277,7 @@ class PVMediaPlayer: NSObject {
             return true
         }
         
-        if self.audioPlayer.progress >= Double(endTime) {
+        if self.audioPlayer.progress > Double(endTime) {
             return false
         } else {
             return true
@@ -340,6 +342,7 @@ class PVMediaPlayer: NSObject {
         
         self.nowPlayingItem = item
         self.nowPlayingItem?.hasReachedEnd = false
+        self.shouldHideClipDataNextPlay = false
         
         setPlayingInfo()
         
