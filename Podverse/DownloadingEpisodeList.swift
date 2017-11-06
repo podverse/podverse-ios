@@ -15,8 +15,10 @@ final class DownloadingEpisodeList {
     var downloadingEpisodes = [DownloadingEpisode]()
     
     static func removeDownloadingEpisodeWithMediaURL(mediaUrl:String?) {
-        // If the episode is currently in the episodeDownloadArray, then delete the episode from the episodeDownloadArray
-        if let mediaUrl = mediaUrl, let index = DownloadingEpisodeList.shared.downloadingEpisodes.index(where: { $0.mediaUrl == mediaUrl }) {
+        var downloadingEpisodes = DownloadingEpisodeList.shared.downloadingEpisodes
+        
+        if let mediaUrl = mediaUrl, let index = downloadingEpisodes.index(where: { $0.mediaUrl == mediaUrl }), index < downloadingEpisodes.count {
+            downloadingEpisodes[index].removeFromDownloadHistory()
             DownloadingEpisodeList.shared.downloadingEpisodes.remove(at: index)
         }
     }

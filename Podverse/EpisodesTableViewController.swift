@@ -99,6 +99,7 @@ class EpisodesTableViewController: PVViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(self.downloadStarted(_:)), name: .downloadStarted, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(self.downloadResumed(_:)), name: .downloadResumed, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(self.downloadPaused(_:)), name: .downloadPaused, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.downloadCanceled(_:)), name: .downloadCanceled, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(self.downloadFinished(_:)), name: .downloadFinished, object: nil)
     }
     
@@ -106,6 +107,7 @@ class EpisodesTableViewController: PVViewController {
         NotificationCenter.default.removeObserver(self, name: .downloadStarted, object: nil)
         NotificationCenter.default.removeObserver(self, name: .downloadResumed, object: nil)
         NotificationCenter.default.removeObserver(self, name: .downloadPaused, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .downloadCanceled, object: nil)
         NotificationCenter.default.removeObserver(self, name: .downloadFinished, object: nil)
     }
     
@@ -534,11 +536,12 @@ extension EpisodesTableViewController: UITableViewDataSource, UITableViewDelegat
 extension EpisodesTableViewController {
     
     func updateCellByNotification(_ notification:Notification) {
-        reloadEpisodeData()
         if let downloadingEpisode = notification.userInfo?[Episode.episodeKey] as? DownloadingEpisode, let mediaUrl = downloadingEpisode.mediaUrl, let index = self.episodesArray.index(where: { $0.mediaUrl == mediaUrl }) {
             
             self.moc.refresh(self.episodesArray[index], mergeChanges: true)
             self.tableView.reloadRows(at: [IndexPath(row: index, section: 0)], with: .automatic)            
+        } else {
+            reloadEpisodeData()
         }
     }
     
@@ -547,6 +550,10 @@ extension EpisodesTableViewController {
     }
     
     func downloadPaused(_ notification:Notification) {
+        updateCellByNotification(notification)
+    }
+    
+    func downloadCanceled(_ notification:Notification) {
         updateCellByNotification(notification)
     }
 
