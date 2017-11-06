@@ -14,6 +14,7 @@ import UIKit
 import StreamingKit
 
 extension Notification.Name {
+    static let hideClipData = Notification.Name("hideClipData")
     static let playerHasFinished = Notification.Name("playerHasFinished")
 }
 
@@ -82,6 +83,7 @@ class PVMediaPlayer: NSObject {
     var playerHistoryManager = PlayerHistory.manager
     var shouldAutoplayAlways: Bool = false
     var shouldAutoplayOnce: Bool = false
+    var shouldHideClipDataNextPlay:Bool = false
     var shouldSetupClip: Bool = false
     var shouldStartFromTime: Int64 = 0
     var shouldStopAtEndTime: Int64 = 0
@@ -111,7 +113,8 @@ class PVMediaPlayer: NSObject {
             if let reasonKey = info[AVAudioSessionRouteChangeReasonKey] as? UInt {
                 let reason = AVAudioSessionRouteChangeReason(rawValue: reasonKey)
                 if reason == AVAudioSessionRouteChangeReason.oldDeviceUnavailable {
-                    // Headphones were unplugged and AVPlayer has paused, so set the Play/Pause icon to Pause
+                    // Headphones were unplugged, so the media player should pause
+                    pause()
                 }
             }
         }
@@ -153,10 +156,12 @@ class PVMediaPlayer: NSObject {
     
     fileprivate func addObservers() {
         self.addObserver(self, forKeyPath: #keyPath(audioPlayer.state), options: [.new], context: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(headphonesWereUnplugged), name: .AVAudioSessionRouteChange, object: AVAudioSession.sharedInstance())
     }
     
     fileprivate func removeObservers() {
         self.removeObserver(self, forKeyPath: #keyPath(audioPlayer.state))
+        NotificationCenter.default.removeObserver(self, name: .AVAudioSessionRouteChange, object: AVAudioSession.sharedInstance())
     }
     
     @objc private func stopAtEndTime() {
@@ -164,8 +169,8 @@ class PVMediaPlayer: NSObject {
         if self.shouldStopAtEndTime > 0 {
             if let item = self.nowPlayingItem, let endTime = item.endTime {
                 if endTime > 0 && Int64(self.audioPlayer.progress) > endTime {
-                    self.shouldStopAtEndTime = 0
                     self.audioPlayer.pause()
+                    self.shouldHideClipDataNextPlay = true
                     
                     if self.shouldAutoplayAlways {
                         print("should autoplay to the next clip")
@@ -173,6 +178,8 @@ class PVMediaPlayer: NSObject {
                 }
             }
         }
+        
+        
         
     }
     
@@ -183,7 +190,20 @@ class PVMediaPlayer: NSObject {
         
         let state = audioPlayer.state
         
-        // NOTE: if nothing loaded in the player, but playOrPause was pressed, then attempt to load and play the file.
+        // If a clip has reached or exceeded it's end time playback position, the clip data will stay in the UI, the player will pause, and the next time the player attempts to play a Notification is dispatched telling the VCs to hide the clip data.
+        if self.shouldHideClipDataNextPlay && !isInClipTimeRange(), let item = self.nowPlayingItem {
+            item.removeClipData()
+            
+            self.shouldStopAtEndTime = 0
+            self.shouldHideClipDataNextPlay = false
+            
+            DispatchQueue.main.async {
+                NotificationCenter.default.post(name: .hideClipData, object: nil, userInfo: nil)
+            }
+        }
+        
+        
+        // If nothing loaded in the player, but playOrPause was pressed, then attempt to load and play the file.
         if checkIfNothingIsCurrentlyLoadedInPlayer() {
             self.shouldAutoplayOnce = true
             if let item = self.nowPlayingItem {
@@ -260,7 +280,7 @@ class PVMediaPlayer: NSObject {
             return true
         }
         
-        if self.audioPlayer.progress >= Double(endTime) {
+        if self.audioPlayer.progress > Double(endTime) {
             return false
         } else {
             return true
@@ -315,6 +335,7 @@ class PVMediaPlayer: NSObject {
         
         self.nowPlayingItem = item
         self.nowPlayingItem?.hasReachedEnd = false
+        self.shouldHideClipDataNextPlay = false
         
         setPlayingInfo()
         

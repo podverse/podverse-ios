@@ -13,6 +13,7 @@ import CoreData
 extension Notification.Name {
     static let downloadStarted = Notification.Name("downloadStarted")
     static let downloadPaused = Notification.Name("downloadPaused")
+    static let downloadCanceled = Notification.Name("downloadCanceled")
     static let downloadProgressed = Notification.Name("downloadProgressed")
     static let downloadResumed = Notification.Name("downloadResumed")
     static let downloadFinished = Notification.Name("downloadFinished")
@@ -54,6 +55,26 @@ class PVDownloader:NSObject {
                 }
             }
         })
+    }
+    
+    func cancelDownloadingEpisode(downloadingEpisode: DownloadingEpisode) {
+        
+        DownloadingEpisodeList.removeDownloadingEpisodeWithMediaURL(mediaUrl: downloadingEpisode.mediaUrl)
+        
+        downloadSession.getTasksWithCompletionHandler( { dataTasks, uploadTasks, downloadTasks in
+            for episodeDownloadTask in downloadTasks {
+                if episodeDownloadTask.taskIdentifier == downloadingEpisode.taskIdentifier {
+                    episodeDownloadTask.cancel()
+                }
+            }
+            
+            DispatchQueue.main.async {
+                NotificationCenter.default.post(name: .downloadCanceled, object: nil, userInfo: [Episode.episodeKey:downloadingEpisode])
+            }
+        })
+        
+        PVDownloader.shared.decrementBadge()
+        
     }
     
     func resumeDownloadingEpisode(downloadingEpisode: DownloadingEpisode) {

@@ -17,6 +17,33 @@ class AboutPlayingItemViewController: UIViewController, UIWebViewDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        addObservers()
+        
+        loadWebView()
+        
+        self.view.backgroundColor = UIColor.black
+        self.webView.delegate = self
+    }
+    
+    override func viewWillLayoutSubviews() {
+        super.viewWillLayoutSubviews()
+        self.webView.scrollView.contentInset = UIEdgeInsets.zero;
+    }
+    
+    deinit {
+        removeObservers()
+    }
+    
+    fileprivate func addObservers() {
+        NotificationCenter.default.addObserver(self, selector: #selector(loadWebView), name: .hideClipData, object: nil)
+    }
+    
+    fileprivate func removeObservers() {
+        NotificationCenter.default.removeObserver(self, name: .hideClipData, object: nil)
+    }
+    
+    @objc fileprivate func loadWebView() {
+        
         if let item = pvMediaPlayer.nowPlayingItem {
             var text = ""
             
@@ -37,18 +64,11 @@ class AboutPlayingItemViewController: UIViewController, UIWebViewDelegate {
             } else {
                 text += kNoShowNotesMessage
             }
-
+            
             self.webView.loadHTMLString(text.formatHtmlString(isWhiteBg: false), baseURL: nil)
-
+            
         }
         
-        self.view.backgroundColor = UIColor.black
-        self.webView.delegate = self
-    }
-    
-    override func viewWillLayoutSubviews() {
-        super.viewWillLayoutSubviews()
-        self.webView.scrollView.contentInset = UIEdgeInsets.zero;
     }
     
     func webView(_ webView: UIWebView, shouldStartLoadWith request: URLRequest, navigationType: UIWebViewNavigationType) -> Bool {

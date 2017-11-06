@@ -266,4 +266,14 @@ class PlayerHistoryItem: NSObject, NSCoding {
         return copy
     }
     
+    func removeClipData() {
+        self.clipTitle = nil
+        self.startTime = nil
+        self.endTime = nil
+        self.hasReachedEnd = false
+        self.mediaRefId = nil
+        self.ownerId = nil
+        self.ownerName = nil
+    }
+    
 }

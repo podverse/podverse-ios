@@ -116,6 +116,30 @@ extension DownloadsTableViewController:UITableViewDelegate, UITableViewDataSourc
         tableView.deselectRow(at: indexPath, animated: false)
 
     }
+    
+    func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+        return true
+    }
+    
+    func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
+        let episodeToEdit = DownloadingEpisodeList.shared.downloadingEpisodes[indexPath.row]
+        
+        let action:UITableViewRowAction
+        
+        if let downloadComplete = episodeToEdit.downloadComplete, downloadComplete == true {
+            action = UITableViewRowAction(style: .default, title: "Hide", handler: {action, indexpath in
+                DownloadingEpisodeList.removeDownloadingEpisodeWithMediaURL(mediaUrl: episodeToEdit.mediaUrl)
+                self.tableView.deleteRows(at: [indexPath], with: .fade)
+            })
+        } else {
+            action = UITableViewRowAction(style: .default, title: "Cancel", handler: {action, indexpath in
+                self.pvDownloader.cancelDownloadingEpisode(downloadingEpisode: episodeToEdit)
+                self.tableView.deleteRows(at: [indexPath], with: .fade)
+            })
+        }
+        
+        return [action]
+    }
 }
 
 extension DownloadsTableViewController {
