@@ -88,28 +88,28 @@ extension UIViewController {
         var allConstraints = [NSLayoutConstraint]()
         
         let buttonHorizontalConstraint = NSLayoutConstraint(  item:noDataView,
-                                                              attribute:.centerY,
+                                                              attribute:.centerX,
                                                               relatedBy:.equal,
                                                               toItem:actionButton,
-                                                              attribute:.centerY,
+                                                              attribute:.centerX,
                                                               multiplier:1,
                                                               constant:0)
         
-        let buttonVerticalConstraint = NSLayoutConstraint(  item:noDataView,
-                                                            attribute:.centerX,
+        let buttonVerticalConstraint = NSLayoutConstraint(  item:actionButton,
+                                                            attribute:.top,
                                                             relatedBy:.equal,
-                                                            toItem:actionButton,
-                                                            attribute:.centerX,
+                                                            toItem:noDataTextLabel,
+                                                            attribute:.bottom,
                                                             multiplier:1,
-                                                            constant:0)
+                                                            constant:20)
         
-        let labelVerticalConstraint = NSLayoutConstraint(  item:actionButton,
-                                                              attribute:.top,
+        let labelVerticalConstraint = NSLayoutConstraint(  item:noDataView,
+                                                              attribute:.centerY,
                                                               relatedBy:.equal,
                                                               toItem:noDataTextLabel,
-                                                              attribute:.bottom,
+                                                              attribute:.centerY,
                                                               multiplier:1,
-                                                              constant:20)
+                                                              constant:0)
         
         let labelHorizontalConstraint = NSLayoutConstraint(  item:noDataView,
                                                             attribute:.centerX,
@@ -119,7 +119,12 @@ extension UIViewController {
                                                             multiplier:1,
                                                             constant:0)
         
-        let labelWidthConstraint = NSLayoutConstraint(item: noDataTextLabel, attribute: .width, relatedBy: .lessThanOrEqual, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: 300)
+        let labelWidthConstraint = NSLayoutConstraint(item: noDataTextLabel, 
+                                                      attribute: .width, 
+                                                      relatedBy: .lessThanOrEqual, 
+                                                      toItem: nil, 
+                                                      attribute: .notAnAttribute, 
+                                                      multiplier: 1, constant: 300)
 
         allConstraints.append(labelVerticalConstraint)
         allConstraints.append(labelHorizontalConstraint)
