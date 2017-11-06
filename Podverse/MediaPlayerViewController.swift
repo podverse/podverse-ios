@@ -91,10 +91,12 @@ class MediaPlayerViewController: PVViewController {
     }
     
     fileprivate func addObservers() {
+        NotificationCenter.default.addObserver(self, selector: #selector(hideClipData), name: .hideClipData, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(pause), name: .playerHasFinished, object: nil)
     }
     
     fileprivate func removeObservers() {
+        NotificationCenter.default.removeObserver(self, name: .hideClipData, object: nil)
         NotificationCenter.default.removeObserver(self, name: .playerHasFinished, object: nil)
     }
     
@@ -472,6 +474,12 @@ class MediaPlayerViewController: PVViewController {
             self.endTimeLeadingConstraint.constant = (CGFloat(Double(endTime) / dur) * UIScreen.main.bounds.width) - sliderThumbWidthAdjustment
         }
         else {
+            hideClipData()
+        }
+    }
+    
+    @objc fileprivate func hideClipData() {
+        DispatchQueue.main.async {
             self.startTimeFlagView.isHidden = true
             self.endTimeFlagView.isHidden = true
         }

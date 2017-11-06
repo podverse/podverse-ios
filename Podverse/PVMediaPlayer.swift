@@ -14,6 +14,7 @@ import UIKit
 import StreamingKit
 
 extension Notification.Name {
+    static let hideClipData = Notification.Name("hideClipData")
     static let playerHasFinished = Notification.Name("playerHasFinished")
 }
 
@@ -82,6 +83,7 @@ class PVMediaPlayer: NSObject {
     var playerHistoryManager = PlayerHistory.manager
     var shouldAutoplayAlways: Bool = false
     var shouldAutoplayOnce: Bool = false
+    var shouldHideClipDataNextPlay:Bool = false
     var shouldSetupClip: Bool = false
     var shouldStartFromTime: Int64 = 0
     var shouldStopAtEndTime: Int64 = 0
@@ -166,6 +168,7 @@ class PVMediaPlayer: NSObject {
                 if endTime > 0 && Int64(self.audioPlayer.progress) > endTime {
                     self.shouldStopAtEndTime = 0
                     self.audioPlayer.pause()
+                    self.shouldHideClipDataNextPlay = true
                     
                     if self.shouldAutoplayAlways {
                         print("should autoplay to the next clip")
@@ -173,6 +176,8 @@ class PVMediaPlayer: NSObject {
                 }
             }
         }
+        
+        
         
     }
     
@@ -183,7 +188,17 @@ class PVMediaPlayer: NSObject {
         
         let state = audioPlayer.state
         
-        // NOTE: if nothing loaded in the player, but playOrPause was pressed, then attempt to load and play the file.
+        // If a clip has reached or exceeded it's end time playback position, the clip data will stay in the UI, the player will pause, and the next time the player attempts to play a Notification is dispatched telling the VCs to hide the clip data.
+        if self.shouldHideClipDataNextPlay {
+            removeClipDataFromNowPlayingItem()
+            
+            DispatchQueue.main.async {
+                NotificationCenter.default.post(name: .hideClipData, object: nil, userInfo: nil)
+            }
+        }
+        self.shouldHideClipDataNextPlay = false
+        
+        // If nothing loaded in the player, but playOrPause was pressed, then attempt to load and play the file.
         if checkIfNothingIsCurrentlyLoadedInPlayer() {
             self.shouldAutoplayOnce = true
             if let item = self.nowPlayingItem {
@@ -309,6 +324,16 @@ class PVMediaPlayer: NSObject {
         } else {
             self.duration = self.audioPlayer.duration
         }
+    }
+    
+    func removeClipDataFromNowPlayingItem() {
+        self.nowPlayingItem?.clipTitle = nil
+        self.nowPlayingItem?.startTime = nil
+        self.nowPlayingItem?.endTime = nil
+        self.nowPlayingItem?.hasReachedEnd = false
+        self.nowPlayingItem?.mediaRefId = nil
+        self.nowPlayingItem?.ownerId = nil
+        self.nowPlayingItem?.ownerName = nil
     }
     
     func loadPlayerHistoryItem(item: PlayerHistoryItem) {
