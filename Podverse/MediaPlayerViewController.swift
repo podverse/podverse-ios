@@ -315,6 +315,12 @@ class MediaPlayerViewController: PVViewController {
             self.performSegue(withIdentifier: "Show Add to Playlist", sender: "Current Clip")
         }))
         
+        if let item = self.playerHistoryManager.historyItems.first {
+            if item.mediaRefId == nil {
+                addToPlaylistActions.actions[1].isEnabled = false
+            }
+        }
+        
         addToPlaylistActions.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
         
         self.present(addToPlaylistActions, animated: true, completion: nil)
