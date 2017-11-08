@@ -16,23 +16,14 @@ class AddToPlaylistViewController: UIViewController {
     var shouldSaveFullEpisode = false
     
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
+    @IBOutlet weak var activityIndicatorView: UIView!
     @IBOutlet weak var clipTitle: UILabel!
     @IBOutlet weak var episodePubDate: UILabel!
     @IBOutlet weak var episodeTitle: UILabel!
-    @IBOutlet weak var loadingView: UIView!
     @IBOutlet weak var podcastImage: UIImageView!
     @IBOutlet weak var podcastTitle: UILabel!
-    @IBOutlet weak var retryButton: UIButton!
-    @IBOutlet weak var statusMessage: UILabel!
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var time: UILabel!
-    
-    @IBAction func retryButtonTouched(_ sender: Any) {
-        showIndicator()
-        Playlist.retrievePlaylistsFromServer() { (playlists) -> Void in
-            self.reloadPlaylistData(playlists: playlists)
-        }
-    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -64,14 +55,19 @@ class AddToPlaylistViewController: UIViewController {
             
         }
         
+        self.tableView.isHidden = true
+        
         self.activityIndicator.hidesWhenStopped = true
-        showIndicator()
+        showActivityIndicator()
         
         let new = UIBarButtonItem(title: "New", style: .plain, target: self, action: #selector(showCreatePlaylist))
         self.navigationItem.rightBarButtonItem = new
         
         Playlist.retrievePlaylistsFromServer() { (playlists) -> Void in
-            self.reloadPlaylistData(playlists: playlists)
+            if let playlists = playlists {
+                self.playlistsArray = playlists
+            }
+            self.reloadPlaylistData()
         }
         
     }
@@ -79,7 +75,7 @@ class AddToPlaylistViewController: UIViewController {
     func showCreatePlaylist() {
         
         if !checkForConnectivity() {
-            self.showStatusMessage(message: "You must connect to the internet to create a playlist.")
+            loadNoInternetMessage()
             return
         }
 
@@ -97,6 +93,7 @@ class AddToPlaylistViewController: UIViewController {
                     if let playlist = playlist {
                         self.playlistsArray.append(playlist)
                         self.tableView.reloadData()
+                        self.tableView.isHidden = false
                     }
                 }
             }
@@ -106,54 +103,67 @@ class AddToPlaylistViewController: UIViewController {
         
     }
     
-    func reloadPlaylistData(playlists: [Playlist]? = nil) {
+    func reloadPlaylistData() {
+        
+        hideActivityIndicator()
         
         if !checkForConnectivity() {
-            self.showStatusMessage(message: "You must connect to the internet to load playlists.")
+            loadNoInternetMessage()
             return
         }
         
-        guard let pArray = playlists, pArray.count > 0 else {
-            self.showStatusMessage(message: "No playlists available")
+        guard playlistsArray.count > 0 else {
+            loadNoPlaylistsMessage()
             return
         }
         
-        for playlist in pArray {
+        for playlist in playlistsArray {
             self.playlistsArray.append(playlist)
         }
         
-        self.showPlaylistsView()
         self.tableView.reloadData()
         
-    }
-    
-    func showStatusMessage(message: String) {
-        self.activityIndicator.stopAnimating()
-        self.statusMessage.text = message
-        self.tableView.isHidden = true
-        self.loadingView.isHidden = false
-        self.statusMessage.isHidden = false
-        
-        if message == "You must connect to the internet to load playlists." {
-            self.retryButton.isHidden = false
-        }
-    }
-    
-    func showIndicator() {
-        self.activityIndicator.startAnimating()
-        self.tableView.isHidden = true
-        self.loadingView.isHidden = false
-        self.activityIndicator.isHidden = false
-        self.statusMessage.isHidden = true
-        self.retryButton.isHidden = true
-    }
-    
-    func showPlaylistsView() {
-        self.activityIndicator.stopAnimating()
         self.tableView.isHidden = false
-        self.loadingView.isHidden = true
-        self.statusMessage.isHidden = true
-        self.retryButton.isHidden = true
+        
+    }
+    
+    func loadNoDataView(message: String, buttonTitle: String?, buttonPressed: Selector?) {
+        
+        if let noDataView = self.view.subviews.first(where: { $0.tag == kNoDataViewTag}) {
+            
+            if let messageView = noDataView.subviews.first(where: {$0 is UILabel}), let messageLabel = messageView as? UILabel {
+                messageLabel.text = message
+            }
+            
+            if let buttonView = noDataView.subviews.first(where: {$0 is UIButton}), let button = buttonView as? UIButton {
+                button.setTitle(buttonTitle, for: .normal)
+            }
+        }
+        else {
+            self.addNoDataViewWithMessage(message, buttonTitle: buttonTitle, buttonImage: nil, retryPressed: buttonPressed)
+        }
+        
+        showNoDataView()
+        
+    }
+    
+    func loadNoInternetMessage() {
+        loadNoDataView(message: Strings.Errors.noPlaylistsInternet, buttonTitle: "Retry", buttonPressed: #selector(AddToPlaylistViewController.reloadPlaylistData))
+    }
+    
+    func loadNoPlaylistsMessage() {
+        loadNoDataView(message: Strings.Errors.noPlaylistsAvailable, buttonTitle: nil, buttonPressed: nil)
+    }
+    
+    func showActivityIndicator() {
+        self.tableView.isHidden = true
+        self.activityIndicator.startAnimating()
+        self.activityIndicatorView.isHidden = false
+    }
+    
+    func hideActivityIndicator() {
+        self.activityIndicator.stopAnimating()
+        self.activityIndicatorView.isHidden = true
     }
     
 }
