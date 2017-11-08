@@ -302,9 +302,10 @@ class PVMediaPlayer: NSObject {
             return
         }
         
-        var podcastTitle: String?
-        var episodeTitle: String?
-//        var podcastImage: MPMediaItemArtwork?
+        var podcastTitle:String?
+        var episodeTitle:String?
+        var artwork:MPMediaItemArtwork?
+        
         let rate = self.audioPlayer.rate
         
         if let pTitle = item.podcastTitle {
@@ -317,7 +318,29 @@ class PVMediaPlayer: NSObject {
         
         var currentPlaybackTime = NSNumber(value: self.audioPlayer.progress)
         
-        MPNowPlayingInfoCenter.default().nowPlayingInfo = [MPMediaItemPropertyArtist: podcastTitle, MPMediaItemPropertyTitle: episodeTitle, MPMediaItemPropertyPlaybackDuration: self.duration, MPNowPlayingInfoPropertyElapsedPlaybackTime: currentPlaybackTime, MPNowPlayingInfoPropertyPlaybackRate: rate]
+        let podcastImage = Podcast.retrievePodcastImage(podcastImageURLString: item.podcastImageUrl, feedURLString: item.podcastFeedUrl, managedObjectID: nil, completion: { _ in
+            
+            guard let item =  self.nowPlayingItem else {
+                return
+            }
+            
+            var currentPlaybackTime = NSNumber(value: self.audioPlayer.progress)
+            let rate = self.audioPlayer.rate
+        
+            if let podcastImageUrlString = item.podcastImageUrl, let podcastImageUrl = URL(string: podcastImageUrlString) {
+                if let data = try? Data(contentsOf: podcastImageUrl), let image = UIImage(data: data) {
+                    let artwork = MPMediaItemArtwork.init(image: image)
+                    MPNowPlayingInfoCenter.default().nowPlayingInfo = [MPMediaItemPropertyArtist: item.podcastTitle, MPMediaItemPropertyTitle: item.episodeTitle, MPMediaItemPropertyArtwork: artwork, MPMediaItemPropertyPlaybackDuration: self.duration, MPNowPlayingInfoPropertyElapsedPlaybackTime: currentPlaybackTime, MPNowPlayingInfoPropertyPlaybackRate: rate]
+                }
+            }
+            
+        })
+        
+        if let podcastImage = podcastImage {
+            artwork = MPMediaItemArtwork.init(image: podcastImage)
+        }
+        
+        MPNowPlayingInfoCenter.default().nowPlayingInfo = [MPMediaItemPropertyArtist: podcastTitle, MPMediaItemPropertyTitle: episodeTitle, MPMediaItemPropertyArtwork: artwork, MPMediaItemPropertyPlaybackDuration: self.duration, MPNowPlayingInfoPropertyElapsedPlaybackTime: currentPlaybackTime, MPNowPlayingInfoPropertyPlaybackRate: rate]
         
     }
     
