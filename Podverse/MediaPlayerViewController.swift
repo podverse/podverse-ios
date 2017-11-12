@@ -305,6 +305,11 @@ class MediaPlayerViewController: PVViewController {
         
         self.navigationItem.backBarButtonItem = UIBarButtonItem(title:"Player", style:.plain, target:nil, action:nil)
         
+        if let item = self.playerHistoryManager.historyItems.first, item.mediaRefId == nil {
+            self.performSegue(withIdentifier: "Show Add to Playlist", sender: "Full Episode")
+            return
+        }
+        
         let addToPlaylistActions = UIAlertController(title: nil, message: nil, preferredStyle: UIAlertControllerStyle.actionSheet)
         
         addToPlaylistActions.addAction(UIAlertAction(title: "Full Episode", style: .default, handler: { action in
@@ -314,12 +319,6 @@ class MediaPlayerViewController: PVViewController {
         addToPlaylistActions.addAction(UIAlertAction(title: "Current Clip", style: .default, handler: { action in
             self.performSegue(withIdentifier: "Show Add to Playlist", sender: "Current Clip")
         }))
-        
-        if let item = self.playerHistoryManager.historyItems.first {
-            if item.mediaRefId == nil {
-                addToPlaylistActions.actions[1].isEnabled = false
-            }
-        }
         
         addToPlaylistActions.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
         
