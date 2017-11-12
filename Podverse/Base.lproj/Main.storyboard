@@ -2809,9 +2809,9 @@
                                     <outlet property="delegate" destination="5eV-gs-MqJ" id="w89-YB-126"/>
                                 </connections>
                             </tableView>
-                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="04T-jm-gw0">
+                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="04T-jm-gw0">
                                 <rect key="frame" x="169" y="315" width="37" height="37"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="color" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </activityIndicatorView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -2820,6 +2820,8 @@
                             <constraint firstItem="XS3-BK-jNT" firstAttribute="top" secondItem="Z12-hX-iCg" secondAttribute="bottom" id="a6E-IR-9z8"/>
                             <constraint firstAttribute="trailing" secondItem="XS3-BK-jNT" secondAttribute="trailing" id="dzb-kh-Vp4"/>
                             <constraint firstItem="XS3-BK-jNT" firstAttribute="leading" secondItem="Yfo-hY-mxU" secondAttribute="leading" id="fw3-aQ-mWm"/>
+                            <constraint firstItem="04T-jm-gw0" firstAttribute="centerX" secondItem="Yfo-hY-mxU" secondAttribute="centerX" id="gt7-dN-iXP"/>
+                            <constraint firstItem="04T-jm-gw0" firstAttribute="centerY" secondItem="Yfo-hY-mxU" secondAttribute="centerY" id="uz1-kX-0HM"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="gll-NB-RZL"/>
