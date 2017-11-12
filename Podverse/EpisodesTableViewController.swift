@@ -60,6 +60,8 @@ class EpisodesTableViewController: PVViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        self.title = "Podcast"
+        
         setupNotificationListeners()
         
         self.activityIndicator.hidesWhenStopped = true

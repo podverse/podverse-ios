@@ -38,6 +38,8 @@ class PlaylistDetailTableViewController: PVViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        self.title = "Playlist"
+        
         self.activityIndicator.hidesWhenStopped = true
         showIndicator()
         

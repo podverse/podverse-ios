@@ -18,6 +18,9 @@ class PlaylistsTableViewController: PVViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        self.title = "Playlists"
+        
         self.activityIndicator.hidesWhenStopped = true
         
         PVAuth.shared.delegate = self

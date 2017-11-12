@@ -25,6 +25,8 @@ class PodcastsTableViewController: PVViewController, AutoDownloadProtocol {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        self.title = "Podcasts"
+        
         if UserDefaults.standard.object(forKey: "ONE_TIME_LOGIN") == nil {
             let storyboard = UIStoryboard(name: "Main", bundle: nil)
             if let loginVC = storyboard.instantiateViewController(withIdentifier: "LoginVC") as? LoginViewController {

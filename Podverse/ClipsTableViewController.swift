@@ -44,6 +44,8 @@ class ClipsTableViewController: PVViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        self.title = "Clips"
+        
         activityIndicator.hidesWhenStopped = true
         
         self.tableViewHeader.delegate = self

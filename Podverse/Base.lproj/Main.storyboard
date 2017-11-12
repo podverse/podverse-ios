@@ -2822,7 +2822,7 @@
                             <constraint firstItem="XS3-BK-jNT" firstAttribute="leading" secondItem="Yfo-hY-mxU" secondAttribute="leading" id="fw3-aQ-mWm"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" title="My Playlists" id="gll-NB-RZL"/>
+                    <navigationItem key="navigationItem" id="gll-NB-RZL"/>
                     <connections>
                         <outlet property="activityIndicator" destination="04T-jm-gw0" id="HEV-xC-tLQ"/>
                         <outlet property="tableView" destination="XS3-BK-jNT" id="zTe-KK-Qrb"/>
@@ -2833,10 +2833,10 @@
             </objects>
             <point key="canvasLocation" x="1681" y="1309"/>
         </scene>
-        <!--Playlist-->
+        <!--Playlist Detail Table View Controller-->
         <scene sceneID="wn5-G0-Efr">
             <objects>
-                <viewController title="Playlist" automaticallyAdjustsScrollViewInsets="NO" id="5wc-DY-Nr3" customClass="PlaylistDetailTableViewController" customModule="Podverse" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController automaticallyAdjustsScrollViewInsets="NO" id="5wc-DY-Nr3" customClass="PlaylistDetailTableViewController" customModule="Podverse" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="Nbh-VK-ZQp"/>
                         <viewControllerLayoutGuide type="bottom" id="tQ2-Q5-Tl2"/>

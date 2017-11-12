@@ -15,6 +15,9 @@ class DownloadsTableViewController: PVViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        self.title = "Downloads"
+        
         setupNotificationListeners()
     }
     
