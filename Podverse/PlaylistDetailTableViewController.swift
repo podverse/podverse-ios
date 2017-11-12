@@ -16,24 +16,11 @@ class PlaylistDetailTableViewController: PVViewController {
     let reachability = PVReachability.shared
     
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
+    @IBOutlet weak var activityIndicatorView: UIView!
     @IBOutlet weak var itemCount: UILabel!
     @IBOutlet weak var lastUpdated: UILabel!
-    @IBOutlet weak var loadingView: UIView!
     @IBOutlet weak var playlistTitle: UILabel!
-    @IBOutlet weak var retryButton: UIButton!
-    @IBOutlet weak var statusMessage: UILabel!
     @IBOutlet weak var tableView: UITableView!
-    
-    @IBAction func retryButtonTouched(_ sender: Any) {
-        showIndicator()
-        
-        if let id = self.playlistId {
-            Playlist.retrievePlaylistFromServer(id: id) { (playlist) -> Void in
-                self.reloadPlaylistData(playlist: playlist)
-            }
-        }
-        
-    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -41,63 +28,104 @@ class PlaylistDetailTableViewController: PVViewController {
         self.title = "Playlist"
         
         self.activityIndicator.hidesWhenStopped = true
-        showIndicator()
+        
+        retrievePlaylist()
+        
+    }
+    
+    func retrievePlaylist() {
+        
+        guard checkConnectivity() else {
+            return
+        }
+        
+        self.hideNoDataView()
+        
+        showActivityIndicator()
         
         if let id = self.playlistId {
             Playlist.retrievePlaylistFromServer(id: id) { (playlist) -> Void in
                 self.reloadPlaylistData(playlist: playlist)
             }
         }
-
+    }
+    
+    func checkConnectivity() -> Bool {
+        
+        let message = Strings.Errors.noPlaylistsInternet
+        let buttonTitle = "Retry"
+        let selector:Selector = #selector(PlaylistsTableViewController.retrievePlaylists)
+        
+        guard checkForConnectivity() else {
+            loadNoDataView(message: message, buttonTitle: buttonTitle, buttonPressed: selector)
+            return false
+        }
+        
+        return true
+    }
+    
+    func checkForResults(playlist: Playlist?) -> Bool {
+        
+        let message = Strings.Errors.noPlaylistItemsAvailable
+        
+        guard let playlist = playlist, playlist.mediaRefs.count > 0 else {
+            loadNoDataView(message: message, buttonTitle: nil, buttonPressed: nil)
+            return false
+        }
+        
+        return true
+        
+    }
+    
+    func loadNoDataView(message: String, buttonTitle: String?, buttonPressed: Selector?) {
+        
+        if let noDataView = self.view.subviews.first(where: { $0.tag == kNoDataViewTag}) {
+            
+            if let messageView = noDataView.subviews.first(where: {$0 is UILabel}), let messageLabel = messageView as? UILabel {
+                messageLabel.text = message
+            }
+            
+            if let buttonView = noDataView.subviews.first(where: {$0 is UIButton}), let button = buttonView as? UIButton {
+                button.setTitle(buttonTitle, for: .normal)
+            }
+            
+        }
+        else {
+            self.addNoDataViewWithMessage(message, buttonTitle: buttonTitle, buttonImage: nil, retryPressed: buttonPressed)
+        }
+        
+        hideActivityIndicator()
+        self.tableView.isHidden = true
+        showNoDataView()
+        
     }
     
     func reloadPlaylistData(playlist: Playlist?) {
-        if !checkForConnectivity() {
-            self.showStatusMessage(message: "You must connect to the internet to load this playlist.")
+
+        hideActivityIndicator()
+        
+        guard checkForResults(playlist: playlist), let playlist = playlist else {
             return
         }
         
-        if let playlist = playlist {
-            self.itemCount.text = "Items: " + String(playlist.mediaRefs.count)
-            self.lastUpdated.text = playlist.lastUpdated?.toShortFormatString()
-            self.playlistTitle.text = playlist.title
-            self.mediaRefsArray = playlist.mediaRefs
-        }
+        self.mediaRefsArray = playlist.mediaRefs
         
-        self.showPlaylistView()
+        self.tableView.isHidden = false
         self.tableView.reloadData()
         
     }
     
-    func showStatusMessage(message: String) {
-        self.activityIndicator.stopAnimating()
-        self.statusMessage.text = message
+    func showActivityIndicator() {
         self.tableView.isHidden = true
-        self.loadingView.isHidden = false
-        self.statusMessage.isHidden = false
-
-        if message == "You must connect to the internet to load this playlist." {
-            self.retryButton.isHidden = false
-        }
-    }
-    
-    func showIndicator() {
         self.activityIndicator.startAnimating()
-        self.tableView.isHidden = true
-        self.loadingView.isHidden = false
-        self.activityIndicator.isHidden = false
-        self.statusMessage.isHidden = true
-        self.retryButton.isHidden = true
+        self.activityIndicatorView.isHidden = false
     }
     
-    func showPlaylistView() {
+    func hideActivityIndicator() {
         self.activityIndicator.stopAnimating()
-        self.tableView.isHidden = false
-        self.loadingView.isHidden = true
-        self.statusMessage.isHidden = true
-        self.retryButton.isHidden = true
+        self.activityIndicatorView.isHidden = true
     }
-
+    
 }
 
 extension PlaylistDetailTableViewController:UITableViewDelegate, UITableViewDataSource {
@@ -151,8 +179,10 @@ extension PlaylistDetailTableViewController:UITableViewDelegate, UITableViewData
         
         let deleteAction = UITableViewRowAction(style: .default, title: "Remove", handler: {action, indexpath in
             
-            if !checkForConnectivity() {
-                self.showStatusMessage(message: "You must connect to the internet to remove playlist items.")
+            guard checkForConnectivity() else {
+                let alert = UIAlertController(title: "Internet Required", message: Strings.Errors.internetRequiredDeletePlaylistItem, preferredStyle: .alert)
+                alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
+                self.present(alert, animated: true, completion: nil)
                 return
             }
             
