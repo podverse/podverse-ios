@@ -133,6 +133,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func playOrPauseEvent() {
+        pvMediaPlayer.savePlaybackPosition()
         pvMediaPlayer.setPlayingInfo()
     }
 }
