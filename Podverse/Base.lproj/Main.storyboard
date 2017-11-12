@@ -3016,7 +3016,6 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="GWx-j9-urR" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2614" y="1308"/>
             <point key="canvasLocation" x="2613.5999999999999" y="1307.4962518740631"/>
         </scene>
         <!--Clips List Container View Controller-->
