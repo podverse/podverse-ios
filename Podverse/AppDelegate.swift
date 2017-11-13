@@ -118,23 +118,30 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         let pauseCommand = rcc.pauseCommand
         pauseCommand.addTarget(self, action: #selector(AppDelegate.playOrPauseEvent))
+        
         let playCommand = rcc.playCommand
         playCommand.addTarget(self, action: #selector(AppDelegate.playOrPauseEvent))
+
+        let toggleCommand = rcc.togglePlayPauseCommand
+        toggleCommand.addTarget(self, action: #selector(AppDelegate.playOrPauseEvent))
+        
     }
 
     func skipBackwardEvent() {
         pvMediaPlayer.seek(toTime: pvMediaPlayer.audioPlayer.progress - 15)
-        pvMediaPlayer.setPlayingInfo()
     }
     
     func skipForwardEvent() {
         pvMediaPlayer.seek(toTime: pvMediaPlayer.audioPlayer.progress + 15)
-        pvMediaPlayer.setPlayingInfo()
     }
     
     func playOrPauseEvent() {
-        pvMediaPlayer.savePlaybackPosition()
-        pvMediaPlayer.setPlayingInfo()
+        
+        // If the audioPlayer rate is greater than 0, then the mediaPlayer is now playing, and we should call seek to refresh the MPNowPlayingInfoCenter
+        if pvMediaPlayer.audioPlayer.rate > 0 {
+            self.pvMediaPlayer.seek(toTime: self.pvMediaPlayer.audioPlayer.progress)
+        }
+        
     }
 }
 

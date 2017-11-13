@@ -14,7 +14,6 @@ import UIKit
 class MediaPlayerViewController: PVViewController {
     
     let audioPlayer = PVMediaPlayer.shared.audioPlayer
-    var playerSpeedRate:PlayingSpeed = .regular
     let reachability = PVReachability.shared
     var timer: Timer?
     
@@ -162,28 +161,26 @@ class MediaPlayerViewController: PVViewController {
     }
     
     @IBAction func changeSpeed(_ sender: Any) {
-        switch playerSpeedRate {
+        switch self.pvMediaPlayer.playerSpeedRate {
         case .regular:
-            playerSpeedRate = .timeAndQuarter
+            self.pvMediaPlayer.playerSpeedRate = .timeAndQuarter
             break
         case .timeAndQuarter:
-            playerSpeedRate = .timeAndHalf
+            self.pvMediaPlayer.playerSpeedRate = .timeAndHalf
             break
         case .timeAndHalf:
-            playerSpeedRate = .double
+            self.pvMediaPlayer.playerSpeedRate = .double
             break
         case .double:
-            playerSpeedRate = .half
+            self.pvMediaPlayer.playerSpeedRate = .half
         case .half:
-            playerSpeedRate = .threeQuarts
+            self.pvMediaPlayer.playerSpeedRate = .threeQuarts
             break
         case .threeQuarts:
-            playerSpeedRate = .regular
+            self.pvMediaPlayer.playerSpeedRate = .regular
             break
         }
         
-        audioPlayer.rate = playerSpeedRate.speedValue
-
         updateSpeedLabel()
     }
     
@@ -293,7 +290,7 @@ class MediaPlayerViewController: PVViewController {
     }
     
     func updateSpeedLabel() {
-        speed.setTitle(playerSpeedRate.speedText, for: .normal)
+        speed.setTitle(pvMediaPlayer.playerSpeedRate.speedText, for: .normal)
     }
     
     func showAddToPlaylist() {
