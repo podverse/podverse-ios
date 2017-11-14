@@ -85,20 +85,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return Lock.resumeAuth(url, options: options)
     }
     
-//    func application(_ application: UIApplication, open url: URL, sourceApplication: String?, annotation: Any) -> Bool {
-  //      return A0Lock.shared().handle(url as URL, sourceApplication: sourceApplication)
-    // }
-
-    // func application(_ application: UIApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([Any]?) -> Void) -> Bool {
-       // return A0Lock.shared().continue(userActivity, restorationHandler: restorationHandler)
-    // }
-    
-    override func remoteControlReceived(with event: UIEvent?) {
-        if let evt = event {
-            pvMediaPlayer.remoteControlReceivedWithEvent(event: evt)
-        }
-    }
-    
     fileprivate func setupUI() {
         UINavigationBar.appearance().isTranslucent = false
         UINavigationBar.appearance().barTintColor = UIColor(red: 41.0/255.0, green: 104.0/255.0, blue: 177.0/255.0, alpha: 1.0)
@@ -129,19 +115,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func skipBackwardEvent() {
         pvMediaPlayer.seek(toTime: pvMediaPlayer.audioPlayer.progress - 15)
+        MPNowPlayingInfoCenter.default().nowPlayingInfo?[MPNowPlayingInfoPropertyElapsedPlaybackTime] = pvMediaPlayer.audioPlayer.progress
     }
     
     func skipForwardEvent() {
         pvMediaPlayer.seek(toTime: pvMediaPlayer.audioPlayer.progress + 15)
+        MPNowPlayingInfoCenter.default().nowPlayingInfo?[MPNowPlayingInfoPropertyElapsedPlaybackTime] = pvMediaPlayer.audioPlayer.progress
     }
     
-    func playOrPauseEvent() {
-        
-        // If the audioPlayer rate is greater than 0, then the mediaPlayer is now playing, and we should call seek to refresh the MPNowPlayingInfoCenter
-        if pvMediaPlayer.audioPlayer.rate > 0 {
-            self.pvMediaPlayer.seek(toTime: self.pvMediaPlayer.audioPlayer.progress)
-        }
-        
+    func playOrPauseEvent() { 
+        pvMediaPlayer.playOrPause()
+        MPNowPlayingInfoCenter.default().nowPlayingInfo?[MPNowPlayingInfoPropertyElapsedPlaybackTime] = pvMediaPlayer.audioPlayer.progress
     }
 }
 

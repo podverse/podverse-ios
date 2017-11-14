@@ -276,7 +276,7 @@ class Playlist {
                 request.setValue(idToken, forHTTPHeaderField: "authorization")
             }
             
-            var postString = "mediaRefId=" + mediaRefId
+            let postString = "mediaRefId=" + mediaRefId
             
             request.httpBody = postString.data(using: .utf8)
             

@@ -160,8 +160,8 @@ class EpisodesTableViewController: PVViewController {
             
             self.headerPodcastTitle.text = podcast.title
             
-            self.headerImageView.image = Podcast.retrievePodcastImage(podcastImageURLString: podcast.imageUrl, feedURLString: podcast.feedUrl, managedObjectID: podcast.objectID, completion: { _ in
-                self.headerImageView.sd_setImage(with: URL(string: podcast.imageUrl ?? ""), placeholderImage: #imageLiteral(resourceName: "PodverseIcon"))
+            self.headerImageView.image = Podcast.retrievePodcastImage(podcastImageURLString: podcast.imageUrl, feedURLString: podcast.feedUrl, managedObjectID: podcast.objectID, completion: { image in
+                self.headerImageView.image = image
             })
             
             self.autoDownloadSwitch.isOn = podcast.shouldAutoDownload() ? true : false
@@ -193,7 +193,7 @@ class EpisodesTableViewController: PVViewController {
             
             if let summary = podcast.summary {
                 
-                if summary.trimmingCharacters(in: .whitespacesAndNewlines).characters.count == 0 {
+                if summary.trimmingCharacters(in: .whitespacesAndNewlines).count == 0 {
                     htmlString += kNoPodcastAboutMessage
                 } else {
                     htmlString += summary

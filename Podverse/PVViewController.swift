@@ -71,8 +71,8 @@ class PVViewController: UIViewController {
             tabbarVC.playerView.podcastTitleLabel.text = currentItem.podcastTitle
             tabbarVC.playerView.episodeTitle.text = currentItem.episodeTitle
             
-            tabbarVC.playerView.podcastImageView.image = Podcast.retrievePodcastImage(podcastImageURLString: currentItem.podcastImageUrl, feedURLString: currentItem.podcastFeedUrl, managedObjectID: nil, completion: { _ in
-                tabbarVC.playerView.podcastImageView.sd_setImage(with: URL(string: currentItem.podcastImageUrl ?? ""), placeholderImage: #imageLiteral(resourceName: "PodverseIcon"))
+            tabbarVC.playerView.podcastImageView.image = Podcast.retrievePodcastImage(podcastImageURLString: currentItem.podcastImageUrl, feedURLString: currentItem.podcastFeedUrl, managedObjectID: nil, completion: { image in
+                tabbarVC.playerView.podcastImageView.image = image
             })
             
             tabbarVC.playerView.togglePlayIcon()

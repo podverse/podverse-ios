@@ -9,6 +9,7 @@
 
 import Foundation
 import CoreData
+import SDWebImage
 import UIKit
 
 class Podcast: NSManagedObject {
@@ -104,73 +105,60 @@ class Podcast: NSManagedObject {
      
      - Returns: The podcast image that was fetched (Discardable)
      */
-    @discardableResult static func retrievePodcastImage(podcastImageURLString:String? = nil, feedURLString:String? = nil, managedObjectID:NSManagedObjectID? = nil, completion:((_ podcastImage: UIImage?) -> Void)? = nil) -> UIImage? {
+    @discardableResult static func retrievePodcastImage(podcastImageURLString:String? = nil, feedURLString:String? = nil, managedObjectID:NSManagedObjectID? = nil, completion:((_ podcastImage: UIImage) -> Void)? = nil) -> UIImage {
         
-        if let moid = managedObjectID {
-            let image = Podcast.fetchPodcastImage(managedObjectId: moid)
-            return image
+        if let moid = managedObjectID, let podcastImage = Podcast.fetchPodcastImage(managedObjectId: moid) {
+            return podcastImage
         }
         
-        if let feedUrl = feedURLString, !feedUrl.isEmpty {
-            if let image = Podcast.fetchPodcastImage(podcastFeedUrl: feedUrl) {
-                return image
-            }
+        if let feedUrl = feedURLString, !feedUrl.isEmpty, let podcastImage = Podcast.fetchPodcastImage(podcastFeedUrl: feedUrl) {
+            return podcastImage
         }
         
-        if let _ = podcastImageURLString {
-            DispatchQueue.main.async {
-                completion?(nil)
-            }
+        if let imageURLString = podcastImageURLString, let url = URL(string:imageURLString) {
+            Podcast.fetchPodcastImage(podcastImageUrl: url, completion: { (image) in
+                DispatchQueue.main.async {
+                    completion?(image)
+                }
+            })
         }
         
-        return UIImage(named: "PodverseIcon")
+        return UIImage(named: "PodverseIcon")!
     }
     
     private static func fetchPodcastImage(managedObjectId: NSManagedObjectID) -> UIImage? {
         let moc = CoreDataHelper.createMOCForThread(threadType: .mainThread)
         
         if let podcast = CoreDataHelper.fetchEntityWithID(objectId: managedObjectId, moc: moc) as? Podcast,
-            let imageData = podcast.imageData {
-            return UIImage(data: imageData)
+            let imageData = podcast.imageData, let image = UIImage(data: imageData) {
+            return image
         }
-        else {
-            return UIImage(named: "PodverseIcon")
-        }
+
+        return nil
     }
     
     private static func fetchPodcastImage(podcastFeedUrl: String) -> UIImage? {
         let moc = CoreDataHelper.createMOCForThread(threadType: .mainThread)
         
         let predicate = NSPredicate(format: "feedUrl == %@", podcastFeedUrl)
-        if let podcastSet = CoreDataHelper.fetchEntities(className: "Podcast", predicate: predicate, moc:moc) as? [Podcast], let imageData = podcastSet.first?.imageData {
-            return UIImage(data:imageData)
+        if let podcastSet = CoreDataHelper.fetchEntities(className: "Podcast", predicate: predicate, moc:moc) as? [Podcast], let imageData = podcastSet.first?.imageData, let image = UIImage(data:imageData) {
+            return image
         }
-        else {
-            return nil
-        }
+        
+        return nil
     }
     
-    private static func fetchPodcastImage(podcastImageUrl: URL, completion: @escaping (_ podcastImage: UIImage?) -> Void) {
-        let session = URLSession(configuration: .default)
-        _ = session.dataTask(with: podcastImageUrl) { (data, response, error) in
-            DispatchQueue.main.async {
-                var cellImage:UIImage?
-                
-                if let e = error {
-                    print("Error downloading picture: \(e)")
-                    cellImage = UIImage(named: "PodverseIcon")
-                } else {
-                    if let _ = response as? HTTPURLResponse, let imageData = data {
-                        cellImage = UIImage(data: imageData)
-                    } else {
-                        print("Couldn't get image response")
-                        cellImage = UIImage(named: "PodverseIcon")
-                    }
-                }
-                
-                completion(cellImage)
+    private static func fetchPodcastImage(podcastImageUrl: URL, completion: @escaping (_ podcastImage: UIImage) -> Void) {
+        
+        SDWebImageManager.shared().loadImage(with: podcastImageUrl, options: SDWebImageOptions.highPriority, progress: nil) { (image, _, _, _ , _ , _) in
+            var downloadedImage = UIImage(named: "PodverseIcon")!
+            
+            if let image = image {
+                downloadedImage = image
             }
-            }.resume()
+            
+            completion(downloadedImage)
+        }
     }
     
 }

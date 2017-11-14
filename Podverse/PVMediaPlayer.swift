@@ -304,7 +304,7 @@ class PVMediaPlayer: NSObject {
     // If you seek before the startTime of a clip, this will return true. Returns false if a clip has an endTime, and the progress moves later than the endTime.
     func isInClipTimeRange() -> Bool {
         
-        guard let item = self.nowPlayingItem, item.isClip(), let startTime = item.startTime else {
+        guard let item = self.nowPlayingItem, item.isClip(), let _ = item.startTime else {
             return false
         }
         
@@ -319,25 +319,17 @@ class PVMediaPlayer: NSObject {
         }
         
     }
-
-    func remoteControlReceivedWithEvent(event: UIEvent) {
-        if event.type == UIEventType.remoteControl {
-            if event.subtype == UIEventSubtype.remoteControlPlay || event.subtype == UIEventSubtype.remoteControlPause || event.subtype == UIEventSubtype.remoteControlTogglePlayPause {
-                self.playOrPause()
-            }
-        }
-    }
     
     func setPlayingInfo() {
-        
         guard let item =  self.nowPlayingItem else {
             return
         }
         
-        var podcastTitle:String?
-        var episodeTitle:String?
-        var artwork:MPMediaItemArtwork?
-                
+        var podcastTitle = ""
+        var episodeTitle = ""
+        
+        let rate = self.audioPlayer.rate
+        
         if let pTitle = item.podcastTitle {
             podcastTitle = pTitle
         }
@@ -347,21 +339,21 @@ class PVMediaPlayer: NSObject {
         }
         
         let currentPlaybackTime = NSNumber(value: self.audioPlayer.progress)
-        let currentPlayerRate = NSNumber(value: self.playerSpeedRate.speedValue)
         
-        let podcastImage = Podcast.retrievePodcastImage(podcastImageURLString: item.podcastImageUrl, feedURLString: item.podcastFeedUrl, managedObjectID: nil, completion: { _ in
-            
-            self.updateMPNowPlayingInfoCenter()
-            
+        let podcastImage = Podcast.retrievePodcastImage(podcastImageURLString: item.podcastImageUrl, feedURLString: item.podcastFeedUrl, managedObjectID: nil, completion: { image in
+            MPNowPlayingInfoCenter.default().nowPlayingInfo?[MPMediaItemPropertyArtwork] = MPMediaItemArtwork(image: image)
         })
         
-        if let podcastImage = podcastImage {
-            artwork = MPMediaItemArtwork.init(image: podcastImage)
-        }
-
-        MPNowPlayingInfoCenter.default().nowPlayingInfo = [MPMediaItemPropertyArtist: podcastTitle, MPMediaItemPropertyTitle: episodeTitle, MPMediaItemPropertyArtwork: artwork, MPMediaItemPropertyPlaybackDuration: self.duration, MPNowPlayingInfoPropertyElapsedPlaybackTime: currentPlaybackTime, MPNowPlayingInfoPropertyPlaybackRate: currentPlayerRate]
-
+        let artwork = MPMediaItemArtwork(image: podcastImage)
         
+        MPNowPlayingInfoCenter.default().nowPlayingInfo = [
+            MPMediaItemPropertyArtist: podcastTitle, 
+            MPMediaItemPropertyTitle: episodeTitle, 
+            MPMediaItemPropertyArtwork: artwork, 
+            MPMediaItemPropertyPlaybackDuration: self.duration ?? 0, 
+            MPNowPlayingInfoPropertyElapsedPlaybackTime: currentPlaybackTime, 
+            MPNowPlayingInfoPropertyPlaybackRate: rate
+        ]
     }
     
     // This is only used when an episode/clip should appear loaded in the player, but it should not start streaming or playing. Since StreamingKit automatically plays a file as soon as you load it, this retrieveRemoteFileDuration method uses AVURLAsset to determine the duration of a remote media file if no stream is loaded.

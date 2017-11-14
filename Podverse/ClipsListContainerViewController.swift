@@ -257,8 +257,8 @@ extension ClipsListContainerViewController:UITableViewDelegate, UITableViewDataS
             cell.episodeTitle?.text = clip.episodeTitle
             cell.clipTitle?.text = clip.title
             
-            cell.podcastImage.image = Podcast.retrievePodcastImage(podcastImageURLString: clip.podcastImageUrl, feedURLString: clip.podcastFeedUrl, managedObjectID: nil, completion: { _ in
-                cell.podcastImage.sd_setImage(with: URL(string: clip.podcastImageUrl ?? ""), placeholderImage: #imageLiteral(resourceName: "PodverseIcon"))
+            cell.podcastImage.image = Podcast.retrievePodcastImage(podcastImageURLString: clip.podcastImageUrl, feedURLString: clip.podcastFeedUrl, managedObjectID: nil, completion: { image in
+                cell.podcastImage.image = image
             })
             
             if let episodePubDate = clip.episodePubDate {
