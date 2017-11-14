@@ -173,8 +173,8 @@ extension PodcastsTableViewController:UITableViewDelegate, UITableViewDataSource
             cell.lastPublishedDate?.text = lastPubDate.toShortFormatString()
         }
         
-        cell.pvImage.image = Podcast.retrievePodcastImage(podcastImageURLString: podcast.imageUrl, feedURLString: podcast.feedUrl, managedObjectID: podcast.objectID, completion: { _ in
-           cell.pvImage.sd_setImage(with: URL(string: podcast.imageUrl ?? ""), placeholderImage: #imageLiteral(resourceName: "PodverseIcon"))
+        cell.pvImage.image = Podcast.retrievePodcastImage(podcastImageURLString: podcast.imageUrl, feedURLString: podcast.feedUrl, managedObjectID: podcast.objectID, completion: { image in
+           cell.pvImage.image = image
         })
         
         return cell

@@ -77,7 +77,7 @@ class AudiosearchPodcastViewController: PVViewController {
         self.clipQueryActivityIndicator.hidesWhenStopped = true
         self.clipQueryMessage.isHidden = true
         
-        var isSubscribed = PVSubscriber.checkIfSubscribed(feedUrlString: self.feedUrl)
+        let isSubscribed = PVSubscriber.checkIfSubscribed(feedUrlString: self.feedUrl)
         
         loadSubscribeButton(isSubscribed)
         
@@ -96,7 +96,7 @@ class AudiosearchPodcastViewController: PVViewController {
     
     @IBAction func subscribeTapped(_ sender: Any) {
         
-        var isSubscribed = PVSubscriber.checkIfSubscribed(feedUrlString: self.feedUrl)
+        let isSubscribed = PVSubscriber.checkIfSubscribed(feedUrlString: self.feedUrl)
         
         if isSubscribed {
             PVDeleter.deletePodcast(podcastId: nil, feedUrl: self.feedUrl)
@@ -148,8 +148,8 @@ class AudiosearchPodcastViewController: PVViewController {
             if let podcast = podcast {
                 self.headerPodcastTitle.text = podcast.title
                 
-                self.headerImageView.image = Podcast.retrievePodcastImage(podcastImageURLString: podcast.imageThumbUrl, feedURLString: nil, managedObjectID:nil, completion: { _ in
-                    self.headerImageView.sd_setImage(with: URL(string: podcast.imageThumbUrl ?? ""), placeholderImage: #imageLiteral(resourceName: "PodverseIcon"))
+                self.headerImageView.image = Podcast.retrievePodcastImage(podcastImageURLString: podcast.imageThumbUrl, feedURLString: nil, managedObjectID:nil, completion: { image in
+                    self.headerImageView.image = image
                 })
                 
             } else {
@@ -193,7 +193,7 @@ class AudiosearchPodcastViewController: PVViewController {
                 
                 if let description = podcast.description {
                     
-                    if description.trimmingCharacters(in: .whitespacesAndNewlines).characters.count == 0 {
+                    if description.trimmingCharacters(in: .whitespacesAndNewlines).count == 0 {
                         htmlString += kNoPodcastAboutMessage
                     } else {
                         htmlString += description

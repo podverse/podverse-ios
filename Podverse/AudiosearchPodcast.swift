@@ -35,7 +35,7 @@ class AudiosearchPodcast {
                     categoriesString += c + ", "
                 }
             }
-            categoriesString = String(categoriesString.characters.dropLast(2))
+            categoriesString = String(categoriesString.dropLast(2))
             podcast.categories = categoriesString
         }
         
@@ -46,7 +46,7 @@ class AudiosearchPodcast {
             for host in hosts {
                 hostsString += host + ", "
             }
-            hostsString = String(hostsString.characters.dropLast(2))
+            hostsString = String(hostsString.dropLast(2))
             podcast.hosts = hostsString
         }
         

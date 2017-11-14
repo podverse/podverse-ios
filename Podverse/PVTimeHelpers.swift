@@ -20,11 +20,11 @@ class PVTimeHelper {
             hours = ""
         }
         var minutes = String((time / 60) % 60) + ":"
-        if minutes.characters.count < 3 && hours != "" {
+        if minutes.count < 3 && hours != "" {
             minutes = "0" + minutes
         }
         var seconds = String(time % 60)
-        if seconds.characters.count < 2 && (hours != "" || minutes != "") {
+        if seconds.count < 2 && (hours != "" || minutes != "") {
             seconds = "0" + seconds
         }
         

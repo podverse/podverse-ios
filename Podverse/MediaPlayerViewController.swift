@@ -248,8 +248,8 @@ class MediaPlayerViewController: PVViewController {
                 self.episodePubDate.text = ""
             }
             
-            image.image = Podcast.retrievePodcastImage(podcastImageURLString: item.podcastImageUrl, feedURLString: item.podcastFeedUrl, managedObjectID: nil, completion: { _ in
-                self.image.sd_setImage(with: URL(string: item.podcastImageUrl ?? ""), placeholderImage: #imageLiteral(resourceName: "PodverseIcon"))
+            self.image.image = Podcast.retrievePodcastImage(podcastImageURLString: item.podcastImageUrl, feedURLString: item.podcastFeedUrl, managedObjectID: nil, completion: { image in
+                self.image.image  = image
             })
             
             if let dur = self.pvMediaPlayer.duration {
@@ -304,6 +304,11 @@ class MediaPlayerViewController: PVViewController {
         }
         
         self.navigationItem.backBarButtonItem = UIBarButtonItem(title:"Player", style:.plain, target:nil, action:nil)
+        
+        if let item = self.playerHistoryManager.historyItems.first, item.mediaRefId == nil {
+            self.performSegue(withIdentifier: "Show Add to Playlist", sender: "Full Episode")
+            return
+        }
         
         let addToPlaylistActions = UIAlertController(title: nil, message: nil, preferredStyle: UIAlertControllerStyle.actionSheet)
         
