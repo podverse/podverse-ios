@@ -104,8 +104,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         let pauseCommand = rcc.pauseCommand
         pauseCommand.addTarget(self, action: #selector(AppDelegate.playOrPauseEvent))
+        
         let playCommand = rcc.playCommand
         playCommand.addTarget(self, action: #selector(AppDelegate.playOrPauseEvent))
+
+        let toggleCommand = rcc.togglePlayPauseCommand
+        toggleCommand.addTarget(self, action: #selector(AppDelegate.playOrPauseEvent))
+        
     }
 
     func skipBackwardEvent() {

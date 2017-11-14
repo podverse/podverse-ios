@@ -2809,9 +2809,9 @@
                                     <outlet property="delegate" destination="5eV-gs-MqJ" id="w89-YB-126"/>
                                 </connections>
                             </tableView>
-                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="04T-jm-gw0">
+                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="04T-jm-gw0">
                                 <rect key="frame" x="169" y="315" width="37" height="37"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="color" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </activityIndicatorView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -2820,9 +2820,11 @@
                             <constraint firstItem="XS3-BK-jNT" firstAttribute="top" secondItem="Z12-hX-iCg" secondAttribute="bottom" id="a6E-IR-9z8"/>
                             <constraint firstAttribute="trailing" secondItem="XS3-BK-jNT" secondAttribute="trailing" id="dzb-kh-Vp4"/>
                             <constraint firstItem="XS3-BK-jNT" firstAttribute="leading" secondItem="Yfo-hY-mxU" secondAttribute="leading" id="fw3-aQ-mWm"/>
+                            <constraint firstItem="04T-jm-gw0" firstAttribute="centerX" secondItem="Yfo-hY-mxU" secondAttribute="centerX" id="gt7-dN-iXP"/>
+                            <constraint firstItem="04T-jm-gw0" firstAttribute="centerY" secondItem="Yfo-hY-mxU" secondAttribute="centerY" id="uz1-kX-0HM"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" title="My Playlists" id="gll-NB-RZL"/>
+                    <navigationItem key="navigationItem" id="gll-NB-RZL"/>
                     <connections>
                         <outlet property="activityIndicator" destination="04T-jm-gw0" id="HEV-xC-tLQ"/>
                         <outlet property="tableView" destination="XS3-BK-jNT" id="zTe-KK-Qrb"/>
@@ -2833,10 +2835,10 @@
             </objects>
             <point key="canvasLocation" x="1681" y="1309"/>
         </scene>
-        <!--Playlist-->
+        <!--Playlist Detail Table View Controller-->
         <scene sceneID="wn5-G0-Efr">
             <objects>
-                <viewController title="Playlist" automaticallyAdjustsScrollViewInsets="NO" id="5wc-DY-Nr3" customClass="PlaylistDetailTableViewController" customModule="Podverse" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController automaticallyAdjustsScrollViewInsets="NO" id="5wc-DY-Nr3" customClass="PlaylistDetailTableViewController" customModule="Podverse" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="Nbh-VK-ZQp"/>
                         <viewControllerLayoutGuide type="bottom" id="tQ2-Q5-Tl2"/>
@@ -2845,6 +2847,20 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="nXr-ME-Lul">
+                                <rect key="frame" x="0.0" y="122" width="375" height="496"/>
+                                <subviews>
+                                    <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="RH0-hK-rX7">
+                                        <rect key="frame" x="169" y="230" width="37" height="37"/>
+                                        <color key="color" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                    </activityIndicatorView>
+                                </subviews>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstItem="RH0-hK-rX7" firstAttribute="centerY" secondItem="nXr-ME-Lul" secondAttribute="centerY" id="JL3-vu-vqG"/>
+                                    <constraint firstItem="RH0-hK-rX7" firstAttribute="centerX" secondItem="nXr-ME-Lul" secondAttribute="centerX" id="c86-eG-SIH"/>
+                                </constraints>
+                            </view>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="108" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="QyI-Lc-3yM">
                                 <rect key="frame" x="0.0" y="122" width="375" height="496"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -2980,14 +2996,20 @@
                         <constraints>
                             <constraint firstAttribute="trailing" secondItem="Q9V-fy-GMA" secondAttribute="trailing" id="4O0-jQ-gPt"/>
                             <constraint firstItem="tQ2-Q5-Tl2" firstAttribute="top" secondItem="QyI-Lc-3yM" secondAttribute="bottom" id="4cH-Se-959"/>
+                            <constraint firstItem="nXr-ME-Lul" firstAttribute="leading" secondItem="Pcd-hV-MSr" secondAttribute="leading" id="8mW-Pz-7ef"/>
                             <constraint firstItem="Q9V-fy-GMA" firstAttribute="leading" secondItem="Pcd-hV-MSr" secondAttribute="leading" id="NaW-0j-BeX"/>
                             <constraint firstAttribute="trailing" secondItem="QyI-Lc-3yM" secondAttribute="trailing" id="Z5V-m9-zfS"/>
                             <constraint firstItem="QyI-Lc-3yM" firstAttribute="leading" secondItem="Pcd-hV-MSr" secondAttribute="leading" id="fl5-Ig-QK6"/>
                             <constraint firstItem="QyI-Lc-3yM" firstAttribute="top" secondItem="Q9V-fy-GMA" secondAttribute="bottom" id="h32-lq-GWm"/>
+                            <constraint firstAttribute="trailing" secondItem="nXr-ME-Lul" secondAttribute="trailing" id="q9f-gU-mKR"/>
+                            <constraint firstItem="tQ2-Q5-Tl2" firstAttribute="top" secondItem="nXr-ME-Lul" secondAttribute="bottom" id="tLn-T9-gb0"/>
                             <constraint firstItem="Q9V-fy-GMA" firstAttribute="top" secondItem="Nbh-VK-ZQp" secondAttribute="bottom" id="w5L-1f-a6N"/>
+                            <constraint firstItem="nXr-ME-Lul" firstAttribute="top" secondItem="Q9V-fy-GMA" secondAttribute="bottom" id="wru-nL-4JT"/>
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="activityIndicator" destination="RH0-hK-rX7" id="Jcz-X1-oI7"/>
+                        <outlet property="activityIndicatorView" destination="nXr-ME-Lul" id="5R5-iY-H8Q"/>
                         <outlet property="itemCount" destination="cj1-b5-FTU" id="b1E-vO-77O"/>
                         <outlet property="lastUpdated" destination="yK5-NK-vTb" id="hmK-pR-us8"/>
                         <outlet property="playlistTitle" destination="9kC-YH-fni" id="42A-rJ-4yN"/>
@@ -2996,7 +3018,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="GWx-j9-urR" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2614" y="1308"/>
+            <point key="canvasLocation" x="2613.5999999999999" y="1307.4962518740631"/>
         </scene>
         <!--Clips List Container View Controller-->
         <scene sceneID="RCj-Wg-8mW">

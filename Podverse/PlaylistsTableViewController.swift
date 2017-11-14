@@ -17,16 +17,17 @@ class PlaylistsTableViewController: PVViewController {
     @IBOutlet weak var tableView: UITableView!
 
     override func viewDidLoad() {
+        
         super.viewDidLoad()
+        
+        self.title = "Playlists"
+        
         self.activityIndicator.hidesWhenStopped = true
         
         PVAuth.shared.delegate = self
         
         retrievePlaylists()
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
+        
     }
     
     func retrievePlaylists() {
@@ -36,6 +37,7 @@ class PlaylistsTableViewController: PVViewController {
         }
         
         self.hideNoDataView()
+        
         self.activityIndicator.startAnimating()
         
         Playlist.retrievePlaylistsFromServer() { (playlists) -> Void in
@@ -59,6 +61,7 @@ class PlaylistsTableViewController: PVViewController {
     }
     
     func checkConnectivity() -> Bool {
+        
         let message = Strings.Errors.noPlaylistsInternet
         let buttonTitle = "Retry"
         let selector:Selector = #selector(PlaylistsTableViewController.retrievePlaylists)
@@ -120,6 +123,7 @@ class PlaylistsTableViewController: PVViewController {
         
         self.tableView.isHidden = false
         self.tableView.reloadData()
+        
     }
     
     func presentLogin() {

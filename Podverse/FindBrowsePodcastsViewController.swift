@@ -23,8 +23,10 @@ class FindBrowsePodcastsViewController: PVViewController {
         var params = Dictionary<String,String>()
         
         if let categoryName = categoryName {
+            self.title = "Category"
             params["filters[categories.name]"] = categoryName
         } else if let networkName = networkName {
+            self.title = "Network"
             params["filters[network.name]"] = networkName
         }
         

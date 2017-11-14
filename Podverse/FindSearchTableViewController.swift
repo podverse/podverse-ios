@@ -18,6 +18,10 @@ class FindSearchTableViewController: PVViewController {
     @IBOutlet weak var searchBar: UISearchBar!
     
     override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        self.title = "Search"
+        
         self.searchBar.delegate = self
         
         self.activityIndicator.hidesWhenStopped = true

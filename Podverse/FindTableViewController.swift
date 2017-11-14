@@ -29,6 +29,8 @@ class FindTableViewController: PVViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        self.title = "Find"
     }
     
 }

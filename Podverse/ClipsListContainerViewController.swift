@@ -193,6 +193,7 @@ class ClipsListContainerViewController: UIViewController {
     func showActivityIndicator() {
         self.activityIndicator.startAnimating()
         self.activityView.isHidden = false
+        self.tableView.isHidden = true
     }
     
     func hideActivityIndicator() {

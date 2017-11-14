@@ -89,6 +89,12 @@ class PVMediaPlayer: NSObject {
     var shouldStopAtEndTime: Int64 = 0
     var hasErrored: Bool = false
     
+    var playerSpeedRate:PlayingSpeed = .regular {
+        didSet {
+            self.audioPlayer.rate = playerSpeedRate.speedValue
+        }
+    }
+    
     var progress:Double {
         return self.audioPlayer.duration > 0 ? self.audioPlayer.progress : Double(self.shouldStartFromTime)
     }
@@ -140,7 +146,7 @@ class PVMediaPlayer: NSObject {
         }
     }
     
-    @objc private func savePlaybackPosition() {
+    @objc func savePlaybackPosition() {
         if let item = nowPlayingItem, self.audioPlayer.progress > 0 {
             item.lastPlaybackPosition = Int64(self.audioPlayer.progress)
             playerHistoryManager.addOrUpdateItem(item: item)
@@ -169,7 +175,7 @@ class PVMediaPlayer: NSObject {
         if self.shouldStopAtEndTime > 0 {
             if let item = self.nowPlayingItem, let endTime = item.endTime {
                 if endTime > 0 && Int64(self.audioPlayer.progress) > endTime {
-                    self.audioPlayer.pause()
+                    self.pause()
                     self.shouldHideClipDataNextPlay = true
                     
                     if self.shouldAutoplayAlways {
@@ -214,9 +220,10 @@ class PVMediaPlayer: NSObject {
         
         switch state {
         case STKAudioPlayerState.playing:
-            self.audioPlayer.pause()
+            self.pause()
             return true
         default:
+            self.audioPlayer.rate = self.playerSpeedRate.speedValue
             self.audioPlayer.resume()
             return false
         }
@@ -239,9 +246,33 @@ class PVMediaPlayer: NSObject {
         if self.audioPlayer.duration > 0 {
             self.audioPlayer.seek(toTime: toTime)
         }
+        
+        savePlaybackPosition()
+        
+        updateMPNowPlayingInfoCenter()
+        
+    }
+    
+    func updateMPNowPlayingInfoCenter() {
+        guard let item =  self.nowPlayingItem else {
+            return
+        }
+        
+        let currentPlaybackTime = NSNumber(value: self.audioPlayer.progress)
+        let currentPlayerRate = NSNumber(value: self.playerSpeedRate.speedValue)
+        
+        if let podcastImageUrlString = item.podcastImageUrl, let podcastImageUrl = URL(string: podcastImageUrlString) {
+            if let data = try? Data(contentsOf: podcastImageUrl), let image = UIImage(data: data) {
+                let artwork = MPMediaItemArtwork.init(image: image)
+                
+                MPNowPlayingInfoCenter.default().nowPlayingInfo = [MPMediaItemPropertyArtist: item.podcastTitle, MPMediaItemPropertyTitle: item.episodeTitle, MPMediaItemPropertyArtwork: artwork, MPMediaItemPropertyPlaybackDuration: self.duration, MPNowPlayingInfoPropertyElapsedPlaybackTime: currentPlaybackTime, MPNowPlayingInfoPropertyPlaybackRate: currentPlayerRate]
+                
+            }
+        }
     }
     
     func play() {
+        self.audioPlayer.rate = self.playerSpeedRate.speedValue
         savePlaybackPosition()
         self.audioPlayer.resume()
         self.shouldAutoplayOnce = false
@@ -249,6 +280,7 @@ class PVMediaPlayer: NSObject {
     
     func pause() {
         savePlaybackPosition()
+        self.audioPlayer.rate = 0
         self.audioPlayer.pause()
     }
     
@@ -340,8 +372,6 @@ class PVMediaPlayer: NSObject {
         self.nowPlayingItem?.hasReachedEnd = false
         self.shouldHideClipDataNextPlay = false
         
-        setPlayingInfo()
-        
         self.playerHistoryManager.addOrUpdateItem(item: nowPlayingItem)
         
         self.isItemLoaded = false
@@ -352,6 +382,7 @@ class PVMediaPlayer: NSObject {
         if self.hasErrored {
             self.hasErrored = false
         } else {
+            // NOTE: use the self.audioPlayer.pause method directly here, instead of self.pause()
             self.audioPlayer.pause()
         }
         
@@ -406,6 +437,9 @@ class PVMediaPlayer: NSObject {
             self.shouldSetupClip = item.isClip()
 
         }
+        
+        // NOTE: this must be called after duration is set, or the duration may not be available for the MPNowPlayingInfoCenter
+        setPlayingInfo()
         
     }
     

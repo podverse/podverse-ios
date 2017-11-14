@@ -314,11 +314,13 @@ enum AudiosearchPodcastFilter:String {
 struct Strings {
     
     struct Errors {
+        static let internetRequiredDeletePlaylistItem = "You must connect to the internet to remove playlist items"
         static let noClipsAvailable = "No clips available"
         static let noClipsInternet = "No internet connection"
         static let noDownloadedEpisodesAvailable = "No downloaded episodes available"
         static let noEpisodeClipsAvailable = "No clips available for this episode"
         static let noEpisodesAvailable = "No episodes available"
+        static let noPlaylistItemsAvailable = "No playlist items available"
         static let noPlaylistsAvailable = "No playlists available"
         static let noPlaylistsInternet = "No internet connection"
         static let noPlaylistsNotLoggedIn = "Login to view your playlists"
