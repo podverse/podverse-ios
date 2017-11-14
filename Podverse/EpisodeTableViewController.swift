@@ -160,8 +160,8 @@ class EpisodeTableViewController: PVViewController {
             
             self.episodeTitle.text = episode.title
             
-            self.headerImageView.image = Podcast.retrievePodcastImage(podcastImageURLString: podcast.imageUrl, feedURLString: podcast.feedUrl, managedObjectID: podcast.objectID, completion: { _ in
-                self.headerImageView.sd_setImage(with: URL(string: podcast.imageUrl ?? ""), placeholderImage: #imageLiteral(resourceName: "PodverseIcon"))
+            self.headerImageView.image = Podcast.retrievePodcastImage(podcastImageURLString: podcast.imageUrl, feedURLString: podcast.feedUrl, managedObjectID: podcast.objectID, completion: { image in
+                self.headerImageView.image = image
             })
             
             // Set Play / Downloading / Download / Stream button titles
@@ -200,7 +200,7 @@ class EpisodeTableViewController: PVViewController {
             
             if var summary = episode.summary {
                 
-                if summary.trimmingCharacters(in: .whitespacesAndNewlines).characters.count == 0 {
+                if summary.trimmingCharacters(in: .whitespacesAndNewlines).count == 0 {
                     summary += kNoShowNotesMessage
                     self.webView.loadHTMLString(summary.formatHtmlString(isWhiteBg: true), baseURL: nil)
                 } else {

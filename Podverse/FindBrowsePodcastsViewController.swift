@@ -95,8 +95,8 @@ extension FindBrowsePodcastsViewController: UITableViewDataSource, UITableViewDe
         cell.network.text = podcast.network
         cell.categories.text = podcast.categories
 
-        cell.pvImage.image = Podcast.retrievePodcastImage(podcastImageURLString: podcast.imageThumbUrl, feedURLString: podcast.rssUrl, managedObjectID: nil, completion: { _ in
-            cell.pvImage.sd_setImage(with: URL(string: podcast.imageThumbUrl ?? ""), placeholderImage: #imageLiteral(resourceName: "PodverseIcon"))
+        cell.pvImage.image = Podcast.retrievePodcastImage(podcastImageURLString: podcast.imageThumbUrl, feedURLString: podcast.rssUrl, managedObjectID: nil, completion: { image in
+            cell.pvImage.image = image
         })
         
         return cell

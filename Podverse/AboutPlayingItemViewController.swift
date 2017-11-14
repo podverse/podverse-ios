@@ -59,7 +59,7 @@ class AboutPlayingItemViewController: UIViewController, UIWebViewDelegate {
                 text += "<hr><br>"
             }
             
-            if let summary = item.episodeSummary, summary.trimmingCharacters(in: .whitespacesAndNewlines).characters.count >= 1 {
+            if let summary = item.episodeSummary, summary.trimmingCharacters(in: .whitespacesAndNewlines).count >= 1 {
                 text += summary
             } else {
                 text += kNoShowNotesMessage

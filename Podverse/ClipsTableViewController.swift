@@ -224,8 +224,8 @@ extension ClipsTableViewController:UITableViewDelegate, UITableViewDataSource {
             cell.episodePubDate?.text = episodePubDate.toShortFormatString()
         }
         
-        cell.podcastImage.image = Podcast.retrievePodcastImage(podcastImageURLString: clip.podcastImageUrl, feedURLString: clip.podcastFeedUrl, managedObjectID: nil, completion: { _ in
-            cell.podcastImage.sd_setImage(with: URL(string: clip.podcastImageUrl ?? ""), placeholderImage: #imageLiteral(resourceName: "PodverseIcon"))
+        cell.podcastImage.image = Podcast.retrievePodcastImage(podcastImageURLString: clip.podcastImageUrl, feedURLString: clip.podcastFeedUrl, managedObjectID: nil, completion: { image in
+            cell.podcastImage.image = image
         })
         
         return cell

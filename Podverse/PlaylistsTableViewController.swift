@@ -48,9 +48,7 @@ class PlaylistsTableViewController: PVViewController {
         let message = Strings.Errors.noPlaylistsNotLoggedIn
         let buttonTitle = "Login"
         let selector = #selector(PlaylistsTableViewController.presentLogin)
-        
-        let isLoggedIn = PVAuth.userIsLoggedIn
-        
+                
         guard PVAuth.userIsLoggedIn else {
             loadNoDataView(message: message, buttonTitle: buttonTitle, buttonPressed: selector)
             return false
