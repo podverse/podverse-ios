@@ -27,7 +27,6 @@ test_builds/
 
 ## Obj-C/Swift specific
 *.hmap
-*.ipa
 *.dSYM.zip
 *.dSYM
 *.xcworkspace
