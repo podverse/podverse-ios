@@ -127,5 +127,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         pvMediaPlayer.playOrPause()
         MPNowPlayingInfoCenter.default().nowPlayingInfo?[MPNowPlayingInfoPropertyElapsedPlaybackTime] = pvMediaPlayer.audioPlayer.progress
     }
+    
 }
 

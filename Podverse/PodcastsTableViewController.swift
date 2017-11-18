@@ -105,8 +105,15 @@ class PodcastsTableViewController: PVViewController, AutoDownloadProtocol {
     func loadPodcastData() {
         self.moc.refreshObjects()
         self.subscribedPodcastsArray = CoreDataHelper.fetchEntities(className:"Podcast", predicate: nil, moc:moc) as! [Podcast]
+        
+        guard checkForResults(results: subscribedPodcastsArray) else {
+            self.loadNoPodcastsSubscribedMessage()
+            return
+        }
+        
         self.subscribedPodcastsArray.sort(by: { $0.title.removeArticles() < $1.title.removeArticles() } )
         
+        self.tableView.isHidden = false
         self.tableView.reloadData()
     }
 
@@ -114,6 +121,32 @@ class PodcastsTableViewController: PVViewController, AutoDownloadProtocol {
         if let index = self.subscribedPodcastsArray.index(where: {$0.feedUrl == feedUrl}) {
             self.tableView.reloadRows(at: [IndexPath(row: index, section: 0)], with: .none)
         }
+    }
+    
+    func loadNoDataView(message: String, buttonTitle: String?, buttonPressed: Selector?) {
+        
+        if let noDataView = self.view.subviews.first(where: { $0.tag == kNoDataViewTag}) {
+            
+            if let messageView = noDataView.subviews.first(where: {$0 is UILabel}), let messageLabel = messageView as? UILabel {
+                messageLabel.text = message
+            }
+            
+            if let buttonView = noDataView.subviews.first(where: {$0 is UIButton}), let button = buttonView as? UIButton {
+                button.setTitle(buttonTitle, for: .normal)
+            }
+        }
+        else {
+            self.addNoDataViewWithMessage(message, buttonTitle: buttonTitle, buttonImage: nil, retryPressed: buttonPressed)
+        }
+        
+        self.tableView.isHidden = true
+        
+        showNoDataView()
+        
+    }
+    
+    func loadNoPodcastsSubscribedMessage() {
+        loadNoDataView(message: Strings.Errors.noPodcastsSubscribed, buttonTitle: nil, buttonPressed: nil)
     }
     
 }
@@ -199,6 +232,10 @@ extension PodcastsTableViewController:UITableViewDelegate, UITableViewDataSource
             self.subscribedPodcastsArray.remove(at: indexPath.row)
             tableView.deleteRows(at: [indexPath], with: .fade)
             PVDeleter.deletePodcast(podcastId: podcastToEditOid, feedUrl: podcastToEditFeedUrl)
+            
+            if checkForResults(results: self.subscribedPodcastsArray) {
+                self.loadNoPodcastsSubscribedMessage()
+            }
         })
         
         return [deleteAction]
