@@ -868,32 +868,45 @@
                                             <rect key="frame" x="0.0" y="0.0" width="375" height="96"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="rVM-pl-tJ8">
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="rVM-pl-tJ8">
                                                     <rect key="frame" x="0.0" y="0.0" width="96" height="96"/>
-                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="width" constant="96" id="dFP-6S-wrg"/>
+                                                        <constraint firstAttribute="height" constant="96" id="ebA-dr-5KL"/>
+                                                    </constraints>
                                                 </imageView>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Podcast Title" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ia6-hz-P3R">
-                                                    <rect key="frame" x="108" y="7" width="259" height="19.5"/>
-                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Podcast Title" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ia6-hz-P3R">
+                                                    <rect key="frame" x="108" y="8" width="259" height="19.5"/>
                                                     <fontDescription key="fontDescription" type="system" weight="medium" pointSize="16"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Categories" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="uOf-ot-8bz">
-                                                    <rect key="frame" x="108" y="70" width="259" height="17"/>
-                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Categories" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="uOf-ot-8bz">
+                                                    <rect key="frame" x="108" y="71" width="259" height="16"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="13"/>
                                                     <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Network" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="62w-JK-Sj7">
-                                                    <rect key="frame" x="108" y="49" width="259" height="17"/>
-                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Network" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="62w-JK-Sj7">
+                                                    <rect key="frame" x="108" y="51" width="259" height="16"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="13"/>
                                                     <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                             </subviews>
+                                            <constraints>
+                                                <constraint firstItem="uOf-ot-8bz" firstAttribute="top" secondItem="62w-JK-Sj7" secondAttribute="bottom" constant="4" id="3mv-Yr-Qev"/>
+                                                <constraint firstItem="Ia6-hz-P3R" firstAttribute="leading" secondItem="rVM-pl-tJ8" secondAttribute="trailing" constant="12" id="6gG-Hf-A7y"/>
+                                                <constraint firstAttribute="bottom" secondItem="uOf-ot-8bz" secondAttribute="bottom" constant="8" id="8Zs-Gr-9SJ"/>
+                                                <constraint firstItem="62w-JK-Sj7" firstAttribute="leading" secondItem="rVM-pl-tJ8" secondAttribute="trailing" constant="12" id="ACv-v7-cp8"/>
+                                                <constraint firstAttribute="trailing" secondItem="Ia6-hz-P3R" secondAttribute="trailing" constant="8" id="HR5-MH-CKD"/>
+                                                <constraint firstItem="rVM-pl-tJ8" firstAttribute="top" secondItem="5D8-yU-XcQ" secondAttribute="top" id="ItN-xM-t2o"/>
+                                                <constraint firstAttribute="trailing" secondItem="62w-JK-Sj7" secondAttribute="trailing" constant="8" id="PMD-xo-Ngz"/>
+                                                <constraint firstAttribute="trailing" secondItem="uOf-ot-8bz" secondAttribute="trailing" constant="8" id="k9M-Yo-a35"/>
+                                                <constraint firstItem="uOf-ot-8bz" firstAttribute="leading" secondItem="rVM-pl-tJ8" secondAttribute="trailing" constant="12" id="k9x-n6-dxn"/>
+                                                <constraint firstItem="rVM-pl-tJ8" firstAttribute="leading" secondItem="5D8-yU-XcQ" secondAttribute="leading" id="r0r-62-v7U"/>
+                                                <constraint firstItem="Ia6-hz-P3R" firstAttribute="top" secondItem="5D8-yU-XcQ" secondAttribute="top" constant="8" id="xe4-sR-zW4"/>
+                                            </constraints>
                                         </tableViewCellContentView>
                                         <connections>
                                             <outlet property="categories" destination="uOf-ot-8bz" id="ahe-j9-Zuh"/>
@@ -3355,6 +3368,6 @@
         <image name="skip-back" width="30" height="30"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="UX7-d9-2wT"/>
+        <segue reference="SU9-3d-tZS"/>
     </inferredMetricsTieBreakers>
 </document>

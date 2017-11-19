@@ -22,8 +22,10 @@ final class ParsingPodcastsList {
     }
     
     func addPodcast(feedUrl: String) {
-        urls.append(feedUrl)
-        NotificationCenter.default.post(name:NSNotification.Name(rawValue: kBeginParsingPodcast), object: self, userInfo: nil)
+        if urls.filter({$0 == feedUrl}).count < 1 {
+            urls.append(feedUrl)
+            NotificationCenter.default.post(name:NSNotification.Name(rawValue: kBeginParsingPodcast), object: self, userInfo: nil)
+        }
     }
     
     func podcastFinishedParsing() {

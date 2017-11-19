@@ -75,22 +75,22 @@ class PodcastsTableViewController: PVViewController, AutoDownloadProtocol {
             self.refreshControl.endRefreshing()
             return
         }
-        
+
         if checkForConnectivity() == false {
-            
+
             if refreshControl.isRefreshing == true {
                 showInternetNeededAlertWithDescription(message:"Connect to WiFi or cellular data to parse podcast feeds.")
                 self.refreshControl.endRefreshing()
             }
-            
+
             return
         }
-        
+
         let podcastArray = CoreDataHelper.fetchEntities(className:"Podcast", predicate: nil, moc:moc) as! [Podcast]
-        
+
         for podcast in podcastArray {
             let feedUrl = NSURL(string:podcast.feedUrl)
-            
+
             let pvFeedParser = PVFeedParser(shouldOnlyGetMostRecentEpisode: true, shouldSubscribe:false, shouldOnlyParseChannel: false)
             pvFeedParser.delegate = self
             if let feedUrlString = feedUrl?.absoluteString {
@@ -156,10 +156,14 @@ extension PodcastsTableViewController:PVFeedParserDelegate {
         if let url = feedUrl, let index = self.subscribedPodcastsArray.index(where: { url == $0.feedUrl }) {
             let podcast = CoreDataHelper.fetchEntityWithID(objectId: self.subscribedPodcastsArray[index].objectID, moc: moc) as! Podcast
             self.subscribedPodcastsArray[index] = podcast
-            self.tableView.reloadRows(at: [IndexPath(row: index, section: 0)], with: .none)
+            DispatchQueue.main.async {
+                self.tableView.reloadRows(at: [IndexPath(row: index, section: 0)], with: .none)
+            }
         }
         else {
-            loadPodcastData()
+            DispatchQueue.main.async {
+                self.loadPodcastData()
+            }
         }
         
         if let navVCs = self.navigationController?.viewControllers, navVCs.count > 1, 
@@ -233,7 +237,7 @@ extension PodcastsTableViewController:UITableViewDelegate, UITableViewDataSource
             tableView.deleteRows(at: [indexPath], with: .fade)
             PVDeleter.deletePodcast(podcastId: podcastToEditOid, feedUrl: podcastToEditFeedUrl)
             
-            if checkForResults(results: self.subscribedPodcastsArray) {
+            if !checkForResults(results: self.subscribedPodcastsArray) {
                 self.loadNoPodcastsSubscribedMessage()
             }
         })
@@ -289,8 +293,8 @@ extension PodcastsTableViewController {
     }
     
     func refreshParsingStatus(_ notification:Notification) {
-            let total = self.parsingPodcastsList.urls.count
-            let currentItem = self.parsingPodcastsList.currentlyParsingItem
+        let total = self.parsingPodcastsList.urls.count
+        let currentItem = self.parsingPodcastsList.currentlyParsingItem
         
         DispatchQueue.main.async {
             if total > 0 && currentItem < total {
