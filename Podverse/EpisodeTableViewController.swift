@@ -160,7 +160,7 @@ class EpisodeTableViewController: PVViewController {
             
             self.episodeTitle.text = episode.title
             
-            self.headerImageView.image = Podcast.retrievePodcastImage(podcastImageURLString: podcast.imageUrl, feedURLString: podcast.feedUrl, managedObjectID: podcast.objectID, completion: { image in
+            self.headerImageView.image = Podcast.retrievePodcastImage(podcastImageURLString: podcast.imageUrl, feedURLString: podcast.feedUrl, completion: { image in
                 self.headerImageView.image = image
             })
             

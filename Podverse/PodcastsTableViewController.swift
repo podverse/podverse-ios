@@ -154,10 +154,11 @@ class PodcastsTableViewController: PVViewController, AutoDownloadProtocol {
 extension PodcastsTableViewController:PVFeedParserDelegate {
     func feedParsingComplete(feedUrl:String?) {
         if let url = feedUrl, let index = self.subscribedPodcastsArray.index(where: { url == $0.feedUrl }) {
-            let podcast = CoreDataHelper.fetchEntityWithID(objectId: self.subscribedPodcastsArray[index].objectID, moc: moc) as! Podcast
-            self.subscribedPodcastsArray[index] = podcast
-            DispatchQueue.main.async {
-                self.tableView.reloadRows(at: [IndexPath(row: index, section: 0)], with: .none)
+            if let podcast = Podcast.podcastForFeedUrl(feedUrlString: url, managedObjectContext: self.moc) {
+                self.subscribedPodcastsArray[index] = podcast
+                DispatchQueue.main.async {
+                    self.tableView.reloadRows(at: [IndexPath(row: index, section: 0)], with: .none)
+                }
             }
         }
         else {
@@ -211,7 +212,7 @@ extension PodcastsTableViewController:UITableViewDelegate, UITableViewDataSource
             cell.lastPublishedDate?.text = lastPubDate.toShortFormatString()
         }
         
-        cell.pvImage.image = Podcast.retrievePodcastImage(podcastImageURLString: podcast.imageUrl, feedURLString: podcast.feedUrl, managedObjectID: podcast.objectID, completion: { image in
+        cell.pvImage.image = Podcast.retrievePodcastImage(podcastImageURLString: podcast.imageUrl, feedURLString: podcast.feedUrl, completion: { image in
            cell.pvImage.image = image
         })
         
@@ -234,7 +235,7 @@ extension PodcastsTableViewController:UITableViewDelegate, UITableViewDataSource
         let deleteAction = UITableViewRowAction(style: .default, title: "Delete", handler: {action, indexpath in
             self.subscribedPodcastsArray.remove(at: indexPath.row)
             tableView.deleteRows(at: [indexPath], with: .fade)
-            PVDeleter.deletePodcast(feedUrl: podcastToEditFeedUrl)
+            PVDeleter.deletePodcast(feedUrl: podcastToEditFeedUrl, moc: self.moc)
             
             if !checkForResults(results: self.subscribedPodcastsArray) {
                 self.loadNoPodcastsSubscribedMessage()

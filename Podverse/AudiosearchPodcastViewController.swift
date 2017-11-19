@@ -16,6 +16,7 @@ class AudiosearchPodcastViewController: PVViewController {
     var episodesArray = [Episode]()
     var filterTypeOverride:AudiosearchPodcastFilter = .about
     let reachability = PVReachability.shared
+    let moc = CoreDataHelper.createMOCForThread(threadType: .mainThread)
     
     var filterTypeSelected:AudiosearchPodcastFilter = .about {
         didSet {
@@ -99,7 +100,7 @@ class AudiosearchPodcastViewController: PVViewController {
         let isSubscribed = PVSubscriber.checkIfSubscribed(feedUrlString: self.feedUrl)
         
         if isSubscribed {
-            PVDeleter.deletePodcast(feedUrl: self.feedUrl)
+            PVDeleter.deletePodcast(feedUrl: self.feedUrl, moc: self.moc)
         } else {
             PVSubscriber.subscribeToPodcast(feedUrlString: self.feedUrl)
         }
@@ -148,7 +149,7 @@ class AudiosearchPodcastViewController: PVViewController {
             if let podcast = podcast {
                 self.headerPodcastTitle.text = podcast.title
                 
-                self.headerImageView.image = Podcast.retrievePodcastImage(podcastImageURLString: podcast.imageThumbUrl, feedURLString: nil, managedObjectID:nil, completion: { image in
+                self.headerImageView.image = Podcast.retrievePodcastImage(podcastImageURLString: podcast.imageThumbUrl, feedURLString: nil, completion: { image in
                     self.headerImageView.image = image
                 })
                 

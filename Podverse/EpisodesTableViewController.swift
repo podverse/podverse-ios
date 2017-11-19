@@ -160,7 +160,7 @@ class EpisodesTableViewController: PVViewController {
             
             self.headerPodcastTitle.text = podcast.title
             
-            self.headerImageView.image = Podcast.retrievePodcastImage(podcastImageURLString: podcast.imageUrl, feedURLString: podcast.feedUrl, managedObjectID: podcast.objectID, completion: { image in
+            self.headerImageView.image = Podcast.retrievePodcastImage(podcastImageURLString: podcast.imageUrl, feedURLString: podcast.feedUrl, completion: { image in
                 self.headerImageView.image = image
             })
             
@@ -507,7 +507,7 @@ extension EpisodesTableViewController: UITableViewDataSource, UITableViewDelegat
                 self.episodesArray.remove(at: indexPath.row)
                 self.tableView.deleteRows(at: [indexPath], with: .fade)
                 
-                PVDeleter.deleteEpisode(mediaUrl: episodeToEdit.mediaUrl, fileOnly: true, shouldCallNotificationMethod: true)
+                PVDeleter.deleteEpisode(mediaUrl: episodeToEdit.mediaUrl, moc: self.moc, fileOnly: true, shouldCallNotificationMethod: true)
                 
                 if self.filterTypeSelected == .downloaded && self.episodesArray.isEmpty {
                     self.loadNoDownloadedEpisodesMessage()

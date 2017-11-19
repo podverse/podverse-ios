@@ -214,7 +214,7 @@ class CoreDataHelper {
         let predicate = NSPredicate(format: "podcast == nil")
         let episodeSet = CoreDataHelper.fetchEntities(className: "Episode", predicate: predicate, moc:moc) as! [Episode]
         for episode in episodeSet {
-            PVDeleter.deleteEpisode(mediaUrl: episode.mediaUrl)
+            PVDeleter.deleteEpisode(mediaUrl: episode.mediaUrl, moc: moc)
         }
     }
 }

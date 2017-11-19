@@ -49,7 +49,7 @@ class AddToPlaylistViewController: UIViewController {
                 self.episodePubDate.text = episodePubDate.toShortFormatString()
             }
             
-            self.podcastImage.image = Podcast.retrievePodcastImage(podcastImageURLString: item.podcastImageUrl, feedURLString: item.podcastFeedUrl, managedObjectID: nil, completion: { image in
+            self.podcastImage.image = Podcast.retrievePodcastImage(podcastImageURLString: item.podcastImageUrl, feedURLString: item.podcastFeedUrl, completion: { image in
                 self.podcastImage.image = image
             })
             

@@ -105,12 +105,8 @@ class Podcast: NSManagedObject {
      
      - Returns: The podcast image that was fetched (Discardable)
      */
-    @discardableResult static func retrievePodcastImage(podcastImageURLString:String? = nil, feedURLString:String? = nil, managedObjectID:NSManagedObjectID? = nil, completion:((_ podcastImage: UIImage) -> Void)? = nil) -> UIImage {
-        
-        if let moid = managedObjectID, let podcastImage = Podcast.fetchPodcastImage(managedObjectId: moid) {
-            return podcastImage
-        }
-        
+    @discardableResult static func retrievePodcastImage(podcastImageURLString:String? = nil, feedURLString:String? = nil, completion:((_ podcastImage: UIImage) -> Void)? = nil) -> UIImage {
+                
         if let feedUrl = feedURLString, !feedUrl.isEmpty, let podcastImage = Podcast.fetchPodcastImage(podcastFeedUrl: feedUrl) {
             return podcastImage
         }
@@ -124,17 +120,6 @@ class Podcast: NSManagedObject {
         }
         
         return UIImage(named: "PodverseIcon")!
-    }
-    
-    private static func fetchPodcastImage(managedObjectId: NSManagedObjectID) -> UIImage? {
-        let moc = CoreDataHelper.createMOCForThread(threadType: .mainThread)
-        
-        if let podcast = CoreDataHelper.fetchEntityWithID(objectId: managedObjectId, moc: moc) as? Podcast,
-            let imageData = podcast.imageData, let image = UIImage(data: imageData) {
-            return image
-        }
-
-        return nil
     }
     
     private static func fetchPodcastImage(podcastFeedUrl: String) -> UIImage? {

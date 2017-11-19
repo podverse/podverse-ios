@@ -288,7 +288,7 @@ class PVMediaPlayer: NSObject {
         clearPlaybackPosition()
         
         if let nowPlayingItem = playerHistoryManager.historyItems.first, let episodeMediaUrl = nowPlayingItem.episodeMediaUrl, let episode = Episode.episodeForMediaUrl(mediaUrlString: episodeMediaUrl, managedObjectContext: moc) {
-            PVDeleter.deleteEpisode(mediaUrl: episode.mediaUrl, fileOnly: true, shouldCallNotificationMethod: true)
+            PVDeleter.deleteEpisode(mediaUrl: episode.mediaUrl, moc: self.moc, fileOnly: true, shouldCallNotificationMethod: true)
             nowPlayingItem.hasReachedEnd = true
             playerHistoryManager.addOrUpdateItem(item: nowPlayingItem)
         }
@@ -338,7 +338,7 @@ class PVMediaPlayer: NSObject {
         
         let currentPlaybackTime = NSNumber(value: self.audioPlayer.progress)
         
-        let podcastImage = Podcast.retrievePodcastImage(podcastImageURLString: item.podcastImageUrl, feedURLString: item.podcastFeedUrl, managedObjectID: nil, completion: { image in
+        let podcastImage = Podcast.retrievePodcastImage(podcastImageURLString: item.podcastImageUrl, feedURLString: item.podcastFeedUrl, completion: { image in
             MPNowPlayingInfoCenter.default().nowPlayingInfo?[MPMediaItemPropertyArtwork] = MPMediaItemArtwork(image: image)
         })
         

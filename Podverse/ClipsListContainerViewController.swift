@@ -256,7 +256,7 @@ extension ClipsListContainerViewController:UITableViewDelegate, UITableViewDataS
             cell.episodeTitle?.text = clip.episodeTitle
             cell.clipTitle?.text = clip.title
             
-            cell.podcastImage.image = Podcast.retrievePodcastImage(podcastImageURLString: clip.podcastImageUrl, feedURLString: clip.podcastFeedUrl, managedObjectID: nil, completion: { image in
+            cell.podcastImage.image = Podcast.retrievePodcastImage(podcastImageURLString: clip.podcastImageUrl, feedURLString: clip.podcastFeedUrl, completion: { image in
                 cell.podcastImage.image = image
             })
             

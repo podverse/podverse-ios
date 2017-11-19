@@ -32,7 +32,7 @@ class MakeClipTitleViewController: UIViewController, UITextViewDelegate {
             self.podcastTitle.text = item.podcastTitle
             self.episodeTitle.text = item.episodeTitle
             
-            self.podcastImage.image = Podcast.retrievePodcastImage(podcastImageURLString: item.podcastImageUrl, feedURLString: item.podcastFeedUrl, managedObjectID: nil, completion: { image in
+            self.podcastImage.image = Podcast.retrievePodcastImage(podcastImageURLString: item.podcastImageUrl, feedURLString: item.podcastFeedUrl, completion: { image in
                 self.podcastImage.image = image
             })
             
