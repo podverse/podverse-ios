@@ -55,6 +55,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         AudioSearchClientSwift.getAudiosearchAccessToken()
         
+        CoreDataHelper.clearOrphanedEpisodes()
+        
         return true
     }
 
@@ -127,6 +129,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         pvMediaPlayer.playOrPause()
         MPNowPlayingInfoCenter.default().nowPlayingInfo?[MPNowPlayingInfoPropertyElapsedPlaybackTime] = pvMediaPlayer.audioPlayer.progress
     }
-    
+        
 }
 

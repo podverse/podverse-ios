@@ -507,7 +507,7 @@ extension EpisodesTableViewController: UITableViewDataSource, UITableViewDelegat
                 self.episodesArray.remove(at: indexPath.row)
                 self.tableView.deleteRows(at: [indexPath], with: .fade)
                 
-                PVDeleter.deleteEpisode(episodeId: episodeToEdit.objectID, fileOnly: true, shouldCallNotificationMethod: true)
+                PVDeleter.deleteEpisode(mediaUrl: episodeToEdit.mediaUrl, fileOnly: true, shouldCallNotificationMethod: true)
                 
                 if self.filterTypeSelected == .downloaded && self.episodesArray.isEmpty {
                     self.loadNoDownloadedEpisodesMessage()

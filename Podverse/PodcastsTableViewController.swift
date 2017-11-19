@@ -176,7 +176,6 @@ extension PodcastsTableViewController:PVFeedParserDelegate {
     
     func feedParsingStarted() { }
     
-    func feedParserChannelParsed() { }
 }
 
 extension PodcastsTableViewController:UITableViewDelegate, UITableViewDataSource {
@@ -235,7 +234,7 @@ extension PodcastsTableViewController:UITableViewDelegate, UITableViewDataSource
         let deleteAction = UITableViewRowAction(style: .default, title: "Delete", handler: {action, indexpath in
             self.subscribedPodcastsArray.remove(at: indexPath.row)
             tableView.deleteRows(at: [indexPath], with: .fade)
-            PVDeleter.deletePodcast(podcastId: podcastToEditOid, feedUrl: podcastToEditFeedUrl)
+            PVDeleter.deletePodcast(feedUrl: podcastToEditFeedUrl)
             
             if !checkForResults(results: self.subscribedPodcastsArray) {
                 self.loadNoPodcastsSubscribedMessage()

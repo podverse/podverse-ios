@@ -20,6 +20,7 @@ final class DownloadingEpisodeList {
         if let mediaUrl = mediaUrl, let index = downloadingEpisodes.index(where: { $0.mediaUrl == mediaUrl }), index < downloadingEpisodes.count {
             downloadingEpisodes[index].removeFromDownloadHistory()
             DownloadingEpisodeList.shared.downloadingEpisodes.remove(at: index)
+            PVDownloader.shared.decrementBadge()
         }
     }
 }

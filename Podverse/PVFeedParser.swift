@@ -12,12 +12,10 @@ import CoreData
 protocol PVFeedParserDelegate {
     func feedParsingComplete(feedUrl:String?)
     func feedParserStarted()
-    func feedParserChannelParsed()
 }
 
 extension PVFeedParserDelegate {
     func feedParserStarted() { }
-    func feedParserChannelParsed() { }
 }
 
 class PVFeedParser {
@@ -25,6 +23,7 @@ class PVFeedParser {
     var feedUrl: String?
     let moc = CoreDataHelper.createMOCForThread(threadType: .privateThread)
     
+    var podcast:Podcast?
     var onlyGetMostRecentEpisode: Bool
     var subscribeToPodcast: Bool
     var downloadMostRecentEpisode = false
@@ -41,6 +40,10 @@ class PVFeedParser {
     
     func parsePodcastFeed(feedUrlString:String) {
 
+        guard feedUrlString.count > 0 else {
+            return
+        }
+        
         parsingPodcastsList.addPodcast(feedUrl: feedUrlString)
         
         self.feedUrl = feedUrlString
@@ -67,83 +70,84 @@ class PVFeedParser {
 extension PVFeedParser:FeedParserDelegate {
     
     func feedParser(_ parser: FeedParser, didParseChannel channel: FeedChannel) {
-        let podcast:Podcast!
         
         if let feedUrlString = channel.channelURL {
             podcast = CoreDataHelper.retrieveExistingOrCreateNewPodcast(feedUrlString: feedUrlString, moc: moc)
-            podcast.feedUrl = feedUrlString
         }
         else {
             return
         }
         
-        if let title = channel.channelTitle {
-            podcast.title = title
-        }
-        
-        if let summary = channel.channelDescription {
-            podcast.summary = summary
-        }
-        
-        if let iTunesAuthor = channel.channeliTunesAuthor {
-            podcast.author = iTunesAuthor
-        }
-        
-        if let podcastLink = channel.channelLink {
-            podcast.link = podcastLink
-        }
-        
-        if let imageUrlString = channel.channelLogoURL, let imageURL = URL(string:imageUrlString) {
-            podcast.imageUrl = imageURL.absoluteString
-            do {
-                podcast.imageData = try Data(contentsOf: imageURL)
+        if let podcast = podcast {
+            
+            if let feedUrlString = channel.channelURL {
+                podcast.feedUrl = feedUrlString
             }
-            catch {
-                print("No Image Data at give URL")
+            
+            if let title = channel.channelTitle {
+                podcast.title = title
             }
-        }
-        
-        if let iTunesImageUrlString = channel.channeliTunesLogoURL, let itunesImageURL = URL(string:iTunesImageUrlString) {
-            podcast.itunesImageUrl = itunesImageURL.absoluteString
-            do {
-                podcast.itunesImage = try Data(contentsOf: itunesImageURL)
-                
-                if podcast.imageData == nil {
-                    podcast.imageData = try Data(contentsOf: itunesImageURL)
-                    podcast.imageUrl = podcast.itunesImageUrl
+            
+            if let summary = channel.channelDescription {
+                podcast.summary = summary
+            }
+            
+            if let iTunesAuthor = channel.channeliTunesAuthor {
+                podcast.author = iTunesAuthor
+            }
+            
+            if let podcastLink = channel.channelLink {
+                podcast.link = podcastLink
+            }
+            
+            if let imageUrlString = channel.channelLogoURL, let imageURL = URL(string:imageUrlString) {
+                podcast.imageUrl = imageURL.absoluteString
+                do {
+                    podcast.imageData = try Data(contentsOf: imageURL)
+                }
+                catch {
+                    print("No Image Data at give URL")
                 }
             }
-            catch {
-                print("No Image Data at give URL")
+            
+            if let iTunesImageUrlString = channel.channeliTunesLogoURL, let itunesImageURL = URL(string:iTunesImageUrlString) {
+                podcast.itunesImageUrl = itunesImageURL.absoluteString
+                do {
+                    podcast.itunesImage = try Data(contentsOf: itunesImageURL)
+                    
+                    if podcast.imageData == nil {
+                        podcast.imageData = try Data(contentsOf: itunesImageURL)
+                        podcast.imageUrl = podcast.itunesImageUrl
+                    }
+                }
+                catch {
+                    print("No Image Data at give URL")
+                }
             }
-        }
-        
-        if let downloadedImageData = podcast.imageData {
-            podcast.imageThumbData = downloadedImageData.resizeImageData()
-        }
-        else if let downloadedImageData = podcast.itunesImage {
-            podcast.imageThumbData = downloadedImageData.resizeImageData()
-        }
-        
-        if let lastBuildDate = channel.channelLastBuildDate {
-            podcast.lastBuildDate = lastBuildDate
-        }
-        
-        if let lastPubDate = channel.channelLastPubDate {
-            podcast.lastPubDate = lastPubDate
-        }
-        
-        if let categories = channel.channelCategory {
-            podcast.categories = categories
-        }
-        
-        moc.saveData {
-            //If only parsing for the latest episode, do not reload the PodcastTableVC after the channel is parsed.
-            //This will prevent PodcastTableVC UI from reloading and sticking unnecessarily.
-            if self.onlyGetMostRecentEpisode != true {
-                self.delegate?.feedParserChannelParsed()
+            
+            if let downloadedImageData = podcast.imageData {
+                podcast.imageThumbData = downloadedImageData.resizeImageData()
             }
+            else if let downloadedImageData = podcast.itunesImage {
+                podcast.imageThumbData = downloadedImageData.resizeImageData()
+            }
+            
+            if let lastBuildDate = channel.channelLastBuildDate {
+                podcast.lastBuildDate = lastBuildDate
+            }
+            
+            if let lastPubDate = channel.channelLastPubDate {
+                podcast.lastPubDate = lastPubDate
+            }
+            
+            if let categories = channel.channelCategory {
+                podcast.categories = categories
+            }
+            
+            moc.saveData(nil)
+            
         }
+        
     }
     
     func feedParser(_ parser: FeedParser, didParseItem item: FeedItem) {
@@ -153,7 +157,7 @@ extension PVFeedParser:FeedParserDelegate {
             return
         }
 
-        guard let feedUrl = self.feedUrl, let podcast = Podcast.podcastForFeedUrl(feedUrlString: feedUrl, managedObjectContext: moc) else {
+        guard let feedUrl = self.feedUrl, let podcast = podcast else {
             // If podcast is nil, then the RSS feed was invalid for the parser, and we should return out of successfullyParsedURL
             return
         }
@@ -162,56 +166,53 @@ extension PVFeedParser:FeedParserDelegate {
         if item.feedEnclosures.count <= 0 {
             return
         }
-
-        let newEpisodeID = CoreDataHelper.insertManagedObject(className: "Episode", moc: moc)
-        let newEpisode = CoreDataHelper.fetchEntityWithID(objectId: newEpisodeID, moc: moc) as! Episode
-
-        // Retrieve parsed values from item and add values to their respective episode properties
-        if let title = item.feedTitle { newEpisode.title = title }
-        if let summary = item.feedContent { newEpisode.summary = summary }
-        if let date = item.feedPubDate { newEpisode.pubDate = date }
-        if let link = item.feedLink { newEpisode.link = link }
-        if let duration = item.duration { newEpisode.duration = duration }
-
-        newEpisode.mediaUrl = item.feedEnclosures[0].url
-        newEpisode.mediaType = item.feedEnclosures[0].type
-        newEpisode.mediaBytes = NSNumber(value: item.feedEnclosures[0].length)
-        if let guid = item.feedIdentifier { newEpisode.guid = guid }
-
+        
+        let mediaUrl = item.feedEnclosures[0].url
+        
         // If only parsing for the latest episode, stop parsing after parsing the first episode.
         if onlyGetMostRecentEpisode == true {
-            latestEpisodePubDate = newEpisode.pubDate
-            CoreDataHelper.deleteItemFromCoreData(deleteObjectID: newEpisodeID, moc: moc)
-            moc.saveData(nil)
+            latestEpisodePubDate = item.feedPubDate
             parser.abortParsing()
             return
         }
-
-        // If episode already exists in the database, do not insert new episode
-        if let mediaUrl = newEpisode.mediaUrl, let _ = Episode.episodeForMediaUrl(mediaUrlString: mediaUrl) {
-            CoreDataHelper.deleteItemFromCoreData(deleteObjectID: newEpisodeID, moc: moc)
-            moc.saveData(nil)
+        
+        // If episode already exists in the database, do nothing
+        if let episode = Episode.episodeForMediaUrl(mediaUrlString: mediaUrl, managedObjectContext: moc), episode.podcast != nil {
+            // do nothing
         } else {
+            let newEpisodeID = CoreDataHelper.insertManagedObject(className: "Episode", moc: moc)
+            let newEpisode = CoreDataHelper.fetchEntityWithID(objectId: newEpisodeID, moc: moc) as! Episode
+            
+            // Retrieve parsed values from item and add values to their respective episode properties
+            if let title = item.feedTitle { newEpisode.title = title }
+            if let summary = item.feedContent { newEpisode.summary = summary }
+            if let date = item.feedPubDate { newEpisode.pubDate = date }
+            if let link = item.feedLink { newEpisode.link = link }
+            if let duration = item.duration { newEpisode.duration = duration }
+            
+            newEpisode.mediaUrl = item.feedEnclosures[0].url
+            newEpisode.mediaType = item.feedEnclosures[0].type
+            newEpisode.mediaBytes = NSNumber(value: item.feedEnclosures[0].length)
+            if let guid = item.feedIdentifier { newEpisode.guid = guid }
+            
             podcast.addEpisodeObject(value: newEpisode)
-            moc.saveData({ [weak self] in
-                guard let strongSelf = self else {
-                    return
-                }
-
-                if strongSelf.downloadMostRecentEpisode == true && podcast.shouldAutoDownload() {
-                    PVDownloader.shared.startDownloadingEpisode(episode: newEpisode)
-                    strongSelf.downloadMostRecentEpisode = false
-                }
-            })
+            
+            if self.downloadMostRecentEpisode == true && podcast.shouldAutoDownload() {
+                PVDownloader.shared.startDownloadingEpisode(episode: newEpisode)
+                self.downloadMostRecentEpisode = false
+            }
+            
+            moc.saveData(nil)
+            
         }
-
+        
     }
     
     func feedParser(_ parser: FeedParser, successfullyParsedURL url: String) {
         
         parsingPodcastsList.podcastFinishedParsing()
         
-        guard let feedUrl = self.feedUrl, let podcast = Podcast.podcastForFeedUrl(feedUrlString: feedUrl, managedObjectContext: moc) else {
+        guard let feedUrl = self.feedUrl, let podcast = podcast else {
             return
         }
         
@@ -222,9 +223,9 @@ extension PVFeedParser:FeedParserDelegate {
             if let latestEpisode = CoreDataHelper.fetchEntityWithMostRecentPubDate(className:"Episode", predicate: podcastPredicate, moc:moc) as? Episode {
                 if latestEpisode.fileName == nil {
                     PVDownloader.shared.startDownloadingEpisode(episode: latestEpisode)
+                    podcast.addToAutoDownloadList()
                 }
             }
-            podcast.addToAutoDownloadList()
         }
         
         if let mostRecentEpisode = CoreDataHelper.fetchEntityWithMostRecentPubDate(className:"Episode", predicate: podcastPredicate, moc:moc) as? Episode {
@@ -239,7 +240,7 @@ extension PVFeedParser:FeedParserDelegate {
     
     func feedParserParsingAborted(_ parser: FeedParser) {
         
-        guard let feedUrl = self.feedUrl, let podcast = Podcast.podcastForFeedUrl(feedUrlString: feedUrl, managedObjectContext: moc) else {
+        guard let feedUrl = self.feedUrl, let podcast = podcast else {
             parsingPodcastsList.podcastFinishedParsing()
             self.delegate?.feedParsingComplete(feedUrl:nil)
             return

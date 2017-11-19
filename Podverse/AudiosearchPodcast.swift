@@ -100,7 +100,7 @@ class AudiosearchPodcast {
             
             if isSubscribed == true {
                 podcastActions.addAction(UIAlertAction(title: "Unsubscribe", style: .default, handler: { action in
-                    PVDeleter.deletePodcast(podcastId: nil, feedUrl: feedUrl)
+                    PVDeleter.deletePodcast(feedUrl: feedUrl)
                 }))
             } else {
                 podcastActions.addAction(UIAlertAction(title: "Subscribe", style: .default, handler: { action in
