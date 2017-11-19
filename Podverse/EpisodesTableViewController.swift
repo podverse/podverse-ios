@@ -273,7 +273,6 @@ class EpisodesTableViewController: PVViewController {
         self.clipQueryIsLoading = true
         self.clipQueryEndOfResultsReached = false
         self.clipQueryMessage.isHidden = true
-        self.tableView.reloadData()
     }
     
     func retrieveClips() {
@@ -363,6 +362,9 @@ class EpisodesTableViewController: PVViewController {
     }
     
     func loadNoDownloadedEpisodesMessage() {
+        self.tableView.isHidden = true
+        hideActivityIndicator()
+        
         loadNoDataView(message: Strings.Errors.noDownloadedEpisodesAvailable, buttonTitle: "Show All Episodes", buttonPressed: #selector(EpisodesTableViewController.loadAllEpisodeData))
     }
     

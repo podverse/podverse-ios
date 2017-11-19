@@ -83,7 +83,6 @@ class ClipsListContainerViewController: UIViewController {
         self.clipQueryIsLoading = true
         self.clipQueryEndOfResultsReached = false
         self.clipQueryMessage.isHidden = true
-        self.tableView.reloadData()
     }
     
     func retrieveClips() {
