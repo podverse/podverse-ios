@@ -248,9 +248,6 @@ class PVMediaPlayer: NSObject {
         }
         
         savePlaybackPosition()
-        
-        updateMPNowPlayingInfoCenter()
-        
     }
     
     func updateMPNowPlayingInfoCenter() {
