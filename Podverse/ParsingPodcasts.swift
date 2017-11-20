@@ -8,24 +8,39 @@
 
 import Foundation
 
-final class ParsingPodcastsList {
-    static let shared = ParsingPodcastsList()
+final class ParsingPodcasts {
+    static let shared = ParsingPodcasts()
     var urls = [String]()
     var currentlyParsingItem = 0
     
     func clearParsingPodcastsIfFinished() {
         if currentlyParsingItem == urls.count {
             currentlyParsingItem = 0
-            urls.removeAll()
+            self.urls.removeAll()
             NotificationCenter.default.post(name:NSNotification.Name(rawValue: kFinishedAllParsingPodcasts), object: self, userInfo: nil)
         }
     }
     
-    func addPodcast(feedUrl: String) {
-        if urls.filter({$0 == feedUrl}).count < 1 {
-            urls.append(feedUrl)
+    func addPodcast(feedUrl:String) {
+        if self.urls.filter({$0 == feedUrl}).count < 1 {
+            self.urls.append(feedUrl)
             NotificationCenter.default.post(name:NSNotification.Name(rawValue: kBeginParsingPodcast), object: self, userInfo: nil)
         }
+    }
+    
+    func removePodcast(feedUrl:String) {
+        if let index = self.urls.index(of: feedUrl) {
+            self.urls.remove(at: index)
+            NotificationCenter.default.post(name:NSNotification.Name(rawValue: kBeginParsingPodcast), object: self, userInfo: nil)
+        }
+    }
+    
+    func hasMatchingUrl(feedUrl:String) -> Bool {
+        if let _ = self.urls.index(of: feedUrl) {
+            return true
+        }
+        
+        return false
     }
     
     func podcastFinishedParsing() {

@@ -18,7 +18,9 @@ class PVSubscriber {
             DispatchQueue.main.async {
                 feedParser.delegate = ((UIApplication.shared.keyWindow?.rootViewController as? UITabBarController)?.viewControllers?.first as? UINavigationController)?.topViewController as? PodcastsTableViewController
             }
-            feedParser.parsePodcastFeed(feedUrlString: feedUrlString)
+            DispatchQueue.global().async {
+                feedParser.parsePodcastFeed(feedUrlString: feedUrlString)
+            }
         }
         
     }

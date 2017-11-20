@@ -34,6 +34,7 @@ class PVDeleter: NSObject {
         }
         
         if let podcast = podcastToDelete {
+            ParsingPodcasts.shared.removePodcast(feedUrl: podcast.feedUrl)
             podcast.removeFromAutoDownloadList()
             deleteAllEpisodesFromPodcast(feedUrl: podcast.feedUrl, moc: moc)
             moc.delete(podcast)

@@ -21,7 +21,7 @@ extension PVFeedParserDelegate {
 class PVFeedParser {
     
     var feedUrl: String?
-    let moc = CoreDataHelper.createMOCForThread(threadType: .privateThread)
+    let privateMoc = CoreDataHelper.createMOCForThread(threadType: .privateThread)
     
     var podcast:Podcast?
     var onlyGetMostRecentEpisode: Bool
@@ -30,7 +30,7 @@ class PVFeedParser {
     var onlyParseChannel = false
     var latestEpisodePubDate:Date?
     var delegate:PVFeedParserDelegate?
-    let parsingPodcastsList = ParsingPodcastsList.shared
+    let parsingPodcasts = ParsingPodcasts.shared
     
     init(shouldOnlyGetMostRecentEpisode:Bool, shouldSubscribe:Bool, shouldOnlyParseChannel:Bool) {
         self.onlyGetMostRecentEpisode = shouldOnlyGetMostRecentEpisode
@@ -44,7 +44,7 @@ class PVFeedParser {
             return
         }
         
-        parsingPodcastsList.addPodcast(feedUrl: feedUrlString)
+        self.parsingPodcasts.addPodcast(feedUrl: feedUrlString)
         
         self.feedUrl = feedUrlString
         let feedParser = ExtendedFeedParser(feedUrl: feedUrlString)
@@ -72,7 +72,13 @@ extension PVFeedParser:FeedParserDelegate {
     func feedParser(_ parser: FeedParser, didParseChannel channel: FeedChannel) {
         
         if let feedUrlString = channel.channelURL {
-            podcast = CoreDataHelper.retrieveExistingOrCreateNewPodcast(feedUrlString: feedUrlString, moc: moc)
+            
+            // If the podcast has been removed, then abandon parsing.
+            if !self.parsingPodcasts.hasMatchingUrl(feedUrl: feedUrlString) {
+                return
+            }
+            
+            podcast = CoreDataHelper.retrieveExistingOrCreateNewPodcast(feedUrlString: feedUrlString, moc: self.privateMoc)
         }
         else {
             return
@@ -144,7 +150,7 @@ extension PVFeedParser:FeedParserDelegate {
                 podcast.categories = categories
             }
             
-            moc.saveData(nil)
+            self.privateMoc.saveData(nil)
             
         }
         
@@ -159,6 +165,11 @@ extension PVFeedParser:FeedParserDelegate {
 
         guard let feedUrl = self.feedUrl, let podcast = podcast else {
             // If podcast is nil, then the RSS feed was invalid for the parser, and we should return out of successfullyParsedURL
+            return
+        }
+        
+        // If the podcast has been removed, then abandon parsing.
+        if !self.parsingPodcasts.hasMatchingUrl(feedUrl: feedUrl) {
             return
         }
 
@@ -177,11 +188,11 @@ extension PVFeedParser:FeedParserDelegate {
         }
         
         // If episode already exists in the database, do nothing
-        if let episode = Episode.episodeForMediaUrl(mediaUrlString: mediaUrl, managedObjectContext: moc), episode.podcast != nil {
+        if let episode = Episode.episodeForMediaUrl(mediaUrlString: mediaUrl, managedObjectContext: self.privateMoc), episode.podcast != nil {
             // do nothing
         } else {
-            let newEpisodeID = CoreDataHelper.insertManagedObject(className: "Episode", moc: moc)
-            let newEpisode = CoreDataHelper.fetchEntityWithID(objectId: newEpisodeID, moc: moc) as! Episode
+            let newEpisodeID = CoreDataHelper.insertManagedObject(className: "Episode", moc: self.privateMoc)
+            let newEpisode = CoreDataHelper.fetchEntityWithID(objectId: newEpisodeID, moc: self.privateMoc) as! Episode
             
             // Retrieve parsed values from item and add values to their respective episode properties
             if let title = item.feedTitle { newEpisode.title = title }
@@ -202,7 +213,7 @@ extension PVFeedParser:FeedParserDelegate {
                 self.downloadMostRecentEpisode = false
             }
             
-            moc.saveData(nil)
+            self.privateMoc.saveData(nil)
             
         }
         
@@ -210,9 +221,9 @@ extension PVFeedParser:FeedParserDelegate {
     
     func feedParser(_ parser: FeedParser, successfullyParsedURL url: String) {
         
-        parsingPodcastsList.podcastFinishedParsing()
+        self.parsingPodcasts.podcastFinishedParsing()
         
-        guard let feedUrl = self.feedUrl, let podcast = podcast else {
+        guard let _ = self.feedUrl, let podcast = podcast else {
             return
         }
         
@@ -220,7 +231,7 @@ extension PVFeedParser:FeedParserDelegate {
         
         // If subscribing to a podcast, then get the latest episode and begin downloading
         if subscribeToPodcast == true {
-            if let latestEpisode = CoreDataHelper.fetchEntityWithMostRecentPubDate(className:"Episode", predicate: podcastPredicate, moc:moc) as? Episode {
+            if let latestEpisode = CoreDataHelper.fetchEntityWithMostRecentPubDate(className:"Episode", predicate: podcastPredicate, moc:self.privateMoc) as? Episode {
                 if latestEpisode.fileName == nil {
                     PVDownloader.shared.startDownloadingEpisode(episode: latestEpisode)
                     podcast.addToAutoDownloadList()
@@ -228,9 +239,9 @@ extension PVFeedParser:FeedParserDelegate {
             }
         }
         
-        if let mostRecentEpisode = CoreDataHelper.fetchEntityWithMostRecentPubDate(className:"Episode", predicate: podcastPredicate, moc:moc) as? Episode {
+        if let mostRecentEpisode = CoreDataHelper.fetchEntityWithMostRecentPubDate(className:"Episode", predicate: podcastPredicate, moc:self.privateMoc) as? Episode {
             podcast.lastPubDate = mostRecentEpisode.pubDate
-            moc.saveData(nil)
+            self.privateMoc.saveData(nil)
         }
         
         self.delegate?.feedParsingComplete(feedUrl: podcast.feedUrl)
@@ -241,7 +252,7 @@ extension PVFeedParser:FeedParserDelegate {
     func feedParserParsingAborted(_ parser: FeedParser) {
         
         guard let feedUrl = self.feedUrl, let podcast = podcast else {
-            parsingPodcastsList.podcastFinishedParsing()
+            self.parsingPodcasts.podcastFinishedParsing()
             self.delegate?.feedParsingComplete(feedUrl:nil)
             return
         }
@@ -250,7 +261,7 @@ extension PVFeedParser:FeedParserDelegate {
         if let latestEpisodePubDateInRSSFeed = latestEpisodePubDate, self.onlyGetMostRecentEpisode == true {
             let podcastPredicate = NSPredicate(format: "podcast == %@", podcast)
             
-            let mostRecentEpisode = CoreDataHelper.fetchEntityWithMostRecentPubDate(className: "Episode", predicate: podcastPredicate, moc: moc) as? Episode
+            let mostRecentEpisode = CoreDataHelper.fetchEntityWithMostRecentPubDate(className: "Episode", predicate: podcastPredicate, moc: self.privateMoc) as? Episode
             
             if mostRecentEpisode == nil {
                 parseAndDownloadMostRecentEpisode(feedUrl: feedUrl)
@@ -258,7 +269,7 @@ extension PVFeedParser:FeedParserDelegate {
                 parseAndDownloadMostRecentEpisode(feedUrl: feedUrl)
             }
             else {
-                parsingPodcastsList.podcastFinishedParsing()
+                self.parsingPodcasts.podcastFinishedParsing()
                 self.delegate?.feedParsingComplete(feedUrl: feedUrl)
             }
         } else {

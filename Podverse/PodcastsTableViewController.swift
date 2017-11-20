@@ -18,7 +18,7 @@ class PodcastsTableViewController: PVViewController, AutoDownloadProtocol {
     
     let moc = CoreDataHelper.createMOCForThread(threadType: .mainThread)
     
-    let parsingPodcastsList = ParsingPodcastsList.shared
+    let parsingPodcasts = ParsingPodcasts.shared
     let reachability = PVReachability.shared
     let refreshControl = UIRefreshControl()
     var subscribedPodcastsArray = [Podcast]()
@@ -72,13 +72,6 @@ class PodcastsTableViewController: PVViewController, AutoDownloadProtocol {
     
     @objc fileprivate func refreshPodcastFeeds() {
         
-        let privateMoc = CoreDataHelper.createMOCForThread(threadType: .privateThread)
-        
-        if parsingPodcastsList.urls.count > 0 {
-            self.refreshControl.endRefreshing()
-            return
-        }
-
         if checkForConnectivity() == false {
 
             if refreshControl.isRefreshing == true {
@@ -88,16 +81,21 @@ class PodcastsTableViewController: PVViewController, AutoDownloadProtocol {
 
             return
         }
-
-        let podcastArray = CoreDataHelper.fetchEntities(className:"Podcast", predicate: nil, moc:privateMoc) as! [Podcast]
-
-        for podcast in podcastArray {
-            let feedUrl = NSURL(string:podcast.feedUrl)
-
-            let pvFeedParser = PVFeedParser(shouldOnlyGetMostRecentEpisode: true, shouldSubscribe:false, shouldOnlyParseChannel: false)
-            pvFeedParser.delegate = self
-            if let feedUrlString = feedUrl?.absoluteString {
-                pvFeedParser.parsePodcastFeed(feedUrlString: feedUrlString)
+        
+        DispatchQueue.global().async {
+            let privateMoc = CoreDataHelper.createMOCForThread(threadType: .privateThread)
+            let podcastArray = CoreDataHelper.fetchEntities(className:"Podcast", predicate: nil, moc:privateMoc) as! [Podcast]
+            
+            for podcast in podcastArray {
+                let feedUrl = NSURL(string:podcast.feedUrl)
+                
+                let pvFeedParser = PVFeedParser(shouldOnlyGetMostRecentEpisode: true, shouldSubscribe:false, shouldOnlyParseChannel: false)
+                pvFeedParser.delegate = self
+                if let feedUrlString = feedUrl?.absoluteString {
+                    if !self.parsingPodcasts.hasMatchingUrl(feedUrl: feedUrlString) {
+                        pvFeedParser.parsePodcastFeed(feedUrlString: feedUrlString)
+                    }
+                }
             }
         }
 
@@ -302,8 +300,8 @@ extension PodcastsTableViewController {
     }
     
     func refreshParsingStatus(_ notification:Notification) {
-        let total = self.parsingPodcastsList.urls.count
-        let currentItem = self.parsingPodcastsList.currentlyParsingItem
+        let total = self.parsingPodcasts.urls.count
+        let currentItem = self.parsingPodcasts.currentlyParsingItem
         
         DispatchQueue.main.async {
             if total > 0 && currentItem < total {
