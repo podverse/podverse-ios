@@ -126,7 +126,7 @@
         <scene sceneID="bfs-bD-UFX">
             <objects>
                 <navigationController id="gI0-nG-hkm" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Find" image="Tab-Find" selectedImage="Tab-Find" id="bkk-Aa-xNZ"/>
+                    <tabBarItem key="tabBarItem" title="Find" image="tab-find" selectedImage="tab-find" id="bkk-Aa-xNZ"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="acn-ou-b24">
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
@@ -142,7 +142,7 @@
         <scene sceneID="Isy-tw-IOn">
             <objects>
                 <navigationController id="r94-B9-OeX" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Clips" image="Blank52" selectedImage="Blank52" id="doR-Cw-vdU"/>
+                    <tabBarItem key="tabBarItem" title="Clips" image="tab-clips" selectedImage="tab-clips" id="doR-Cw-vdU"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="bgf-v8-WVl">
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
@@ -158,7 +158,7 @@
         <scene sceneID="Ubf-NS-NvC">
             <objects>
                 <navigationController id="aOf-u0-lhX" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Podcasts" image="Tab-Podcasts" selectedImage="Tab-Podcasts" id="jNT-FU-adW"/>
+                    <tabBarItem key="tabBarItem" title="Podcasts" image="tab-podcasts" selectedImage="tab-podcasts" id="jNT-FU-adW"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="5dy-89-fAa">
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
@@ -332,7 +332,7 @@
         <scene sceneID="91r-Y0-K0g">
             <objects>
                 <navigationController title="Downloads" id="Dex-oJ-M11" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Downloads" image="Tab-Downloads" selectedImage="Tab-Downloads" id="yBH-qH-ASW"/>
+                    <tabBarItem key="tabBarItem" title="Downloads" image="tab-downloads" selectedImage="tab-downloads" id="yBH-qH-ASW"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="dgx-oC-B0s">
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
@@ -344,11 +344,11 @@
             </objects>
             <point key="canvasLocation" x="-76" y="479"/>
         </scene>
-        <!--Navigation Controller-->
+        <!--More-->
         <scene sceneID="6Ht-Ba-X1r">
             <objects>
                 <navigationController id="XF3-ix-Atu" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" systemItem="more" id="4S9-ez-Tds"/>
+                    <tabBarItem key="tabBarItem" title="More" image="tab-more" selectedImage="tab-more" id="4S9-ez-Tds"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="Y7H-gU-7mD">
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
@@ -2543,7 +2543,7 @@
                                             <constraint firstAttribute="width" constant="48" id="r8H-FT-2Hg"/>
                                         </constraints>
                                         <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                        <state key="normal" image="skip"/>
+                                        <state key="normal" image="skipforward"/>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="b1n-yz-gVu">
                                         <rect key="frame" x="12" y="10" width="48" height="48"/>
@@ -2552,7 +2552,7 @@
                                             <constraint firstAttribute="height" constant="48" id="bXX-1n-1Nd"/>
                                         </constraints>
                                         <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                        <state key="normal" image="skip-back"/>
+                                        <state key="normal" image="skipbackward"/>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7Cr-KC-kdT">
                                         <rect key="frame" x="52" y="68" width="44" height="30"/>
@@ -2575,10 +2575,10 @@
                                         <rect key="frame" x="60" y="10" width="97" height="48"/>
                                         <subviews>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="xBK-no-JRj">
-                                                <rect key="frame" x="33" y="9" width="30" height="30"/>
+                                                <rect key="frame" x="30" y="6" width="36" height="36"/>
                                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                 <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                                <state key="normal" image="backward-15"/>
+                                                <state key="normal" image="back15"/>
                                                 <connections>
                                                     <action selector="timeJumpBackward:" destination="fGh-hH-QQS" eventType="touchUpInside" id="EJG-0b-Eu8"/>
                                                 </connections>
@@ -2595,9 +2595,9 @@
                                         <rect key="frame" x="217" y="10" width="98" height="48"/>
                                         <subviews>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mId-2b-yiM">
-                                                <rect key="frame" x="34" y="9" width="30" height="30"/>
+                                                <rect key="frame" x="31" y="6" width="36" height="36"/>
                                                 <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                                <state key="normal" image="forward-15"/>
+                                                <state key="normal" image="forward15"/>
                                                 <connections>
                                                     <action selector="timeJumpForward:" destination="fGh-hH-QQS" eventType="touchUpInside" id="3ke-uG-z9r"/>
                                                 </connections>
@@ -3356,16 +3356,17 @@
         </scene>
     </scenes>
     <resources>
-        <image name="Blank52" width="47" height="47"/>
-        <image name="Tab-Downloads" width="25" height="25"/>
-        <image name="Tab-Find" width="25" height="25"/>
-        <image name="Tab-Podcasts" width="25" height="25"/>
-        <image name="backward-15" width="30" height="30"/>
+        <image name="back15" width="36" height="36"/>
         <image name="banner" width="337" height="61"/>
-        <image name="forward-15" width="30" height="30"/>
-        <image name="play" width="30" height="30"/>
-        <image name="skip" width="30" height="30"/>
-        <image name="skip-back" width="30" height="30"/>
+        <image name="forward15" width="36" height="36"/>
+        <image name="play" width="36" height="36"/>
+        <image name="skipbackward" width="36" height="36"/>
+        <image name="skipforward" width="36" height="36"/>
+        <image name="tab-clips" width="25" height="25"/>
+        <image name="tab-downloads" width="25" height="25"/>
+        <image name="tab-find" width="25" height="25"/>
+        <image name="tab-more" width="25" height="25"/>
+        <image name="tab-podcasts" width="25" height="25"/>
     </resources>
     <inferredMetricsTieBreakers>
         <segue reference="SU9-3d-tZS"/>
