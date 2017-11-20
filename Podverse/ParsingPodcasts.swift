@@ -17,21 +17,27 @@ final class ParsingPodcasts {
         if currentlyParsingItem == urls.count {
             currentlyParsingItem = 0
             self.urls.removeAll()
-            NotificationCenter.default.post(name:NSNotification.Name(rawValue: kFinishedAllParsingPodcasts), object: self, userInfo: nil)
+            DispatchQueue.main.async {
+                NotificationCenter.default.post(name:NSNotification.Name(rawValue: kFinishedAllParsingPodcasts), object: self, userInfo: nil)
+            }
         }
     }
     
     func addPodcast(feedUrl:String) {
         if self.urls.filter({$0 == feedUrl}).count < 1 {
             self.urls.append(feedUrl)
-            NotificationCenter.default.post(name:NSNotification.Name(rawValue: kBeginParsingPodcast), object: self, userInfo: nil)
+            DispatchQueue.main.async {
+                NotificationCenter.default.post(name:NSNotification.Name(rawValue: kBeginParsingPodcast), object: self, userInfo: nil)
+            }
         }
     }
     
     func removePodcast(feedUrl:String) {
         if let index = self.urls.index(of: feedUrl) {
             self.urls.remove(at: index)
-            NotificationCenter.default.post(name:NSNotification.Name(rawValue: kBeginParsingPodcast), object: self, userInfo: nil)
+            DispatchQueue.main.async {
+                NotificationCenter.default.post(name:NSNotification.Name(rawValue: kFinishedParsingPodcast), object: self, userInfo: nil)
+            }
         }
     }
     
@@ -45,8 +51,10 @@ final class ParsingPodcasts {
     
     func podcastFinishedParsing() {
         self.currentlyParsingItem += 1
-        NotificationCenter.default.post(name:NSNotification.Name(rawValue: kFinishedParsingPodcast), object: self, userInfo: nil)
         clearParsingPodcastsIfFinished()
+        DispatchQueue.main.async {
+            NotificationCenter.default.post(name:NSNotification.Name(rawValue: kFinishedParsingPodcast), object: self, userInfo: nil)
+        }
     }
         
 }

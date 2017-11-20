@@ -19,31 +19,27 @@ class PVDeleter: NSObject {
     
     static func deletePodcast(feedUrl: String? = nil, moc: NSManagedObjectContext) {
         
-        var podcastToDelete:Podcast?
-        
-        if let feedUrl = feedUrl, let podcast = Podcast.podcastForFeedUrl(feedUrlString: feedUrl, managedObjectContext: moc) {
-            podcastToDelete = podcast
-        }
-        else {
-            DispatchQueue.main.async {
-                NotificationCenter.default.post(  name: .podcastDeleted,
-                                                  object: nil,
-                                                  userInfo: ["feedUrl": feedUrl ?? ""])
-            }
+        guard let feedUrl = feedUrl, let podcastToDelete = Podcast.podcastForFeedUrl(feedUrlString: feedUrl, managedObjectContext: moc) else {
             return
         }
         
-        if let podcast = podcastToDelete {
-            ParsingPodcasts.shared.removePodcast(feedUrl: podcast.feedUrl)
-            podcast.removeFromAutoDownloadList()
-            deleteAllEpisodesFromPodcast(feedUrl: podcast.feedUrl, moc: moc)
-            moc.delete(podcast)
-            moc.saveData({
-                DispatchQueue.main.async {
-                    NotificationCenter.default.post(name: .podcastDeleted, object: nil, userInfo: ["feedUrl": feedUrl ?? ""])
-                }
-            })
+        if DeletingPodcasts.shared.hasMatchingUrl(feedUrl: feedUrl) {
+            return
         }
+        
+        DeletingPodcasts.shared.addPodcast(feedUrl: feedUrl)
+        ParsingPodcasts.shared.removePodcast(feedUrl: feedUrl)
+        podcastToDelete.removeFromAutoDownloadList()
+        deleteAllEpisodesFromPodcast(feedUrl: feedUrl, moc: moc)
+        moc.delete(podcastToDelete)
+        moc.saveData({
+            DeletingPodcasts.shared.removePodcast(feedUrl: feedUrl)
+            DispatchQueue.main.async {
+                NotificationCenter.default.post(name: .podcastDeleted, object: nil, userInfo: ["feedUrl": feedUrl ?? ""])
+            }
+        })
+    
+
         
     }
     
@@ -97,8 +93,8 @@ class PVDeleter: NSObject {
                 }
                 
                 moc.saveData() {
-                    DispatchQueue.main.async {
-                        if shouldCallNotificationMethod == true {
+                    if shouldCallNotificationMethod == true {
+                        DispatchQueue.main.async {
                             NotificationCenter.default.post(name: .episodeDeleted, object: nil, userInfo: ["mediaUrl":mediaUrl ?? ""])
                         }
                     }

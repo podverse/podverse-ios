@@ -105,7 +105,9 @@ class AudiosearchPodcastViewController: PVViewController {
                 PVDeleter.deletePodcast(feedUrl: self.feedUrl, moc: moc)
             }
         } else {
-            PVSubscriber.subscribeToPodcast(feedUrlString: self.feedUrl)
+            DispatchQueue.global().async {
+                PVSubscriber.subscribeToPodcast(feedUrlString: self.feedUrl)
+            }
         }
         
         loadSubscribeButton(!isSubscribed)

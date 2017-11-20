@@ -84,12 +84,13 @@ class PodcastsTableViewController: PVViewController, AutoDownloadProtocol {
         
         DispatchQueue.global().async {
             let privateMoc = CoreDataHelper.createMOCForThread(threadType: .privateThread)
-            let podcastArray = CoreDataHelper.fetchEntities(className:"Podcast", predicate: nil, moc:privateMoc) as! [Podcast]
+            var podcastArray = CoreDataHelper.fetchEntities(className:"Podcast", predicate: nil, moc:privateMoc) as! [Podcast]
+            podcastArray = podcastArray.filter { !DeletingPodcasts.shared.urls.contains($0.feedUrl) }
             
             for podcast in podcastArray {
                 let feedUrl = NSURL(string:podcast.feedUrl)
                 
-                let pvFeedParser = PVFeedParser(shouldOnlyGetMostRecentEpisode: true, shouldSubscribe:false, shouldOnlyParseChannel: false)
+                let pvFeedParser = PVFeedParser(shouldOnlyGetMostRecentEpisode: true, shouldSubscribe:false)
                 pvFeedParser.delegate = self
                 if let feedUrlString = feedUrl?.absoluteString {
                     if !self.parsingPodcasts.hasMatchingUrl(feedUrl: feedUrlString) {
@@ -106,6 +107,7 @@ class PodcastsTableViewController: PVViewController, AutoDownloadProtocol {
     func loadPodcastData() {
         
         self.subscribedPodcastsArray = CoreDataHelper.fetchEntities(className:"Podcast", predicate: nil, moc:self.moc) as! [Podcast]
+        self.subscribedPodcastsArray = self.subscribedPodcastsArray.filter { !DeletingPodcasts.shared.urls.contains($0.feedUrl) }
         
         guard checkForResults(results: subscribedPodcastsArray) else {
             self.loadNoPodcastsSubscribedMessage()
@@ -292,8 +294,9 @@ extension PodcastsTableViewController {
         super.podcastDeleted(notification)
         
         if let feedUrl = notification.userInfo?["feedUrl"] as? String, let index = self.subscribedPodcastsArray.index(where: { $0.feedUrl == feedUrl }) {
+            self.subscribedPodcastsArray.remove(at: index)
+
             DispatchQueue.main.async {
-                self.subscribedPodcastsArray.remove(at: index)
                 self.tableView.deleteRows(at: [IndexPath(row: index, section: 0)], with: .fade)
             }
         }

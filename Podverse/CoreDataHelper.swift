@@ -204,19 +204,10 @@ class CoreDataHelper {
         let moc = NSManagedObjectContext(concurrencyType: concurrencyType)
         let parent = CoreDataHelper.shared.managedObjectContext
         moc.parent = parent
-        moc.refreshObjects()
-        
+                
         return moc
     }
     
-    static func clearOrphanedEpisodes() {
-        let moc = createMOCForThread(threadType: .privateThread)
-        let predicate = NSPredicate(format: "podcast == nil")
-        let episodeSet = CoreDataHelper.fetchEntities(className: "Episode", predicate: predicate, moc:moc) as! [Episode]
-        for episode in episodeSet {
-            PVDeleter.deleteEpisode(mediaUrl: episode.mediaUrl, moc: moc)
-        }
-    }
 }
 
 extension NSManagedObjectContext {
@@ -228,10 +219,5 @@ extension NSManagedObjectContext {
         catch {
            print("Could not save current context: ", error.localizedDescription) 
         }
-    }
-    
-    func refreshObjects() {
-        self.parent?.refreshAllObjects()
-        self.refreshAllObjects()
     }
 }

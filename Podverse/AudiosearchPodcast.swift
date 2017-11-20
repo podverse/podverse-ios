@@ -108,7 +108,9 @@ class AudiosearchPodcast {
                 }))
             } else {
                 podcastActions.addAction(UIAlertAction(title: "Subscribe", style: .default, handler: { action in
-                    PVSubscriber.subscribeToPodcast(feedUrlString: feedUrl)
+                    DispatchQueue.global().async {
+                        PVSubscriber.subscribeToPodcast(feedUrlString: feedUrl)
+                    }
                 }))
             }
             

@@ -573,7 +573,6 @@ extension EpisodesTableViewController {
             if self.filterTypeSelected == .downloaded {
                 self.episodesArray.remove(at: index)
                 self.tableView.deleteRows(at: [IndexPath(row: index, section: 0)], with: .automatic)
-                self.moc.refreshObjects()
             }
         }
         
