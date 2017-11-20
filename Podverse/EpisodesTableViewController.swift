@@ -224,7 +224,7 @@ class EpisodesTableViewController: PVViewController {
         
         self.hideNoDataView()
         self.tableView.isHidden = false
-        
+
         if let feedUrl = feedUrl, let podcast = Podcast.podcastForFeedUrl(feedUrlString: feedUrl, managedObjectContext: moc) {
             
             self.episodesArray.removeAll()
@@ -540,9 +540,14 @@ extension EpisodesTableViewController {
         if let downloadingEpisode = notification.userInfo?[Episode.episodeKey] as? DownloadingEpisode, let mediaUrl = downloadingEpisode.mediaUrl, let index = self.episodesArray.index(where: { $0.mediaUrl == mediaUrl }) {
             
             self.moc.refresh(self.episodesArray[index], mergeChanges: true)
-            self.tableView.reloadRows(at: [IndexPath(row: index, section: 0)], with: .automatic)            
+            
+            DispatchQueue.main.async {
+                self.tableView.reloadRows(at: [IndexPath(row: index, section: 0)], with: .automatic)
+            }
         } else {
-            reloadEpisodeData()
+            DispatchQueue.main.async {
+                self.reloadEpisodeData()
+            }
         }
     }
     

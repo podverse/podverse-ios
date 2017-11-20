@@ -175,7 +175,9 @@ extension PodcastsTableViewController:PVFeedParserDelegate {
         if let navVCs = self.navigationController?.viewControllers, navVCs.count > 1, 
            let episodesTableVC = self.navigationController?.viewControllers[1] as? EpisodesTableViewController {
             if episodesTableVC.filterTypeSelected != .clips {
-                episodesTableVC.reloadEpisodeData()
+                DispatchQueue.main.async {
+                    episodesTableVC.reloadEpisodeData()
+                }
             }
         }
     }
@@ -209,9 +211,10 @@ extension PodcastsTableViewController:UITableViewDelegate, UITableViewDataSource
         }
         
         let episodes = podcast.episodes
+        // TODO: this slows down scrolling too much. How can we have this info without blocking the main thread?
         let episodesDownloaded = episodes.filter{ $0.fileName != nil }
         cell.totalEpisodes?.text = "\(episodesDownloaded.count) downloaded"
-                
+        
         cell.lastPublishedDate?.text = ""
         if let lastPubDate = podcast.lastPubDate {
             cell.lastPublishedDate?.text = lastPubDate.toShortFormatString()
@@ -306,17 +309,20 @@ extension PodcastsTableViewController {
         let total = self.parsingPodcasts.urls.count
         let currentItem = self.parsingPodcasts.currentlyParsingItem
         
-        DispatchQueue.main.async {
-            if total > 0 && currentItem < total {
+        if total > 0 && currentItem < total {
+            DispatchQueue.main.async {
                 self.parseActivityIndicator.startAnimating()
                 self.parseActivityIndicator.isHidden = false
                 self.parseStatus.isHidden = false
                 self.parseStatus.text = String(currentItem) + "/" + String(total) + " parsing"
-            } else {
+            }
+        } else {
+            DispatchQueue.main.async {
                 self.parseActivityIndicator.stopAnimating()
                 self.parseActivityIndicator.isHidden = true
                 self.parseStatus.isHidden = true
             }
         }
+        
     }
 }

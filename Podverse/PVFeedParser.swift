@@ -177,8 +177,8 @@ extension PVFeedParser:FeedParserDelegate {
             return
         }
         
-        // If episode already exists in the database, do nothing
-        if let episode = Episode.episodeForMediaUrl(mediaUrlString: mediaUrl, managedObjectContext: self.privateMoc), episode.podcast != nil {
+        // If subscribing to podcast, then assume we want to insert a new episode, or if the episode already exists in the database, do nothing.
+        if !subscribeToPodcast, let episode = Episode.episodeForMediaUrl(mediaUrlString: mediaUrl, managedObjectContext: self.privateMoc), episode.podcast != nil {
             // do nothing
         } else {
             let newEpisodeID = CoreDataHelper.insertManagedObject(className: "Episode", moc: self.privateMoc)
@@ -234,9 +234,8 @@ extension PVFeedParser:FeedParserDelegate {
             self.privateMoc.saveData(nil)
         }
         
-        DispatchQueue.main.async {
-            self.delegate?.feedParsingComplete(feedUrl: podcast.feedUrl)
-        }
+        self.delegate?.feedParsingComplete(feedUrl: podcast.feedUrl)
+
         
         print("Feed parser has finished!")
     }
@@ -245,9 +244,7 @@ extension PVFeedParser:FeedParserDelegate {
         
         guard let feedUrl = self.feedUrl, let podcast = podcast else {
             self.parsingPodcasts.podcastFinishedParsing()
-            DispatchQueue.main.async {
-                self.delegate?.feedParsingComplete(feedUrl:nil)
-            }
+            self.delegate?.feedParsingComplete(feedUrl:nil)
             return
         }
         
@@ -264,9 +261,7 @@ extension PVFeedParser:FeedParserDelegate {
             }
             else {
                 self.parsingPodcasts.podcastFinishedParsing()
-                DispatchQueue.main.async {
-                    self.delegate?.feedParsingComplete(feedUrl: feedUrl)
-                }
+                self.delegate?.feedParsingComplete(feedUrl: feedUrl)
             }
         } else {
             print("No newer episode available, don't download")
