@@ -16,7 +16,6 @@ class AudiosearchPodcastViewController: PVViewController {
     var episodesArray = [Episode]()
     var filterTypeOverride:AudiosearchPodcastFilter = .about
     let reachability = PVReachability.shared
-    let moc = CoreDataHelper.createMOCForThread(threadType: .mainThread)
     
     var filterTypeSelected:AudiosearchPodcastFilter = .about {
         didSet {
@@ -97,10 +96,14 @@ class AudiosearchPodcastViewController: PVViewController {
     
     @IBAction func subscribeTapped(_ sender: Any) {
         
+        
         let isSubscribed = PVSubscriber.checkIfSubscribed(feedUrlString: self.feedUrl)
         
         if isSubscribed {
-            PVDeleter.deletePodcast(feedUrl: self.feedUrl, moc: self.moc)
+            DispatchQueue.global().async {
+                let moc = CoreDataHelper.createMOCForThread(threadType: .privateThread)
+                PVDeleter.deletePodcast(feedUrl: self.feedUrl, moc: moc)
+            }
         } else {
             PVSubscriber.subscribeToPodcast(feedUrlString: self.feedUrl)
         }

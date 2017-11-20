@@ -18,7 +18,7 @@ extension Notification.Name {
 class PVDeleter: NSObject {
     
     static func deletePodcast(feedUrl: String? = nil, moc: NSManagedObjectContext) {
-    
+        
         var podcastToDelete:Podcast?
         
         if let feedUrl = feedUrl, let podcast = Podcast.podcastForFeedUrl(feedUrlString: feedUrl, managedObjectContext: moc) {
@@ -26,8 +26,8 @@ class PVDeleter: NSObject {
         }
         else {
             DispatchQueue.main.async {
-                NotificationCenter.default.post(  name: .podcastDeleted, 
-                                                  object: nil, 
+                NotificationCenter.default.post(  name: .podcastDeleted,
+                                                  object: nil,
                                                   userInfo: ["feedUrl": feedUrl ?? ""])
             }
             return
@@ -47,12 +47,14 @@ class PVDeleter: NSObject {
     }
     
     static func deleteAllEpisodesFromPodcast(feedUrl: String, moc: NSManagedObjectContext) {
+        
         if let podcast = Podcast.podcastForFeedUrl(feedUrlString: feedUrl, managedObjectContext: moc) {
             let episodesToRemove = podcast.episodes
             for episode in episodesToRemove {
                 PVDeleter.deleteEpisode(mediaUrl: episode.mediaUrl, moc: moc)
             }
         }
+        
     }
     
     static func deleteEpisode(mediaUrl: String?, moc: NSManagedObjectContext, fileOnly: Bool = false, shouldCallNotificationMethod: Bool = false) {

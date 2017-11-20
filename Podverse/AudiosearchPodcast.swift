@@ -89,7 +89,6 @@ class AudiosearchPodcast {
     }
     
     static func showAudiosearchPodcastActions(podcast: AudiosearchPodcast, vc: UIViewController) {
-        let moc = CoreDataHelper.createMOCForThread(threadType: .mainThread)
         
         if let feedUrl = podcast.rssUrl {
             var isSubscribed = false
@@ -102,7 +101,10 @@ class AudiosearchPodcast {
             
             if isSubscribed == true {
                 podcastActions.addAction(UIAlertAction(title: "Unsubscribe", style: .default, handler: { action in
-                    PVDeleter.deletePodcast(feedUrl: feedUrl, moc: moc)
+                    DispatchQueue.global().async {
+                        let privateMoc = CoreDataHelper.createMOCForThread(threadType: .privateThread)
+                        PVDeleter.deletePodcast(feedUrl: feedUrl, moc: privateMoc)
+                    }
                 }))
             } else {
                 podcastActions.addAction(UIAlertAction(title: "Subscribe", style: .default, handler: { action in

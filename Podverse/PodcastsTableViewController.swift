@@ -17,6 +17,7 @@ class PodcastsTableViewController: PVViewController, AutoDownloadProtocol {
     @IBOutlet weak var tableView: UITableView!
     
     let moc = CoreDataHelper.createMOCForThread(threadType: .mainThread)
+    
     let parsingPodcastsList = ParsingPodcastsList.shared
     let reachability = PVReachability.shared
     let refreshControl = UIRefreshControl()
@@ -71,6 +72,8 @@ class PodcastsTableViewController: PVViewController, AutoDownloadProtocol {
     
     @objc fileprivate func refreshPodcastFeeds() {
         
+        let privateMoc = CoreDataHelper.createMOCForThread(threadType: .privateThread)
+        
         if parsingPodcastsList.urls.count > 0 {
             self.refreshControl.endRefreshing()
             return
@@ -86,7 +89,7 @@ class PodcastsTableViewController: PVViewController, AutoDownloadProtocol {
             return
         }
 
-        let podcastArray = CoreDataHelper.fetchEntities(className:"Podcast", predicate: nil, moc:moc) as! [Podcast]
+        let podcastArray = CoreDataHelper.fetchEntities(className:"Podcast", predicate: nil, moc:privateMoc) as! [Podcast]
 
         for podcast in podcastArray {
             let feedUrl = NSURL(string:podcast.feedUrl)
@@ -103,8 +106,8 @@ class PodcastsTableViewController: PVViewController, AutoDownloadProtocol {
     }
     
     func loadPodcastData() {
-        self.moc.refreshObjects()
-        self.subscribedPodcastsArray = CoreDataHelper.fetchEntities(className:"Podcast", predicate: nil, moc:moc) as! [Podcast]
+        
+        self.subscribedPodcastsArray = CoreDataHelper.fetchEntities(className:"Podcast", predicate: nil, moc:self.moc) as! [Podcast]
         
         guard checkForResults(results: subscribedPodcastsArray) else {
             self.loadNoPodcastsSubscribedMessage()
@@ -115,6 +118,7 @@ class PodcastsTableViewController: PVViewController, AutoDownloadProtocol {
         
         self.tableView.isHidden = false
         self.tableView.reloadData()
+        
     }
 
     func podcastAutodownloadChanged(feedUrl: String) {
@@ -154,6 +158,7 @@ class PodcastsTableViewController: PVViewController, AutoDownloadProtocol {
 extension PodcastsTableViewController:PVFeedParserDelegate {
     func feedParsingComplete(feedUrl:String?) {
         if let url = feedUrl, let index = self.subscribedPodcastsArray.index(where: { url == $0.feedUrl }) {
+            
             if let podcast = Podcast.podcastForFeedUrl(feedUrlString: url, managedObjectContext: self.moc) {
                 self.subscribedPodcastsArray[index] = podcast
                 DispatchQueue.main.async {
@@ -229,13 +234,17 @@ extension PodcastsTableViewController:UITableViewDelegate, UITableViewDataSource
     }
     
     func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
-        let podcastToEditOid = self.subscribedPodcastsArray[indexPath.row].objectID
+        
         let podcastToEditFeedUrl = self.subscribedPodcastsArray[indexPath.row].feedUrl
         
         let deleteAction = UITableViewRowAction(style: .default, title: "Delete", handler: {action, indexpath in
             self.subscribedPodcastsArray.remove(at: indexPath.row)
             tableView.deleteRows(at: [indexPath], with: .fade)
-            PVDeleter.deletePodcast(feedUrl: podcastToEditFeedUrl, moc: self.moc)
+            
+            DispatchQueue.global().async {
+                let privateMoc = CoreDataHelper.createMOCForThread(threadType: .privateThread)
+                PVDeleter.deletePodcast(feedUrl: podcastToEditFeedUrl, moc: privateMoc)
+            }
             
             if !checkForResults(results: self.subscribedPodcastsArray) {
                 self.loadNoPodcastsSubscribedMessage()
@@ -273,7 +282,7 @@ extension PodcastsTableViewController {
     override func episodeDeleted(_ notification:Notification) {
         super.episodeDeleted(notification)
         
-        if let mediaUrl = notification.userInfo?["mediaUrl"] as? String, let episodes = CoreDataHelper.fetchEntities(className: "Episode", predicate: NSPredicate(format: "mediaUrl == %@", mediaUrl), moc: moc) as? [Episode], let episode = episodes.first, let index = self.subscribedPodcastsArray.index(where: { $0.feedUrl == episode.podcast.feedUrl }) {
+        if let mediaUrl = notification.userInfo?["mediaUrl"] as? String, let episodes = CoreDataHelper.fetchEntities(className: "Episode", predicate: NSPredicate(format: "mediaUrl == %@", mediaUrl), moc: self.moc) as? [Episode], let episode = episodes.first, let index = self.subscribedPodcastsArray.index(where: { $0.feedUrl == episode.podcast.feedUrl }) {
             DispatchQueue.main.async {
                 self.subscribedPodcastsArray[index] = episode.podcast
                 self.tableView.reloadRows(at: [IndexPath(row: index, section: 0)], with: .none)
