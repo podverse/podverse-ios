@@ -54,7 +54,7 @@ class PVFeedParser {
         feedParser.delegate = self
         feedParser.parsingType = .full
         
-        DispatchQueue.global().async {
+        feedParsingQueue.async {
             feedParser.parse()
             print("feedParser did start")
         }
