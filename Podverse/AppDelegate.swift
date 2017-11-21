@@ -114,18 +114,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func skipBackwardEvent() {
+        MPNowPlayingInfoCenter.default().nowPlayingInfo?[MPNowPlayingInfoPropertyElapsedPlaybackTime] = pvMediaPlayer.audioPlayer.progress - 15
         pvMediaPlayer.seek(toTime: pvMediaPlayer.audioPlayer.progress - 15)
-        MPNowPlayingInfoCenter.default().nowPlayingInfo?[MPNowPlayingInfoPropertyElapsedPlaybackTime] = pvMediaPlayer.audioPlayer.progress
     }
     
     func skipForwardEvent() {
+        MPNowPlayingInfoCenter.default().nowPlayingInfo?[MPNowPlayingInfoPropertyElapsedPlaybackTime] = pvMediaPlayer.audioPlayer.progress + 15
         pvMediaPlayer.seek(toTime: pvMediaPlayer.audioPlayer.progress + 15)
-        MPNowPlayingInfoCenter.default().nowPlayingInfo?[MPNowPlayingInfoPropertyElapsedPlaybackTime] = pvMediaPlayer.audioPlayer.progress
     }
     
     func playOrPauseEvent() { 
-        pvMediaPlayer.playOrPause()
         MPNowPlayingInfoCenter.default().nowPlayingInfo?[MPNowPlayingInfoPropertyElapsedPlaybackTime] = pvMediaPlayer.audioPlayer.progress
+        pvMediaPlayer.playOrPause()
     }
         
 }
