@@ -194,8 +194,6 @@ class PVMediaPlayer: NSObject {
     // TODO: should this be public here or not?
     @objc @discardableResult public func playOrPause() -> Bool {
         
-        savePlaybackPosition()
-        
         let state = audioPlayer.state
         
         // If a clip has reached or exceeded it's end time playback position, the clip data will stay in the UI, the player will pause, and the next time the player attempts to play a Notification is dispatched telling the VCs to hide the clip data.
@@ -209,7 +207,6 @@ class PVMediaPlayer: NSObject {
                 NotificationCenter.default.post(name: .hideClipData, object: nil, userInfo: nil)
             }
         }
-        
         
         // If nothing loaded in the player, but playOrPause was pressed, then attempt to load and play the file.
         if checkIfNothingIsCurrentlyLoadedInPlayer() {
@@ -225,8 +222,7 @@ class PVMediaPlayer: NSObject {
             self.pause()
             return true
         default:
-            self.audioPlayer.rate = self.playerSpeedRate.speedValue
-            self.audioPlayer.resume()
+            self.play()
             return false
         }
         
