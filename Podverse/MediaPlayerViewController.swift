@@ -330,35 +330,56 @@ class MediaPlayerViewController: PVViewController {
     
     func showShareMenu() {
         
-        let shareActions = UIAlertController(title: "Share", message: "What do you want to share?", preferredStyle: .actionSheet)
-        
-        shareActions.addAction(UIAlertAction(title: "Episode Link", style: .default, handler: { action in
-            if let item = self.playerHistoryManager.historyItems.first, let episodeMediaUrl = item.episodeMediaUrl {
-                let episodeUrlItem = [BASE_URL + "episodes/alias?mediaURL=" + episodeMediaUrl]
-                let activityViewController = UIActivityViewController(activityItems: episodeUrlItem, applicationActivities: nil)
-                activityViewController.popoverPresentationController?.sourceView = self.view
-                self.present(activityViewController, animated: true, completion: nil)
-            }
-        }))
-        
-        shareActions.addAction(UIAlertAction(title: "Clip Link", style: .default, handler: { action in
-            if let item = self.playerHistoryManager.historyItems.first, let mediaRefId = item.mediaRefId {
-                let mediaRefUrlItem = [BASE_URL + "clips/" + mediaRefId]
-                let activityViewController = UIActivityViewController(activityItems: mediaRefUrlItem, applicationActivities: nil)
-                activityViewController.popoverPresentationController?.sourceView = self.view
-                self.present(activityViewController, animated: true, completion: nil)
-            }
-        }))
+        let shareActions = UIAlertController(title: "Share", message: nil, preferredStyle: .actionSheet)
         
         if let item = self.playerHistoryManager.historyItems.first {
-            if item.mediaRefId == nil {
-                shareActions.actions[1].isEnabled = false
+            
+            // TODO:
+            // Official
+            // // Episode
+            // // Podcast
+            // Podverse
+            // // Clip
+            // // Episode
+            // // Podcast
+            
+            shareActions.addAction(UIAlertAction(title: "Episode Link", style: .default, handler: { action in
+                if let episodeMediaUrl = item.episodeMediaUrl {
+                    let episodeUrlItem = [BASE_URL + "episodes/alias?mediaURL=" + episodeMediaUrl]
+                    let activityVC = UIActivityViewController(activityItems: episodeUrlItem, applicationActivities: nil)
+                    activityVC.popoverPresentationController?.sourceView = self.view
+                    
+                    activityVC.completionWithItemsHandler = { activityType, success, items, error in
+                        if activityType == UIActivityType.copyToPasteboard {
+                            self.showToast(message: kLinkCopiedToast)
+                        }
+                    }
+                    
+                    self.present(activityVC, animated: true, completion: nil)
+                }
+            }))
+            
+            if let mediaRefId = item.mediaRefId {
+                shareActions.addAction(UIAlertAction(title: "Clip Link", style: .default, handler: { action in
+                    let mediaRefUrlItem = [BASE_URL + "clips/" + mediaRefId]
+                    let activityVC = UIActivityViewController(activityItems: mediaRefUrlItem, applicationActivities: nil)
+                    activityVC.popoverPresentationController?.sourceView = self.view
+                    
+                    activityVC.completionWithItemsHandler = { activityType, success, items, error in
+                        if activityType == UIActivityType.copyToPasteboard {
+                            self.showToast(message: kLinkCopiedToast)
+                        }
+                    }
+                    
+                    self.present(activityVC, animated: true, completion: nil)
+                }))
             }
+                        
+            shareActions.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+            
+            self.present(shareActions, animated: true, completion: nil)
+            
         }
-        
-        shareActions.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
-        
-        self.present(shareActions, animated: true, completion: nil)
         
     }
     

@@ -103,9 +103,16 @@ class MakeClipTitleViewController: UIViewController, UITextViewDelegate {
         
         actions.addAction(UIAlertAction(title: "Share", style: .default, handler: { action in
             let clipUrlItem = [BASE_URL + "clips/" + mediaRefId]
-            let activity = UIActivityViewController(activityItems: clipUrlItem, applicationActivities: nil)
-            activity.popoverPresentationController?.sourceView = self.view
-            self.present(activity, animated: true, completion: nil)
+            let activityVC = UIActivityViewController(activityItems: clipUrlItem, applicationActivities: nil)
+            activityVC.popoverPresentationController?.sourceView = self.view
+            
+            activityVC.completionWithItemsHandler = { activityType, success, items, error in
+                if activityType == UIActivityType.copyToPasteboard {
+                    self.showToast(message: kLinkCopiedToast)
+                }
+            }
+            
+            self.present(activityVC, animated: true, completion: nil)
         }))
         
         actions.addAction(UIAlertAction(title: "Done", style: .cancel, handler: { action in

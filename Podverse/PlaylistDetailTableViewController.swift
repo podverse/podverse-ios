@@ -27,6 +27,9 @@ class PlaylistDetailTableViewController: PVViewController {
         
         self.title = "Playlist"
         
+        let share = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.action, target: self, action: #selector(showShareMenu))
+        navigationItem.rightBarButtonItems = [share]
+        
         self.activityIndicator.hidesWhenStopped = true
         
         retrievePlaylist()
@@ -112,6 +115,25 @@ class PlaylistDetailTableViewController: PVViewController {
         
         self.tableView.isHidden = false
         self.tableView.reloadData()
+        
+    }
+    
+    func showShareMenu() {
+        
+        if let playlistId = self.playlistId {
+            let playlistUrlItem = [BASE_URL + "playlists/" + playlistId]
+            let activityVC = UIActivityViewController(activityItems: playlistUrlItem, applicationActivities: nil)
+            activityVC.popoverPresentationController?.sourceView = self.view
+            
+            activityVC.completionWithItemsHandler = { activityType, success, items, error in
+                if activityType == UIActivityType.copyToPasteboard {
+                    self.showToast(message: kLinkCopiedToast)
+                }
+            }
+            
+            self.present(activityVC, animated: true, completion: nil)
+            
+        }
         
     }
     
