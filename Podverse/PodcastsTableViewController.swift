@@ -155,36 +155,6 @@ class PodcastsTableViewController: PVViewController, AutoDownloadProtocol {
     
 }
 
-extension PodcastsTableViewController:PVFeedParserDelegate {
-    func feedParsingComplete(feedUrl:String?) {
-        if let url = feedUrl, let index = self.subscribedPodcastsArray.index(where: { url == $0.feedUrl }) {
-            
-            if let podcast = Podcast.podcastForFeedUrl(feedUrlString: url, managedObjectContext: self.moc) {
-                self.subscribedPodcastsArray[index] = podcast
-                DispatchQueue.main.async {
-                    self.tableView.reloadRows(at: [IndexPath(row: index, section: 0)], with: .none)
-                }
-            }
-        }
-        else {
-            DispatchQueue.main.async {
-                self.loadPodcastData()
-            }
-        }
-        
-        if let navVCs = self.navigationController?.viewControllers, navVCs.count > 1, 
-           let episodesTableVC = self.navigationController?.viewControllers[1] as? EpisodesTableViewController {
-            if episodesTableVC.filterTypeSelected != .clips {
-                DispatchQueue.main.async {
-                    episodesTableVC.reloadEpisodeData()
-                }
-            }
-        }
-    }
-    
-    func feedParsingStarted() { }
-    
-}
 
 extension PodcastsTableViewController:UITableViewDelegate, UITableViewDataSource {
     // MARK: - Table view data source
@@ -271,7 +241,40 @@ extension PodcastsTableViewController:UITableViewDelegate, UITableViewDataSource
 
 }
 
+extension PodcastsTableViewController:PVFeedParserDelegate {
+    
+    func feedParsingComplete(feedUrl:String?) {
+        if let url = feedUrl, let index = self.subscribedPodcastsArray.index(where: { url == $0.feedUrl }) {
+            
+            if let podcast = Podcast.podcastForFeedUrl(feedUrlString: url, managedObjectContext: self.moc) {
+                self.subscribedPodcastsArray[index] = podcast
+                DispatchQueue.main.async {
+                    self.tableView.reloadRows(at: [IndexPath(row: index, section: 0)], with: .none)
+                }
+            }
+        }
+        else {
+            DispatchQueue.main.async {
+                self.loadPodcastData()
+            }
+        }
+        
+        if let navVCs = self.navigationController?.viewControllers, navVCs.count > 1,
+            let episodesTableVC = self.navigationController?.viewControllers[1] as? EpisodesTableViewController {
+            if episodesTableVC.filterTypeSelected != .clips {
+                DispatchQueue.main.async {
+                    episodesTableVC.reloadEpisodeData()
+                }
+            }
+        }
+    }
+    
+    func feedParsingStarted() { }
+    
+}
+
 extension PodcastsTableViewController {
+    
     func downloadFinished(_ notification:Notification) {
         if let episode = notification.userInfo?[Episode.episodeKey] as? DownloadingEpisode,
             let index = self.subscribedPodcastsArray.index(where: { $0.feedUrl == episode.podcastFeedUrl }), 
@@ -323,6 +326,6 @@ extension PodcastsTableViewController {
                 self.parseStatus.isHidden = true
             }
         }
-        
     }
+    
 }

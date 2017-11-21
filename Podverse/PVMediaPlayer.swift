@@ -139,7 +139,7 @@ class PVMediaPlayer: NSObject {
     }
     
     private func startPlaybackTimer () {
-        self.playbackTimer = Timer.scheduledTimer(timeInterval: 10, target: self, selector: #selector(savePlaybackPosition), userInfo: nil, repeats: true)
+        self.playbackTimer = Timer.scheduledTimer(timeInterval: 5, target: self, selector: #selector(savePlaybackPosition), userInfo: nil, repeats: true)
     }
     
     private func removePlaybackTimer () {
