@@ -105,11 +105,6 @@ class MakeClipTitleViewController: UIViewController, UITextViewDelegate {
             let clipUrlItem = [BASE_URL + "clips/" + mediaRefId]
             let activity = UIActivityViewController(activityItems: clipUrlItem, applicationActivities: nil)
             activity.popoverPresentationController?.sourceView = self.view
-            
-            activity.completionWithItemsHandler = { activity, success, items, error in
-                self.displayClipCreatedAlert(mediaRefId: mediaRefId)
-            }
-            
             self.present(activity, animated: true, completion: nil)
         }))
         
