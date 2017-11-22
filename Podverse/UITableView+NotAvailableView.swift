@@ -34,6 +34,7 @@ extension UIViewController {
         noDataTextLabel.text = message
         noDataTextLabel.textColor = isBlackBg ? .white : .black
         noDataTextLabel.numberOfLines = 5
+        noDataTextLabel.textAlignment = .center
         actionButton.setTitle(buttonTitle, for: .normal)
         actionButton.setTitleColor(isBlackBg ? .white : .black, for: .normal)
         

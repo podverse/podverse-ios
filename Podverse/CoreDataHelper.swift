@@ -183,7 +183,7 @@ class CoreDataHelper {
             return podcastSet[0]
         } else {
             let oid = CoreDataHelper.insertManagedObject(className: "Podcast", moc: moc)
-            return  CoreDataHelper.fetchEntityWithID(objectId: oid, moc: moc) as! Podcast
+            return CoreDataHelper.fetchEntityWithID(objectId: oid, moc: moc) as! Podcast
         }
     }
     
@@ -194,31 +194,9 @@ class CoreDataHelper {
             return episodeSet[0]
         } else {
             let oid = CoreDataHelper.insertManagedObject(className: "Episode")
-            return  CoreDataHelper.fetchEntityWithID(objectId: oid, moc: moc) as! Episode
+            return CoreDataHelper.fetchEntityWithID(objectId: oid, moc: moc) as! Episode
         }
     }
-    
-//    static func retrieveExistingOrCreateNewClip(mediaRefId: String, moc:NSManagedObjectContext) -> Clip {
-//        let predicate = NSPredicate(format: "mediaRefId == %@", mediaRefId)
-//        let clipSet = CoreDataHelper.fetchEntities(className: "Clip", predicate: predicate, moc:moc) as! [Clip]
-//        if clipSet.count > 0 {
-//            return clipSet[0]
-//        } else {
-//            let oid = CoreDataHelper.insertManagedObject(className: "Clip")
-//            return  CoreDataHelper.fetchEntityWithID(objectId: oid, moc: moc) as! Clip
-//        }
-//    }
-//    
-//    static func retrieveExistingOrCreateNewPlaylist(playlistId: String, moc:NSManagedObjectContext) -> Playlist {
-//        let predicate = NSPredicate(format: "id == %@", playlistId)
-//        let playlistSet = CoreDataHelper.fetchEntities(className: "Playlist", predicate: predicate, moc:moc) as! [Playlist]
-//        if playlistSet.count > 0 {
-//            return playlistSet[0]
-//        } else {
-//            let oid = CoreDataHelper.insertManagedObject(className: "Playlist")
-//            return  CoreDataHelper.fetchEntityWithID(objectId: oid, moc: moc) as! Playlist
-//        }
-//    }
     
     static func createMOCForThread(threadType:ThreadType) -> NSManagedObjectContext {
         let concurrencyType:NSManagedObjectContextConcurrencyType = threadType == .privateThread ? .privateQueueConcurrencyType : .mainQueueConcurrencyType
@@ -229,6 +207,15 @@ class CoreDataHelper {
         moc.refreshObjects()
         
         return moc
+    }
+    
+    static func clearOrphanedEpisodes() {
+        let moc = createMOCForThread(threadType: .privateThread)
+        let predicate = NSPredicate(format: "podcast == nil")
+        let episodeSet = CoreDataHelper.fetchEntities(className: "Episode", predicate: predicate, moc:moc) as! [Episode]
+        for episode in episodeSet {
+            PVDeleter.deleteEpisode(mediaUrl: episode.mediaUrl, moc: moc)
+        }
     }
 }
 

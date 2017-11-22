@@ -160,7 +160,7 @@ class EpisodesTableViewController: PVViewController {
             
             self.headerPodcastTitle.text = podcast.title
             
-            self.headerImageView.image = Podcast.retrievePodcastImage(podcastImageURLString: podcast.imageUrl, feedURLString: podcast.feedUrl, managedObjectID: podcast.objectID, completion: { image in
+            self.headerImageView.image = Podcast.retrievePodcastImage(podcastImageURLString: podcast.imageUrl, feedURLString: podcast.feedUrl, completion: { image in
                 self.headerImageView.image = image
             })
             
@@ -273,7 +273,6 @@ class EpisodesTableViewController: PVViewController {
         self.clipQueryIsLoading = true
         self.clipQueryEndOfResultsReached = false
         self.clipQueryMessage.isHidden = true
-        self.tableView.reloadData()
     }
     
     func retrieveClips() {
@@ -363,6 +362,9 @@ class EpisodesTableViewController: PVViewController {
     }
     
     func loadNoDownloadedEpisodesMessage() {
+        self.tableView.isHidden = true
+        hideActivityIndicator()
+        
         loadNoDataView(message: Strings.Errors.noDownloadedEpisodesAvailable, buttonTitle: "Show All Episodes", buttonPressed: #selector(EpisodesTableViewController.loadAllEpisodeData))
     }
     
@@ -505,7 +507,7 @@ extension EpisodesTableViewController: UITableViewDataSource, UITableViewDelegat
                 self.episodesArray.remove(at: indexPath.row)
                 self.tableView.deleteRows(at: [indexPath], with: .fade)
                 
-                PVDeleter.deleteEpisode(episodeId: episodeToEdit.objectID, fileOnly: true, shouldCallNotificationMethod: true)
+                PVDeleter.deleteEpisode(mediaUrl: episodeToEdit.mediaUrl, moc: self.moc, fileOnly: true, shouldCallNotificationMethod: true)
                 
                 if self.filterTypeSelected == .downloaded && self.episodesArray.isEmpty {
                     self.loadNoDownloadedEpisodesMessage()

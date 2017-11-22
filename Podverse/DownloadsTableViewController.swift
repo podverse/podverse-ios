@@ -76,7 +76,7 @@ extension DownloadsTableViewController:UITableViewDelegate, UITableViewDataSourc
         
         let episode = DownloadingEpisodeList.shared.downloadingEpisodes[indexPath.row]
         
-        cell.podcastImage.image = Podcast.retrievePodcastImage(podcastImageURLString: episode.podcastImageUrl, feedURLString: episode.podcastFeedUrl, managedObjectID: nil, completion: { image in
+        cell.podcastImage.image = Podcast.retrievePodcastImage(podcastImageURLString: episode.podcastImageUrl, feedURLString: episode.podcastFeedUrl, completion: { image in
             cell.podcastImage.image = image
         })
         

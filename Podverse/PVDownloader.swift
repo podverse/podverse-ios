@@ -244,7 +244,7 @@ extension PVDownloader:URLSessionDelegate, URLSessionDownloadDelegate {
                     let podcastTitle = episode.podcast.title
                     // Save the downloadedMediaFileDestination with the object
                     moc.saveData {                        
-                        DispatchQueue.main.async { _ in
+                        DispatchQueue.main.async {
                             NotificationCenter.default.post(name: .downloadFinished, object: nil, userInfo: [Episode.episodeKey:downloadingEpisode])
 
                             let notification = UILocalNotification()

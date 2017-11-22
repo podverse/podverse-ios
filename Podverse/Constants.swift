@@ -325,6 +325,7 @@ struct Strings {
         static let noPlaylistsInternet = "No internet connection"
         static let noPlaylistsNotLoggedIn = "Login to view your playlists"
         static let noPodcastClipsAvailable = "No clips available for this podcast"
+        static let noPodcastsSubscribed = "Tap the Find tab and subscribe to podcasts to add them here"
         static let noSearchResultsFound = "No search results found"
     }
     

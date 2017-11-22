@@ -245,7 +245,7 @@ class MediaPlayerViewController: PVViewController {
                 self.episodePubDate.text = ""
             }
             
-            self.image.image = Podcast.retrievePodcastImage(podcastImageURLString: item.podcastImageUrl, feedURLString: item.podcastFeedUrl, managedObjectID: nil, completion: { image in
+            self.image.image = Podcast.retrievePodcastImage(podcastImageURLString: item.podcastImageUrl, feedURLString: item.podcastFeedUrl, completion: { image in
                 self.image.image  = image
             })
             

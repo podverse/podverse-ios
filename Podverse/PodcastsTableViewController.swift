@@ -75,22 +75,22 @@ class PodcastsTableViewController: PVViewController, AutoDownloadProtocol {
             self.refreshControl.endRefreshing()
             return
         }
-        
+
         if checkForConnectivity() == false {
-            
+
             if refreshControl.isRefreshing == true {
                 showInternetNeededAlertWithDescription(message:"Connect to WiFi or cellular data to parse podcast feeds.")
                 self.refreshControl.endRefreshing()
             }
-            
+
             return
         }
-        
+
         let podcastArray = CoreDataHelper.fetchEntities(className:"Podcast", predicate: nil, moc:moc) as! [Podcast]
-        
+
         for podcast in podcastArray {
             let feedUrl = NSURL(string:podcast.feedUrl)
-            
+
             let pvFeedParser = PVFeedParser(shouldOnlyGetMostRecentEpisode: true, shouldSubscribe:false, shouldOnlyParseChannel: false)
             pvFeedParser.delegate = self
             if let feedUrlString = feedUrl?.absoluteString {
@@ -105,8 +105,15 @@ class PodcastsTableViewController: PVViewController, AutoDownloadProtocol {
     func loadPodcastData() {
         self.moc.refreshObjects()
         self.subscribedPodcastsArray = CoreDataHelper.fetchEntities(className:"Podcast", predicate: nil, moc:moc) as! [Podcast]
+        
+        guard checkForResults(results: subscribedPodcastsArray) else {
+            self.loadNoPodcastsSubscribedMessage()
+            return
+        }
+        
         self.subscribedPodcastsArray.sort(by: { $0.title.removeArticles() < $1.title.removeArticles() } )
         
+        self.tableView.isHidden = false
         self.tableView.reloadData()
     }
 
@@ -116,17 +123,48 @@ class PodcastsTableViewController: PVViewController, AutoDownloadProtocol {
         }
     }
     
+    func loadNoDataView(message: String, buttonTitle: String?, buttonPressed: Selector?) {
+        
+        if let noDataView = self.view.subviews.first(where: { $0.tag == kNoDataViewTag}) {
+            
+            if let messageView = noDataView.subviews.first(where: {$0 is UILabel}), let messageLabel = messageView as? UILabel {
+                messageLabel.text = message
+            }
+            
+            if let buttonView = noDataView.subviews.first(where: {$0 is UIButton}), let button = buttonView as? UIButton {
+                button.setTitle(buttonTitle, for: .normal)
+            }
+        }
+        else {
+            self.addNoDataViewWithMessage(message, buttonTitle: buttonTitle, buttonImage: nil, retryPressed: buttonPressed)
+        }
+        
+        self.tableView.isHidden = true
+        
+        showNoDataView()
+        
+    }
+    
+    func loadNoPodcastsSubscribedMessage() {
+        loadNoDataView(message: Strings.Errors.noPodcastsSubscribed, buttonTitle: nil, buttonPressed: nil)
+    }
+    
 }
 
 extension PodcastsTableViewController:PVFeedParserDelegate {
     func feedParsingComplete(feedUrl:String?) {
         if let url = feedUrl, let index = self.subscribedPodcastsArray.index(where: { url == $0.feedUrl }) {
-            let podcast = CoreDataHelper.fetchEntityWithID(objectId: self.subscribedPodcastsArray[index].objectID, moc: moc) as! Podcast
-            self.subscribedPodcastsArray[index] = podcast
-            self.tableView.reloadRows(at: [IndexPath(row: index, section: 0)], with: .none)
+            if let podcast = Podcast.podcastForFeedUrl(feedUrlString: url, managedObjectContext: self.moc) {
+                self.subscribedPodcastsArray[index] = podcast
+                DispatchQueue.main.async {
+                    self.tableView.reloadRows(at: [IndexPath(row: index, section: 0)], with: .none)
+                }
+            }
         }
         else {
-            loadPodcastData()
+            DispatchQueue.main.async {
+                self.loadPodcastData()
+            }
         }
         
         if let navVCs = self.navigationController?.viewControllers, navVCs.count > 1, 
@@ -139,7 +177,6 @@ extension PodcastsTableViewController:PVFeedParserDelegate {
     
     func feedParsingStarted() { }
     
-    func feedParserChannelParsed() { }
 }
 
 extension PodcastsTableViewController:UITableViewDelegate, UITableViewDataSource {
@@ -175,7 +212,7 @@ extension PodcastsTableViewController:UITableViewDelegate, UITableViewDataSource
             cell.lastPublishedDate?.text = lastPubDate.toShortFormatString()
         }
         
-        cell.pvImage.image = Podcast.retrievePodcastImage(podcastImageURLString: podcast.imageUrl, feedURLString: podcast.feedUrl, managedObjectID: podcast.objectID, completion: { image in
+        cell.pvImage.image = Podcast.retrievePodcastImage(podcastImageURLString: podcast.imageUrl, feedURLString: podcast.feedUrl, completion: { image in
            cell.pvImage.image = image
         })
         
@@ -198,7 +235,11 @@ extension PodcastsTableViewController:UITableViewDelegate, UITableViewDataSource
         let deleteAction = UITableViewRowAction(style: .default, title: "Delete", handler: {action, indexpath in
             self.subscribedPodcastsArray.remove(at: indexPath.row)
             tableView.deleteRows(at: [indexPath], with: .fade)
-            PVDeleter.deletePodcast(podcastId: podcastToEditOid, feedUrl: podcastToEditFeedUrl)
+            PVDeleter.deletePodcast(feedUrl: podcastToEditFeedUrl, moc: self.moc)
+            
+            if !checkForResults(results: self.subscribedPodcastsArray) {
+                self.loadNoPodcastsSubscribedMessage()
+            }
         })
         
         return [deleteAction]
@@ -252,8 +293,8 @@ extension PodcastsTableViewController {
     }
     
     func refreshParsingStatus(_ notification:Notification) {
-            let total = self.parsingPodcastsList.urls.count
-            let currentItem = self.parsingPodcastsList.currentlyParsingItem
+        let total = self.parsingPodcastsList.urls.count
+        let currentItem = self.parsingPodcastsList.currentlyParsingItem
         
         DispatchQueue.main.async {
             if total > 0 && currentItem < total {

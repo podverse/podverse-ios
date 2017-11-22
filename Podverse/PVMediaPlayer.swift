@@ -73,6 +73,8 @@ class PVMediaPlayer: NSObject {
 
     static let shared = PVMediaPlayer()
     
+    let moc = CoreDataHelper.createMOCForThread(threadType: .mainThread)
+    
     var audioPlayer = STKAudioPlayer()
     var clipTimer: Timer?
     var playbackTimer: Timer?
@@ -248,9 +250,6 @@ class PVMediaPlayer: NSObject {
         }
         
         savePlaybackPosition()
-        
-        updateMPNowPlayingInfoCenter()
-        
     }
     
     func updateMPNowPlayingInfoCenter() {
@@ -288,9 +287,8 @@ class PVMediaPlayer: NSObject {
         
         clearPlaybackPosition()
         
-        let moc = CoreDataHelper.createMOCForThread(threadType: .mainThread)
         if let nowPlayingItem = playerHistoryManager.historyItems.first, let episodeMediaUrl = nowPlayingItem.episodeMediaUrl, let episode = Episode.episodeForMediaUrl(mediaUrlString: episodeMediaUrl, managedObjectContext: moc) {
-            PVDeleter.deleteEpisode(episodeId: episode.objectID, fileOnly: true, shouldCallNotificationMethod: true)
+            PVDeleter.deleteEpisode(mediaUrl: episode.mediaUrl, moc: self.moc, fileOnly: true, shouldCallNotificationMethod: true)
             nowPlayingItem.hasReachedEnd = true
             playerHistoryManager.addOrUpdateItem(item: nowPlayingItem)
         }
@@ -340,7 +338,7 @@ class PVMediaPlayer: NSObject {
         
         let currentPlaybackTime = NSNumber(value: self.audioPlayer.progress)
         
-        let podcastImage = Podcast.retrievePodcastImage(podcastImageURLString: item.podcastImageUrl, feedURLString: item.podcastFeedUrl, managedObjectID: nil, completion: { image in
+        let podcastImage = Podcast.retrievePodcastImage(podcastImageURLString: item.podcastImageUrl, feedURLString: item.podcastFeedUrl, completion: { image in
             MPNowPlayingInfoCenter.default().nowPlayingInfo?[MPMediaItemPropertyArtwork] = MPMediaItemArtwork(image: image)
         })
         
@@ -401,8 +399,6 @@ class PVMediaPlayer: NSObject {
             
             return
         }
-        
-        let moc = CoreDataHelper.createMOCForThread(threadType: .mainThread)
                 
         if let episodeMediaUrlString = item.episodeMediaUrl, let episodeMediaUrl = URL(string: episodeMediaUrlString) {
             

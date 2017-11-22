@@ -17,99 +17,92 @@ extension Notification.Name {
 
 class PVDeleter: NSObject {
     
-    static func deletePodcast(podcastId: NSManagedObjectID?, feedUrl: String? = nil) {
-            let moc = CoreDataHelper.createMOCForThread(threadType: .mainThread)
-
-            var podcastToDelete:Podcast!
-            
-            if let podcastId = podcastId, let podcast = CoreDataHelper.fetchEntityWithID(objectId: podcastId, moc: moc) as? Podcast {
-                podcastToDelete = podcast
-            } else if let feedUrl = feedUrl, let podcast = Podcast.podcastForFeedUrl(feedUrlString: feedUrl, managedObjectContext: moc) {
-                podcastToDelete = podcast
-            }
-            else {
-                DispatchQueue.main.async {
-                    NotificationCenter.default.post(  name: .podcastDeleted, 
-                                                    object: nil, 
+    static func deletePodcast(feedUrl: String? = nil, moc: NSManagedObjectContext) {
+    
+        var podcastToDelete:Podcast?
+        
+        if let feedUrl = feedUrl, let podcast = Podcast.podcastForFeedUrl(feedUrlString: feedUrl, managedObjectContext: moc) {
+            podcastToDelete = podcast
+        }
+        else {
+            DispatchQueue.main.async {
+                NotificationCenter.default.post(  name: .podcastDeleted, 
+                                                  object: nil, 
                                                   userInfo: ["feedUrl": feedUrl ?? ""])
-                }
-                return
             }
-            
-            podcastToDelete.removeFromAutoDownloadList()
-            deleteAllEpisodesFromPodcast(podcastId: podcastToDelete.objectID)
-            moc.delete(podcastToDelete)
-            
-            moc.saveData({ 
+            return
+        }
+        
+        if let podcast = podcastToDelete {
+            podcast.removeFromAutoDownloadList()
+            deleteAllEpisodesFromPodcast(feedUrl: podcast.feedUrl, moc: moc)
+            moc.delete(podcast)
+            moc.saveData({
                 DispatchQueue.main.async {
                     NotificationCenter.default.post(name: .podcastDeleted, object: nil, userInfo: ["feedUrl": feedUrl ?? ""])
                 }
             })
+        }
+        
     }
     
-    static func deleteAllEpisodesFromPodcast(podcastId: NSManagedObjectID) {        
-        DispatchQueue.global().async {
-            let moc = CoreDataHelper.createMOCForThread(threadType: .privateThread)
-            if let podcast = CoreDataHelper.fetchEntityWithID(objectId: podcastId, moc: moc) as? Podcast {
-                let episodesToRemove = podcast.episodes
-                for episode in episodesToRemove {
-                    PVDeleter.deleteEpisode(episodeId: episode.objectID, moc:moc)
-                }
+    static func deleteAllEpisodesFromPodcast(feedUrl: String, moc: NSManagedObjectContext) {
+        if let podcast = Podcast.podcastForFeedUrl(feedUrlString: feedUrl, managedObjectContext: moc) {
+            let episodesToRemove = podcast.episodes
+            for episode in episodesToRemove {
+                PVDeleter.deleteEpisode(mediaUrl: episode.mediaUrl, moc: moc)
             }
         }
     }
     
-    static func deleteEpisode(episodeId: NSManagedObjectID, fileOnly: Bool = false, shouldCallNotificationMethod: Bool = false, moc:NSManagedObjectContext? = nil) {
+    static func deleteEpisode(mediaUrl: String?, moc: NSManagedObjectContext, fileOnly: Bool = false, shouldCallNotificationMethod: Bool = false) {
         
         let pvMediaPlayer = PVMediaPlayer.shared
-        let moc = moc ?? CoreDataHelper.createMOCForThread(threadType: .mainThread)
         
-        if let episode = CoreDataHelper.fetchEntityWithID(objectId: episodeId, moc: moc) as? Episode {
-            let podcastFeedUrl = episode.podcast.feedUrl
-            let mediaUrl = episode.mediaUrl
-            let downloadSession = PVDownloader.shared.downloadSession
-            downloadSession?.getTasksWithCompletionHandler { dataTasks, uploadTasks, downloadTasks in
-                for downloadTask in downloadTasks {
-                    if let _ = DownloadingEpisodeList.shared.downloadingEpisodes.first(where:{ $0.taskIdentifier == downloadTask.taskIdentifier && $0.podcastFeedUrl == podcastFeedUrl}) {
-                        downloadTask.cancel()
+        if let mediaUrl = mediaUrl {
+            
+            if let episode = Episode.episodeForMediaUrl(mediaUrlString: mediaUrl, managedObjectContext: moc) {
+                let podcastFeedUrl = episode.podcast.feedUrl
+                let downloadSession = PVDownloader.shared.downloadSession
+                downloadSession?.getTasksWithCompletionHandler { dataTasks, uploadTasks, downloadTasks in
+                    for downloadTask in downloadTasks {
+                        if let _ = DownloadingEpisodeList.shared.downloadingEpisodes.first(where:{ $0.taskIdentifier == downloadTask.taskIdentifier && $0.podcastFeedUrl == podcastFeedUrl}) {
+                            downloadTask.cancel()
+                        }
                     }
                 }
                 
-            }
-            
-            DownloadingEpisodeList.removeDownloadingEpisodeWithMediaURL(mediaUrl: mediaUrl)
-            
-            if let nowPlayingItem = pvMediaPlayer.nowPlayingItem {
-                if mediaUrl == nowPlayingItem.episodeMediaUrl {
+                DownloadingEpisodeList.removeDownloadingEpisodeWithMediaURL(mediaUrl: mediaUrl)
+                
+                if let nowPlayingItem = pvMediaPlayer.nowPlayingItem, mediaUrl == nowPlayingItem.episodeMediaUrl {
                     pvMediaPlayer.audioPlayer.pause()
                     pvMediaPlayer.nowPlayingItem = nil
                 }
-            }
-            
-            if let fileName = episode.fileName {
-                PVDeleter.deleteEpisodeFromDiskWithName(fileName: fileName)
-                episode.fileName = nil
-            }
-            
-            if fileOnly == false {
-                moc.delete(episode)
-            }
-            
-            if let nowPlayingItem = PlayerHistory.manager.historyItems.first {
-                nowPlayingItem.hasReachedEnd = true
-                PlayerHistory.manager.addOrUpdateItem(item: nowPlayingItem)
-            }
-            
-            moc.saveData() {
-                DispatchQueue.main.async {
-                    PVDownloader.shared.decrementBadge()
-                    
-                    if shouldCallNotificationMethod == true {
-                        NotificationCenter.default.post(name: .episodeDeleted, object: nil, userInfo: ["mediaUrl":mediaUrl ?? ""])
+                
+                if let fileName = episode.fileName {
+                    PVDeleter.deleteEpisodeFromDiskWithName(fileName: fileName)
+                    episode.fileName = nil
+                }
+                
+                if fileOnly == false {
+                    moc.delete(episode)
+                }
+                
+                if let nowPlayingItem = PlayerHistory.manager.historyItems.first {
+                    nowPlayingItem.hasReachedEnd = true
+                    PlayerHistory.manager.addOrUpdateItem(item: nowPlayingItem)
+                }
+                
+                moc.saveData() {
+                    DispatchQueue.main.async {
+                        if shouldCallNotificationMethod == true {
+                            NotificationCenter.default.post(name: .episodeDeleted, object: nil, userInfo: ["mediaUrl":mediaUrl ?? ""])
+                        }
                     }
                 }
             }
         }
+        
     }
     
     static func deleteEpisodeFromDiskWithName(fileName:String) {

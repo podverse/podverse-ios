@@ -81,7 +81,6 @@ class ClipsTableViewController: PVViewController {
         self.clipQueryIsLoading = true
         self.clipQueryEndOfResultsReached = false
         self.clipQueryMessage.isHidden = true
-        self.tableView.reloadData()
     }
     
     func retrieveClips() {
@@ -226,7 +225,7 @@ extension ClipsTableViewController:UITableViewDelegate, UITableViewDataSource {
             cell.episodePubDate?.text = episodePubDate.toShortFormatString()
         }
         
-        cell.podcastImage.image = Podcast.retrievePodcastImage(podcastImageURLString: clip.podcastImageUrl, feedURLString: clip.podcastFeedUrl, managedObjectID: nil, completion: { image in
+        cell.podcastImage.image = Podcast.retrievePodcastImage(podcastImageURLString: clip.podcastImageUrl, feedURLString: clip.podcastFeedUrl, completion: { image in
             cell.podcastImage.image = image
         })
         
