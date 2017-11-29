@@ -19,7 +19,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var timer: DispatchSource!
     let pvMediaPlayer = PVMediaPlayer.shared
     let playerHistoryManager = PlayerHistory.manager
-    let rcc = MPRemoteCommandCenter.shared()
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         
@@ -94,7 +93,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     fileprivate func setupRemoteFunctions() {
-        // Add skip or back 15 seconds to the lock screen media player
+
+        let rcc = MPRemoteCommandCenter.shared()
         
         let skipBackwardIntervalCommand = rcc.skipBackwardCommand
         skipBackwardIntervalCommand.addTarget(self, action: #selector(AppDelegate.skipBackwardEvent))
@@ -111,6 +111,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let toggleCommand = rcc.togglePlayPauseCommand
         toggleCommand.addTarget(self, action: #selector(AppDelegate.playOrPauseEvent))
         
+        if #available(iOS 9.1, *) {
+            rcc.changePlaybackPositionCommand.isEnabled = true
+        }
     }
 
     func skipBackwardEvent() {
