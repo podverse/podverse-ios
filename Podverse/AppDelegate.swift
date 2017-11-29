@@ -113,6 +113,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         if #available(iOS 9.1, *) {
             rcc.changePlaybackPositionCommand.isEnabled = true
+            rcc.changePlaybackPositionCommand.addTarget(self, action: #selector(AppDelegate.updatePlaybackPosition))
         }
     }
 
@@ -129,6 +130,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func playOrPauseEvent() { 
         self.pvMediaPlayer.playOrPause()
         self.pvMediaPlayer.updateMPNowPlayingInfoCenter()
+    }
+    
+    func updatePlaybackPosition(event:MPChangePlaybackPositionCommandEvent) {
+        self.pvMediaPlayer.seek(toTime: event.positionTime)
     }
         
 }
