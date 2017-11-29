@@ -123,6 +123,7 @@ class MediaPlayerViewController: PVViewController {
                     self.pvMediaPlayer.seek(toTime: newTime)
                     updateTime()
                 }
+                
                 setupTimer()
             default:
                 break
@@ -136,7 +137,7 @@ class MediaPlayerViewController: PVViewController {
     }
 
     @IBAction func timeJumpBackward(_ sender: Any) {
-        let newTime = self.audioPlayer.progress - 15
+        let newTime = self.pvMediaPlayer.progress - 15
         
         if newTime >= 14 {
             self.pvMediaPlayer.seek(toTime: newTime)
@@ -148,7 +149,7 @@ class MediaPlayerViewController: PVViewController {
     }
     
     @IBAction func timeJumpForward(_ sender: Any) {
-        let newTime = self.audioPlayer.progress + 15
+        let newTime = self.pvMediaPlayer.progress + 15
         self.pvMediaPlayer.seek(toTime: newTime)
         updateTime()
     }
@@ -467,7 +468,7 @@ class MediaPlayerViewController: PVViewController {
             
             if let nowPlayingItem = playerHistoryManager.historyItems.first, let makeClipTimeViewController = segue.destination as? MakeClipTimeViewController {
                 makeClipTimeViewController.playerHistoryItem = nowPlayingItem
-                makeClipTimeViewController.startTime = Int(self.audioPlayer.progress)
+                makeClipTimeViewController.startTime = Int(self.pvMediaPlayer.progress)
             }
             
         }
