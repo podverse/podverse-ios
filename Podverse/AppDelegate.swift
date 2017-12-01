@@ -74,9 +74,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func applicationWillTerminate(_ application: UIApplication) {
-//        if pvMediaPlayer.audioPlayer.rate > 0.1 {
-//            pvMediaPlayer.saveCurrentTimeAsPlaybackPosition()
-//        }
+        if self.pvMediaPlayer.audioPlayer.rate > 0.1 {
+            self.pvMediaPlayer.savePlaybackPosition()
+        }
         
         UIApplication.shared.applicationIconBadgeNumber = 0
     }
@@ -115,16 +115,33 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             rcc.changePlaybackPositionCommand.isEnabled = true
             rcc.changePlaybackPositionCommand.addTarget(self, action: #selector(AppDelegate.updatePlaybackPosition))
         }
+
+//        rcc.bookmarkCommand.isEnabled = false
+//        rcc.changePlaybackRateCommand.isEnabled = false
+//        rcc.changeRepeatModeCommand.isEnabled = false
+//        rcc.changeShuffleModeCommand.isEnabled = false
+//        rcc.disableLanguageOptionCommand.isEnabled = false
+//        rcc.enableLanguageOptionCommand.isEnabled = false
+//        rcc.likeCommand.isEnabled = false
+//        rcc.nextTrackCommand.isEnabled = false
+//        rcc.previousTrackCommand.isEnabled = false
+//        rcc.ratingCommand.isEnabled = false
+//        rcc.seekBackwardCommand.isEnabled = false
+//        rcc.seekForwardCommand.isEnabled = false
+//        rcc.skipBackwardCommand.isEnabled = false
+//        rcc.skipForwardCommand.isEnabled = false
+//        rcc.stopCommand.isEnabled = false
+        
     }
 
     func skipBackwardEvent() {
         self.pvMediaPlayer.seek(toTime: self.pvMediaPlayer.progress - 15)
-        self.pvMediaPlayer.updateMPNowPlayingInfoCenter()
+        MPNowPlayingInfoCenter.default().nowPlayingInfo?[MPNowPlayingInfoPropertyElapsedPlaybackTime] = self.pvMediaPlayer.progress
     }
     
     func skipForwardEvent() {
         self.pvMediaPlayer.seek(toTime: self.pvMediaPlayer.progress + 15)
-        self.pvMediaPlayer.updateMPNowPlayingInfoCenter()
+        MPNowPlayingInfoCenter.default().nowPlayingInfo?[MPNowPlayingInfoPropertyElapsedPlaybackTime] = self.pvMediaPlayer.progress
     }
     
     func playOrPauseEvent() { 
@@ -135,6 +152,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func updatePlaybackPosition(event:MPChangePlaybackPositionCommandEvent) {
         self.pvMediaPlayer.seek(toTime: event.positionTime)
     }
-        
+    
 }
 

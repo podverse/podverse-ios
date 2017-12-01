@@ -152,6 +152,7 @@ class PVMediaPlayer: NSObject {
     @objc func savePlaybackPosition() {
         if let item = nowPlayingItem, self.progress > 0 {
             item.lastPlaybackPosition = Int64(self.progress)
+            self.shouldStartFromTime = Int64(self.progress)
             playerHistoryManager.addOrUpdateItem(item: item)
         }
     }
