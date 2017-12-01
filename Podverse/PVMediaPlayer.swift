@@ -174,16 +174,13 @@ class PVMediaPlayer: NSObject {
     
     @objc private func stopAtEndTime() {
         
-        if self.shouldStopAtEndTime > 0 {
-            if let item = self.nowPlayingItem, let endTime = item.endTime {
-                if endTime > 0 && Int64(self.audioPlayer.progress) > endTime {
-                    self.pause()
-                    self.shouldHideClipDataNextPlay = true
-                    
-                    if self.shouldAutoplayAlways {
-                        print("should autoplay to the next clip")
-                    }
-                }
+        if self.shouldStopAtEndTime > 0 && Int64(self.audioPlayer.progress) > self.shouldStopAtEndTime {
+            self.pause()
+            self.shouldHideClipDataNextPlay = true
+            self.shouldStartFromTime = 0
+            
+            if self.shouldAutoplayAlways {
+                print("should autoplay to the next clip")
             }
         }
         

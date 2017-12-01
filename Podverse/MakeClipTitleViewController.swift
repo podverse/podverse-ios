@@ -19,6 +19,7 @@ class MakeClipTitleViewController: UIViewController, UITextViewDelegate {
     
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     @IBOutlet weak var play: UIButton!
+    @IBOutlet weak var replayButton: UIButton!
     @IBOutlet weak var saveButton: UIButton!
     @IBOutlet weak var titleInput: UITextView!
     @IBOutlet weak var visibilityButton: UIButton!
@@ -37,6 +38,9 @@ class MakeClipTitleViewController: UIViewController, UITextViewDelegate {
         }
         
         self.titleInput.becomeFirstResponder()
+        
+        self.replayButton.layer.borderWidth = 1
+        self.replayButton.layer.borderColor = UIColor.lightGray.cgColor
         
         self.saveButton.layer.borderWidth = 1
         self.saveButton.layer.borderColor = UIColor.lightGray.cgColor
@@ -73,7 +77,20 @@ class MakeClipTitleViewController: UIViewController, UITextViewDelegate {
     }
     
     @IBAction func playOrPause(_ sender: Any) {
+        // Ignore the shouldStartFromTime (set it to 0) if it is present when play is pressed
+        self.pvMediaPlayer.shouldStartFromTime = 0
         self.pvMediaPlayer.playOrPause()
+    }
+    
+    @IBAction func replay(_ sender: Any) {
+        if let startTime = self.startTime {
+            self.pvMediaPlayer.seek(toTime: Double(startTime))
+            self.pvMediaPlayer.play()
+        }
+        
+        if let endTime = self.endTime {
+            self.pvMediaPlayer.shouldStopAtEndTime = Int64(endTime)
+        }
     }
     
     @IBAction func save(_ sender: Any) {

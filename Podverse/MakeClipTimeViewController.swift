@@ -103,6 +103,10 @@ class MakeClipTimeViewController: UIViewController, UITextFieldDelegate {
             self.pvMediaPlayer.seek(toTime: Double(startTime))
             self.pvMediaPlayer.play()
         }
+        
+        if let endTime = self.endTime {
+            self.pvMediaPlayer.shouldStopAtEndTime = Int64(endTime)
+        }
     }
     
     @IBAction func endTimePreview(_ sender: Any) {

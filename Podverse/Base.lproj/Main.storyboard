@@ -2417,35 +2417,48 @@
                             <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="5Ps-QD-jcH">
                                 <rect key="frame" x="322" y="37" width="37" height="37"/>
                             </activityIndicatorView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="IQQ-a8-hac">
+                                <rect key="frame" x="16" y="261" width="163.5" height="45"/>
+                                <fontDescription key="fontDescription" type="system" weight="medium" pointSize="17"/>
+                                <inset key="contentEdgeInsets" minX="0.0" minY="12" maxX="0.0" maxY="12"/>
+                                <state key="normal" title="Replay"/>
+                                <connections>
+                                    <action selector="replay:" destination="6q8-r6-4oY" eventType="touchUpInside" id="hPP-ut-0Xf"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="5Ps-QD-jcH" firstAttribute="trailing" secondItem="NDg-Kd-Bov" secondAttribute="trailingMargin" id="0Vt-FU-NO6"/>
                             <constraint firstItem="Npb-Tw-iAM" firstAttribute="leading" secondItem="Udz-hC-3YQ" secondAttribute="trailing" constant="16" id="2Oy-nQ-spf"/>
+                            <constraint firstItem="fN9-xq-qeN" firstAttribute="leading" secondItem="IQQ-a8-hac" secondAttribute="trailing" constant="16" id="3hg-2a-5k9"/>
                             <constraint firstItem="HE9-Hf-p4j" firstAttribute="leading" secondItem="Npb-Tw-iAM" secondAttribute="trailing" constant="16" id="4je-Lh-LaV"/>
                             <constraint firstItem="EqC-MT-BIo" firstAttribute="trailing" secondItem="NDg-Kd-Bov" secondAttribute="trailingMargin" id="8Ck-bd-Cib"/>
                             <constraint firstItem="HE9-Hf-p4j" firstAttribute="top" secondItem="XNz-Sn-R0S" secondAttribute="bottom" constant="16" id="8Cy-an-NAL"/>
-                            <constraint firstItem="fN9-xq-qeN" firstAttribute="top" secondItem="EqC-MT-BIo" secondAttribute="bottom" constant="24" id="AjA-Xs-haF"/>
                             <constraint firstItem="xts-S4-I7G" firstAttribute="top" secondItem="XNz-Sn-R0S" secondAttribute="bottom" constant="16" id="JEo-fJ-KhL"/>
                             <constraint firstItem="aav-wg-jfn" firstAttribute="top" secondItem="HE9-Hf-p4j" secondAttribute="bottom" constant="16" id="LZh-Hs-fnB"/>
                             <constraint firstItem="5Ps-QD-jcH" firstAttribute="top" secondItem="XNz-Sn-R0S" secondAttribute="bottom" constant="17" id="UjS-YF-cu9"/>
-                            <constraint firstItem="fN9-xq-qeN" firstAttribute="trailing" secondItem="NDg-Kd-Bov" secondAttribute="trailingMargin" id="V5h-Q7-PXY"/>
-                            <constraint firstItem="fN9-xq-qeN" firstAttribute="leading" secondItem="NDg-Kd-Bov" secondAttribute="leadingMargin" id="Ynx-5U-Qop"/>
+                            <constraint firstItem="fN9-xq-qeN" firstAttribute="top" secondItem="EqC-MT-BIo" secondAttribute="bottom" constant="24" id="V5e-To-q00"/>
                             <constraint firstItem="aav-wg-jfn" firstAttribute="trailing" secondItem="NDg-Kd-Bov" secondAttribute="trailingMargin" id="Zs4-f2-wAV"/>
+                            <constraint firstItem="IQQ-a8-hac" firstAttribute="leading" secondItem="NDg-Kd-Bov" secondAttribute="leadingMargin" id="d7y-MT-jb2"/>
                             <constraint firstItem="Npb-Tw-iAM" firstAttribute="top" secondItem="XNz-Sn-R0S" secondAttribute="bottom" constant="18" id="g1c-N4-Dm5"/>
                             <constraint firstItem="1gx-EX-6A5" firstAttribute="leading" secondItem="NDg-Kd-Bov" secondAttribute="leadingMargin" id="hcl-Lv-2be"/>
                             <constraint firstItem="EqC-MT-BIo" firstAttribute="top" secondItem="1gx-EX-6A5" secondAttribute="bottom" constant="8" id="ifS-AY-jcA"/>
+                            <constraint firstItem="IQQ-a8-hac" firstAttribute="top" secondItem="EqC-MT-BIo" secondAttribute="bottom" constant="24" id="jZV-16-un1"/>
                             <constraint firstItem="EqC-MT-BIo" firstAttribute="top" secondItem="aav-wg-jfn" secondAttribute="bottom" constant="9" id="mzt-Cv-6Ar"/>
                             <constraint firstItem="EqC-MT-BIo" firstAttribute="leading" secondItem="NDg-Kd-Bov" secondAttribute="leadingMargin" id="oJE-3P-Xqg"/>
                             <constraint firstItem="Udz-hC-3YQ" firstAttribute="top" secondItem="XNz-Sn-R0S" secondAttribute="bottom" constant="18" id="oQR-iA-KYC"/>
                             <constraint firstItem="1gx-EX-6A5" firstAttribute="top" secondItem="xts-S4-I7G" secondAttribute="bottom" constant="16" id="s6X-A2-emO"/>
                             <constraint firstItem="xts-S4-I7G" firstAttribute="leading" secondItem="NDg-Kd-Bov" secondAttribute="leadingMargin" id="sIt-h5-rYq"/>
                             <constraint firstItem="HE9-Hf-p4j" firstAttribute="trailing" secondItem="NDg-Kd-Bov" secondAttribute="trailingMargin" id="upx-EW-gUD"/>
+                            <constraint firstItem="IQQ-a8-hac" firstAttribute="width" secondItem="fN9-xq-qeN" secondAttribute="width" id="yQ0-Gs-Xri"/>
+                            <constraint firstItem="fN9-xq-qeN" firstAttribute="trailing" secondItem="NDg-Kd-Bov" secondAttribute="trailingMargin" id="zWD-XV-lb9"/>
                         </constraints>
                     </view>
                     <connections>
                         <outlet property="activityIndicator" destination="5Ps-QD-jcH" id="GYN-Cu-4jr"/>
                         <outlet property="play" destination="HE9-Hf-p4j" id="ucq-6u-8qG"/>
+                        <outlet property="replayButton" destination="IQQ-a8-hac" id="8iL-Vc-jUv"/>
                         <outlet property="saveButton" destination="fN9-xq-qeN" id="aws-NQ-fui"/>
                         <outlet property="titleInput" destination="EqC-MT-BIo" id="LGy-zx-gDp"/>
                         <outlet property="visibilityButton" destination="xts-S4-I7G" id="0ER-8c-jw3"/>
