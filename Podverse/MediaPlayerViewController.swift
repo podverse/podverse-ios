@@ -38,9 +38,7 @@ class MediaPlayerViewController: PVViewController {
     @IBOutlet weak var endTimeFlagView: UIView!
     @IBOutlet weak var startTimeLeadingConstraint: NSLayoutConstraint!
     @IBOutlet weak var endTimeLeadingConstraint: NSLayoutConstraint!
-    
-    @IBOutlet weak var timeSkipForward: UIButton!
-    
+        
     override func viewDidLoad() {
         setupContainerView()
         
@@ -78,7 +76,7 @@ class MediaPlayerViewController: PVViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         navigationController?.interactivePopGestureRecognizer?.isEnabled = false
-        pvMediaPlayer.delegate = self
+        self.pvMediaPlayer.delegate = self
         togglePlayIcon()
         updateTime()
     }

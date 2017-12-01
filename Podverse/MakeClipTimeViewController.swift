@@ -57,8 +57,6 @@ class MakeClipTimeViewController: UIViewController, UITextFieldDelegate {
         
         self.progress.setThumbImage(#imageLiteral(resourceName: "SliderCurrentPosition"), for: .normal)
         
-        updateTime()
-        
         populatePlayerInfo()
         
         // prevent keyboard from displaying for startTimeInput and endTimeInput

@@ -9,17 +9,19 @@
 import Foundation
 
 class MediaRef {
-    var id: String?
-    var title: String?
-    var startTime: Int64?
-    var endTime: Int64?
-    var episodeTitle: String?
-    var episodeMediaUrl: String?
-    var episodePubDate: Date?
-    var episodeSummary: String?
-    var podcastTitle: String?
-    var podcastFeedUrl: String?
-    var podcastImageUrl: String?
+    
+    var id:String?
+    var title:String?
+    var startTime:Int64?
+    var endTime:Int64?
+    var episodeTitle:String?
+    var episodeMediaUrl:String?
+    var episodePubDate:Date?
+    var episodeSummary:String?
+    var podcastTitle:String?
+    var podcastFeedUrl:String?
+    var podcastImageUrl:String?
+    var isPublic:Bool? = false
     
     static func jsonToMediaRef(item: [String:Any]) -> MediaRef {
 
@@ -41,6 +43,8 @@ class MediaRef {
         if let episodePubDate = item["episodePubDate"] as? String {
             mediaRef.episodePubDate = episodePubDate.toServerDate()
         }
+        
+        mediaRef.isPublic = item["isPublic"] as? Bool
         
         return mediaRef
         

@@ -85,6 +85,8 @@ let kEpisodeTableFilterType = "EpisodeTableFilterType"
 
 let kEpisodeTableSortingType = "EpisodeTableSortingType"
 
+let kMakeClipVisibilityType = "MakeClipVisibilityType"
+
 let kInternetIsUnreachable = "internetIsUnreachable"
 
 let kWiFiIsUnreachable = "wiFiIsUnreachable"
@@ -295,6 +297,22 @@ enum EpisodeActions: String {
     }
 }
 
+enum VisibilityOptions:String {
+    case isPublic = "Public"
+    case isOnlyWithLink = "Only with link"
+    
+    var text:String {
+        get {
+            switch self {
+            case .isPublic:
+                return "Public"
+            case .isOnlyWithLink:
+                return "Only with link"
+            }
+        }
+    }
+}
+
 enum AudiosearchPodcastFilter:String {
     case about = "About"
     case clips = "Clips"
@@ -325,7 +343,7 @@ struct Strings {
         static let noPlaylistsInternet = "No internet connection"
         static let noPlaylistsNotLoggedIn = "Login to view your playlists"
         static let noPodcastClipsAvailable = "No clips available for this podcast"
-        static let noPodcastsSubscribed = "Tap the Find tab and subscribe to podcasts to add them here"
+        static let noPodcastsSubscribed = "Subscribe to podcasts to add them here"
         static let noSearchResultsFound = "No search results found"
     }
     
