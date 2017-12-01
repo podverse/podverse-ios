@@ -73,6 +73,7 @@ class PVMediaPlayer: NSObject {
 
     static let shared = PVMediaPlayer()
     
+    // TODO: should this be on the main thread??
     let moc = CoreDataHelper.createMOCForThread(threadType: .mainThread)
     
     var audioPlayer = STKAudioPlayer()
@@ -149,16 +150,17 @@ class PVMediaPlayer: NSObject {
     }
     
     @objc func savePlaybackPosition() {
-        if let item = nowPlayingItem, self.audioPlayer.progress > 0 {
-            item.lastPlaybackPosition = Int64(self.audioPlayer.progress)
+        if let item = nowPlayingItem, self.progress > 0 {
+            item.lastPlaybackPosition = Int64(self.progress)
+            self.shouldStartFromTime = Int64(self.progress)
             playerHistoryManager.addOrUpdateItem(item: item)
         }
     }
     
     private func clearPlaybackPosition() {
-        if let item = nowPlayingItem, self.audioPlayer.progress > 0 {
+        if let item = nowPlayingItem, self.progress > 0 {
             item.lastPlaybackPosition = Int64(0)
-            playerHistoryManager.addOrUpdateItem(item: item)
+            self.playerHistoryManager.addOrUpdateItem(item: item)
         }
     }
     
@@ -248,7 +250,7 @@ class PVMediaPlayer: NSObject {
             return
         }
         
-        let currentPlaybackTime = NSNumber(value: self.audioPlayer.progress)
+        let currentPlaybackTime = NSNumber(value: self.progress)
         let currentPlayerRate = NSNumber(value: self.playerSpeedRate.speedValue)
         
         if let podcastImageUrlString = item.podcastImageUrl, let podcastImageUrl = URL(string: podcastImageUrlString) {
@@ -301,7 +303,7 @@ class PVMediaPlayer: NSObject {
             return true
         }
         
-        if self.audioPlayer.progress > Double(endTime) {
+        if self.progress > Double(endTime) {
             return false
         } else {
             return true
@@ -327,7 +329,7 @@ class PVMediaPlayer: NSObject {
             episodeTitle = eTitle
         }
         
-        let currentPlaybackTime = NSNumber(value: self.audioPlayer.progress)
+        let currentPlaybackTime = NSNumber(value: self.progress)
         
         let podcastImage = Podcast.retrievePodcastImage(podcastImageURLString: item.podcastImageUrl, feedURLString: item.podcastFeedUrl, completion: { image in
             MPNowPlayingInfoCenter.default().nowPlayingInfo?[MPMediaItemPropertyArtwork] = MPMediaItemArtwork(image: image)

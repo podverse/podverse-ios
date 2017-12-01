@@ -74,9 +74,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func applicationWillTerminate(_ application: UIApplication) {
-//        if pvMediaPlayer.audioPlayer.rate > 0.1 {
-//            pvMediaPlayer.saveCurrentTimeAsPlaybackPosition()
-//        }
+        if self.pvMediaPlayer.audioPlayer.rate > 0.1 {
+            self.pvMediaPlayer.savePlaybackPosition()
+        }
         
         UIApplication.shared.applicationIconBadgeNumber = 0
     }
@@ -93,7 +93,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     fileprivate func setupRemoteFunctions() {
-        // Add skip or back 15 seconds to the lock screen media player
+
         let rcc = MPRemoteCommandCenter.shared()
         
         let skipBackwardIntervalCommand = rcc.skipBackwardCommand
@@ -111,22 +111,47 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let toggleCommand = rcc.togglePlayPauseCommand
         toggleCommand.addTarget(self, action: #selector(AppDelegate.playOrPauseEvent))
         
+        if #available(iOS 9.1, *) {
+            rcc.changePlaybackPositionCommand.isEnabled = true
+            rcc.changePlaybackPositionCommand.addTarget(self, action: #selector(AppDelegate.updatePlaybackPosition))
+        }
+
+//        rcc.bookmarkCommand.isEnabled = false
+//        rcc.changePlaybackRateCommand.isEnabled = false
+//        rcc.changeRepeatModeCommand.isEnabled = false
+//        rcc.changeShuffleModeCommand.isEnabled = false
+//        rcc.disableLanguageOptionCommand.isEnabled = false
+//        rcc.enableLanguageOptionCommand.isEnabled = false
+//        rcc.likeCommand.isEnabled = false
+//        rcc.nextTrackCommand.isEnabled = false
+//        rcc.previousTrackCommand.isEnabled = false
+//        rcc.ratingCommand.isEnabled = false
+//        rcc.seekBackwardCommand.isEnabled = false
+//        rcc.seekForwardCommand.isEnabled = false
+//        rcc.skipBackwardCommand.isEnabled = false
+//        rcc.skipForwardCommand.isEnabled = false
+//        rcc.stopCommand.isEnabled = false
+        
     }
 
     func skipBackwardEvent() {
-        MPNowPlayingInfoCenter.default().nowPlayingInfo?[MPNowPlayingInfoPropertyElapsedPlaybackTime] = pvMediaPlayer.audioPlayer.progress - 15
-        pvMediaPlayer.seek(toTime: pvMediaPlayer.audioPlayer.progress - 15)
+        self.pvMediaPlayer.seek(toTime: self.pvMediaPlayer.progress - 15)
+        MPNowPlayingInfoCenter.default().nowPlayingInfo?[MPNowPlayingInfoPropertyElapsedPlaybackTime] = self.pvMediaPlayer.progress
     }
     
     func skipForwardEvent() {
-        MPNowPlayingInfoCenter.default().nowPlayingInfo?[MPNowPlayingInfoPropertyElapsedPlaybackTime] = pvMediaPlayer.audioPlayer.progress + 15
-        pvMediaPlayer.seek(toTime: pvMediaPlayer.audioPlayer.progress + 15)
+        self.pvMediaPlayer.seek(toTime: self.pvMediaPlayer.progress + 15)
+        MPNowPlayingInfoCenter.default().nowPlayingInfo?[MPNowPlayingInfoPropertyElapsedPlaybackTime] = self.pvMediaPlayer.progress
     }
     
     func playOrPauseEvent() { 
-        MPNowPlayingInfoCenter.default().nowPlayingInfo?[MPNowPlayingInfoPropertyElapsedPlaybackTime] = pvMediaPlayer.audioPlayer.progress
-        pvMediaPlayer.playOrPause()
+        self.pvMediaPlayer.playOrPause()
+        self.pvMediaPlayer.updateMPNowPlayingInfoCenter()
     }
-        
+    
+    func updatePlaybackPosition(event:MPChangePlaybackPositionCommandEvent) {
+        self.pvMediaPlayer.seek(toTime: event.positionTime)
+    }
+    
 }
 
