@@ -244,10 +244,7 @@ extension PodcastsTableViewController:UITableViewDelegate, UITableViewDataSource
             self.subscribedPodcastsArray.remove(at: indexPath.row)
             tableView.deleteRows(at: [indexPath], with: .fade)
             
-            DispatchQueue.global().async {
-                let privateMoc = CoreDataHelper.createMOCForThread(threadType: .privateThread)
-                PVDeleter.deletePodcast(feedUrl: podcastToEditFeedUrl, moc: privateMoc)
-            }
+            PVDeleter.deletePodcast(feedUrl: podcastToEditFeedUrl)
             
             if !checkForResults(results: self.subscribedPodcastsArray) {
                 self.loadNoPodcastsSubscribedMessage()
@@ -309,15 +306,13 @@ extension PodcastsTableViewController {
         let total = self.parsingPodcasts.urls.count
         let currentItem = self.parsingPodcasts.currentlyParsingItem
         
-        if total > 0 && currentItem < total {
-            DispatchQueue.main.async {
+        DispatchQueue.main.async {
+            if total > 0 && currentItem < total {
                 self.parseActivityIndicator.startAnimating()
                 self.parseActivityIndicator.isHidden = false
                 self.parseStatus.isHidden = false
                 self.parseStatus.text = String(currentItem) + "/" + String(total) + " parsing"
-            }
-        } else {
-            DispatchQueue.main.async {
+            } else {
                 self.parseActivityIndicator.stopAnimating()
                 self.parseActivityIndicator.isHidden = true
                 self.parseStatus.isHidden = true
