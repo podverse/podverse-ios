@@ -100,10 +100,7 @@ class AudiosearchPodcastViewController: PVViewController {
         let isSubscribed = PVSubscriber.checkIfSubscribed(feedUrlString: self.feedUrl)
         
         if isSubscribed {
-            DispatchQueue.global().async {
-                let moc = CoreDataHelper.createMOCForThread(threadType: .privateThread)
-                PVDeleter.deletePodcast(feedUrl: self.feedUrl, moc: moc)
-            }
+            PVDeleter.deletePodcast(feedUrl: self.feedUrl)
         } else {
             DispatchQueue.global().async {
                 PVSubscriber.subscribeToPodcast(feedUrlString: self.feedUrl)
