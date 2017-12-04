@@ -45,11 +45,9 @@ class MediaPlayerViewController: PVViewController {
         setupContainerView()
         
         let share = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.action, target: self, action: #selector(showShareMenu))
-        let makeClip = UIBarButtonItem(title: "Make Clip", style: .plain, target: self, action: #selector(showMakeClip))
-        let addToPlaylist = UIBarButtonItem(title: "Add to Playlist", style: .plain, target: self, action: #selector(showAddToPlaylist))
+        let makeClip = UIBarButtonItem(image: UIImage(named:"clip"), style: .plain, target: self, action: #selector(showMakeClip))
+        let addToPlaylist = UIBarButtonItem(image: UIImage(named:"add"), style: .plain, target: self, action: #selector(showAddToPlaylist))
         navigationItem.rightBarButtonItems = [share, makeClip, addToPlaylist]
-        
-        setupButtons()
 
         self.progress.setThumbImage(#imageLiteral(resourceName: "SliderCurrentPosition"), for: .normal)
         
@@ -97,11 +95,6 @@ class MediaPlayerViewController: PVViewController {
     fileprivate func removeObservers() {
         NotificationCenter.default.removeObserver(self, name: .hideClipData, object: nil)
         NotificationCenter.default.removeObserver(self, name: .playerHasFinished, object: nil)
-    }
-    
-    func setupButtons() {
-        let skipForwardImage = UIImage(named: "forward-15")?.withRenderingMode(.alwaysTemplate)
-        self.timeSkipForward.setImage(skipForwardImage, for: .normal)
     }
     
     @IBAction func pageControlAction(_ sender: Any) {

@@ -467,7 +467,7 @@ extension EpisodesTableViewController: UITableViewDataSource, UITableViewDelegat
             } else {
                 cell.activityIndicator.stopAnimating()
                 cell.activityView.isHidden = true
-                let downloadImage = UIImage(named: "dl-cloud")
+                let downloadImage = UIImage(named: "cloud")
                 cell.button.setImage(downloadImage, for: .normal)
             }
             
