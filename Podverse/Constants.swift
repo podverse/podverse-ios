@@ -55,8 +55,6 @@ let kPlayerHasNoItem = "playerHasNoItem"
 
 let feedParsingQueue = DispatchQueue(label: "FEED_PARSER_QUEUE")
 
-let channelInfoFeedParsingQueue = DispatchQueue(label: "CHANNEL_INFO_FEED_PARSER_QUEUE")
-
 let kRefreshAddToPlaylistTableDataNotification = "refreshPodcastTableDataNotification"
 
 let kItemAddedToPlaylistNotification = "itemAddedToPlaylistNotificiation"

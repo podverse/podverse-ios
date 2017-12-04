@@ -55,8 +55,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         AudioSearchClientSwift.getAudiosearchAccessToken()
         
-        CoreDataHelper.clearOrphanedEpisodes()
-        
         return true
     }
 

@@ -17,7 +17,8 @@ class PodcastsTableViewController: PVViewController, AutoDownloadProtocol {
     @IBOutlet weak var tableView: UITableView!
     
     let moc = CoreDataHelper.createMOCForThread(threadType: .mainThread)
-    let parsingPodcastsList = ParsingPodcastsList.shared
+    
+    let parsingPodcasts = ParsingPodcasts.shared
     let reachability = PVReachability.shared
     let refreshControl = UIRefreshControl()
     var subscribedPodcastsArray = [Podcast]()
@@ -71,11 +72,6 @@ class PodcastsTableViewController: PVViewController, AutoDownloadProtocol {
     
     @objc fileprivate func refreshPodcastFeeds() {
         
-        if parsingPodcastsList.urls.count > 0 {
-            self.refreshControl.endRefreshing()
-            return
-        }
-
         if checkForConnectivity() == false {
 
             if refreshControl.isRefreshing == true {
@@ -85,16 +81,22 @@ class PodcastsTableViewController: PVViewController, AutoDownloadProtocol {
 
             return
         }
-
-        let podcastArray = CoreDataHelper.fetchEntities(className:"Podcast", predicate: nil, moc:moc) as! [Podcast]
-
-        for podcast in podcastArray {
-            let feedUrl = NSURL(string:podcast.feedUrl)
-
-            let pvFeedParser = PVFeedParser(shouldOnlyGetMostRecentEpisode: true, shouldSubscribe:false, shouldOnlyParseChannel: false)
-            pvFeedParser.delegate = self
-            if let feedUrlString = feedUrl?.absoluteString {
-                pvFeedParser.parsePodcastFeed(feedUrlString: feedUrlString)
+        
+        DispatchQueue.global().async {
+            let privateMoc = CoreDataHelper.createMOCForThread(threadType: .privateThread)
+            var podcastArray = CoreDataHelper.fetchEntities(className:"Podcast", predicate: nil, moc:privateMoc) as! [Podcast]
+            podcastArray = podcastArray.filter { !DeletingPodcasts.shared.urls.contains($0.feedUrl) }
+            
+            for podcast in podcastArray {
+                let feedUrl = NSURL(string:podcast.feedUrl)
+                
+                let pvFeedParser = PVFeedParser(shouldOnlyGetMostRecentEpisode: true, shouldSubscribe:false)
+                pvFeedParser.delegate = self
+                if let feedUrlString = feedUrl?.absoluteString {
+                    if !self.parsingPodcasts.hasMatchingUrl(feedUrl: feedUrlString) {
+                        pvFeedParser.parsePodcastFeed(feedUrlString: feedUrlString)
+                    }
+                }
             }
         }
 
@@ -103,8 +105,9 @@ class PodcastsTableViewController: PVViewController, AutoDownloadProtocol {
     }
     
     func loadPodcastData() {
-        self.moc.refreshObjects()
-        self.subscribedPodcastsArray = CoreDataHelper.fetchEntities(className:"Podcast", predicate: nil, moc:moc) as! [Podcast]
+        
+        self.subscribedPodcastsArray = CoreDataHelper.fetchEntities(className:"Podcast", predicate: nil, moc:self.moc) as! [Podcast]
+        self.subscribedPodcastsArray = self.subscribedPodcastsArray.filter { !DeletingPodcasts.shared.urls.contains($0.feedUrl) }
         
         guard checkForResults(results: subscribedPodcastsArray) else {
             self.loadNoPodcastsSubscribedMessage()
@@ -115,6 +118,7 @@ class PodcastsTableViewController: PVViewController, AutoDownloadProtocol {
         
         self.tableView.isHidden = false
         self.tableView.reloadData()
+        
     }
 
     func podcastAutodownloadChanged(feedUrl: String) {
@@ -154,6 +158,7 @@ class PodcastsTableViewController: PVViewController, AutoDownloadProtocol {
 extension PodcastsTableViewController:PVFeedParserDelegate {
     func feedParsingComplete(feedUrl:String?) {
         if let url = feedUrl, let index = self.subscribedPodcastsArray.index(where: { url == $0.feedUrl }) {
+            
             if let podcast = Podcast.podcastForFeedUrl(feedUrlString: url, managedObjectContext: self.moc) {
                 self.subscribedPodcastsArray[index] = podcast
                 DispatchQueue.main.async {
@@ -170,7 +175,9 @@ extension PodcastsTableViewController:PVFeedParserDelegate {
         if let navVCs = self.navigationController?.viewControllers, navVCs.count > 1, 
            let episodesTableVC = self.navigationController?.viewControllers[1] as? EpisodesTableViewController {
             if episodesTableVC.filterTypeSelected != .clips {
-                episodesTableVC.reloadEpisodeData()
+                DispatchQueue.main.async {
+                    episodesTableVC.reloadEpisodeData()
+                }
             }
         }
     }
@@ -204,9 +211,10 @@ extension PodcastsTableViewController:UITableViewDelegate, UITableViewDataSource
         }
         
         let episodes = podcast.episodes
+        // TODO: this slows down scrolling too much. How can we have this info without blocking the main thread?
         let episodesDownloaded = episodes.filter{ $0.fileName != nil }
         cell.totalEpisodes?.text = "\(episodesDownloaded.count) downloaded"
-                
+        
         cell.lastPublishedDate?.text = ""
         if let lastPubDate = podcast.lastPubDate {
             cell.lastPublishedDate?.text = lastPubDate.toShortFormatString()
@@ -229,13 +237,14 @@ extension PodcastsTableViewController:UITableViewDelegate, UITableViewDataSource
     }
     
     func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
-        let podcastToEditOid = self.subscribedPodcastsArray[indexPath.row].objectID
+        
         let podcastToEditFeedUrl = self.subscribedPodcastsArray[indexPath.row].feedUrl
         
         let deleteAction = UITableViewRowAction(style: .default, title: "Delete", handler: {action, indexpath in
             self.subscribedPodcastsArray.remove(at: indexPath.row)
             tableView.deleteRows(at: [indexPath], with: .fade)
-            PVDeleter.deletePodcast(feedUrl: podcastToEditFeedUrl, moc: self.moc)
+            
+            PVDeleter.deletePodcast(feedUrl: podcastToEditFeedUrl)
             
             if !checkForResults(results: self.subscribedPodcastsArray) {
                 self.loadNoPodcastsSubscribedMessage()
@@ -273,7 +282,7 @@ extension PodcastsTableViewController {
     override func episodeDeleted(_ notification:Notification) {
         super.episodeDeleted(notification)
         
-        if let mediaUrl = notification.userInfo?["mediaUrl"] as? String, let episodes = CoreDataHelper.fetchEntities(className: "Episode", predicate: NSPredicate(format: "mediaUrl == %@", mediaUrl), moc: moc) as? [Episode], let episode = episodes.first, let index = self.subscribedPodcastsArray.index(where: { $0.feedUrl == episode.podcast.feedUrl }) {
+        if let mediaUrl = notification.userInfo?["mediaUrl"] as? String, let episodes = CoreDataHelper.fetchEntities(className: "Episode", predicate: NSPredicate(format: "mediaUrl == %@", mediaUrl), moc: self.moc) as? [Episode], let episode = episodes.first, let index = self.subscribedPodcastsArray.index(where: { $0.feedUrl == episode.podcast.feedUrl }) {
             DispatchQueue.main.async {
                 self.subscribedPodcastsArray[index] = episode.podcast
                 self.tableView.reloadRows(at: [IndexPath(row: index, section: 0)], with: .none)
@@ -285,16 +294,17 @@ extension PodcastsTableViewController {
         super.podcastDeleted(notification)
         
         if let feedUrl = notification.userInfo?["feedUrl"] as? String, let index = self.subscribedPodcastsArray.index(where: { $0.feedUrl == feedUrl }) {
+            self.subscribedPodcastsArray.remove(at: index)
+
             DispatchQueue.main.async {
-                self.subscribedPodcastsArray.remove(at: index)
                 self.tableView.deleteRows(at: [IndexPath(row: index, section: 0)], with: .fade)
             }
         }
     }
     
     func refreshParsingStatus(_ notification:Notification) {
-        let total = self.parsingPodcastsList.urls.count
-        let currentItem = self.parsingPodcastsList.currentlyParsingItem
+        let total = self.parsingPodcasts.urls.count
+        let currentItem = self.parsingPodcasts.currentlyParsingItem
         
         DispatchQueue.main.async {
             if total > 0 && currentItem < total {
@@ -308,5 +318,6 @@ extension PodcastsTableViewController {
                 self.parseStatus.isHidden = true
             }
         }
+        
     }
 }
