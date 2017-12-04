@@ -73,6 +73,7 @@ class PVMediaPlayer: NSObject {
 
     static let shared = PVMediaPlayer()
     
+    // TODO: should this be on the main thread??
     let moc = CoreDataHelper.createMOCForThread(threadType: .mainThread)
     
     var audioPlayer = STKAudioPlayer()
@@ -139,7 +140,7 @@ class PVMediaPlayer: NSObject {
     }
     
     private func startPlaybackTimer () {
-        self.playbackTimer = Timer.scheduledTimer(timeInterval: 10, target: self, selector: #selector(savePlaybackPosition), userInfo: nil, repeats: true)
+        self.playbackTimer = Timer.scheduledTimer(timeInterval: 5, target: self, selector: #selector(savePlaybackPosition), userInfo: nil, repeats: true)
     }
     
     private func removePlaybackTimer () {
@@ -149,16 +150,17 @@ class PVMediaPlayer: NSObject {
     }
     
     @objc func savePlaybackPosition() {
-        if let item = nowPlayingItem, self.audioPlayer.progress > 0 {
-            item.lastPlaybackPosition = Int64(self.audioPlayer.progress)
+        if let item = nowPlayingItem, self.progress > 0 {
+            item.lastPlaybackPosition = Int64(self.progress)
+            self.shouldStartFromTime = Int64(self.progress)
             playerHistoryManager.addOrUpdateItem(item: item)
         }
     }
     
     private func clearPlaybackPosition() {
-        if let item = nowPlayingItem, self.audioPlayer.progress > 0 {
+        if let item = nowPlayingItem, self.progress > 0 {
             item.lastPlaybackPosition = Int64(0)
-            playerHistoryManager.addOrUpdateItem(item: item)
+            self.playerHistoryManager.addOrUpdateItem(item: item)
         }
     }
     
@@ -174,27 +176,20 @@ class PVMediaPlayer: NSObject {
     
     @objc private func stopAtEndTime() {
         
-        if self.shouldStopAtEndTime > 0 {
-            if let item = self.nowPlayingItem, let endTime = item.endTime {
-                if endTime > 0 && Int64(self.audioPlayer.progress) > endTime {
-                    self.pause()
-                    self.shouldHideClipDataNextPlay = true
-                    
-                    if self.shouldAutoplayAlways {
-                        print("should autoplay to the next clip")
-                    }
-                }
+        if self.shouldStopAtEndTime > 0 && Int64(self.audioPlayer.progress) > self.shouldStopAtEndTime {
+            self.pause()
+            self.shouldHideClipDataNextPlay = true
+            self.shouldStartFromTime = 0
+            
+            if self.shouldAutoplayAlways {
+                print("should autoplay to the next clip")
             }
         }
-        
-        
         
     }
     
     // TODO: should this be public here or not?
     @objc @discardableResult public func playOrPause() -> Bool {
-        
-        savePlaybackPosition()
         
         let state = audioPlayer.state
         
@@ -210,7 +205,6 @@ class PVMediaPlayer: NSObject {
             }
         }
         
-        
         // If nothing loaded in the player, but playOrPause was pressed, then attempt to load and play the file.
         if checkIfNothingIsCurrentlyLoadedInPlayer() {
             self.shouldAutoplayOnce = true
@@ -225,8 +219,7 @@ class PVMediaPlayer: NSObject {
             self.pause()
             return true
         default:
-            self.audioPlayer.rate = self.playerSpeedRate.speedValue
-            self.audioPlayer.resume()
+            self.play()
             return false
         }
         
@@ -257,7 +250,7 @@ class PVMediaPlayer: NSObject {
             return
         }
         
-        let currentPlaybackTime = NSNumber(value: self.audioPlayer.progress)
+        let currentPlaybackTime = NSNumber(value: self.progress)
         let currentPlayerRate = NSNumber(value: self.playerSpeedRate.speedValue)
         
         if let podcastImageUrlString = item.podcastImageUrl, let podcastImageUrl = URL(string: podcastImageUrlString) {
@@ -310,7 +303,7 @@ class PVMediaPlayer: NSObject {
             return true
         }
         
-        if self.audioPlayer.progress > Double(endTime) {
+        if self.progress > Double(endTime) {
             return false
         } else {
             return true
@@ -336,7 +329,7 @@ class PVMediaPlayer: NSObject {
             episodeTitle = eTitle
         }
         
-        let currentPlaybackTime = NSNumber(value: self.audioPlayer.progress)
+        let currentPlaybackTime = NSNumber(value: self.progress)
         
         let podcastImage = Podcast.retrievePodcastImage(podcastImageURLString: item.podcastImageUrl, feedURLString: item.podcastFeedUrl, completion: { image in
             MPNowPlayingInfoCenter.default().nowPlayingInfo?[MPMediaItemPropertyArtwork] = MPMediaItemArtwork(image: image)

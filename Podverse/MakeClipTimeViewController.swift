@@ -57,8 +57,6 @@ class MakeClipTimeViewController: UIViewController, UITextFieldDelegate {
         
         self.progress.setThumbImage(#imageLiteral(resourceName: "SliderCurrentPosition"), for: .normal)
         
-        updateTime()
-        
         populatePlayerInfo()
         
         // prevent keyboard from displaying for startTimeInput and endTimeInput
@@ -104,6 +102,10 @@ class MakeClipTimeViewController: UIViewController, UITextFieldDelegate {
         if let startTime = self.startTime {
             self.pvMediaPlayer.seek(toTime: Double(startTime))
             self.pvMediaPlayer.play()
+        }
+        
+        if let endTime = self.endTime {
+            self.pvMediaPlayer.shouldStopAtEndTime = Int64(endTime)
         }
     }
     

@@ -38,9 +38,7 @@ class MediaPlayerViewController: PVViewController {
     @IBOutlet weak var endTimeFlagView: UIView!
     @IBOutlet weak var startTimeLeadingConstraint: NSLayoutConstraint!
     @IBOutlet weak var endTimeLeadingConstraint: NSLayoutConstraint!
-    
-    @IBOutlet weak var timeSkipForward: UIButton!
-    
+        
     override func viewDidLoad() {
         setupContainerView()
         
@@ -78,7 +76,7 @@ class MediaPlayerViewController: PVViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         navigationController?.interactivePopGestureRecognizer?.isEnabled = false
-        pvMediaPlayer.delegate = self
+        self.pvMediaPlayer.delegate = self
         togglePlayIcon()
         updateTime()
     }
@@ -123,6 +121,7 @@ class MediaPlayerViewController: PVViewController {
                     self.pvMediaPlayer.seek(toTime: newTime)
                     updateTime()
                 }
+                
                 setupTimer()
             default:
                 break
@@ -136,7 +135,7 @@ class MediaPlayerViewController: PVViewController {
     }
 
     @IBAction func timeJumpBackward(_ sender: Any) {
-        let newTime = self.audioPlayer.progress - 15
+        let newTime = self.pvMediaPlayer.progress - 15
         
         if newTime >= 14 {
             self.pvMediaPlayer.seek(toTime: newTime)
@@ -148,7 +147,7 @@ class MediaPlayerViewController: PVViewController {
     }
     
     @IBAction func timeJumpForward(_ sender: Any) {
-        let newTime = self.audioPlayer.progress + 15
+        let newTime = self.pvMediaPlayer.progress + 15
         self.pvMediaPlayer.seek(toTime: newTime)
         updateTime()
     }
@@ -330,35 +329,56 @@ class MediaPlayerViewController: PVViewController {
     
     func showShareMenu() {
         
-        let shareActions = UIAlertController(title: "Share", message: "What do you want to share?", preferredStyle: .actionSheet)
-        
-        shareActions.addAction(UIAlertAction(title: "Episode Link", style: .default, handler: { action in
-            if let item = self.playerHistoryManager.historyItems.first, let episodeMediaUrl = item.episodeMediaUrl {
-                let episodeUrlItem = [BASE_URL + "episodes/alias?mediaURL=" + episodeMediaUrl]
-                let activityViewController = UIActivityViewController(activityItems: episodeUrlItem, applicationActivities: nil)
-                activityViewController.popoverPresentationController?.sourceView = self.view
-                self.present(activityViewController, animated: true, completion: nil)
-            }
-        }))
-        
-        shareActions.addAction(UIAlertAction(title: "Clip Link", style: .default, handler: { action in
-            if let item = self.playerHistoryManager.historyItems.first, let mediaRefId = item.mediaRefId {
-                let mediaRefUrlItem = [BASE_URL + "clips/" + mediaRefId]
-                let activityViewController = UIActivityViewController(activityItems: mediaRefUrlItem, applicationActivities: nil)
-                activityViewController.popoverPresentationController?.sourceView = self.view
-                self.present(activityViewController, animated: true, completion: nil)
-            }
-        }))
+        let shareActions = UIAlertController(title: "Share", message: nil, preferredStyle: .actionSheet)
         
         if let item = self.playerHistoryManager.historyItems.first {
-            if item.mediaRefId == nil {
-                shareActions.actions[1].isEnabled = false
+            
+            // TODO:
+            // Official
+            // // Episode
+            // // Podcast
+            // Podverse
+            // // Clip
+            // // Episode
+            // // Podcast
+            
+            shareActions.addAction(UIAlertAction(title: "Episode Link", style: .default, handler: { action in
+                if let episodeMediaUrl = item.episodeMediaUrl {
+                    let episodeUrlItem = [BASE_URL + "episodes/alias?mediaURL=" + episodeMediaUrl]
+                    let activityVC = UIActivityViewController(activityItems: episodeUrlItem, applicationActivities: nil)
+                    activityVC.popoverPresentationController?.sourceView = self.view
+                    
+                    activityVC.completionWithItemsHandler = { activityType, success, items, error in
+                        if activityType == UIActivityType.copyToPasteboard {
+                            self.showToast(message: kLinkCopiedToast)
+                        }
+                    }
+                    
+                    self.present(activityVC, animated: true, completion: nil)
+                }
+            }))
+            
+            if let mediaRefId = item.mediaRefId {
+                shareActions.addAction(UIAlertAction(title: "Clip Link", style: .default, handler: { action in
+                    let mediaRefUrlItem = [BASE_URL + "clips/" + mediaRefId]
+                    let activityVC = UIActivityViewController(activityItems: mediaRefUrlItem, applicationActivities: nil)
+                    activityVC.popoverPresentationController?.sourceView = self.view
+                    
+                    activityVC.completionWithItemsHandler = { activityType, success, items, error in
+                        if activityType == UIActivityType.copyToPasteboard {
+                            self.showToast(message: kLinkCopiedToast)
+                        }
+                    }
+                    
+                    self.present(activityVC, animated: true, completion: nil)
+                }))
             }
+                        
+            shareActions.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+            
+            self.present(shareActions, animated: true, completion: nil)
+            
         }
-        
-        shareActions.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
-        
-        self.present(shareActions, animated: true, completion: nil)
         
     }
     
@@ -446,7 +466,7 @@ class MediaPlayerViewController: PVViewController {
             
             if let nowPlayingItem = playerHistoryManager.historyItems.first, let makeClipTimeViewController = segue.destination as? MakeClipTimeViewController {
                 makeClipTimeViewController.playerHistoryItem = nowPlayingItem
-                makeClipTimeViewController.startTime = Int(self.audioPlayer.progress)
+                makeClipTimeViewController.startTime = Int(self.pvMediaPlayer.progress)
             }
             
         }

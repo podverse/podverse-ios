@@ -11,6 +11,7 @@
 		30026D8D1F0B328000043D79 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30026D8C1F0B328000043D79 /* SettingsViewController.swift */; };
 		30026D8F1F0C2A6000043D79 /* DownloadTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30026D8E1F0C2A6000043D79 /* DownloadTableViewCell.swift */; };
 		300CF2561F305D53006C397D /* URL+Converters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 300CF2551F305D53006C397D /* URL+Converters.swift */; };
+		3011B7171FC41E9D000EAE10 /* UIViewController+ShowToast.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3011B7161FC41E9D000EAE10 /* UIViewController+ShowToast.swift */; };
 		301E0E541F96F9510062BEA4 /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 301E0E531F96F9510062BEA4 /* Utilities.swift */; };
 		301EA22B1F9DA2B6005A3DF2 /* FindBrowseGroupsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 301EA22A1F9DA2B6005A3DF2 /* FindBrowseGroupsViewController.swift */; };
 		301EA22D1F9DA371005A3DF2 /* FindBrowsePodcastsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 301EA22C1F9DA371005A3DF2 /* FindBrowsePodcastsViewController.swift */; };
@@ -123,6 +124,7 @@
 		30026D8C1F0B328000043D79 /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		30026D8E1F0C2A6000043D79 /* DownloadTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DownloadTableViewCell.swift; sourceTree = "<group>"; };
 		300CF2551F305D53006C397D /* URL+Converters.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "URL+Converters.swift"; sourceTree = "<group>"; };
+		3011B7161FC41E9D000EAE10 /* UIViewController+ShowToast.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+ShowToast.swift"; sourceTree = "<group>"; };
 		301E0E531F96F9510062BEA4 /* Utilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utilities.swift; sourceTree = "<group>"; };
 		301EA22A1F9DA2B6005A3DF2 /* FindBrowseGroupsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FindBrowseGroupsViewController.swift; sourceTree = "<group>"; };
 		301EA22C1F9DA371005A3DF2 /* FindBrowsePodcastsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FindBrowsePodcastsViewController.swift; sourceTree = "<group>"; };
@@ -491,6 +493,7 @@
 				E7B2A5A51E12D38200AAE036 /* String+CharacterManipulation.swift */,
 				E7B2A5AB1E162B8500AAE036 /* String+Formatters.swift */,
 				E7B2A59C1E123A4400AAE036 /* UIViewController+InternetRequiredAlert.swift */,
+				3011B7161FC41E9D000EAE10 /* UIViewController+ShowToast.swift */,
 				300CF2551F305D53006C397D /* URL+Converters.swift */,
 				E7B2A59A1E12111500AAE036 /* URL+RemoteSize.swift */,
 			);
@@ -855,6 +858,7 @@
 				30A56B1C1F4EB575007513F6 /* PlaylistDetailTableViewCell.swift in Sources */,
 				30EA456D1F68B48900573554 /* ClipEpisodeTableViewCell.swift in Sources */,
 				30A56B1A1F4C00DB007513F6 /* PlaylistTableViewCell.swift in Sources */,
+				3011B7171FC41E9D000EAE10 /* UIViewController+ShowToast.swift in Sources */,
 				30EA456F1F68B49700573554 /* ClipPodcastTableViewCell.swift in Sources */,
 				E7299F121F19368400AB3168 /* AboutPlayingItemViewController.swift in Sources */,
 				30026D8B1F0B322000043D79 /* AboutViewController.swift in Sources */,

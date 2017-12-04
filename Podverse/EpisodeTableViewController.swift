@@ -63,6 +63,9 @@ class EpisodeTableViewController: PVViewController {
         
         self.title = "Episode"
         
+        let share = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.action, target: self, action: #selector(showShareMenu))
+        navigationItem.rightBarButtonItems = [share]
+        
         setupNotificationListeners()
         
         self.activityIndicator.hidesWhenStopped = true
@@ -301,6 +304,50 @@ class EpisodeTableViewController: PVViewController {
     
     func loadNoClipsMessage() {
         loadNoDataView(message: Strings.Errors.noEpisodeClipsAvailable, buttonTitle: nil, buttonPressed: nil)
+    }
+    
+    func showShareMenu() {
+        
+        let shareActions = UIAlertController(title: "Share Episode", message: nil, preferredStyle: .actionSheet)
+        
+        if let mediaUrl = self.mediaUrl, let episode = Episode.episodeForMediaUrl(mediaUrlString: mediaUrl, managedObjectContext: self.moc) {
+            
+            if let link = episode.link {
+                shareActions.addAction(UIAlertAction(title: "Official Link", style: .default, handler: { action in
+                    let linkUrlItem = [link]
+                    let activityVC = UIActivityViewController(activityItems: linkUrlItem, applicationActivities: nil)
+                    activityVC.popoverPresentationController?.sourceView = self.view
+                    
+                    activityVC.completionWithItemsHandler = { activityType, success, items, error in
+                        if activityType == UIActivityType.copyToPasteboard {
+                            self.showToast(message: kLinkCopiedToast)
+                        }
+                    }
+                    
+                    self.present(activityVC, animated: true, completion: nil)
+                }))
+            }
+            
+            shareActions.addAction(UIAlertAction(title: "Podverse Link", style: .default, handler: { action in
+                let podverseLinkUrlItem = [BASE_URL + "episodes/alias?mediaUrl=" + mediaUrl]
+                let activityVC = UIActivityViewController(activityItems: podverseLinkUrlItem, applicationActivities: nil)
+                activityVC.popoverPresentationController?.sourceView = self.view
+                
+                activityVC.completionWithItemsHandler = { activityType, success, items, error in
+                    if activityType == UIActivityType.copyToPasteboard {
+                        self.showToast(message: kLinkCopiedToast)
+                    }
+                }
+                
+                self.present(activityVC, animated: true, completion: nil)
+            }))
+            
+            shareActions.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+            
+            self.present(shareActions, animated: true, completion: nil)
+            
+        }
+        
     }
     
     func showActivityIndicator() {
