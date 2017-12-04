@@ -49,6 +49,8 @@ class PodcastsTableViewController: PVViewController, AutoDownloadProtocol {
         refreshPodcastFeeds()
         loadPodcastData()
         
+        Podcast.syncSubscribedPodcastsWithServer(delegate:self)
+        
         addObservers()
     }
     
