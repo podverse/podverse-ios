@@ -101,10 +101,7 @@ class AudiosearchPodcast {
             
             if isSubscribed == true {
                 podcastActions.addAction(UIAlertAction(title: "Unsubscribe", style: .default, handler: { action in
-                    DispatchQueue.global().async {
-                        let privateMoc = CoreDataHelper.createMOCForThread(threadType: .privateThread)
-                        PVDeleter.deletePodcast(feedUrl: feedUrl, moc: privateMoc)
-                    }
+                    PVDeleter.deletePodcast(feedUrl: feedUrl)
                 }))
             } else {
                 podcastActions.addAction(UIAlertAction(title: "Subscribe", style: .default, handler: { action in

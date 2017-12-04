@@ -281,7 +281,7 @@ class PVMediaPlayer: NSObject {
         clearPlaybackPosition()
         
         if let nowPlayingItem = playerHistoryManager.historyItems.first, let episodeMediaUrl = nowPlayingItem.episodeMediaUrl, let episode = Episode.episodeForMediaUrl(mediaUrlString: episodeMediaUrl, managedObjectContext: moc) {
-            PVDeleter.deleteEpisode(mediaUrl: episode.mediaUrl, moc: self.moc, fileOnly: true, shouldCallNotificationMethod: true)
+            PVDeleter.deleteEpisode(mediaUrl: episode.mediaUrl, fileOnly: true, shouldCallNotificationMethod: true)
             nowPlayingItem.hasReachedEnd = true
             playerHistoryManager.addOrUpdateItem(item: nowPlayingItem)
         }
