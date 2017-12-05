@@ -163,7 +163,7 @@ class Podcast: NSManagedObject {
         }
         
     }
-    
+        
     // TODO: This end point should be optimized better.
     static func retrieveSubscribedPodcastFeedUrlsFromServer(completion: @escaping (_ podcasts: [String]?) -> Void) {
         

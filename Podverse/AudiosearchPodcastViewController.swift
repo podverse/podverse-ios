@@ -100,7 +100,7 @@ class AudiosearchPodcastViewController: PVViewController {
         let isSubscribed = PVSubscriber.checkIfSubscribed(feedUrlString: self.feedUrl)
         
         if isSubscribed {
-            PVDeleter.deletePodcast(feedUrl: self.feedUrl)
+            PVSubscriber.unsubscribeFromPodcast(feedUrlString: self.feedUrl)
         } else {
             DispatchQueue.global().async {
                 PVSubscriber.subscribeToPodcast(feedUrlString: self.feedUrl)
