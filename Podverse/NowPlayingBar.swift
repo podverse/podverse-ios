@@ -74,14 +74,18 @@ class NowPlayingBar:UIView {
             if self.audioPlayer.state == .stopped || self.audioPlayer.state == .paused {
                 self.activityIndicator.isHidden = true
                 self.playButton.setImage(UIImage(named:"play"), for: .normal)
+                self.playButton.tintColor = UIColor.black
                 self.playButton.isHidden = false
             } else if self.audioPlayer.state == .error {
                 self.activityIndicator.isHidden = true
-                self.playButton.setImage(UIImage(named:"AppIcon"), for: .normal)
+                self.playButton.setImage(UIImage(named:"playerror"), for: .normal)
+                // TODO: why doesn't this turn red? The playButton stays black for some reason. It works in MediaPlayerVC tho...
+                self.playButton.tintColor = UIColor.red
                 self.playButton.isHidden = false
             } else if self.audioPlayer.state == .playing && !self.pvMediaPlayer.shouldSetupClip {
                 self.activityIndicator.isHidden = true
                 self.playButton.setImage(UIImage(named:"pause"), for: .normal)
+                self.playButton.tintColor = UIColor.black
                 self.playButton.isHidden = false
             } else if self.audioPlayer.state == .buffering || self.pvMediaPlayer.shouldSetupClip {
                 self.activityIndicator.isHidden = false
@@ -89,6 +93,7 @@ class NowPlayingBar:UIView {
             } else {
                 self.activityIndicator.isHidden = true
                 self.playButton.setImage(UIImage(named:"play"), for: .normal)
+                self.playButton.tintColor = UIColor.black
                 self.playButton.isHidden = false
             }
         }

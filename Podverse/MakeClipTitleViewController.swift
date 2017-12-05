@@ -36,7 +36,7 @@ class MakeClipTitleViewController: UIViewController, UITextViewDelegate {
             self.visibilityButton.setTitle(VisibilityOptions.isPublic.text, for: .normal)
             self.isPublic = true
         }
-                
+        
         self.replayButton.layer.borderWidth = 1
         self.replayButton.layer.borderColor = UIColor.lightGray.cgColor
         
@@ -126,14 +126,17 @@ class MakeClipTitleViewController: UIViewController, UITextViewDelegate {
             if self.pvMediaPlayer.audioPlayer.state == .stopped || self.pvMediaPlayer.audioPlayer.state == .paused {
                 self.activityIndicator.isHidden = true
                 self.play.setImage(UIImage(named:"play"), for: .normal)
+                self.play.tintColor = UIColor.black
                 self.play.isHidden = false
             } else if self.pvMediaPlayer.audioPlayer.state == .error {
                 self.activityIndicator.isHidden = true
-                self.play.setImage(UIImage(named:"AppIcon"), for: .normal)
+                self.play.setImage(UIImage(named:"playerror"), for: .normal)
+                self.play.tintColor = UIColor.red
                 self.play.isHidden = false
             } else if self.pvMediaPlayer.audioPlayer.state == .playing && !self.pvMediaPlayer.shouldSetupClip {
                 self.activityIndicator.isHidden = true
                 self.play.setImage(UIImage(named:"pause"), for: .normal)
+                self.play.tintColor = UIColor.black
                 self.play.isHidden = false
             } else if self.pvMediaPlayer.audioPlayer.state == .buffering || self.pvMediaPlayer.shouldSetupClip {
                 self.activityIndicator.isHidden = false
@@ -141,6 +144,7 @@ class MakeClipTitleViewController: UIViewController, UITextViewDelegate {
             } else {
                 self.activityIndicator.isHidden = true
                 self.play.setImage(UIImage(named:"play"), for: .normal)
+                self.play.tintColor = UIColor.black
                 self.play.isHidden = false
             }
         }
