@@ -36,9 +36,7 @@ class MakeClipTitleViewController: UIViewController, UITextViewDelegate {
             self.visibilityButton.setTitle(VisibilityOptions.isPublic.text, for: .normal)
             self.isPublic = true
         }
-        
-        self.titleInput.becomeFirstResponder()
-        
+                
         self.replayButton.layer.borderWidth = 1
         self.replayButton.layer.borderColor = UIColor.lightGray.cgColor
         
