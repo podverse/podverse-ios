@@ -233,16 +233,29 @@ class MakeClipTimeViewController: UIViewController, UITextFieldDelegate {
     
     private func togglePlayIcon() {
         DispatchQueue.main.async {
-            if self.audioPlayer.state == STKAudioPlayerState.buffering {
-                self.activityIndicator.isHidden = false
-                self.play.isHidden = true
-            } else if self.audioPlayer.state == STKAudioPlayerState.playing {
+            if self.pvMediaPlayer.audioPlayer.state == .stopped || self.pvMediaPlayer.audioPlayer.state == .paused {
+                self.activityIndicator.isHidden = true
+                self.play.setImage(UIImage(named:"play"), for: .normal)
+                self.play.tintColor = UIColor.black
+                self.play.isHidden = false
+            } else if self.pvMediaPlayer.audioPlayer.state == .error {
+                self.activityIndicator.isHidden = true
+                self.play.setImage(UIImage(named:"playerror"), for: .normal)
+                // TODO: why doesn't this turn red? The play button stays black for some reason. It works in MakeClipTitleVC tho...
+                self.play.tintColor = UIColor.red
+                self.play.isHidden = false
+            } else if self.pvMediaPlayer.audioPlayer.state == .playing && !self.pvMediaPlayer.shouldSetupClip {
                 self.activityIndicator.isHidden = true
                 self.play.setImage(UIImage(named:"pause"), for: .normal)
+                self.play.tintColor = UIColor.black
                 self.play.isHidden = false
+            } else if self.pvMediaPlayer.audioPlayer.state == .buffering || self.pvMediaPlayer.shouldSetupClip {
+                self.activityIndicator.isHidden = false
+                self.play.isHidden = true
             } else {
                 self.activityIndicator.isHidden = true
                 self.play.setImage(UIImage(named:"play"), for: .normal)
+                self.play.tintColor = UIColor.black
                 self.play.isHidden = false
             }
         }
