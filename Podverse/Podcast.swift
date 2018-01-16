@@ -13,7 +13,6 @@ import SDWebImage
 import UIKit
 
 class Podcast: NSManagedObject {
-    @NSManaged public var audiosearchId: NSNumber?
     @NSManaged public var author: String?
     @NSManaged public var categories: String?
     @NSManaged public var feedUrl: String

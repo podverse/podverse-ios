@@ -53,8 +53,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         PVDownloader.shared.resumeDownloadingAllEpisodes()
         
-        AudioSearchClientSwift.getAudiosearchAccessToken()
-        
         return true
     }
 

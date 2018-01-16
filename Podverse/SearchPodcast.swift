@@ -1,5 +1,5 @@
 //
-//  AudiosearchPodcast.swift
+//  SearchPodcast.swift
 //  Podverse
 //
 //  Created by Creon on 12/24/16.
@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 
-class AudiosearchPodcast {
+class SearchPodcast {
     var id: Int64?
     var buzzScore: String?
     var categories: String?
@@ -21,8 +21,8 @@ class AudiosearchPodcast {
     var rssUrl: String?
     var title: String?
     
-    static func convertJSONToAudiosearchPodcast (_ json: AnyObject) -> AudiosearchPodcast? {
-        let podcast = AudiosearchPodcast()
+    static func convertJSONToSearchPodcast (_ json: AnyObject) -> SearchPodcast? {
+        let podcast = SearchPodcast()
         
         podcast.id = json["id"] as? Int64
         
@@ -65,22 +65,22 @@ class AudiosearchPodcast {
         return podcast
     }
     
-    static func retrievePodcastFromServer(id: Int64?, completion: @escaping (_ podcast:AudiosearchPodcast?) -> Void) {
+    static func retrievePodcastFromServer(id: Int64?, completion: @escaping (_ podcast:SearchPodcast?) -> Void) {
         
         if let id = id {
             
-            AudioSearchClientSwift.retrievePodcast(id: id, { serviceResponse in
-                
-                if let response = serviceResponse.0, let podcast = AudiosearchPodcast.convertJSONToAudiosearchPodcast(response) {
-                    completion(podcast)
-                }
-                
-                if let error = serviceResponse.1 {
-                    print(error.localizedDescription)
-                    completion(nil)
-                }
-                
-            })
+//            SearchClientSwift.retrievePodcast(id: id, { serviceResponse in
+//
+//                if let response = serviceResponse.0, let podcast = SearchPodcast.convertJSONToSearchPodcast(response) {
+//                    completion(podcast)
+//                }
+//
+//                if let error = serviceResponse.1 {
+//                    print(error.localizedDescription)
+//                    completion(nil)
+//                }
+//
+//            })
             
         } else {
             completion(nil)
@@ -88,7 +88,7 @@ class AudiosearchPodcast {
         
     }
     
-    static func showAudiosearchPodcastActions(podcast: AudiosearchPodcast, vc: UIViewController) {
+    static func showSearchPodcastActions(podcast: SearchPodcast, vc: UIViewController) {
         
         if let feedUrl = podcast.rssUrl {
             var isSubscribed = false
@@ -112,11 +112,11 @@ class AudiosearchPodcast {
             }
             
             podcastActions.addAction(UIAlertAction(title: "About", style: .default, handler: { action in
-                vc.performSegue(withIdentifier: "Show Audiosearch Podcast About", sender: nil)
+                vc.performSegue(withIdentifier: "Show Search Podcast About", sender: nil)
             }))
             
             podcastActions.addAction(UIAlertAction(title: "Clips", style: .default, handler: { action in
-                vc.performSegue(withIdentifier: "Show Audiosearch Podcast Clips", sender: nil)
+                vc.performSegue(withIdentifier: "Show Search Podcast Clips", sender: nil)
             }))
             
             podcastActions.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))

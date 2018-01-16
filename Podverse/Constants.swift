@@ -114,8 +114,6 @@ let TO_PLAYER_SEGUE_ID = "To Now Playing"
 let ErrorDomain = Bundle.main.bundleIdentifier!
 let CoreDataFailureCode = -9999
 
-let AudiosearchBaseUrl = URL(string: "https://www.audiosear.ch/api/")
-
 enum SortByOptions: String {
     case top = "top"
     case recent = "recent"
@@ -313,7 +311,7 @@ enum VisibilityOptions:String {
     }
 }
 
-enum AudiosearchPodcastFilter:String {
+enum SearchPodcastFilter:String {
     case about = "About"
     case clips = "Clips"
     
