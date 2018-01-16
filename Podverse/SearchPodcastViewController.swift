@@ -1,5 +1,5 @@
 //
-//  AudiosearchPodcastViewController.swift
+//  SearchPodcastViewController.swift
 //  Podverse
 //
 //  Created by Mitchell Downey on 10/21/17.
@@ -8,16 +8,16 @@
 
 import UIKit
 
-class AudiosearchPodcastViewController: PVViewController {
+class SearchPodcastViewController: PVViewController {
 
-    var audiosearchId:Int64?
+    var podverseId:Int64?
     var feedUrl:String?
     var clipsArray = [MediaRef]()
     var episodesArray = [Episode]()
-    var filterTypeOverride:AudiosearchPodcastFilter = .about
+    var filterTypeOverride:SearchPodcastFilter = .about
     let reachability = PVReachability.shared
     
-    var filterTypeSelected:AudiosearchPodcastFilter = .about {
+    var filterTypeSelected:SearchPodcastFilter = .about {
         didSet {
 //            self.resetClipQuery()
             self.tableViewHeader.filterTitle = self.filterTypeSelected.text
@@ -112,10 +112,10 @@ class AudiosearchPodcastViewController: PVViewController {
     }
     
     func loadPodcastData() {
-        if let id = self.audiosearchId {
+        if let id = self.podverseId {
             showPodcastHeaderActivity()
             
-            AudiosearchPodcast.retrievePodcastFromServer(id: id, completion:{ podcast in
+            SearchPodcast.retrievePodcastFromServer(id: id, completion:{ podcast in
                 self.loadPodcastHeader(podcast)
                 self.loadAbout(podcast)
             })
@@ -145,7 +145,7 @@ class AudiosearchPodcastViewController: PVViewController {
         self.headerActivityIndicator.stopAnimating()
     }
     
-    func loadPodcastHeader(_ podcast: AudiosearchPodcast?) {
+    func loadPodcastHeader(_ podcast: SearchPodcast?) {
         
         DispatchQueue.main.async {
             if let podcast = podcast {
@@ -165,7 +165,7 @@ class AudiosearchPodcastViewController: PVViewController {
     }
     
     
-    func loadAbout(_ podcast: AudiosearchPodcast?) {
+    func loadAbout(_ podcast: SearchPodcast?) {
         
         DispatchQueue.main.async {
             if let podcast = podcast {
@@ -312,7 +312,7 @@ class AudiosearchPodcastViewController: PVViewController {
     }
     
     func loadNoInternetMessage() {
-        loadNoDataView(message: Strings.Errors.noClipsInternet, buttonTitle: "Retry", buttonPressed: #selector(AudiosearchPodcastViewController.retrieveClips))
+        loadNoDataView(message: Strings.Errors.noClipsInternet, buttonTitle: "Retry", buttonPressed: #selector(SearchPodcastViewController.retrieveClips))
     }
     
     func loadNoClipsMessage() {
@@ -339,7 +339,7 @@ class AudiosearchPodcastViewController: PVViewController {
     
 }
 
-extension AudiosearchPodcastViewController:UIWebViewDelegate {
+extension SearchPodcastViewController:UIWebViewDelegate {
     func webView(_ webView: UIWebView, shouldStartLoadWith request: URLRequest, navigationType: UIWebViewNavigationType) -> Bool {
         if navigationType == UIWebViewNavigationType.linkClicked {
             if let url = request.url {
@@ -351,7 +351,7 @@ extension AudiosearchPodcastViewController:UIWebViewDelegate {
     }
 }
 
-extension AudiosearchPodcastViewController: UITableViewDataSource, UITableViewDelegate {
+extension SearchPodcastViewController: UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return self.clipsArray.count
@@ -400,17 +400,17 @@ extension AudiosearchPodcastViewController: UITableViewDataSource, UITableViewDe
     
 }
 
-extension AudiosearchPodcastViewController:FilterSelectionProtocol {
+extension SearchPodcastViewController:FilterSelectionProtocol {
     func filterButtonTapped() {
         
         let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         
-        alert.addAction(UIAlertAction(title: AudiosearchPodcastFilter.about.text, style: .default, handler: { action in
+        alert.addAction(UIAlertAction(title: SearchPodcastFilter.about.text, style: .default, handler: { action in
             self.filterTypeSelected = .about
             self.showAbout()
         }))
         
-        alert.addAction(UIAlertAction(title: AudiosearchPodcastFilter.clips.text, style: .default, handler: { action in
+        alert.addAction(UIAlertAction(title: SearchPodcastFilter.clips.text, style: .default, handler: { action in
             self.filterTypeSelected = .clips
             self.retrieveClips()
         }))

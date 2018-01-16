@@ -947,8 +947,8 @@
                         <outlet property="activityView" destination="oFP-8F-80U" id="92k-9m-JV0"/>
                         <outlet property="searchBar" destination="kfg-1h-FIy" id="BUe-uI-zk2"/>
                         <outlet property="tableView" destination="DkR-3F-oNH" id="DgV-kd-djn"/>
-                        <segue destination="1hU-oK-T3A" kind="show" identifier="Show Audiosearch Podcast About" id="UX7-d9-2wT"/>
-                        <segue destination="1hU-oK-T3A" kind="show" identifier="Show Audiosearch Podcast Clips" id="zre-Be-w3d"/>
+                        <segue destination="1hU-oK-T3A" kind="show" identifier="Show Search Podcast About" id="UX7-d9-2wT"/>
+                        <segue destination="1hU-oK-T3A" kind="show" identifier="Show Search Podcast Clips" id="zre-Be-w3d"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="5Om-Qs-rRw" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -1090,18 +1090,18 @@
                     </view>
                     <connections>
                         <outlet property="tableView" destination="Hqi-My-7gW" id="tci-jQ-Cd7"/>
-                        <segue destination="1hU-oK-T3A" kind="show" identifier="Show Audiosearch Podcast About" id="7y1-hz-W8U"/>
-                        <segue destination="1hU-oK-T3A" kind="show" identifier="Show Audiosearch Podcast Clips" id="SU9-3d-tZS"/>
+                        <segue destination="1hU-oK-T3A" kind="show" identifier="Show Search Podcast About" id="7y1-hz-W8U"/>
+                        <segue destination="1hU-oK-T3A" kind="show" identifier="Show Search Podcast Clips" id="SU9-3d-tZS"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Wjj-Rr-JT4" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="3077.5999999999999" y="-54.422788605697157"/>
         </scene>
-        <!--Audiosearch Podcast View Controller-->
+        <!--Search Podcast View Controller-->
         <scene sceneID="Aqj-WK-IPL">
             <objects>
-                <viewController id="1hU-oK-T3A" customClass="AudiosearchPodcastViewController" customModule="Podverse" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="1hU-oK-T3A" customClass="SearchPodcastViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="WcY-6x-vc2"/>
                         <viewControllerLayoutGuide type="bottom" id="bPX-9R-nmu"/>
@@ -3347,6 +3347,6 @@
         <image name="tab-more" width="25" height="25"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="SU9-3d-tZS"/>
+        <segue reference="7y1-hz-W8U"/>
     </inferredMetricsTieBreakers>
 </document>

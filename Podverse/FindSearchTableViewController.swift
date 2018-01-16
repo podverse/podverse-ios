@@ -10,7 +10,7 @@ import UIKit
 
 class FindSearchTableViewController: PVViewController {
     
-    var searchResults = [AudiosearchPodcast]()
+    var searchResults = [SearchPodcast]()
 
     @IBOutlet weak var activityView: UIView!
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
@@ -103,25 +103,25 @@ extension FindSearchTableViewController: UITableViewDataSource, UITableViewDeleg
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let podcast = self.searchResults[indexPath.row]
-        AudiosearchPodcast.showAudiosearchPodcastActions(podcast: podcast, vc: self)
+        SearchPodcast.showSearchPodcastActions(podcast: podcast, vc: self)
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == "Show Audiosearch Podcast About" {
-            if let audiosearchPodcastVC = segue.destination as? AudiosearchPodcastViewController, let indexPath = self.tableView.indexPathForSelectedRow, indexPath.row < self.searchResults.count {
+        if segue.identifier == "Show Search Podcast About" {
+            if let searchPodcastVC = segue.destination as? SearchPodcastViewController, let indexPath = self.tableView.indexPathForSelectedRow, indexPath.row < self.searchResults.count {
                 let podcast = searchResults[indexPath.row]
-                audiosearchPodcastVC.audiosearchId = podcast.id
-                audiosearchPodcastVC.feedUrl = podcast.rssUrl
-                audiosearchPodcastVC.filterTypeOverride = .about
+                searchPodcastVC.podverseId = podcast.id
+                searchPodcastVC.feedUrl = podcast.rssUrl
+                searchPodcastVC.filterTypeOverride = .about
             }
         }
         
-        if segue.identifier == "Show Audiosearch Podcast Clips" {
-            if let audiosearchPodcastVC = segue.destination as? AudiosearchPodcastViewController, let indexPath = self.tableView.indexPathForSelectedRow, indexPath.row < self.searchResults.count {
+        if segue.identifier == "Show Search Podcast Clips" {
+            if let searchPodcastVC = segue.destination as? SearchPodcastViewController, let indexPath = self.tableView.indexPathForSelectedRow, indexPath.row < self.searchResults.count {
                 let podcast = searchResults[indexPath.row]
-                audiosearchPodcastVC.audiosearchId = podcast.id
-                audiosearchPodcastVC.feedUrl = podcast.rssUrl
-                audiosearchPodcastVC.filterTypeOverride = .clips
+                searchPodcastVC.podverseId = podcast.id
+                searchPodcastVC.feedUrl = podcast.rssUrl
+                searchPodcastVC.filterTypeOverride = .clips
             }
         }
     }
@@ -138,44 +138,44 @@ extension FindSearchTableViewController: UISearchBarDelegate {
         
         self.searchResults.removeAll()
         
-        if let text = searchBar.text {
-            
-            guard checkForConnectivity() else {
-                loadNoInternetMessage()
-                return
-            }
-            
-            showActivityIndicator()
-            
-            AudioSearchClientSwift.search(query: text, params: nil, type: "shows") { (serviceResponse) in
-                
-                if let response = serviceResponse.0 {
-                    if let results = response["results"] as? [AnyObject] {
-                        for result in results {
-                            if let searchResult = AudiosearchPodcast.convertJSONToAudiosearchPodcast(result) {
-                                self.searchResults.append(searchResult)
-                            }
-                        }
-                    }
-                }
-                
-                if let error = serviceResponse.1 {
-                    print(error.localizedDescription)
-                }
-                
-                DispatchQueue.main.async {
-                    self.hideActivityIndicator()
-                    
-                    if self.searchResults.isEmpty {
-                        self.loadNoResultsMessage()
-                    } else {
-                        self.tableView.reloadData()
-                        self.tableView.isHidden = false
-                    }
-                    
-                }
-            }
-        }
+//        if let text = searchBar.text {
+//
+//            guard checkForConnectivity() else {
+//                loadNoInternetMessage()
+//                return
+//            }
+//
+//            showActivityIndicator()
+//
+//            AudioSearchClientSwift.search(query: text, params: nil, type: "shows") { (serviceResponse) in
+//
+//                if let response = serviceResponse.0 {
+//                    if let results = response["results"] as? [AnyObject] {
+//                        for result in results {
+//                            if let searchResult = AudiosearchPodcast.convertJSONToAudiosearchPodcast(result) {
+//                                self.searchResults.append(searchResult)
+//                            }
+//                        }
+//                    }
+//                }
+//
+//                if let error = serviceResponse.1 {
+//                    print(error.localizedDescription)
+//                }
+//
+//                DispatchQueue.main.async {
+//                    self.hideActivityIndicator()
+//
+//                    if self.searchResults.isEmpty {
+//                        self.loadNoResultsMessage()
+//                    } else {
+//                        self.tableView.reloadData()
+//                        self.tableView.isHidden = false
+//                    }
+//
+//                }
+//            }
+//        }
         
     }
 }
