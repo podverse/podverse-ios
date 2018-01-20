@@ -97,7 +97,7 @@ extension FindBrowsePodcastsViewController: UITableViewDataSource, UITableViewDe
         cell.hosts.text = podcast.hosts
         cell.categories.text = podcast.categories
 
-        cell.pvImage.image = Podcast.retrievePodcastImage(podcastImageURLString: podcast.imageThumbUrl, feedURLString: podcast.rssUrl, completion: { image in
+        cell.pvImage.image = Podcast.retrievePodcastImage(podcastImageURLString: podcast.imageThumbUrl, feedURLString: nil, completion: { image in
             cell.pvImage.image = image
         })
         
@@ -105,27 +105,17 @@ extension FindBrowsePodcastsViewController: UITableViewDataSource, UITableViewDe
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let podcast = self.podcasts[indexPath.row]
-        SearchPodcast.showSearchPodcastActions(podcast: podcast, vc: self)
+        self.performSegue(withIdentifier: "Show Search Podcast", sender: nil)
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         
-        if segue.identifier == "Show Search Podcast About" {
+        if segue.identifier == "Show Search Podcast" {
             if let searchPodcastVC = segue.destination as? SearchPodcastViewController, let indexPath = self.tableView.indexPathForSelectedRow, indexPath.row < self.podcasts.count {
                 let podcast = podcasts[indexPath.row]
                 searchPodcastVC.id = podcast.id
-                searchPodcastVC.feedUrl = podcast.rssUrl
+                searchPodcastVC.feedUrl = podcast.feedUrl
                 searchPodcastVC.filterTypeOverride = .about
-            }
-        }
-        
-        if segue.identifier == "Show Search Podcast Clips" {
-            if let searchPodcastVC = segue.destination as? SearchPodcastViewController, let indexPath = self.tableView.indexPathForSelectedRow, indexPath.row < self.podcasts.count {
-                let podcast = podcasts[indexPath.row]
-                searchPodcastVC.id = podcast.id
-                searchPodcastVC.feedUrl = podcast.rssUrl
-                searchPodcastVC.filterTypeOverride = .clips
             }
         }
         

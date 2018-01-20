@@ -10,17 +10,17 @@ import Foundation
 import UIKit
 
 class SearchPodcast {
-    var id: String?
     var buzzScore: String?
     var categories: String?
     var description: String?
+    var feedUrl: String?
     var hosts: String?
+    var id: String?
     var imageThumbUrl: String?
     var imageUrl: String?
     var lastEpisodeTitle: String?
     var lastPubDate: String?
     var network: String?
-    var rssUrl: String?
     var title: String?
     
     static func convertJSONToSearchPodcast (_ json: [String:Any]) -> SearchPodcast {
@@ -70,18 +70,40 @@ class SearchPodcast {
         
         if let id = id {
             
-//            SearchClientSwift.retrievePodcast(id: id, { serviceResponse in
-//
-//                if let response = serviceResponse.0, let podcast = SearchPodcast.convertJSONToSearchPodcast(response) {
-//                    completion(podcast)
-//                }
-//
-//                if let error = serviceResponse.1 {
-//                    print(error.localizedDescription)
-//                    completion(nil)
-//                }
-//
-//            })
+            if let url = URL(string: BASE_URL + "api/podcasts?id=" + id) {
+                var request = URLRequest(url: url, cachePolicy: NSURLRequest.CachePolicy.reloadIgnoringLocalAndRemoteCacheData, timeoutInterval: 60)
+                request.httpMethod = "GET"
+                
+                let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                    
+                    guard error == nil else {
+                        DispatchQueue.main.async {
+                            completion(nil)
+                        }
+                        return
+                    }
+                    
+                    if let data = data {
+                        do {
+                            var searchPodcast = SearchPodcast()
+                            
+                            if let podcastJSON = try JSONSerialization.jsonObject(with: data, options: []) as? [String:Any] {
+                                searchPodcast = convertJSONToSearchPodcast(podcastJSON)
+                            }
+                            
+                            DispatchQueue.main.async {
+                                completion(searchPodcast)
+                            }
+                            
+                        } catch {
+                            print("Error: " + error.localizedDescription)
+                        }
+                    }
+                    
+                }
+                
+                task.resume()
+            }
             
         } else {
             completion(nil)
@@ -90,84 +112,47 @@ class SearchPodcast {
     }
     
     static func searchPodcastsByTitle(title: String, completion: @escaping (_ podcasts: [SearchPodcast]?) -> Void) {
-        
-        if let url = URL(string: BASE_URL + "podcasts?title=" + title) {
-            
-            var request = URLRequest(url: url, cachePolicy: NSURLRequest.CachePolicy.reloadIgnoringLocalAndRemoteCacheData, timeoutInterval: 60)
-            request.httpMethod = "GET"
-            
-            let task = URLSession.shared.dataTask(with: request) { data, response, error in
+        if let encodedTitle = title.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed) {
+            if let url = URL(string: BASE_URL + "podcasts?title=" + encodedTitle) {
                 
-                guard error == nil else {
-                    DispatchQueue.main.async {
-                        completion([])
-                    }
-                    return
-                }
+                var request = URLRequest(url: url, cachePolicy: NSURLRequest.CachePolicy.reloadIgnoringLocalAndRemoteCacheData, timeoutInterval: 60)
+                request.httpMethod = "GET"
                 
-                if let data = data {
-                    do {
-                        var searchPodcasts = [SearchPodcast]()
-                        
-                        if let podcastsJSON = try JSONSerialization.jsonObject(with: data, options: []) as? [[String:Any]] {
-                            for item in podcastsJSON {
-                                let searchPodcast = convertJSONToSearchPodcast(item)
-                                searchPodcasts.append(searchPodcast)
-                            }
-                        }
-                        
+                let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                    
+                    guard error == nil else {
                         DispatchQueue.main.async {
-                            completion(searchPodcasts)
+                            completion([])
                         }
-                        
-                    } catch {
-                        print("Error: " + error.localizedDescription)
+                        return
                     }
+                    
+                    if let data = data {
+                        do {
+                            var searchPodcasts = [SearchPodcast]()
+                            
+                            if let podcastsJSON = try JSONSerialization.jsonObject(with: data, options: []) as? [[String:Any]] {
+                                for item in podcastsJSON {
+                                    let searchPodcast = convertJSONToSearchPodcast(item)
+                                    searchPodcasts.append(searchPodcast)
+                                }
+                            }
+                            
+                            DispatchQueue.main.async {
+                                completion(searchPodcasts)
+                            }
+                            
+                        } catch {
+                            print("Error: " + error.localizedDescription)
+                        }
+                    }
+                    
                 }
                 
+                task.resume()
+                
             }
-            
-            task.resume()
-            
-        }
-        
-    }
-    
-    static func showSearchPodcastActions(podcast: SearchPodcast, vc: UIViewController) {
-        
-        if let feedUrl = podcast.rssUrl {
-            var isSubscribed = false
-            
-            if let _ = Podcast.podcastForFeedUrl(feedUrlString: feedUrl) {
-                isSubscribed = true
-            }
-            
-            let podcastActions = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
-            
-            if isSubscribed == true {
-                podcastActions.addAction(UIAlertAction(title: "Unsubscribe", style: .default, handler: { action in
-                    PVSubscriber.unsubscribeFromPodcast(feedUrlString: feedUrl)
-                }))
-            } else {
-                podcastActions.addAction(UIAlertAction(title: "Subscribe", style: .default, handler: { action in
-                    DispatchQueue.global().async {
-                        PVSubscriber.subscribeToPodcast(feedUrlString: feedUrl)
-                    }
-                }))
-            }
-            
-            podcastActions.addAction(UIAlertAction(title: "About", style: .default, handler: { action in
-                vc.performSegue(withIdentifier: "Show Search Podcast About", sender: nil)
-            }))
-            
-            podcastActions.addAction(UIAlertAction(title: "Clips", style: .default, handler: { action in
-                vc.performSegue(withIdentifier: "Show Search Podcast Clips", sender: nil)
-            }))
-            
-            podcastActions.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
-            
-            vc.present(podcastActions, animated: true, completion: nil)
         }
     }
-    
+        
 }

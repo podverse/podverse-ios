@@ -102,26 +102,14 @@ extension FindSearchTableViewController: UITableViewDataSource, UITableViewDeleg
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let podcast = self.searchResults[indexPath.row]
-        SearchPodcast.showSearchPodcastActions(podcast: podcast, vc: self)
+        self.performSegue(withIdentifier: "Show Search Podcast", sender: nil)
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == "Show Search Podcast About" {
+        if segue.identifier == "Show Search Podcast" {
             if let searchPodcastVC = segue.destination as? SearchPodcastViewController, let indexPath = self.tableView.indexPathForSelectedRow, indexPath.row < self.searchResults.count {
                 let podcast = searchResults[indexPath.row]
                 searchPodcastVC.id = podcast.id
-                searchPodcastVC.feedUrl = podcast.rssUrl
-                searchPodcastVC.filterTypeOverride = .about
-            }
-        }
-        
-        if segue.identifier == "Show Search Podcast Clips" {
-            if let searchPodcastVC = segue.destination as? SearchPodcastViewController, let indexPath = self.tableView.indexPathForSelectedRow, indexPath.row < self.searchResults.count {
-                let podcast = searchResults[indexPath.row]
-                searchPodcastVC.id = podcast.id
-                searchPodcastVC.feedUrl = podcast.rssUrl
-                searchPodcastVC.filterTypeOverride = .clips
             }
         }
     }
