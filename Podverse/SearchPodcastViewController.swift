@@ -10,7 +10,7 @@ import UIKit
 
 class SearchPodcastViewController: PVViewController {
 
-    var podverseId:Int64?
+    var id:String?
     var feedUrl:String?
     var clipsArray = [MediaRef]()
     var episodesArray = [Episode]()
@@ -112,7 +112,7 @@ class SearchPodcastViewController: PVViewController {
     }
     
     func loadPodcastData() {
-        if let id = self.podverseId {
+        if let id = self.id {
             showPodcastHeaderActivity()
             
             SearchPodcast.retrievePodcastFromServer(id: id, completion:{ podcast in
