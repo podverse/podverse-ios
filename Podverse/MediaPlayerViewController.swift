@@ -206,14 +206,17 @@ class MediaPlayerViewController: PVViewController {
             if self.audioPlayer.state == .stopped || self.audioPlayer.state == .paused {
                 self.activityIndicator.isHidden = true
                 self.play.setImage(UIImage(named:"play"), for: .normal)
+                self.play.tintColor = UIColor.white
                 self.play.isHidden = false
             } else if self.audioPlayer.state == .error {
                 self.activityIndicator.isHidden = true
-                self.play.setImage(UIImage(named:"AppIcon"), for: .normal)
+                self.play.setImage(UIImage(named:"playerror"), for: .normal)
+                self.play.tintColor = UIColor.red
                 self.play.isHidden = false
             } else if self.audioPlayer.state == .playing && !self.pvMediaPlayer.shouldSetupClip {
                 self.activityIndicator.isHidden = true
                 self.play.setImage(UIImage(named:"pause"), for: .normal)
+                self.play.tintColor = UIColor.white
                 self.play.isHidden = false
             } else if self.audioPlayer.state == .buffering || self.pvMediaPlayer.shouldSetupClip {
                 self.activityIndicator.isHidden = false
@@ -221,6 +224,7 @@ class MediaPlayerViewController: PVViewController {
             } else {
                 self.activityIndicator.isHidden = true
                 self.play.setImage(UIImage(named:"play"), for: .normal)
+                self.play.tintColor = UIColor.white
                 self.play.isHidden = false
             }
         }
