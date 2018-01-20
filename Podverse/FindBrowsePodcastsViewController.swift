@@ -94,7 +94,7 @@ extension FindBrowsePodcastsViewController: UITableViewDataSource, UITableViewDe
         let podcast = self.podcasts[indexPath.row]
 
         cell.title.text = podcast.title
-        cell.network.text = podcast.network
+        cell.hosts.text = podcast.hosts
         cell.categories.text = podcast.categories
 
         cell.pvImage.image = Podcast.retrievePodcastImage(podcastImageURLString: podcast.imageThumbUrl, feedURLString: podcast.rssUrl, completion: { image in
@@ -114,7 +114,7 @@ extension FindBrowsePodcastsViewController: UITableViewDataSource, UITableViewDe
         if segue.identifier == "Show Search Podcast About" {
             if let searchPodcastVC = segue.destination as? SearchPodcastViewController, let indexPath = self.tableView.indexPathForSelectedRow, indexPath.row < self.podcasts.count {
                 let podcast = podcasts[indexPath.row]
-                searchPodcastVC.podverseId = podcast.id
+                searchPodcastVC.id = podcast.id
                 searchPodcastVC.feedUrl = podcast.rssUrl
                 searchPodcastVC.filterTypeOverride = .about
             }
@@ -123,7 +123,7 @@ extension FindBrowsePodcastsViewController: UITableViewDataSource, UITableViewDe
         if segue.identifier == "Show Search Podcast Clips" {
             if let searchPodcastVC = segue.destination as? SearchPodcastViewController, let indexPath = self.tableView.indexPathForSelectedRow, indexPath.row < self.podcasts.count {
                 let podcast = podcasts[indexPath.row]
-                searchPodcastVC.podverseId = podcast.id
+                searchPodcastVC.id = podcast.id
                 searchPodcastVC.feedUrl = podcast.rssUrl
                 searchPodcastVC.filterTypeOverride = .clips
             }

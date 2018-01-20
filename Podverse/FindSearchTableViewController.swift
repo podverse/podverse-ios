@@ -93,10 +93,10 @@ extension FindSearchTableViewController: UITableViewDataSource, UITableViewDeleg
         let podcast = self.searchResults[indexPath.row]
         
         cell.title.text = podcast.title
-        cell.network.text = podcast.network
+        cell.hosts.text = podcast.hosts
         cell.categories.text = podcast.categories
         
-        cell.pvImage.sd_setImage(with: URL(string: podcast.imageThumbUrl ?? ""), placeholderImage: #imageLiteral(resourceName: "PodverseIcon"))
+        cell.pvImage.sd_setImage(with: URL(string: podcast.imageUrl ?? ""), placeholderImage: #imageLiteral(resourceName: "PodverseIcon"))
         
         return cell
     }
@@ -110,7 +110,7 @@ extension FindSearchTableViewController: UITableViewDataSource, UITableViewDeleg
         if segue.identifier == "Show Search Podcast About" {
             if let searchPodcastVC = segue.destination as? SearchPodcastViewController, let indexPath = self.tableView.indexPathForSelectedRow, indexPath.row < self.searchResults.count {
                 let podcast = searchResults[indexPath.row]
-                searchPodcastVC.podverseId = podcast.id
+                searchPodcastVC.id = podcast.id
                 searchPodcastVC.feedUrl = podcast.rssUrl
                 searchPodcastVC.filterTypeOverride = .about
             }
@@ -119,7 +119,7 @@ extension FindSearchTableViewController: UITableViewDataSource, UITableViewDeleg
         if segue.identifier == "Show Search Podcast Clips" {
             if let searchPodcastVC = segue.destination as? SearchPodcastViewController, let indexPath = self.tableView.indexPathForSelectedRow, indexPath.row < self.searchResults.count {
                 let podcast = searchResults[indexPath.row]
-                searchPodcastVC.podverseId = podcast.id
+                searchPodcastVC.id = podcast.id
                 searchPodcastVC.feedUrl = podcast.rssUrl
                 searchPodcastVC.filterTypeOverride = .clips
             }
@@ -138,44 +138,34 @@ extension FindSearchTableViewController: UISearchBarDelegate {
         
         self.searchResults.removeAll()
         
-//        if let text = searchBar.text {
-//
-//            guard checkForConnectivity() else {
-//                loadNoInternetMessage()
-//                return
-//            }
-//
-//            showActivityIndicator()
-//
-//            AudioSearchClientSwift.search(query: text, params: nil, type: "shows") { (serviceResponse) in
-//
-//                if let response = serviceResponse.0 {
-//                    if let results = response["results"] as? [AnyObject] {
-//                        for result in results {
-//                            if let searchResult = AudiosearchPodcast.convertJSONToAudiosearchPodcast(result) {
-//                                self.searchResults.append(searchResult)
-//                            }
-//                        }
-//                    }
-//                }
-//
-//                if let error = serviceResponse.1 {
-//                    print(error.localizedDescription)
-//                }
-//
-//                DispatchQueue.main.async {
-//                    self.hideActivityIndicator()
-//
-//                    if self.searchResults.isEmpty {
-//                        self.loadNoResultsMessage()
-//                    } else {
-//                        self.tableView.reloadData()
-//                        self.tableView.isHidden = false
-//                    }
-//
-//                }
-//            }
-//        }
+        if let text = searchBar.text {
+            
+            guard checkForConnectivity() else {
+                loadNoInternetMessage()
+                return
+            }
+            
+            showActivityIndicator()
+            
+            SearchPodcast.searchPodcastsByTitle(title: text) { searchPodcasts in
+                if let searchPodcasts = searchPodcasts {
+                    self.searchResults = searchPodcasts
+                }
+                
+                DispatchQueue.main.async {
+                    self.hideActivityIndicator()
+
+                    if self.searchResults.isEmpty {
+                        self.loadNoResultsMessage()
+                    } else {
+                        self.tableView.reloadData()
+                        self.tableView.isHidden = false
+                    }
+
+                }
+            }
+            
+        }
         
     }
 }

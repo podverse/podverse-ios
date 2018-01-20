@@ -14,7 +14,7 @@ class FindTableViewController: PVViewController {
     
     let reachability = PVReachability.shared
     
-    let findSearchArray = ["Search", "Add Podcast by RSS", "Browse by Category", "Browse by Network"]
+    let findSearchArray = ["Search", "Add Podcast by RSS"]
     
     var podcastVC:PodcastsTableViewController? {
         get {
