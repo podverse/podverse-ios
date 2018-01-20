@@ -946,8 +946,7 @@
                         <outlet property="activityView" destination="oFP-8F-80U" id="92k-9m-JV0"/>
                         <outlet property="searchBar" destination="kfg-1h-FIy" id="BUe-uI-zk2"/>
                         <outlet property="tableView" destination="DkR-3F-oNH" id="DgV-kd-djn"/>
-                        <segue destination="1hU-oK-T3A" kind="show" identifier="Show Search Podcast About" id="UX7-d9-2wT"/>
-                        <segue destination="1hU-oK-T3A" kind="show" identifier="Show Search Podcast Clips" id="zre-Be-w3d"/>
+                        <segue destination="1hU-oK-T3A" kind="show" identifier="Show Search Podcast" id="UX7-d9-2wT"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="5Om-Qs-rRw" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -1000,7 +999,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="IJw-zx-F3i" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2148" y="-54.422788605697157"/>
+            <point key="canvasLocation" x="2148" y="94"/>
         </scene>
         <!--Find Browse Podcasts View Controller-->
         <scene sceneID="1zK-zc-Mut">
@@ -1044,7 +1043,7 @@
                                                     <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Network" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="w5O-qu-ova">
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Hosts" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="w5O-qu-ova">
                                                     <rect key="frame" x="108" y="46.5" width="252" height="17"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                     <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
@@ -1089,18 +1088,17 @@
                     </view>
                     <connections>
                         <outlet property="tableView" destination="Hqi-My-7gW" id="tci-jQ-Cd7"/>
-                        <segue destination="1hU-oK-T3A" kind="show" identifier="Show Search Podcast About" id="7y1-hz-W8U"/>
-                        <segue destination="1hU-oK-T3A" kind="show" identifier="Show Search Podcast Clips" id="SU9-3d-tZS"/>
+                        <segue destination="1hU-oK-T3A" kind="show" identifier="Show Search Podcast" id="7y1-hz-W8U"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Wjj-Rr-JT4" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3077.5999999999999" y="-54.422788605697157"/>
+            <point key="canvasLocation" x="3078" y="94"/>
         </scene>
         <!--Search Podcast View Controller-->
         <scene sceneID="Aqj-WK-IPL">
             <objects>
-                <viewController id="1hU-oK-T3A" customClass="SearchPodcastViewController" sceneMemberID="viewController">
+                <viewController id="1hU-oK-T3A" customClass="SearchPodcastViewController" customModule="Podverse" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="WcY-6x-vc2"/>
                         <viewControllerLayoutGuide type="bottom" id="bPX-9R-nmu"/>
@@ -1184,27 +1182,27 @@
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="BVR-fu-lde">
                                 <rect key="frame" x="0.0" y="204" width="375" height="414"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                <view key="tableFooterView" contentMode="scaleToFill" id="4fn-Xh-cjW">
+                                <view key="tableFooterView" contentMode="scaleToFill" id="woo-EI-Abo">
                                     <rect key="frame" x="0.0" y="145" width="375" height="44"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                     <subviews>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="End of Clips" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="o4s-jR-KJ5">
-                                            <rect key="frame" x="141.5" y="12" width="92" height="21"/>
-                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="End of Clips" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="njY-8J-svZ">
+                                            <rect key="frame" x="144" y="12" width="87" height="19.5"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="16"/>
                                             <nil key="textColor"/>
                                             <nil key="highlightedColor"/>
                                         </label>
-                                        <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="ZSC-yK-aCX">
-                                            <rect key="frame" x="169" y="3.5" width="37" height="37"/>
-                                            <color key="color" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                                        <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="JiX-b5-AEL">
+                                            <rect key="frame" x="169" y="3" width="37" height="37"/>
+                                            <color key="color" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         </activityIndicatorView>
                                     </subviews>
-                                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                    <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     <constraints>
-                                        <constraint firstItem="o4s-jR-KJ5" firstAttribute="centerY" secondItem="4fn-Xh-cjW" secondAttribute="centerY" id="CBx-of-MiO"/>
-                                        <constraint firstItem="ZSC-yK-aCX" firstAttribute="centerX" secondItem="4fn-Xh-cjW" secondAttribute="centerX" id="MTd-ki-sdA"/>
-                                        <constraint firstItem="o4s-jR-KJ5" firstAttribute="centerX" secondItem="4fn-Xh-cjW" secondAttribute="centerX" id="jRx-Sp-sxB"/>
-                                        <constraint firstItem="ZSC-yK-aCX" firstAttribute="centerY" secondItem="4fn-Xh-cjW" secondAttribute="centerY" id="nKl-iW-XZb"/>
+                                        <constraint firstItem="JiX-b5-AEL" firstAttribute="centerX" secondItem="woo-EI-Abo" secondAttribute="centerX" id="8wN-TC-Ynf"/>
+                                        <constraint firstItem="JiX-b5-AEL" firstAttribute="top" secondItem="woo-EI-Abo" secondAttribute="top" constant="3" id="DsO-82-Y4y"/>
+                                        <constraint firstItem="njY-8J-svZ" firstAttribute="centerX" secondItem="woo-EI-Abo" secondAttribute="centerX" id="FZQ-Ne-04S"/>
+                                        <constraint firstItem="njY-8J-svZ" firstAttribute="top" secondItem="woo-EI-Abo" secondAttribute="top" constant="12" id="Ssy-7Q-gVj"/>
                                     </constraints>
                                 </view>
                                 <prototypes>
@@ -1309,14 +1307,14 @@
                         </constraints>
                     </view>
                     <connections>
-                        <outlet property="clipQueryActivityIndicator" destination="ZSC-yK-aCX" id="MWq-f6-hoc"/>
-                        <outlet property="clipQueryMessage" destination="o4s-jR-KJ5" id="48K-px-IQI"/>
-                        <outlet property="clipQueryStatusView" destination="4fn-Xh-cjW" id="jh6-YS-7rZ"/>
+                        <outlet property="clipQueryActivityIndicator" destination="JiX-b5-AEL" id="C0o-Ky-nIu"/>
+                        <outlet property="clipQueryMessage" destination="njY-8J-svZ" id="MAQ-dv-MBA"/>
+                        <outlet property="clipQueryStatusView" destination="woo-EI-Abo" id="NdX-Ay-nJj"/>
                         <outlet property="headerActivityIndicator" destination="NaY-yV-xGh" id="kyu-Ab-lLQ"/>
                         <outlet property="headerImageView" destination="wdA-P6-4pY" id="MvO-bR-Bu6"/>
                         <outlet property="headerPodcastTitle" destination="zp9-Ke-4Tj" id="Oaj-au-2Ci"/>
                         <outlet property="headerSubscribe" destination="DMg-77-Fqt" id="7sQ-gY-w7w"/>
-                        <outlet property="statusActivityIndicator" destination="2hP-AZ-hDJ" id="4eX-v6-rmg"/>
+                        <outlet property="statusActivityIndicator" destination="2hP-AZ-hDJ" id="MFv-pb-hNs"/>
                         <outlet property="statusView" destination="vHd-z2-LgA" id="d6p-VX-tPW"/>
                         <outlet property="tableView" destination="BVR-fu-lde" id="EZX-Xo-DRt"/>
                         <outlet property="tableViewHeader" destination="CK5-Vd-d0G" id="1yT-F9-MpS"/>
@@ -1325,7 +1323,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="MYc-uG-xw1" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3078" y="-745"/>
+            <point key="canvasLocation" x="3078" y="-746"/>
         </scene>
         <!--Episodes Table View Controller-->
         <scene sceneID="VYj-C9-p5k">
@@ -3346,6 +3344,6 @@
         <image name="tab-more" width="25" height="25"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="zre-Be-w3d"/>
+        <segue reference="UX7-d9-2wT"/>
     </inferredMetricsTieBreakers>
 </document>
