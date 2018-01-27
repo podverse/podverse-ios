@@ -34,7 +34,7 @@ enum SharePermission:String {
 let LOCAL_DEV_URL = "http://localhost:8080/"
 let DEV_URL = "http://kc01.vince.fyi:38294/"
 let PROD_URL = "https://podverse.fm/"
-let BASE_URL = DEV_URL
+let BASE_URL = LOCAL_DEV_URL
 
 let kNowPlayingTag = 100
 
@@ -315,6 +315,7 @@ enum VisibilityOptions:String {
 enum SearchPodcastFilter:String {
     case about = "About"
     case clips = "Clips"
+    case episodes = "Episodes"
     
     var text:String {
         get {
@@ -323,6 +324,8 @@ enum SearchPodcastFilter:String {
                 return "About"
             case .clips:
                 return "Clips"
+            case .episodes:
+                return "Episodes"
             }
         }
     }
@@ -342,6 +345,7 @@ struct Strings {
         static let noPlaylistsInternet = "No internet connection"
         static let noPlaylistsNotLoggedIn = "Login to view your playlists"
         static let noPodcastClipsAvailable = "No clips available for this podcast"
+        static let noPodcastEpisodesAvailable = "No episodes available for this podcast"
         static let noPodcastsSubscribed = "Subscribe to podcasts to add them here"
         static let noSearchResultsFound = "No search results found"
     }

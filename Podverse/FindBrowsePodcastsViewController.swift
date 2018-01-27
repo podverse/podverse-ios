@@ -105,7 +105,8 @@ extension FindBrowsePodcastsViewController: UITableViewDataSource, UITableViewDe
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        self.performSegue(withIdentifier: "Show Search Podcast", sender: nil)
+        let podcast = self.podcasts[indexPath.row]
+        SearchPodcast.showSearchPodcastActions(searchPodcast: podcast, vc: self)
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -114,7 +115,6 @@ extension FindBrowsePodcastsViewController: UITableViewDataSource, UITableViewDe
             if let searchPodcastVC = segue.destination as? SearchPodcastViewController, let indexPath = self.tableView.indexPathForSelectedRow, indexPath.row < self.podcasts.count {
                 let podcast = podcasts[indexPath.row]
                 searchPodcastVC.id = podcast.id
-                searchPodcastVC.feedUrl = podcast.feedUrl
                 searchPodcastVC.filterTypeOverride = .about
             }
         }

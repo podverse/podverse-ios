@@ -11,15 +11,14 @@ import UIKit
 class SearchPodcastViewController: PVViewController {
 
     var id:String?
-    var feedUrl:String?
     var clipsArray = [MediaRef]()
-    var episodesArray = [Episode]()
+    var searchEpisodesArray = [SearchEpisode]()
     var filterTypeOverride:SearchPodcastFilter = .about
     let reachability = PVReachability.shared
     
     var filterTypeSelected:SearchPodcastFilter = .about {
         didSet {
-//            self.resetClipQuery()
+            self.resetClipQuery()
             self.tableViewHeader.filterTitle = self.filterTypeSelected.text
             
             if filterTypeSelected == .clips {
@@ -36,7 +35,7 @@ class SearchPodcastViewController: PVViewController {
     
     var sortingTypeSelected:ClipSorting = .topWeek {
         didSet {
-//            self.resetClipQuery()
+            self.resetClipQuery()
             self.tableViewHeader.sortingTitle = sortingTypeSelected.text
         }
     }
@@ -77,7 +76,7 @@ class SearchPodcastViewController: PVViewController {
         self.clipQueryActivityIndicator.hidesWhenStopped = true
         self.clipQueryMessage.isHidden = true
         
-        let isSubscribed = PVSubscriber.checkIfSubscribed(feedUrlString: self.feedUrl)
+        let isSubscribed = PVSubscriber.checkIfSubscribed(podcastId: self.id)
         
         loadSubscribeButton(isSubscribed)
         
@@ -85,6 +84,8 @@ class SearchPodcastViewController: PVViewController {
         
         if self.filterTypeSelected == .clips {
             retrieveClips()
+        } else if self.filterTypeSelected == .episodes {
+            retrieveEpisodes()
         }
         
     }
@@ -95,20 +96,17 @@ class SearchPodcastViewController: PVViewController {
     }
     
     @IBAction func subscribeTapped(_ sender: Any) {
-        
-        
-        let isSubscribed = PVSubscriber.checkIfSubscribed(feedUrlString: self.feedUrl)
+        let isSubscribed = PVSubscriber.checkIfSubscribed(podcastId: self.id)
         
         if isSubscribed {
-            PVSubscriber.unsubscribeFromPodcast(feedUrlString: self.feedUrl)
+            PVSubscriber.unsubscribeFromPodcast(feedUrlString: self.id)
         } else {
             DispatchQueue.global().async {
-                PVSubscriber.subscribeToPodcast(feedUrlString: self.feedUrl)
+                PVSubscriber.subscribeToPodcast(feedUrlString: self.id)
             }
         }
         
         loadSubscribeButton(!isSubscribed)
-        
     }
     
     func loadPodcastData() {
@@ -244,7 +242,7 @@ class SearchPodcastViewController: PVViewController {
             return
         }
         
-        self.episodesArray.removeAll()
+        self.searchEpisodesArray.removeAll()
         self.tableView.reloadData()
         
         self.hideNoDataView()
@@ -255,9 +253,30 @@ class SearchPodcastViewController: PVViewController {
         
         self.clipQueryPage += 1
         
-        if let feedUrl = feedUrl {
-            MediaRef.retrieveMediaRefsFromServer(podcastFeedUrls: [feedUrl], sortingType: self.sortingTypeSelected, page: self.clipQueryPage) { (mediaRefs) -> Void in
+        if let id = id {
+            MediaRef.retrieveMediaRefsFromServer(podcastIds: [id], sortingType: self.sortingTypeSelected, page: self.clipQueryPage) { (mediaRefs) -> Void in
                 self.reloadClipData(mediaRefs)
+            }
+        }
+        
+    }
+    
+    func retrieveEpisodes() {
+        
+        guard checkForConnectivity() else {
+            loadNoInternetMessage()
+            return
+        }
+        
+        self.clipsArray.removeAll()
+        self.searchEpisodesArray.removeAll()
+        self.tableView.reloadData()
+        
+        self.hideNoDataView()
+        
+        if let id = id {
+            SearchPodcast.retrievePodcastFromServer(id: id) { (searchPodcast) -> Void in
+                self.reloadSearchEpisodeData(searchPodcast?.searchEpisodes)
             }
         }
         
@@ -282,6 +301,26 @@ class SearchPodcastViewController: PVViewController {
         
         for mediaRef in mediaRefs {
             self.clipsArray.append(mediaRef)
+        }
+        
+        self.tableView.isHidden = false
+        self.tableView.reloadData()
+        
+    }
+    
+    func reloadSearchEpisodeData(_ episodes: [SearchEpisode]? = nil) {
+        
+        hideActivityIndicator()
+        self.clipQueryIsLoading = false
+        self.clipQueryActivityIndicator.stopAnimating()
+        
+        guard checkForResults(results: episodes) || checkForResults(results: self.searchEpisodesArray), let episodes = episodes else {
+            loadNoClipsMessage()
+            return
+        }
+        
+        for episode in episodes {
+            self.searchEpisodesArray.append(episode)
         }
         
         self.tableView.isHidden = false
@@ -319,6 +358,10 @@ class SearchPodcastViewController: PVViewController {
         loadNoDataView(message: Strings.Errors.noPodcastClipsAvailable, buttonTitle: nil, buttonPressed: nil)
     }
     
+    func loadNoEpisodesMessage() {
+        loadNoDataView(message: Strings.Errors.noPodcastEpisodesAvailable, buttonTitle: nil, buttonPressed: nil)
+    }
+    
     func showActivityIndicator() {
         self.tableView.isHidden = true
         self.statusActivityIndicator.startAnimating()
@@ -354,30 +397,53 @@ extension SearchPodcastViewController:UIWebViewDelegate {
 extension SearchPodcastViewController: UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return self.clipsArray.count
+        if self.filterTypeSelected == .episodes {
+            return self.searchEpisodesArray.count
+        } else {
+            return self.clipsArray.count
+        }
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        let cell = self.tableView.dequeueReusableCell(withIdentifier: "clipCell", for: indexPath as IndexPath) as! ClipPodcastTableViewCell
+        if self.filterTypeSelected == .episodes {
+            
+            let cell = self.tableView.dequeueReusableCell(withIdentifier: "episodeCell", for: indexPath as IndexPath) as! EpisodeTableViewCell
+            
+            let episode = self.searchEpisodesArray[indexPath.row]
+            
+            cell.title.text = episode.title
+            
+            if let summary = episode.summary {
+                
+                let trimmed = summary.replacingOccurrences(of: "\\n*", with: "", options: .regularExpression)
+                
+                cell.summary?.text = trimmed.removeHTMLFromString()?.trimmingCharacters(in: .whitespacesAndNewlines)
+            }
+            
+            let totalClips = String(123)
+            cell.totalClips?.text = String(totalClips + " clips")
+            
+            cell.totalClips.text = "123"
+            cell.pubDate.text = episode.pubDate?.toServerDate()?.toShortFormatString()
+            
+            return cell
+            
+        } else {
+            
+            let cell = self.tableView.dequeueReusableCell(withIdentifier: "clipCell", for: indexPath as IndexPath) as! ClipPodcastTableViewCell
+            
+            let clip = clipsArray[indexPath.row]
+            
+            cell.clipTitle.text = clip.readableClipTitle()
+            cell.episodeTitle.text = clip.episodeTitle
+            cell.episodePubDate.text = clip.episodePubDate?.toShortFormatString()
+            cell.time.text = clip.readableStartAndEndTime()
+            
+            return cell
+            
+        }
         
-        let clip = clipsArray[indexPath.row]
-        
-        cell.clipTitle.text = clip.readableClipTitle()
-        cell.episodeTitle.text = clip.episodeTitle
-        cell.episodePubDate.text = clip.episodePubDate?.toShortFormatString()
-        cell.time.text = clip.readableStartAndEndTime()
-        
-        return cell
-        
-    }
-    
-    func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
-        return UITableViewAutomaticDimension
-    }
-    
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return UITableViewAutomaticDimension
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {

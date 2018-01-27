@@ -15,6 +15,7 @@ import UIKit
 class Podcast: NSManagedObject {
     @NSManaged public var author: String?
     @NSManaged public var categories: String?
+    @NSManaged public var episodes: Set<Episode>
     @NSManaged public var feedUrl: String
     @NSManaged public var imageData: Data?
     @NSManaged public var imageThumbData: Data?
@@ -25,9 +26,9 @@ class Podcast: NSManagedObject {
     @NSManaged public var lastBuildDate: Date?
     @NSManaged public var lastPubDate: Date?
     @NSManaged public var link: String? // generally the home page
+    @NSManaged public var id: String? // the id of the podcast on the official server
     @NSManaged public var summary: String?
     @NSManaged public var title: String
-    @NSManaged public var episodes: Set<Episode>
     
     func addEpisodeObject(value: Episode) {
         self.mutableSetValue(forKey: "episodes").add(value)
@@ -41,6 +42,15 @@ class Podcast: NSManagedObject {
         let moc = managedObjectContext ?? CoreDataHelper.createMOCForThread(threadType: .mainThread)
 
         let predicate = NSPredicate(format: "feedUrl == %@", feedUrlString)
+        let podcastSet = CoreDataHelper.fetchEntities(className: "Podcast", predicate: predicate, moc:moc) as? [Podcast]
+        
+        return podcastSet?.first
+    }
+        
+    static func podcastForId(id: String, managedObjectContext:NSManagedObjectContext? = nil) -> Podcast? {
+        let moc = managedObjectContext ?? CoreDataHelper.createMOCForThread(threadType: .mainThread)
+        
+        let predicate = NSPredicate(format: "id == %@", id)
         let podcastSet = CoreDataHelper.fetchEntities(className: "Podcast", predicate: predicate, moc:moc) as? [Podcast]
         
         return podcastSet?.first
@@ -145,26 +155,28 @@ class Podcast: NSManagedObject {
         }
     }
     
-    // TODO: Don't pass in a delegate (switch FeedParser delegate methods to notifications?)
-    // TODO: Add placeholder podcasts to PodcastsTableVC when a feedUrl is returned by the server but is not saved in Core Data.
     static func syncSubscribedPodcastsWithServer(delegate: PVFeedParserDelegate) {
         
-        retrieveSubscribedPodcastFeedUrlsFromServer() { feedUrls in
-            if let feedUrls = feedUrls {
-                for feedUrl in feedUrls {
-                    let pvFeedParser = PVFeedParser(shouldOnlyGetMostRecentEpisode: true, shouldSubscribe:false)
-                    pvFeedParser.delegate = delegate
-                    if !ParsingPodcasts.shared.hasMatchingUrl(feedUrl: feedUrl) {
-                        pvFeedParser.parsePodcastFeed(feedUrlString: feedUrl)
+        retrieveSubscribedPodcastsFromServer() { syncPodcasts in
+
+            if let syncPodcasts = syncPodcasts {
+                for syncPodcast in syncPodcasts {
+                    if let feedUrl = syncPodcast.feedUrl {
+                        let pvFeedParser = PVFeedParser(shouldOnlyGetMostRecentEpisode: true, shouldSubscribe: false, podcastId: syncPodcast.id)
+                        pvFeedParser.delegate = delegate
+                        if !ParsingPodcasts.shared.hasMatchingUrl(feedUrl: feedUrl) {
+                            pvFeedParser.parsePodcastFeed(feedUrlString: feedUrl)
+                        }
                     }
                 }
             }
+
         }
         
     }
         
     // TODO: This end point should be optimized better.
-    static func retrieveSubscribedPodcastFeedUrlsFromServer(completion: @escaping (_ podcasts: [String]?) -> Void) {
+    static func retrieveSubscribedPodcastsFromServer(completion: @escaping (_ syncPodcasts: [SyncPodcast]?) -> Void) {
         
         if let url = URL(string: BASE_URL + "api/user/podcasts") {
             var request = URLRequest(url: url, cachePolicy: NSURLRequest.CachePolicy.reloadIgnoringLocalAndRemoteCacheData, timeoutInterval: 60)
@@ -176,7 +188,7 @@ class Podcast: NSManagedObject {
             
             request.setValue(idToken, forHTTPHeaderField: "authorization")
             
-            let task = URLSession.shared.dataTask(with: request) { data, response, error in
+            let task = URLSession.shared.dataTask(with: request) { userData, response, error in
                 
                 guard error == nil else {
                     DispatchQueue.main.async {
@@ -185,20 +197,33 @@ class Podcast: NSManagedObject {
                     return
                 }
                 
-                if let data = data {
+                if let userData = userData {
                     do {
-                        var feedUrls = [String]()
+                        var syncPodcasts = [SyncPodcast]()
                         
-                        if let feedUrlsJSON = try JSONSerialization.jsonObject(with: data, options: []) as? [[String:Any]] {
-                            for item in feedUrlsJSON {
-                                if let feedUrl = item["feedURL"] as? String {
-                                    feedUrls.append(feedUrl)
+                        if let userDataJSON = try JSONSerialization.jsonObject(with: userData, options: []) as? [String:Any] {
+                            
+                            if let subscribedPodcasts = userDataJSON["subscribedPodcasts"] as? [[String:Any]] {
+
+                                for subscribedPodcast in subscribedPodcasts {
+                                    let syncPodcast = SyncPodcast()
+                                    
+                                    if let feedUrl = subscribedPodcast["authorityFeedUrl"] as? String {
+                                        syncPodcast.feedUrl = feedUrl
+                                    }
+                                    
+                                    if let id = subscribedPodcast["id"] as? String {
+                                        syncPodcast.id = id
+                                    }
+                                    
+                                    syncPodcasts.append(syncPodcast)
                                 }
                             }
+                            
                         }
                         
                         DispatchQueue.main.async {
-                            completion(feedUrls)
+                            completion(syncPodcasts)
                         }
                         
                     } catch {

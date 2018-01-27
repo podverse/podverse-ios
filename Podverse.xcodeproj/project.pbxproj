@@ -15,6 +15,7 @@
 		301E0E541F96F9510062BEA4 /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 301E0E531F96F9510062BEA4 /* Utilities.swift */; };
 		301EA22B1F9DA2B6005A3DF2 /* FindBrowseGroupsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 301EA22A1F9DA2B6005A3DF2 /* FindBrowseGroupsViewController.swift */; };
 		301EA22D1F9DA371005A3DF2 /* FindBrowsePodcastsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 301EA22C1F9DA371005A3DF2 /* FindBrowsePodcastsViewController.swift */; };
+		30284E9020143077001C9CEF /* SyncPodcast.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30284E8F20143077001C9CEF /* SyncPodcast.swift */; };
 		302D55111EC157960032D0A0 /* PVViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 302D55101EC157960032D0A0 /* PVViewController.swift */; };
 		303D1CCC1F9BE7F600F25CDF /* SearchPodcastViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 303D1CCB1F9BE7F600F25CDF /* SearchPodcastViewController.swift */; };
 		3048E8881EDA7124001AADCE /* MediaRef.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3048E8871EDA7124001AADCE /* MediaRef.swift */; };
@@ -42,6 +43,7 @@
 		30A575661EBECFF90088CCA6 /* EpisodesTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30A575651EBECFF90088CCA6 /* EpisodesTableViewController.swift */; };
 		30A575681EBED8360088CCA6 /* EpisodeTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30A575671EBED8360088CCA6 /* EpisodeTableViewCell.swift */; };
 		30B427F21EBE4CB100BAD942 /* PVSubscriber.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30B427F11EBE4CB100BAD942 /* PVSubscriber.swift */; };
+		30C011132019DF8200E5E7E5 /* SearchEpisode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30C011122019DF8200E5E7E5 /* SearchEpisode.swift */; };
 		30DBD4D31F11B05900A431E6 /* OAuth2RetryHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30DBD4D21F11B05900A431E6 /* OAuth2RetryHandler.swift */; };
 		30DBD4D51F11DBFA00A431E6 /* FindSearchTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30DBD4D41F11DBFA00A431E6 /* FindSearchTableViewController.swift */; };
 		30DBD4D91F11F42B00A431E6 /* PodcastSearchResultTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30DBD4D81F11F42B00A431E6 /* PodcastSearchResultTableViewCell.swift */; };
@@ -127,6 +129,7 @@
 		301E0E531F96F9510062BEA4 /* Utilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utilities.swift; sourceTree = "<group>"; };
 		301EA22A1F9DA2B6005A3DF2 /* FindBrowseGroupsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FindBrowseGroupsViewController.swift; sourceTree = "<group>"; };
 		301EA22C1F9DA371005A3DF2 /* FindBrowsePodcastsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FindBrowsePodcastsViewController.swift; sourceTree = "<group>"; };
+		30284E8F20143077001C9CEF /* SyncPodcast.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncPodcast.swift; sourceTree = "<group>"; };
 		302D55101EC157960032D0A0 /* PVViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PVViewController.swift; sourceTree = "<group>"; };
 		303D1CCB1F9BE7F600F25CDF /* SearchPodcastViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchPodcastViewController.swift; sourceTree = "<group>"; };
 		3048E8871EDA7124001AADCE /* MediaRef.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MediaRef.swift; sourceTree = "<group>"; };
@@ -154,6 +157,7 @@
 		30A575651EBECFF90088CCA6 /* EpisodesTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EpisodesTableViewController.swift; sourceTree = "<group>"; };
 		30A575671EBED8360088CCA6 /* EpisodeTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EpisodeTableViewCell.swift; sourceTree = "<group>"; };
 		30B427F11EBE4CB100BAD942 /* PVSubscriber.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PVSubscriber.swift; sourceTree = "<group>"; };
+		30C011122019DF8200E5E7E5 /* SearchEpisode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchEpisode.swift; sourceTree = "<group>"; };
 		30DBD4D21F11B05900A431E6 /* OAuth2RetryHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OAuth2RetryHandler.swift; sourceTree = "<group>"; };
 		30DBD4D41F11DBFA00A431E6 /* FindSearchTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FindSearchTableViewController.swift; sourceTree = "<group>"; };
 		30DBD4D81F11F42B00A431E6 /* PodcastSearchResultTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PodcastSearchResultTableViewCell.swift; sourceTree = "<group>"; };
@@ -364,8 +368,10 @@
 				3051488A1ED27251009BC839 /* PlayerHistoryItem.swift */,
 				E7D25BC31E0F13D300B60368 /* Podcast.swift */,
 				30934B571F9ED4A300B51CB4 /* SearchCategory.swift */,
+				30C011122019DF8200E5E7E5 /* SearchEpisode.swift */,
 				30934B591F9EDDE100B51CB4 /* SearchNetwork.swift */,
 				E7D25BD81E0F2DF800B60368 /* SearchPodcast.swift */,
+				30284E8F20143077001C9CEF /* SyncPodcast.swift */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -721,13 +727,16 @@
 			files = (
 			);
 			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
 			);
 			name = "[CP] Check Pods Manifest.lock";
 			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-Podverse-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
 		6D6032702A2EEA1C34CE8A94 /* [CP] Check Pods Manifest.lock */ = {
@@ -736,13 +745,16 @@
 			files = (
 			);
 			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
 			);
 			name = "[CP] Check Pods Manifest.lock";
 			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-PodverseTests-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
 		77D544084524CE40F2AD5762 /* [CP] Embed Pods Frameworks */ = {
@@ -766,13 +778,16 @@
 			files = (
 			);
 			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
 			);
 			name = "[CP] Check Pods Manifest.lock";
 			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-PodverseUITests-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
 		EC2BE28CAC6A390DE7FB9C13 /* [CP] Embed Pods Frameworks */ = {
@@ -781,9 +796,26 @@
 			files = (
 			);
 			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-Podverse/Pods-Podverse-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework",
+				"${BUILT_PRODUCTS_DIR}/Auth0/Auth0.framework",
+				"${BUILT_PRODUCTS_DIR}/Lock/Lock.framework",
+				"${BUILT_PRODUCTS_DIR}/ReachabilitySwift/ReachabilitySwift.framework",
+				"${BUILT_PRODUCTS_DIR}/SDWebImage/SDWebImage.framework",
+				"${BUILT_PRODUCTS_DIR}/SimpleKeychain/SimpleKeychain.framework",
+				"${BUILT_PRODUCTS_DIR}/StreamingKit/StreamingKit.framework",
+				"${BUILT_PRODUCTS_DIR}/p2.OAuth2/p2_OAuth2.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Alamofire.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Auth0.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Lock.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ReachabilitySwift.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SDWebImage.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SimpleKeychain.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/StreamingKit.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/p2_OAuth2.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -832,6 +864,7 @@
 				30DBD4D91F11F42B00A431E6 /* PodcastSearchResultTableViewCell.swift in Sources */,
 				305119891F57D57500BD9FCE /* MakeClipTitleViewController.swift in Sources */,
 				3048E88A1EDD1B1A001AADCE /* Int64+MediaPlayerString.swift in Sources */,
+				30284E9020143077001C9CEF /* SyncPodcast.swift in Sources */,
 				E7D25BC61E0F141500B60368 /* Episode.swift in Sources */,
 				E78BF9311E0FA64F002194FE /* PVReachability.swift in Sources */,
 				E75302871E072F160007B6F7 /* FeedEnclosure.swift in Sources */,
@@ -872,6 +905,7 @@
 				E7B2A5A11E123E9900AAE036 /* PVAuth.swift in Sources */,
 				E753028B1E072F160007B6F7 /* String+RemoveHTMLCharacters.swift in Sources */,
 				303D1CCC1F9BE7F600F25CDF /* SearchPodcastViewController.swift in Sources */,
+				30C011132019DF8200E5E7E5 /* SearchEpisode.swift in Sources */,
 				E7D25BCC1E0F176C00B60368 /* PVDeleter.swift in Sources */,
 				E7AD9A981EDDF7160093F051 /* ClipsListContainerViewController.swift in Sources */,
 				302D55111EC157960032D0A0 /* PVViewController.swift in Sources */,

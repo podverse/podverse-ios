@@ -30,10 +30,12 @@ class PVFeedParser {
     var latestEpisodePubDate:Date?
     var delegate:PVFeedParserDelegate?
     let parsingPodcasts = ParsingPodcasts.shared
+    var podcastId:String?
     
-    init(shouldOnlyGetMostRecentEpisode:Bool, shouldSubscribe:Bool) {
+    init(shouldOnlyGetMostRecentEpisode:Bool, shouldSubscribe:Bool, podcastId:String?) {
         self.onlyGetMostRecentEpisode = shouldOnlyGetMostRecentEpisode
         self.subscribeToPodcast = shouldSubscribe
+        self.podcastId = podcastId
     }
     
     func parsePodcastFeed(feedUrlString:String) {
@@ -80,6 +82,10 @@ extension PVFeedParser:FeedParserDelegate {
         }
         
         if let podcast = podcast {
+            
+            if let podcastId = self.podcastId {
+                podcast.id = podcastId
+            }
             
             if let feedUrlString = channel.channelURL {
                 podcast.feedUrl = feedUrlString

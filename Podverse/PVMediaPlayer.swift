@@ -48,13 +48,13 @@ enum PlayingSpeed {
             case .threeQuarts:
                 return 0.75
             case .regular:
-                return 1
+                return 1.0
             case .timeAndQuarter:
                 return 1.25
             case .timeAndHalf:
                 return 1.5
             case .double:
-                return 2
+                return 2.0
             }
         }
     }
@@ -272,7 +272,7 @@ class PVMediaPlayer: NSObject {
     
     func pause() {
         savePlaybackPosition()
-        self.audioPlayer.rate = 0
+        self.audioPlayer.rate = 0.0
         self.audioPlayer.pause()
     }
     
@@ -358,6 +358,12 @@ class PVMediaPlayer: NSObject {
     }
     
     func loadPlayerHistoryItem(item: PlayerHistoryItem) {
+        
+        // Stop the current audioPlayer, then create a new shared instance of STKAudioPlayer in order to prevent frozen glitchy playback when playing a new audio file.
+        self.audioPlayer.stop()
+        self.removeObservers()
+        self.audioPlayer = STKAudioPlayer()
+        self.addObservers()
         
         self.nowPlayingItem = item
         self.nowPlayingItem?.hasReachedEnd = false
