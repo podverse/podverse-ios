@@ -10,11 +10,11 @@ import UIKit
 
 class SearchPodcastViewController: PVViewController {
 
-    var id:String?
     var clipsArray = [MediaRef]()
     var searchEpisodesArray = [SearchEpisode]()
     var filterTypeOverride:SearchPodcastFilter = .about
     let reachability = PVReachability.shared
+    var searchPodcast:SearchPodcast?
     
     var filterTypeSelected:SearchPodcastFilter = .about {
         didSet {
@@ -76,9 +76,10 @@ class SearchPodcastViewController: PVViewController {
         self.clipQueryActivityIndicator.hidesWhenStopped = true
         self.clipQueryMessage.isHidden = true
         
-        let isSubscribed = PVSubscriber.checkIfSubscribed(podcastId: self.id)
-        
-        loadSubscribeButton(isSubscribed)
+        if let podcast = self.searchPodcast, let id = podcast.id {
+            let isSubscribed = PVSubscriber.checkIfSubscribed(podcastId: podcast.id)
+            loadSubscribeButton(isSubscribed)
+        }
         
         loadPodcastData()
         
@@ -96,28 +97,29 @@ class SearchPodcastViewController: PVViewController {
     }
     
     @IBAction func subscribeTapped(_ sender: Any) {
-        let isSubscribed = PVSubscriber.checkIfSubscribed(podcastId: self.id)
-        
-        if isSubscribed {
-            PVSubscriber.unsubscribeFromPodcast(feedUrlString: self.id)
-        } else {
-            DispatchQueue.global().async {
-                PVSubscriber.subscribeToPodcast(feedUrlString: self.id)
+        if let podcast = self.searchPodcast {
+            let isSubscribed = PVSubscriber.checkIfSubscribed(podcastId: podcast.id)
+            
+            if isSubscribed {
+                PVSubscriber.unsubscribeFromPodcast(feedUrlString: nil, podcastId: podcast.id)
+            } else {
+                DispatchQueue.global().async {
+                    PVSubscriber.subscribeToPodcast(feedUrlString: nil, podcastId: podcast.id)
+                }
             }
+            
+            loadSubscribeButton(!isSubscribed)
         }
-        
-        loadSubscribeButton(!isSubscribed)
     }
     
     func loadPodcastData() {
-        if let id = self.id {
+        if let podcast = self.searchPodcast, let id = podcast.id {
             showPodcastHeaderActivity()
             
             SearchPodcast.retrievePodcastFromServer(id: id, completion:{ podcast in
                 self.loadPodcastHeader(podcast)
                 self.loadAbout(podcast)
             })
-
         }
     }
     
@@ -149,7 +151,7 @@ class SearchPodcastViewController: PVViewController {
             if let podcast = podcast {
                 self.headerPodcastTitle.text = podcast.title
                 
-                self.headerImageView.image = Podcast.retrievePodcastImage(podcastImageURLString: podcast.imageThumbUrl, feedURLString: nil, completion: { image in
+                self.headerImageView.image = Podcast.retrievePodcastImage(podcastImageURLString: podcast.imageUrl, feedURLString: nil, completion: { image in
                     self.headerImageView.image = image
                 })
                 
@@ -253,7 +255,7 @@ class SearchPodcastViewController: PVViewController {
         
         self.clipQueryPage += 1
         
-        if let id = id {
+        if let podcast = self.searchPodcast, let id = podcast.id {
             MediaRef.retrieveMediaRefsFromServer(podcastIds: [id], sortingType: self.sortingTypeSelected, page: self.clipQueryPage) { (mediaRefs) -> Void in
                 self.reloadClipData(mediaRefs)
             }
@@ -274,7 +276,7 @@ class SearchPodcastViewController: PVViewController {
         
         self.hideNoDataView()
         
-        if let id = id {
+        if let podcast = self.searchPodcast, let id = podcast.id {
             SearchPodcast.retrievePodcastFromServer(id: id) { (searchPodcast) -> Void in
                 self.reloadSearchEpisodeData(searchPodcast?.searchEpisodes)
             }
@@ -415,15 +417,15 @@ extension SearchPodcastViewController: UITableViewDataSource, UITableViewDelegat
             cell.title.text = episode.title
             
             if let summary = episode.summary {
-                
+
                 let trimmed = summary.replacingOccurrences(of: "\\n*", with: "", options: .regularExpression)
-                
+
                 cell.summary?.text = trimmed.removeHTMLFromString()?.trimmingCharacters(in: .whitespacesAndNewlines)
             }
-            
+
             let totalClips = String(123)
             cell.totalClips?.text = String(totalClips + " clips")
-            
+
             cell.totalClips.text = "123"
             cell.pubDate.text = episode.pubDate?.toServerDate()?.toShortFormatString()
             
@@ -447,10 +449,19 @@ extension SearchPodcastViewController: UITableViewDataSource, UITableViewDelegat
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let clip = clipsArray[indexPath.row]
-        let playerHistoryItem = self.playerHistoryManager.convertMediaRefToPlayerHistoryItem(mediaRef: clip)
-        self.goToNowPlaying()
-        self.pvMediaPlayer.loadPlayerHistoryItem(item: playerHistoryItem)
+        if let searchPodcast = self.searchPodcast {
+            if self.filterTypeSelected == .episodes {
+                let searchEpisode = searchEpisodesArray[indexPath.row]
+                let playerHistoryItem = self.playerHistoryManager.convertSearchPodcastEpisodeToPlayerHistoryItem(searchPodcast: searchPodcast, searchEpisode: searchEpisode)
+                self.goToNowPlaying()
+                self.pvMediaPlayer.loadPlayerHistoryItem(item: playerHistoryItem)
+            } else {
+                let clip = clipsArray[indexPath.row]
+                let playerHistoryItem = self.playerHistoryManager.convertMediaRefToPlayerHistoryItem(mediaRef: clip)
+                self.goToNowPlaying()
+                self.pvMediaPlayer.loadPlayerHistoryItem(item: playerHistoryItem)
+            }
+        }
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {

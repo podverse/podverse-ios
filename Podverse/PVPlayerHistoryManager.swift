@@ -86,9 +86,26 @@ class PlayerHistory {
         return nil
 
     }
+
+    func convertSearchPodcastEpisodeToPlayerHistoryItem(searchPodcast: SearchPodcast, searchEpisode: SearchEpisode) -> PlayerHistoryItem {
+        let playerHistoryItem = PlayerHistoryItem(
+            podcastId: searchPodcast.id,
+            podcastFeedUrl: nil, // Since it is a searchPodcast, we can use podcastId instead of podcastFeedUrl
+            podcastTitle: searchPodcast.title,
+            podcastImageUrl: searchPodcast.imageUrl,
+            episodeMediaUrl: searchEpisode.mediaUrl,
+            episodeTitle: searchEpisode.title,
+            episodeSummary: searchEpisode.summary,
+            episodePubDate: searchEpisode.pubDate?.toServerDate(),
+            hasReachedEnd: false,
+            lastPlaybackPosition: 0)
+        
+        return playerHistoryItem
+    }
     
     func convertEpisodeToPlayerHistoryItem(episode: Episode) -> PlayerHistoryItem {
         let playerHistoryItem = PlayerHistoryItem(
+            podcastId: episode.podcast.id,
             podcastFeedUrl: episode.podcast.feedUrl,
             podcastTitle: episode.podcast.title,
             podcastImageUrl: episode.podcast.imageUrl,
@@ -105,6 +122,7 @@ class PlayerHistory {
     func convertMediaRefToPlayerHistoryItem(mediaRef: MediaRef) -> PlayerHistoryItem {
         let playerHistoryItem = PlayerHistoryItem(
             mediaRefId: mediaRef.id,
+            podcastId: mediaRef.podcastId,
             podcastFeedUrl: mediaRef.podcastFeedUrl,
             podcastTitle: mediaRef.podcastTitle,
             podcastImageUrl: mediaRef.podcastImageUrl,

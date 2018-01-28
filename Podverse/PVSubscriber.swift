@@ -11,7 +11,7 @@ import CoreData
 
 class PVSubscriber {
     
-    static func subscribeToPodcast(feedUrlString: String?, podcastId: String? = nil) {
+    static func subscribeToPodcast(feedUrlString: String?, podcastId: String?) {
         
         if let feedUrlString = feedUrlString {
             
@@ -31,7 +31,7 @@ class PVSubscriber {
         
     }
     
-    static func unsubscribeFromPodcast(feedUrlString: String?) {
+    static func unsubscribeFromPodcast(feedUrlString: String?, podcastId: String?) {
         
         if let feedUrlString = feedUrlString {
             
@@ -39,7 +39,7 @@ class PVSubscriber {
             updatePodcastOnServer(feedUrl: feedUrlString, shouldSubscribe: false) { wasSuccessful in
                 //
             }
-            
+
             PVDeleter.deletePodcast(feedUrl: feedUrlString)
             
         }

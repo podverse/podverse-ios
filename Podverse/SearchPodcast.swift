@@ -16,7 +16,6 @@ class SearchPodcast {
     var description: String?
     var feedUrl: String?
     var hosts: String?
-    var imageThumbUrl: String?
     var imageUrl: String?
     var lastEpisodeTitle: String?
     var lastPubDate: String?
@@ -205,7 +204,7 @@ class SearchPodcast {
                 podcastActions.addAction(UIAlertAction(title: "Subscribe", style: .default, handler: { action in
                     self.authorityFeedUrlForPodcast(id: id) { feedUrl in
                         if let feedUrl = feedUrl {
-                            PVSubscriber.subscribeToPodcast(feedUrlString: feedUrl)
+                            PVSubscriber.subscribeToPodcast(feedUrlString: feedUrl, podcastId: id)
                         }
                     }
                 }))

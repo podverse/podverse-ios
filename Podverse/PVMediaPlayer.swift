@@ -360,10 +360,10 @@ class PVMediaPlayer: NSObject {
     func loadPlayerHistoryItem(item: PlayerHistoryItem) {
         
         // Stop the current audioPlayer, then create a new shared instance of STKAudioPlayer in order to prevent frozen glitchy playback when playing a new audio file.
+        removeObservers()
         self.audioPlayer.stop()
-        self.removeObservers()
         self.audioPlayer = STKAudioPlayer()
-        self.addObservers()
+        addObservers()
         
         self.nowPlayingItem = item
         self.nowPlayingItem?.hasReachedEnd = false
@@ -378,9 +378,6 @@ class PVMediaPlayer: NSObject {
         // If the audioPlayer was last in the errored state, attempting to pause will cause the app to crash.
         if self.hasErrored {
             self.hasErrored = false
-        } else {
-            // NOTE: use the self.audioPlayer.pause method directly here, instead of self.pause()
-            self.audioPlayer.pause()
         }
         
         // If you are loading a clip, or an episode from the beginning, the item.lastPlaybackPosition will be overridden in the observeValue or seek method.
@@ -442,9 +439,9 @@ class PVMediaPlayer: NSObject {
 //        if notification.name == NSNotification.Name.AVAudioSessionInterruption && notification.userInfo != nil {
 //            var info = notification.userInfo!
 //            var intValue: UInt = 0
-//            
+//
 //            (info[AVAudioSessionInterruptionTypeKey] as! NSValue).getValue(&intValue)
-//            
+//
 //            switch AVAudioSessionInterruptionType(rawValue: intValue) {
 //                case .some(.began):
 //                    saveCurrentTimeAsPlaybackPosition()

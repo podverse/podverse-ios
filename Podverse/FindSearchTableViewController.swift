@@ -110,7 +110,7 @@ extension FindSearchTableViewController: UITableViewDataSource, UITableViewDeleg
         if segue.identifier == "Show Search Podcast" {
             if let searchPodcastVC = segue.destination as? SearchPodcastViewController, let indexPath = self.tableView.indexPathForSelectedRow, indexPath.row < self.podcasts.count {
                 let podcast = podcasts[indexPath.row]
-                searchPodcastVC.id = podcast.id
+                searchPodcastVC.searchPodcast = podcast
                 
                 if let sender = sender as? String, sender == "About" {
                     searchPodcastVC.filterTypeOverride = .about

@@ -93,42 +93,42 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     fileprivate func setupRemoteFunctions() {
 
         let rcc = MPRemoteCommandCenter.shared()
-        
+
         let skipBackwardIntervalCommand = rcc.skipBackwardCommand
         skipBackwardIntervalCommand.addTarget(self, action: #selector(AppDelegate.skipBackwardEvent))
-        
+
         let skipForwardIntervalCommand = rcc.skipForwardCommand
         skipForwardIntervalCommand.addTarget(self, action: #selector(AppDelegate.skipForwardEvent))
-        
+
         let pauseCommand = rcc.pauseCommand
         pauseCommand.addTarget(self, action: #selector(AppDelegate.playOrPauseEvent))
-        
+
         let playCommand = rcc.playCommand
         playCommand.addTarget(self, action: #selector(AppDelegate.playOrPauseEvent))
 
         let toggleCommand = rcc.togglePlayPauseCommand
         toggleCommand.addTarget(self, action: #selector(AppDelegate.playOrPauseEvent))
-        
+
         if #available(iOS 9.1, *) {
             rcc.changePlaybackPositionCommand.isEnabled = true
             rcc.changePlaybackPositionCommand.addTarget(self, action: #selector(AppDelegate.updatePlaybackPosition))
         }
 
-//        rcc.bookmarkCommand.isEnabled = false
-//        rcc.changePlaybackRateCommand.isEnabled = false
-//        rcc.changeRepeatModeCommand.isEnabled = false
-//        rcc.changeShuffleModeCommand.isEnabled = false
-//        rcc.disableLanguageOptionCommand.isEnabled = false
-//        rcc.enableLanguageOptionCommand.isEnabled = false
-//        rcc.likeCommand.isEnabled = false
-//        rcc.nextTrackCommand.isEnabled = false
-//        rcc.previousTrackCommand.isEnabled = false
-//        rcc.ratingCommand.isEnabled = false
-//        rcc.seekBackwardCommand.isEnabled = false
-//        rcc.seekForwardCommand.isEnabled = false
-//        rcc.skipBackwardCommand.isEnabled = false
-//        rcc.skipForwardCommand.isEnabled = false
-//        rcc.stopCommand.isEnabled = false
+        rcc.bookmarkCommand.isEnabled = false
+        rcc.changePlaybackRateCommand.isEnabled = false
+        rcc.changeRepeatModeCommand.isEnabled = false
+        rcc.changeShuffleModeCommand.isEnabled = false
+        rcc.disableLanguageOptionCommand.isEnabled = false
+        rcc.enableLanguageOptionCommand.isEnabled = false
+        rcc.likeCommand.isEnabled = false
+        rcc.nextTrackCommand.isEnabled = false
+        rcc.previousTrackCommand.isEnabled = false
+        rcc.ratingCommand.isEnabled = false
+        rcc.seekBackwardCommand.isEnabled = false
+        rcc.seekForwardCommand.isEnabled = false
+        rcc.skipBackwardCommand.isEnabled = false
+        rcc.skipForwardCommand.isEnabled = false
+        rcc.stopCommand.isEnabled = false
         
     }
 
@@ -143,12 +143,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func playOrPauseEvent() { 
-        self.pvMediaPlayer.playOrPause()
-        self.pvMediaPlayer.updateMPNowPlayingInfoCenter()
+//        self.pvMediaPlayer.playOrPause()
+//        self.pvMediaPlayer.updateMPNowPlayingInfoCenter()
     }
     
     func updatePlaybackPosition(event:MPChangePlaybackPositionCommandEvent) {
-        self.pvMediaPlayer.seek(toTime: event.positionTime)
+//        self.pvMediaPlayer.seek(toTime: event.positionTime)
     }
     
 }
