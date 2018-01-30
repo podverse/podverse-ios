@@ -18,8 +18,22 @@ class MoreTableViewController: PVViewController {
         super.viewDidLoad()
         
         self.title = "More"
+        
+        addObservers()
     }
-
+    
+    deinit {
+        removeObservers()
+    }
+    
+    fileprivate func addObservers() {
+        NotificationCenter.default.addObserver(self, selector: #selector(self.loggedInSuccessfully(_:)), name: .loggedInSuccessfully, object: nil)
+    }
+    
+    fileprivate func removeObservers() {
+        NotificationCenter.default.removeObserver(self, name: .loggedInSuccessfully, object: nil)
+    }
+    
 }
 
 extension MoreTableViewController:UITableViewDelegate, UITableViewDataSource {
@@ -74,11 +88,7 @@ extension MoreTableViewController:UITableViewDelegate, UITableViewDataSource {
                 present(logoutAlert, animated: true, completion: nil)
                 
             } else {
-                pvAuth.showAuth0Lock(vc: self) {
-                    DispatchQueue.main.async {
-                        tableView.reloadData()
-                    }
-                }
+                pvAuth.showAuth0Lock(vc: self)
             }
 //        case 3:
 //            performSegue(withIdentifier: "Show Settings", sender: nil)
@@ -88,4 +98,12 @@ extension MoreTableViewController:UITableViewDelegate, UITableViewDataSource {
         tableView.deselectRow(at: indexPath, animated: true)
     }
     
+}
+
+extension MoreTableViewController {
+    func loggedInSuccessfully(_ notification:Notification) {
+        DispatchQueue.main.async {
+            self.tableView.reloadData()
+        }
+    }
 }

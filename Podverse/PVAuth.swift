@@ -14,6 +14,10 @@ protocol PVAuthDelegate {
     func loggedInSuccessfully()
 }
 
+extension Notification.Name {
+    static let loggedInSuccessfully = Notification.Name(kLoggedInSuccessfully)
+}
+
 class PVAuth: NSObject {
     
     static let shared = PVAuth()
@@ -24,7 +28,7 @@ class PVAuth: NSObject {
         return UserDefaults.standard.value(forKey: "idToken") != nil
     }
 
-    func showAuth0Lock (vc: UIViewController, completion:(() -> ())?) {
+    func showAuth0Lock (vc: UIViewController) {
 
         Lock
             .classic()
@@ -58,13 +62,15 @@ class PVAuth: NSObject {
                         switch result {
                         case .success(let profile):
                             self.populateUserInfoWith(idToken: idToken, userId: profile.sub, userName: profile.nickname)
+                            self.notifyLoggedInSuccessfully()
                         case .failure(let error):
                             self.populateUserInfoWith(idToken: idToken, userId: nil, userName: nil)
+
+                            // Maybe this is wrong. Even though .userInfo().start returns a failure, as long as we have a valid idToken, then the user should be logged in.
+                            self.notifyLoggedInSuccessfully()
+                            
                             print(error.localizedDescription)
                         }
-                        
-                        completion?()
-
                     }
                 
             }
@@ -111,4 +117,11 @@ class PVAuth: NSObject {
         UserDefaults.standard.set(nil, forKey: "userId")
         UserDefaults.standard.set(nil, forKey: "userName")
     }
+    
+    fileprivate func notifyLoggedInSuccessfully() {
+        DispatchQueue.main.async {
+            NotificationCenter.default.post(name:NSNotification.Name(rawValue: kLoggedInSuccessfully), object: self, userInfo: nil)
+        }
+    }
+    
 }
