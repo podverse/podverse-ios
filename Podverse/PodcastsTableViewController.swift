@@ -87,7 +87,7 @@ class PodcastsTableViewController: PVViewController, AutoDownloadProtocol {
         DispatchQueue.global().async {
             let privateMoc = CoreDataHelper.createMOCForThread(threadType: .privateThread)
             var podcastArray = CoreDataHelper.fetchEntities(className:"Podcast", predicate: nil, moc:privateMoc) as! [Podcast]
-            podcastArray = podcastArray.filter { !DeletingPodcasts.shared.urls.contains($0.feedUrl) }
+            podcastArray = podcastArray.filter { !DeletingPodcasts.shared.podcastKeys.contains($0.feedUrl) }
             
             for podcast in podcastArray {
                 let feedUrl = NSURL(string:podcast.feedUrl)
@@ -109,7 +109,7 @@ class PodcastsTableViewController: PVViewController, AutoDownloadProtocol {
     func loadPodcastData() {
         
         self.subscribedPodcastsArray = CoreDataHelper.fetchEntities(className:"Podcast", predicate: nil, moc:self.moc) as! [Podcast]
-        self.subscribedPodcastsArray = self.subscribedPodcastsArray.filter { !DeletingPodcasts.shared.urls.contains($0.feedUrl) }
+        self.subscribedPodcastsArray = self.subscribedPodcastsArray.filter { !DeletingPodcasts.shared.podcastKeys.contains($0.feedUrl) }
         
         guard checkForResults(results: subscribedPodcastsArray) else {
             self.loadNoPodcastsSubscribedMessage()
@@ -216,7 +216,7 @@ extension PodcastsTableViewController:UITableViewDelegate, UITableViewDataSource
             self.subscribedPodcastsArray.remove(at: indexPath.row)
             tableView.deleteRows(at: [indexPath], with: .fade)
             
-            PVSubscriber.unsubscribeFromPodcast(feedUrlString: podcastToEditFeedUrl, podcastId: nil)
+            PVSubscriber.unsubscribeFromPodcast(podcastId: nil, feedUrl: podcastToEditFeedUrl)
             
             if !checkForResults(results: self.subscribedPodcastsArray) {
                 self.loadNoPodcastsSubscribedMessage()
@@ -308,7 +308,7 @@ extension PodcastsTableViewController {
     }
     
     func refreshParsingStatus(_ notification:Notification) {
-        let total = self.parsingPodcasts.urls.count
+        let total = self.parsingPodcasts.podcastKeys.count
         let currentItem = self.parsingPodcasts.currentlyParsingItem
         
         DispatchQueue.main.async {

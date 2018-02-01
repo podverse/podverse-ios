@@ -10,39 +10,57 @@ import Foundation
 
 final class ParsingPodcasts {
     static let shared = ParsingPodcasts()
-    var urls = [String]()
+    var podcastKeys = [String]()
     var currentlyParsingItem = 0
     
     func clearParsingPodcastsIfFinished() {
-        if currentlyParsingItem == urls.count {
+        if currentlyParsingItem == podcastKeys.count {
             currentlyParsingItem = 0
-            self.urls.removeAll()
+            self.podcastKeys.removeAll()
             DispatchQueue.main.async {
                 NotificationCenter.default.post(name:NSNotification.Name(rawValue: kFinishedAllParsingPodcasts), object: self, userInfo: nil)
             }
         }
     }
     
-    func addPodcast(feedUrl:String) {
-        if self.urls.filter({$0 == feedUrl}).count < 1 {
-            self.urls.append(feedUrl)
+    func addPodcast(podcastId:String?, feedUrl:String?) {
+        if let podcastId = podcastId, self.podcastKeys.filter({$0 == podcastId}).count < 1 {
+            self.podcastKeys.append(podcastId)
+            DispatchQueue.main.async {
+                NotificationCenter.default.post(name:NSNotification.Name(rawValue: kBeginParsingPodcast), object: self, userInfo: nil)
+            }
+        } else if let feedUrl = feedUrl, self.podcastKeys.filter({$0 == feedUrl}).count < 1 {
+            self.podcastKeys.append(feedUrl)
             DispatchQueue.main.async {
                 NotificationCenter.default.post(name:NSNotification.Name(rawValue: kBeginParsingPodcast), object: self, userInfo: nil)
             }
         }
     }
     
-    func removePodcast(feedUrl:String) {
-        if let index = self.urls.index(of: feedUrl) {
-            self.urls.remove(at: index)
+    func removePodcast(podcastId:String?, feedUrl:String?) {
+        if let podcastId = podcastId, let index = self.podcastKeys.index(of: podcastId) {
+            self.podcastKeys.remove(at: index)
+            DispatchQueue.main.async {
+                NotificationCenter.default.post(name:NSNotification.Name(rawValue: kFinishedParsingPodcast), object: self, userInfo: nil)
+            }
+        } else if let feedUrl = feedUrl, let index = self.podcastKeys.index(of: feedUrl) {
+            self.podcastKeys.remove(at: index)
             DispatchQueue.main.async {
                 NotificationCenter.default.post(name:NSNotification.Name(rawValue: kFinishedParsingPodcast), object: self, userInfo: nil)
             }
         }
     }
+
+    func hasMatchingId(podcastId:String?) -> Bool {
+        if let podcastId = podcastId, let _ = self.podcastKeys.index(of: podcastId) {
+            return true
+        }
+        
+        return false
+    }
     
     func hasMatchingUrl(feedUrl:String) -> Bool {
-        if let _ = self.urls.index(of: feedUrl) {
+        if let _ = self.podcastKeys.index(of: feedUrl) {
             return true
         }
         

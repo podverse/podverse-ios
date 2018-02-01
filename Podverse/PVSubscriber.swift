@@ -11,17 +11,17 @@ import CoreData
 
 class PVSubscriber {
     
-    static func subscribeToPodcast(feedUrlString: String?, podcastId: String?) {
+    static func subscribeToPodcast(podcastId: String?, feedUrl: String?) {
         
-        if let feedUrlString = feedUrlString {
+        if let feedUrl = feedUrl {
             
             // TODO: add error handling / connectivity error
-            updatePodcastOnServer(feedUrl: feedUrlString, shouldSubscribe: true) { wasSuccessful in
+            updatePodcastOnServer(podcastId: podcastId, shouldSubscribe: true) { wasSuccessful in
                 //
             }
             
             let feedParser = PVFeedParser(shouldOnlyGetMostRecentEpisode: false, shouldSubscribe: true, podcastId: podcastId)
-            feedParser.parsePodcastFeed(feedUrlString: feedUrlString)
+            feedParser.parsePodcastFeed(feedUrlString: feedUrl)
             
             DispatchQueue.main.async {
                 feedParser.delegate = ((UIApplication.shared.keyWindow?.rootViewController as? UITabBarController)?.viewControllers?.first as? UINavigationController)?.topViewController as? PodcastsTableViewController
@@ -31,17 +31,19 @@ class PVSubscriber {
         
     }
     
-    static func unsubscribeFromPodcast(feedUrlString: String?, podcastId: String?) {
+    static func unsubscribeFromPodcast(podcastId: String?, feedUrl: String?) {
         
-        if let feedUrlString = feedUrlString {
+        if let podcastId = podcastId {
             
             // TODO: add error handling / connectivity error
-            updatePodcastOnServer(feedUrl: feedUrlString, shouldSubscribe: false) { wasSuccessful in
+            updatePodcastOnServer(podcastId: podcastId, shouldSubscribe: false) { wasSuccessful in
                 //
             }
-
-            PVDeleter.deletePodcast(feedUrl: feedUrlString)
             
+            PVDeleter.deletePodcast(podcastId: podcastId, feedUrl: feedUrl)
+            
+        } else if let feedUrl = feedUrl {
+            PVDeleter.deletePodcast(podcastId: podcastId, feedUrl: feedUrl)
         }
         
     }
@@ -54,11 +56,11 @@ class PVSubscriber {
         }
     }
     
-    static func updatePodcastOnServer(feedUrl:String, shouldSubscribe:Bool, completion: @escaping (_ wasSuccessful:Bool?) -> Void) {
+    static func updatePodcastOnServer(podcastId:String?, shouldSubscribe:Bool, completion: @escaping (_ wasSuccessful:Bool?) -> Void) {
         
         let urlEnding = shouldSubscribe == true ? "subscribe" : "unsubscribe"
         
-        if let url = URL(string: BASE_URL + "podcasts/" + urlEnding) {
+        if let podcastId = podcastId, let url = URL(string: BASE_URL + "podcasts/" + urlEnding) {
             var request = URLRequest(url: url, cachePolicy: NSURLRequest.CachePolicy.reloadIgnoringLocalAndRemoteCacheData, timeoutInterval: 60)
             request.httpMethod = "POST"
             
@@ -68,7 +70,7 @@ class PVSubscriber {
             
             request.setValue(idToken, forHTTPHeaderField: "authorization")
             
-            let postString = "podcastFeedURL=" + feedUrl
+            let postString = "podcastId=" + podcastId
             request.httpBody = postString.data(using: .utf8)
             
             let task = URLSession.shared.dataTask(with: request) { data, response, error in

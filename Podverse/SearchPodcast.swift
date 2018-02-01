@@ -196,15 +196,15 @@ class SearchPodcast {
 
             let podcastActions = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
             
-            if let podcast = Podcast.podcastForId(id: id) {
+            if let _ = Podcast.podcastForId(id: id) {
                 podcastActions.addAction(UIAlertAction(title: "Unsubscribe", style: .default, handler: { action in
-                    PVDeleter.deletePodcast(feedUrl: podcast.feedUrl)
+                    PVDeleter.deletePodcast(podcastId: id, feedUrl: nil)
                 }))
             } else {
                 podcastActions.addAction(UIAlertAction(title: "Subscribe", style: .default, handler: { action in
                     self.authorityFeedUrlForPodcast(id: id) { feedUrl in
                         if let feedUrl = feedUrl {
-                            PVSubscriber.subscribeToPodcast(feedUrlString: feedUrl, podcastId: id)
+                            PVSubscriber.subscribeToPodcast(podcastId: id, feedUrl: feedUrl)
                         }
                     }
                 }))
@@ -221,6 +221,8 @@ class SearchPodcast {
             podcastActions.addAction(UIAlertAction(title: "Clips", style: .default, handler: { action in
                 vc.performSegue(withIdentifier: "Show Search Podcast", sender: "Clips")
             }))
+            
+            podcastActions.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
             
             vc.present(podcastActions, animated: true, completion: nil)
         }

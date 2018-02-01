@@ -49,7 +49,7 @@ class PVFeedParser {
             return
         }
         
-        self.parsingPodcasts.addPodcast(feedUrl: feedUrlString)
+        self.parsingPodcasts.addPodcast(podcastId: self.podcastId, feedUrl: feedUrlString)
         
         self.feedUrl = feedUrlString
         let feedParser = ExtendedFeedParser(feedUrl: feedUrlString)
@@ -71,7 +71,7 @@ extension PVFeedParser:FeedParserDelegate {
         if let feedUrlString = channel.channelURL {
             
             // If the podcast has been removed, then abandon parsing.
-            if !self.parsingPodcasts.hasMatchingUrl(feedUrl: feedUrlString) {
+            if !self.parsingPodcasts.hasMatchingUrl(feedUrl: feedUrlString) && !self.parsingPodcasts.hasMatchingId(podcastId: self.podcastId) {
                 return
             }
             
@@ -165,7 +165,7 @@ extension PVFeedParser:FeedParserDelegate {
         }
         
         // If the podcast has been removed, then abandon parsing.
-        if !self.parsingPodcasts.hasMatchingUrl(feedUrl: feedUrl) {
+        if !self.parsingPodcasts.hasMatchingUrl(feedUrl: feedUrl) && !self.parsingPodcasts.hasMatchingId(podcastId: self.podcastId) {
             return
         }
 
