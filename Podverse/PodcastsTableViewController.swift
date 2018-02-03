@@ -91,11 +91,12 @@ class PodcastsTableViewController: PVViewController, AutoDownloadProtocol {
             
             for podcast in podcastArray {
                 let feedUrl = NSURL(string:podcast.feedUrl)
+                let podcastId = podcast.id
                 
-                let pvFeedParser = PVFeedParser(shouldOnlyGetMostRecentEpisode: true, shouldSubscribe:false, podcastId: nil)
+                let pvFeedParser = PVFeedParser(shouldOnlyGetMostRecentEpisode: true, shouldSubscribe:false, podcastId: podcastId)
                 pvFeedParser.delegate = self
                 if let feedUrlString = feedUrl?.absoluteString {
-                    if !self.parsingPodcasts.hasMatchingUrl(feedUrl: feedUrlString) {
+                    if !self.parsingPodcasts.hasMatchingUrl(feedUrl: feedUrlString) && !self.parsingPodcasts.hasMatchingId(podcastId: podcastId) {
                         pvFeedParser.parsePodcastFeed(feedUrlString: feedUrlString)
                     }
                 }
