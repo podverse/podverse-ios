@@ -105,8 +105,6 @@ class AddToPlaylistViewController: UIViewController {
     
     func reloadPlaylistData() {
         
-        self.playlistsArray = []
-        
         hideActivityIndicator()
         
         if !checkForConnectivity() {
@@ -117,10 +115,6 @@ class AddToPlaylistViewController: UIViewController {
         guard playlistsArray.count > 0 else {
             loadNoPlaylistsMessage()
             return
-        }
-        
-        for playlist in playlistsArray {
-            self.playlistsArray.append(playlist)
         }
         
         self.tableView.reloadData()
