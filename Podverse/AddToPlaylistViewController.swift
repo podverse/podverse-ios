@@ -105,6 +105,8 @@ class AddToPlaylistViewController: UIViewController {
     
     func reloadPlaylistData() {
         
+        self.playlistsArray = []
+        
         hideActivityIndicator()
         
         if !checkForConnectivity() {
