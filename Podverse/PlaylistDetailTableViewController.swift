@@ -48,6 +48,7 @@ class PlaylistDetailTableViewController: PVViewController {
         
         if let id = self.playlistId {
             Playlist.retrievePlaylistFromServer(id: id) { (playlist) -> Void in
+                self.playlist = playlist
                 self.reloadPlaylistData(playlist: playlist)
             }
         }
@@ -234,6 +235,8 @@ extension PlaylistDetailTableViewController:UITableViewDelegate, UITableViewData
             if let mediaRefId = mediaRef.id, let playlistId = self.playlistId {
                 self.mediaRefsArray.remove(at: indexPath.row)
                 self.tableView.deleteRows(at: [indexPath], with: .fade)
+                
+                self.loadPlaylistHeader(playlist: self.playlist)
                 
                 // TODO: how do we make the completion block optional?
                 Playlist.removeFromPlaylist(playlistId: playlistId, mediaRefId: mediaRefId) {_ in }
