@@ -47,10 +47,6 @@ class PVAuth: NSObject {
             }
             .onAuth {
                 
-                DispatchQueue.main.async {
-                    vc.dismiss(animated: true, completion: nil)
-                }
-                
                 guard let accessToken = $0.accessToken, let idToken = $0.idToken else {
                     return
                 }
@@ -61,13 +57,29 @@ class PVAuth: NSObject {
                     .start { result in
                         switch result {
                         case .success(let profile):
-                            self.populateUserInfoWith(idToken: idToken, userId: profile.sub, userName: profile.nickname)
-                            self.notifyLoggedInSuccessfully()
+                            
+                            self.findOrCreateUserOnServer(profile: profile, idToken: idToken) { wasSuccessful in
+                                if (!wasSuccessful) {
+                                    self.alertLoginFailure(profile: profile, idToken: idToken, vc: vc)
+                                } else {
+                                    self.populateUserInfoWith(idToken: idToken, userId: profile.sub, userName: profile.nickname)
+                                    self.notifyLoggedInSuccessfully()
+                                    
+                                    DispatchQueue.main.async {
+                                        vc.dismiss(animated: true, completion: nil)
+                                    }
+                                }
+                            }
+                            
                         case .failure(let error):
-                            self.populateUserInfoWith(idToken: idToken, userId: nil, userName: nil)
-
+                            
                             // Maybe this is wrong. Even though .userInfo().start returns a failure, as long as we have a valid idToken, then the user should be logged in.
+                            self.populateUserInfoWith(idToken: idToken, userId: nil, userName: nil)
                             self.notifyLoggedInSuccessfully()
+                            
+                            DispatchQueue.main.async {
+                                vc.dismiss(animated: true, completion: nil)
+                            }
                             
                             print(error.localizedDescription)
                         }
@@ -78,6 +90,46 @@ class PVAuth: NSObject {
                 print("Failed with \($0)")
             }
             .present(from: vc)
+    }
+    
+    func findOrCreateUserOnServer(profile:UserInfo, idToken:String, completion:@escaping(_ wasSuccessful:Bool) -> Void) {
+        
+        if let url = URL(string: BASE_URL + "users/") {
+            
+            var request = URLRequest(url: url, cachePolicy: NSURLRequest.CachePolicy.reloadIgnoringLocalAndRemoteCacheData, timeoutInterval: 60)
+            request.httpMethod = "POST"
+            
+            request.setValue(idToken, forHTTPHeaderField: "authorization")
+
+            var postString = ""
+
+            if let name = profile.name {
+                postString += "name=" + name
+            }
+            
+            if let nickname = profile.nickname {
+                postString += "&nickname=" + nickname
+            }
+
+            request.httpBody = postString.data(using: .utf8)
+
+            let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                
+                guard error == nil else {
+                    DispatchQueue.main.async {
+                        completion(false)
+                    }
+                    return
+                }
+
+                completion(true)
+
+            }
+            
+            task.resume()
+            
+        }
+        
     }
     
     func syncUserInfoWithServer () {
@@ -123,5 +175,33 @@ class PVAuth: NSObject {
             NotificationCenter.default.post(name:NSNotification.Name(rawValue: kLoggedInSuccessfully), object: self, userInfo: nil)
         }
     }
+    
+    func alertLoginFailure(profile:UserInfo, idToken:String, vc:UIViewController) {
+        DispatchQueue.main.async {
+            let actions = UIAlertController(title: "Login Failed", message: "Please check your internet connection and try again.", preferredStyle: .alert)
+            
+            actions.addAction(UIAlertAction(title: "Retry", style: .default, handler: { action in
+                self.findOrCreateUserOnServer(profile: profile, idToken: idToken) { wasSuccessful in
+                    if (!wasSuccessful) {
+                        self.alertLoginFailure(profile: profile, idToken: idToken, vc: vc)
+                    } else {
+                        self.populateUserInfoWith(idToken: idToken, userId: profile.sub, userName: profile.nickname)
+                        
+                        self.notifyLoggedInSuccessfully()
+                        
+                        DispatchQueue.main.async {
+                            vc.dismiss(animated: true, completion: nil)
+                        }
+                    }
+                }
+            }))
+            
+            actions.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+            
+            vc.present(actions, animated: true, completion: nil)
+        }
+    }
+    
+    
     
 }
