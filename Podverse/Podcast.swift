@@ -165,9 +165,7 @@ class Podcast: NSManagedObject {
                     if let feedUrl = syncPodcast.feedUrl, let podcastId = syncPodcast.id {
                         let pvFeedParser = PVFeedParser(shouldOnlyGetMostRecentEpisode: true, shouldSubscribe: false, podcastId: syncPodcast.id)
                         pvFeedParser.delegate = delegate
-                        if !ParsingPodcasts.shared.hasMatchingUrl(feedUrl: feedUrl) && !ParsingPodcasts.shared.hasMatchingId(podcastId: podcastId) {
-                            pvFeedParser.parsePodcastFeed(feedUrlString: feedUrl)
-                        }
+                        pvFeedParser.parsePodcastFeed(feedUrlString: feedUrl)
                     }
                 }
             }

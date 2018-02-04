@@ -46,10 +46,11 @@ class PodcastsTableViewController: PVViewController, AutoDownloadProtocol {
         self.parseStatus.isHidden = true
         self.parseActivityIndicator.isHidden = true
         
+        Podcast.syncSubscribedPodcastsWithServer(delegate:self)
+
         refreshPodcastFeeds()
         loadPodcastData()
         
-        Podcast.syncSubscribedPodcastsWithServer(delegate:self)
         
         addObservers()
     }
@@ -96,9 +97,7 @@ class PodcastsTableViewController: PVViewController, AutoDownloadProtocol {
                 let pvFeedParser = PVFeedParser(shouldOnlyGetMostRecentEpisode: true, shouldSubscribe:false, podcastId: podcastId)
                 pvFeedParser.delegate = self
                 if let feedUrlString = feedUrl?.absoluteString {
-                    if !self.parsingPodcasts.hasMatchingUrl(feedUrl: feedUrlString) && !self.parsingPodcasts.hasMatchingId(podcastId: podcastId) {
-                        pvFeedParser.parsePodcastFeed(feedUrlString: feedUrlString)
-                    }
+                    pvFeedParser.parsePodcastFeed(feedUrlString: feedUrlString)
                 }
             }
         }

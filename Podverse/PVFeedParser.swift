@@ -45,11 +45,13 @@ class PVFeedParser {
         }
         
         // If the podcast is already in the parsing list AND should not be reparsed to download the latest episode, then do not add it again.
-        if self.parsingPodcasts.hasMatchingUrl(feedUrl: feedUrlString) && !self.downloadMostRecentEpisode {
+        if (self.parsingPodcasts.hasMatchingUrl(feedUrl: feedUrlString) || self.parsingPodcasts.hasMatchingId(podcastId: podcastId)) && !self.downloadMostRecentEpisode {
             return
         }
         
-        self.parsingPodcasts.addPodcast(podcastId: self.podcastId, feedUrl: feedUrlString)
+        if !self.downloadMostRecentEpisode {
+            self.parsingPodcasts.addPodcast(podcastId: self.podcastId, feedUrl: feedUrlString)
+        }
         
         self.feedUrl = feedUrlString
         let feedParser = ExtendedFeedParser(feedUrl: feedUrlString)
