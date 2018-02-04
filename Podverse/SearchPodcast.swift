@@ -198,7 +198,7 @@ class SearchPodcast {
             
             if let _ = Podcast.podcastForId(id: id) {
                 podcastActions.addAction(UIAlertAction(title: "Unsubscribe", style: .default, handler: { action in
-                    PVDeleter.deletePodcast(podcastId: id, feedUrl: nil)
+                    PVSubscriber.unsubscribeFromPodcast(podcastId: id, feedUrl: nil)
                 }))
             } else {
                 podcastActions.addAction(UIAlertAction(title: "Subscribe", style: .default, handler: { action in

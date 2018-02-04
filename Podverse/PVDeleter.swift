@@ -48,7 +48,7 @@ class PVDeleter: NSObject {
                 deleteAllEpisodesFromPodcast(podcastId: podcast.id, feedUrl: podcast.feedUrl)
                 privateMoc.delete(podcast)
                 privateMoc.saveData({
-                    DeletingPodcasts.shared.removePodcast(podcastId: podcast.id, feedUrl: podcast.feedUrl)
+                    DeletingPodcasts.shared.removePodcast(podcastId: podcastId, feedUrl: feedUrl)
                     DispatchQueue.main.async {
                         NotificationCenter.default.post(name: .podcastDeleted, object: nil, userInfo: ["podcastId": podcastId ?? "", "feedUrl": feedUrl ?? ""])
                     }

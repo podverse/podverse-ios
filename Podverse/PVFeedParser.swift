@@ -168,6 +168,7 @@ extension PVFeedParser:FeedParserDelegate {
         
         // If the podcast has been removed, then abandon parsing.
         if !self.parsingPodcasts.hasMatchingUrl(feedUrl: feedUrl) && !self.parsingPodcasts.hasMatchingId(podcastId: self.podcastId) {
+            parser.abortParsing()
             return
         }
 

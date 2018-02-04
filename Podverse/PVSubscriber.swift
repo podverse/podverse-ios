@@ -43,7 +43,7 @@ class PVSubscriber {
             PVDeleter.deletePodcast(podcastId: podcastId, feedUrl: feedUrl)
             
         } else if let feedUrl = feedUrl {
-            PVDeleter.deletePodcast(podcastId: podcastId, feedUrl: feedUrl)
+            PVDeleter.deletePodcast(podcastId: nil, feedUrl: feedUrl)
         }
         
     }

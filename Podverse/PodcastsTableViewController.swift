@@ -210,13 +210,14 @@ extension PodcastsTableViewController:UITableViewDelegate, UITableViewDataSource
     
     func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
         
+        let podcastToEditId = self.subscribedPodcastsArray[indexPath.row].id
         let podcastToEditFeedUrl = self.subscribedPodcastsArray[indexPath.row].feedUrl
         
         let deleteAction = UITableViewRowAction(style: .default, title: "Unsubscribe", handler: {action, indexpath in
             self.subscribedPodcastsArray.remove(at: indexPath.row)
             tableView.deleteRows(at: [indexPath], with: .fade)
             
-            PVSubscriber.unsubscribeFromPodcast(podcastId: nil, feedUrl: podcastToEditFeedUrl)
+            PVSubscriber.unsubscribeFromPodcast(podcastId: podcastToEditId, feedUrl: podcastToEditFeedUrl)
             
             if !checkForResults(results: self.subscribedPodcastsArray) {
                 self.loadNoPodcastsSubscribedMessage()
@@ -298,7 +299,14 @@ extension PodcastsTableViewController {
     override func podcastDeleted(_ notification:Notification) {
         super.podcastDeleted(notification)
         
-        if let feedUrl = notification.userInfo?["feedUrl"] as? String, let index = self.subscribedPodcastsArray.index(where: { $0.feedUrl == feedUrl }) {
+        if let podcastId = notification.userInfo?["podcastId"] as? String, let index = self.subscribedPodcastsArray.index(where: { $0.id == podcastId }) {
+            
+            self.subscribedPodcastsArray.remove(at: index)
+            
+            DispatchQueue.main.async {
+                self.tableView.deleteRows(at: [IndexPath(row: index, section: 0)], with: .fade)
+            }
+        } else if let feedUrl = notification.userInfo?["feedUrl"] as? String, let index = self.subscribedPodcastsArray.index(where: { $0.feedUrl == feedUrl }) {
             self.subscribedPodcastsArray.remove(at: index)
 
             DispatchQueue.main.async {
