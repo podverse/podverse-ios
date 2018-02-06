@@ -1,5 +1,5 @@
 //
-//  SyncPodcast.swift
+//  SyncablePodcast.swift
 //  Podverse
 //
 //  Created by Mitchell Downey on 1/20/18.
@@ -11,7 +11,7 @@ import Foundation
 import Foundation
 import UIKit
 
-class SyncPodcast {
+class SyncablePodcast {
     
     var feedUrl: String?
     var id: String?

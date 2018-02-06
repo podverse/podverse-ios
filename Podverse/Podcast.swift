@@ -175,13 +175,16 @@ class Podcast: NSManagedObject {
     }
         
     // TODO: This end point should be optimized better.
-    static func retrieveSubscribedPodcastsFromServer(completion: @escaping (_ syncPodcasts: [SyncPodcast]?) -> Void) {
+    static func retrieveSubscribedPodcastsFromServer(completion: @escaping (_ syncPodcasts: [SyncablePodcast]?) -> Void) {
         
         if let url = URL(string: BASE_URL + "api/user/podcasts") {
             var request = URLRequest(url: url, cachePolicy: NSURLRequest.CachePolicy.reloadIgnoringLocalAndRemoteCacheData, timeoutInterval: 60)
             request.httpMethod = "POST"
             
             guard let idToken = UserDefaults.standard.string(forKey: "idToken") else {
+                DispatchQueue.main.async {
+                    completion([])
+                }
                 return
             }
             
@@ -198,14 +201,14 @@ class Podcast: NSManagedObject {
                 
                 if let userData = userData {
                     do {
-                        var syncPodcasts = [SyncPodcast]()
+                        var syncPodcasts = [SyncablePodcast]()
                         
                         if let userDataJSON = try JSONSerialization.jsonObject(with: userData, options: []) as? [String:Any] {
                             
                             if let subscribedPodcasts = userDataJSON["subscribedPodcasts"] as? [[String:Any]] {
 
                                 for subscribedPodcast in subscribedPodcasts {
-                                    let syncPodcast = SyncPodcast()
+                                    let syncPodcast = SyncablePodcast()
                                     
                                     if let feedUrl = subscribedPodcast["authorityFeedUrl"] as? String {
                                         syncPodcast.feedUrl = feedUrl
@@ -227,6 +230,9 @@ class Podcast: NSManagedObject {
                         
                     } catch {
                         print("Error: " + error.localizedDescription)
+                        DispatchQueue.main.async {
+                            completion([])
+                        }
                     }
                 }
                 
