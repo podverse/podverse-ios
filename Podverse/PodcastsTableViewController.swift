@@ -49,6 +49,8 @@ class PodcastsTableViewController: PVViewController, AutoDownloadProtocol {
         refreshPodcastFeeds()
         loadPodcastData()
         
+        Podcast.syncSubscribedPodcastsWithServer(delegate:self)
+        
         addObservers()
     }
     
@@ -210,11 +212,11 @@ extension PodcastsTableViewController:UITableViewDelegate, UITableViewDataSource
         
         let podcastToEditFeedUrl = self.subscribedPodcastsArray[indexPath.row].feedUrl
         
-        let deleteAction = UITableViewRowAction(style: .default, title: "Delete", handler: {action, indexpath in
+        let deleteAction = UITableViewRowAction(style: .default, title: "Unsubscribe", handler: {action, indexpath in
             self.subscribedPodcastsArray.remove(at: indexPath.row)
             tableView.deleteRows(at: [indexPath], with: .fade)
             
-            PVDeleter.deletePodcast(feedUrl: podcastToEditFeedUrl)
+            PVSubscriber.unsubscribeFromPodcast(feedUrlString: podcastToEditFeedUrl)
             
             if !checkForResults(results: self.subscribedPodcastsArray) {
                 self.loadNoPodcastsSubscribedMessage()

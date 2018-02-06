@@ -146,4 +146,78 @@ class Podcast: NSManagedObject {
         }
     }
     
+    // TODO: Don't pass in a delegate (switch FeedParser delegate methods to notifications?)
+    // TODO: Add placeholder podcasts to PodcastsTableVC when a feedUrl is returned by the server but is not saved in Core Data.
+    static func syncSubscribedPodcastsWithServer(delegate: PVFeedParserDelegate) {
+        
+        retrieveSubscribedPodcastFeedUrlsFromServer() { feedUrls in
+            if let feedUrls = feedUrls {
+                for feedUrl in feedUrls {
+                    let pvFeedParser = PVFeedParser(shouldOnlyGetMostRecentEpisode: true, shouldSubscribe:false)
+                    pvFeedParser.delegate = delegate
+                    if !ParsingPodcasts.shared.hasMatchingUrl(feedUrl: feedUrl) {
+                        pvFeedParser.parsePodcastFeed(feedUrlString: feedUrl)
+                    }
+                }
+            }
+        }
+        
+    }
+        
+    // TODO: This end point should be optimized better.
+    static func retrieveSubscribedPodcastFeedUrlsFromServer(completion: @escaping (_ podcasts: [String]?) -> Void) {
+        
+        if let url = URL(string: BASE_URL + "api/user/podcasts") {
+            var request = URLRequest(url: url, cachePolicy: NSURLRequest.CachePolicy.reloadIgnoringLocalAndRemoteCacheData, timeoutInterval: 60)
+            request.httpMethod = "POST"
+            
+            guard let idToken = UserDefaults.standard.string(forKey: "idToken") else {
+                DispatchQueue.main.async {
+                    completion([])
+                }
+                return
+            }
+            
+            request.setValue(idToken, forHTTPHeaderField: "authorization")
+            
+            let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                
+                guard error == nil else {
+                    DispatchQueue.main.async {
+                        completion([])
+                    }
+                    return
+                }
+                
+                if let data = data {
+                    do {
+                        var feedUrls = [String]()
+                        
+                        if let feedUrlsJSON = try JSONSerialization.jsonObject(with: data, options: []) as? [[String:Any]] {
+                            for item in feedUrlsJSON {
+                                if let feedUrl = item["feedURL"] as? String {
+                                    feedUrls.append(feedUrl)
+                                }
+                            }
+                        }
+                        
+                        DispatchQueue.main.async {
+                            completion(feedUrls)
+                        }
+                        
+                    } catch {
+                        print("Error: " + error.localizedDescription)
+                        DispatchQueue.main.async {
+                            completion([])
+                        }
+                    }
+                }
+                
+            }
+            
+            task.resume()
+            
+        }
+    }
+    
 }
