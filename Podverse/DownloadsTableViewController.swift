@@ -109,8 +109,8 @@ extension DownloadsTableViewController:UITableViewDelegate, UITableViewDataSourc
             if let mediaUrl = downloadingEpisode.mediaUrl {
                 let episode = CoreDataHelper.retrieveExistingOrCreateNewEpisode(mediaUrlString: mediaUrl, moc: moc)
                 let playerHistoryItem = playerHistoryManager.convertEpisodeToPlayerHistoryItem(episode: episode)
-                pvMediaPlayer.loadPlayerHistoryItem(item: playerHistoryItem)
                 goToNowPlaying()
+                pvMediaPlayer.loadPlayerHistoryItem(item: playerHistoryItem)
             }
         } else {
             pvDownloader.pauseDownloadingEpisode(downloadingEpisode: downloadingEpisode)

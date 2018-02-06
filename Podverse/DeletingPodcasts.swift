@@ -10,22 +10,38 @@ import Foundation
 
 final class DeletingPodcasts {
     static let shared = DeletingPodcasts()
-    var urls = [String]()
+    var podcastKeys = [String]()
     
-    func addPodcast(feedUrl:String) {
-        if self.urls.filter({$0 == feedUrl}).count < 1 {
-            self.urls.append(feedUrl)
+    func addPodcast(podcastId:String?, feedUrl:String?) {
+        if let podcastId = podcastId {
+            if self.podcastKeys.filter({$0 == podcastId}).count < 1 {
+                self.podcastKeys.append(podcastId)
+            }
+        } else if let feedUrl = feedUrl {
+            if self.podcastKeys.filter({$0 == feedUrl}).count < 1 {
+                self.podcastKeys.append(feedUrl)
+            }
         }
     }
     
-    func removePodcast(feedUrl:String) {
-        if let index = self.urls.index(of: feedUrl) {
-            self.urls.remove(at: index)
+    func removePodcast(podcastId:String?, feedUrl:String?) {
+        if let podcastId = podcastId, let index = self.podcastKeys.index(of: podcastId) {
+            self.podcastKeys.remove(at: index)
+        } else if let feedUrl = feedUrl, let index = self.podcastKeys.index(of: feedUrl) {
+            self.podcastKeys.remove(at: index)
         }
+    }
+    
+    func hasMatchingId(podcastId:String) -> Bool {
+        if let _ = self.podcastKeys.index(of: podcastId) {
+            return true
+        }
+        
+        return false
     }
     
     func hasMatchingUrl(feedUrl:String) -> Bool {
-        if let _ = self.urls.index(of: feedUrl) {
+        if let _ = self.podcastKeys.index(of: feedUrl) {
             return true
         }
         

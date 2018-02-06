@@ -45,11 +45,13 @@ class PVFeedParser {
         }
         
         // If the podcast is already in the parsing list AND should not be reparsed to download the latest episode, then do not add it again.
-        if self.parsingPodcasts.hasMatchingUrl(feedUrl: feedUrlString) && !self.downloadMostRecentEpisode {
+        if (self.parsingPodcasts.hasMatchingUrl(feedUrl: feedUrlString) || self.parsingPodcasts.hasMatchingId(podcastId: podcastId)) && !self.downloadMostRecentEpisode {
             return
         }
         
-        self.parsingPodcasts.addPodcast(feedUrl: feedUrlString)
+        if !self.downloadMostRecentEpisode {
+            self.parsingPodcasts.addPodcast(podcastId: self.podcastId, feedUrl: feedUrlString)
+        }
         
         self.feedUrl = feedUrlString
         let feedParser = ExtendedFeedParser(feedUrl: feedUrlString)
@@ -71,7 +73,7 @@ extension PVFeedParser:FeedParserDelegate {
         if let feedUrlString = channel.channelURL {
             
             // If the podcast has been removed, then abandon parsing.
-            if !self.parsingPodcasts.hasMatchingUrl(feedUrl: feedUrlString) {
+            if !self.parsingPodcasts.hasMatchingUrl(feedUrl: feedUrlString) && !self.parsingPodcasts.hasMatchingId(podcastId: self.podcastId) {
                 return
             }
             
@@ -165,7 +167,8 @@ extension PVFeedParser:FeedParserDelegate {
         }
         
         // If the podcast has been removed, then abandon parsing.
-        if !self.parsingPodcasts.hasMatchingUrl(feedUrl: feedUrl) {
+        if !self.parsingPodcasts.hasMatchingUrl(feedUrl: feedUrl) && !self.parsingPodcasts.hasMatchingId(podcastId: self.podcastId) {
+            parser.abortParsing()
             return
         }
 

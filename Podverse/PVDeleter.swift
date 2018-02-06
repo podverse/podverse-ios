@@ -17,43 +17,63 @@ extension Notification.Name {
 
 class PVDeleter: NSObject {
     
-    static func deletePodcast(feedUrl: String? = nil) {
+    static func deletePodcast(podcastId:String?, feedUrl:String?) {
         
         DispatchQueue.global().async {
             let privateMoc = CoreDataHelper.createMOCForThread(threadType: .privateThread)
+            let podcast:Podcast?
             
-            guard let feedUrl = feedUrl, let podcastToDelete = Podcast.podcastForFeedUrl(feedUrlString: feedUrl, managedObjectContext: privateMoc) else {
-                return
-            }
-            
-            if DeletingPodcasts.shared.hasMatchingUrl(feedUrl: feedUrl) {
-                return
-            }
-            
-            DeletingPodcasts.shared.addPodcast(feedUrl: feedUrl)
-            ParsingPodcasts.shared.removePodcast(feedUrl: feedUrl)
-            podcastToDelete.removeFromAutoDownloadList()
-            deleteAllEpisodesFromPodcast(feedUrl: feedUrl)
-            privateMoc.delete(podcastToDelete)
-            privateMoc.saveData({
-                DeletingPodcasts.shared.removePodcast(feedUrl: feedUrl)
-                DispatchQueue.main.async {
-                    NotificationCenter.default.post(name: .podcastDeleted, object: nil, userInfo: ["feedUrl": feedUrl ?? ""])
+            if let podcastId = podcastId {
+                
+                if DeletingPodcasts.shared.hasMatchingId(podcastId: podcastId) {
+                    return
                 }
-            })
+                
+                podcast = Podcast.podcastForId(id: podcastId, managedObjectContext: privateMoc)
+            } else if let feedUrl = feedUrl {
+                
+                if DeletingPodcasts.shared.hasMatchingUrl(feedUrl: feedUrl) {
+                    return
+                }
+                
+                podcast = Podcast.podcastForFeedUrl(feedUrlString: feedUrl, managedObjectContext: privateMoc)
+            } else {
+                return
+            }
+
+            if let podcast = podcast {
+                DeletingPodcasts.shared.addPodcast(podcastId: podcast.id, feedUrl: podcast.feedUrl)
+                ParsingPodcasts.shared.removePodcast(podcastId: podcast.id, feedUrl: podcast.feedUrl)
+                podcast.removeFromAutoDownloadList()
+                deleteAllEpisodesFromPodcast(podcastId: podcast.id, feedUrl: podcast.feedUrl)
+                privateMoc.delete(podcast)
+                privateMoc.saveData({
+                    DeletingPodcasts.shared.removePodcast(podcastId: podcastId, feedUrl: feedUrl)
+                    DispatchQueue.main.async {
+                        NotificationCenter.default.post(name: .podcastDeleted, object: nil, userInfo: ["podcastId": podcastId ?? "", "feedUrl": feedUrl ?? ""])
+                    }
+                })
+            }
             
         }
         
     }
     
-    static func deleteAllEpisodesFromPodcast(feedUrl: String) {
+    static func deleteAllEpisodesFromPodcast(podcastId:String?, feedUrl: String?) {
         
         DispatchQueue.global().async {
             let privateMoc = CoreDataHelper.createMOCForThread(threadType: .privateThread)
+            var podcast:Podcast? = nil
             
-            if let podcast = Podcast.podcastForFeedUrl(feedUrlString: feedUrl, managedObjectContext: privateMoc) {
-                let episodesToRemove = podcast.episodes
-                for episode in episodesToRemove {
+            if let podcastId = podcastId {
+                podcast = Podcast.podcastForId(id: podcastId, managedObjectContext: privateMoc)
+            } else if let feedUrl = feedUrl {
+                podcast = Podcast.podcastForFeedUrl(feedUrlString: feedUrl, managedObjectContext: privateMoc)
+            }
+            
+            if let p = podcast {
+                let episodes = p.episodes
+                for episode in episodes {
                     PVDeleter.deleteEpisode(mediaUrl: episode.mediaUrl)
                 }
             }

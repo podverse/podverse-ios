@@ -101,10 +101,10 @@ class SearchPodcastViewController: PVViewController {
             let isSubscribed = PVSubscriber.checkIfSubscribed(podcastId: podcast.id)
             
             if isSubscribed {
-                PVSubscriber.unsubscribeFromPodcast(feedUrlString: nil, podcastId: podcast.id)
+                PVSubscriber.unsubscribeFromPodcast(podcastId: podcast.id, feedUrl: nil)
             } else {
                 DispatchQueue.global().async {
-                    PVSubscriber.subscribeToPodcast(feedUrlString: nil, podcastId: podcast.id)
+                    PVSubscriber.subscribeToPodcast(podcastId: podcast.id, feedUrl: nil)
                 }
             }
             

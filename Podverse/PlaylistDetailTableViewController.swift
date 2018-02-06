@@ -48,6 +48,7 @@ class PlaylistDetailTableViewController: PVViewController {
         
         if let id = self.playlistId {
             Playlist.retrievePlaylistFromServer(id: id) { (playlist) -> Void in
+                self.playlist = playlist
                 self.reloadPlaylistData(playlist: playlist)
             }
         }
@@ -82,40 +83,63 @@ class PlaylistDetailTableViewController: PVViewController {
     
     func loadNoDataView(message: String, buttonTitle: String?, buttonPressed: Selector?) {
         
-        if let noDataView = self.view.subviews.first(where: { $0.tag == kNoDataViewTag}) {
-            
-            if let messageView = noDataView.subviews.first(where: {$0 is UILabel}), let messageLabel = messageView as? UILabel {
-                messageLabel.text = message
+        DispatchQueue.main.async {
+            if let noDataView = self.view.subviews.first(where: { $0.tag == kNoDataViewTag}) {
+                
+                if let messageView = noDataView.subviews.first(where: {$0 is UILabel}), let messageLabel = messageView as? UILabel {
+                    messageLabel.text = message
+                }
+                
+                if let buttonView = noDataView.subviews.first(where: {$0 is UIButton}), let button = buttonView as? UIButton {
+                    button.setTitle(buttonTitle, for: .normal)
+                }
+                
+            }
+            else {
+                self.addNoDataViewWithMessage(message, buttonTitle: buttonTitle, buttonImage: nil, retryPressed: buttonPressed)
             }
             
-            if let buttonView = noDataView.subviews.first(where: {$0 is UIButton}), let button = buttonView as? UIButton {
-                button.setTitle(buttonTitle, for: .normal)
-            }
+            self.hideActivityIndicator()
+            self.tableView.isHidden = true
+            self.showNoDataView()
             
         }
-        else {
-            self.addNoDataViewWithMessage(message, buttonTitle: buttonTitle, buttonImage: nil, retryPressed: buttonPressed)
+    }
+    
+    func loadPlaylistHeader(playlist: Playlist?) {
+        guard let playlist = playlist else {
+            self.playlistTitle.text = ""
+            self.itemCount.text = ""
+            self.lastUpdated.text = ""
+            return
         }
         
-        hideActivityIndicator()
-        self.tableView.isHidden = true
-        showNoDataView()
-        
+        DispatchQueue.main.async {
+            self.playlistTitle.text = playlist.title
+            self.itemCount.text = "Items: " + String(playlist.mediaRefs.count)
+            self.lastUpdated.text = playlist.lastUpdated?.toShortFormatString()
+        }
     }
     
     func reloadPlaylistData(playlist: Playlist?) {
-
-        hideActivityIndicator()
         
-        guard checkForResults(playlist: playlist), let playlist = playlist else {
+        hideActivityIndicator()
+
+        checkForResults(playlist: playlist)
+        
+        guard let playlist = playlist else {
             return
         }
+        
+        loadPlaylistHeader(playlist: playlist)
         
         self.mediaRefsArray = playlist.mediaRefs
         
         self.tableView.isHidden = false
-        self.tableView.reloadData()
         
+        DispatchQueue.main.async {
+            self.tableView.reloadData()
+        }
     }
     
     func showShareMenu() {
@@ -211,6 +235,8 @@ extension PlaylistDetailTableViewController:UITableViewDelegate, UITableViewData
             if let mediaRefId = mediaRef.id, let playlistId = self.playlistId {
                 self.mediaRefsArray.remove(at: indexPath.row)
                 self.tableView.deleteRows(at: [indexPath], with: .fade)
+                
+                self.loadPlaylistHeader(playlist: self.playlist)
                 
                 // TODO: how do we make the completion block optional?
                 Playlist.removeFromPlaylist(playlistId: playlistId, mediaRefId: mediaRefId) {_ in }

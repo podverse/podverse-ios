@@ -99,14 +99,21 @@ extension PVViewController {
     }
     
     func podcastDeleted(_ notification:Notification) {
-        if let feedUrl = notification.userInfo?["feedUrl"] as? String {
-            if playerHistoryManager.checkIfPodcastWasLastPlayed(feedUrl: feedUrl) == true {
-                DispatchQueue.main.async {
-                    self.tabBarController?.hidePlayerView()
-                }
+        
+        if let podcastId = notification.userInfo?["podcastId"] as? String, playerHistoryManager.checkIfPodcastWasLastPlayed(podcastId: podcastId, feedUrl: nil) == true {
+            DispatchQueue.main.async {
+                self.tabBarController?.hidePlayerView()
+            }
+        }
+
+        
+        if let feedUrl = notification.userInfo?["feedUrl"] as? String, playerHistoryManager.checkIfPodcastWasLastPlayed(podcastId: nil, feedUrl: feedUrl) == true {
+            DispatchQueue.main.async {
+                self.tabBarController?.hidePlayerView()
             }
         }
     }
+    
 }
 
 extension PVViewController:TableViewHeightProtocol {

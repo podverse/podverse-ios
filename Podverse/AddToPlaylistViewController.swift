@@ -117,10 +117,6 @@ class AddToPlaylistViewController: UIViewController {
             return
         }
         
-        for playlist in playlistsArray {
-            self.playlistsArray.append(playlist)
-        }
-        
         self.tableView.reloadData()
         
         self.tableView.isHidden = false

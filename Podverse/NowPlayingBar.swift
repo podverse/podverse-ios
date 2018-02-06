@@ -23,7 +23,6 @@ class NowPlayingBar:UIView {
     weak var delegate:NowPlayingBarDelegate?
     
     let pvMediaPlayer = PVMediaPlayer.shared
-    let audioPlayer = PVMediaPlayer.shared.audioPlayer
     
     @IBAction func didTapView(_ sender: Any) {
         self.delegate?.didTapView()
@@ -70,24 +69,25 @@ class NowPlayingBar:UIView {
     }
     
     func togglePlayIcon() {
+        let audioPlayer = PVMediaPlayer.shared.audioPlayer
         DispatchQueue.main.async {
-            if self.audioPlayer.state == .stopped || self.audioPlayer.state == .paused {
+            if audioPlayer.state == .stopped || audioPlayer.state == .paused {
                 self.activityIndicator.isHidden = true
                 self.playButton.setImage(UIImage(named:"play"), for: .normal)
                 self.playButton.tintColor = UIColor.black
                 self.playButton.isHidden = false
-            } else if self.audioPlayer.state == .error {
+            } else if audioPlayer.state == .error {
                 self.activityIndicator.isHidden = true
                 self.playButton.setImage(UIImage(named:"playerror"), for: .normal)
                 // TODO: why doesn't this turn red? The playButton stays black for some reason. It works in MediaPlayerVC tho...
                 self.playButton.tintColor = UIColor.red
                 self.playButton.isHidden = false
-            } else if self.audioPlayer.state == .playing && !self.pvMediaPlayer.shouldSetupClip {
+            } else if audioPlayer.state == .playing && !self.pvMediaPlayer.shouldSetupClip {
                 self.activityIndicator.isHidden = true
                 self.playButton.setImage(UIImage(named:"pause"), for: .normal)
                 self.playButton.tintColor = UIColor.black
                 self.playButton.isHidden = false
-            } else if self.audioPlayer.state == .buffering || self.pvMediaPlayer.shouldSetupClip {
+            } else if audioPlayer.state == .buffering || self.pvMediaPlayer.shouldSetupClip {
                 self.activityIndicator.isHidden = false
                 self.playButton.isHidden = true
             } else {

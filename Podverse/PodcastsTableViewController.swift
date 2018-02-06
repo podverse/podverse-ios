@@ -46,10 +46,11 @@ class PodcastsTableViewController: PVViewController, AutoDownloadProtocol {
         self.parseStatus.isHidden = true
         self.parseActivityIndicator.isHidden = true
         
+        Podcast.syncSubscribedPodcastsWithServer(delegate:self)
+
         refreshPodcastFeeds()
         loadPodcastData()
         
-        Podcast.syncSubscribedPodcastsWithServer(delegate:self)
         
         addObservers()
     }
@@ -87,17 +88,16 @@ class PodcastsTableViewController: PVViewController, AutoDownloadProtocol {
         DispatchQueue.global().async {
             let privateMoc = CoreDataHelper.createMOCForThread(threadType: .privateThread)
             var podcastArray = CoreDataHelper.fetchEntities(className:"Podcast", predicate: nil, moc:privateMoc) as! [Podcast]
-            podcastArray = podcastArray.filter { !DeletingPodcasts.shared.urls.contains($0.feedUrl) }
+            podcastArray = podcastArray.filter { !DeletingPodcasts.shared.podcastKeys.contains($0.feedUrl) }
             
             for podcast in podcastArray {
                 let feedUrl = NSURL(string:podcast.feedUrl)
+                let podcastId = podcast.id
                 
-                let pvFeedParser = PVFeedParser(shouldOnlyGetMostRecentEpisode: true, shouldSubscribe:false, podcastId: nil)
+                let pvFeedParser = PVFeedParser(shouldOnlyGetMostRecentEpisode: true, shouldSubscribe:false, podcastId: podcastId)
                 pvFeedParser.delegate = self
                 if let feedUrlString = feedUrl?.absoluteString {
-                    if !self.parsingPodcasts.hasMatchingUrl(feedUrl: feedUrlString) {
-                        pvFeedParser.parsePodcastFeed(feedUrlString: feedUrlString)
-                    }
+                    pvFeedParser.parsePodcastFeed(feedUrlString: feedUrlString)
                 }
             }
         }
@@ -109,7 +109,7 @@ class PodcastsTableViewController: PVViewController, AutoDownloadProtocol {
     func loadPodcastData() {
         
         self.subscribedPodcastsArray = CoreDataHelper.fetchEntities(className:"Podcast", predicate: nil, moc:self.moc) as! [Podcast]
-        self.subscribedPodcastsArray = self.subscribedPodcastsArray.filter { !DeletingPodcasts.shared.urls.contains($0.feedUrl) }
+        self.subscribedPodcastsArray = self.subscribedPodcastsArray.filter { !DeletingPodcasts.shared.podcastKeys.contains($0.feedUrl) }
         
         guard checkForResults(results: subscribedPodcastsArray) else {
             self.loadNoPodcastsSubscribedMessage()
@@ -210,13 +210,14 @@ extension PodcastsTableViewController:UITableViewDelegate, UITableViewDataSource
     
     func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
         
+        let podcastToEditId = self.subscribedPodcastsArray[indexPath.row].id
         let podcastToEditFeedUrl = self.subscribedPodcastsArray[indexPath.row].feedUrl
         
         let deleteAction = UITableViewRowAction(style: .default, title: "Unsubscribe", handler: {action, indexpath in
             self.subscribedPodcastsArray.remove(at: indexPath.row)
             tableView.deleteRows(at: [indexPath], with: .fade)
             
-            PVSubscriber.unsubscribeFromPodcast(feedUrlString: podcastToEditFeedUrl, podcastId: nil)
+            PVSubscriber.unsubscribeFromPodcast(podcastId: podcastToEditId, feedUrl: podcastToEditFeedUrl)
             
             if !checkForResults(results: self.subscribedPodcastsArray) {
                 self.loadNoPodcastsSubscribedMessage()
@@ -298,7 +299,14 @@ extension PodcastsTableViewController {
     override func podcastDeleted(_ notification:Notification) {
         super.podcastDeleted(notification)
         
-        if let feedUrl = notification.userInfo?["feedUrl"] as? String, let index = self.subscribedPodcastsArray.index(where: { $0.feedUrl == feedUrl }) {
+        if let podcastId = notification.userInfo?["podcastId"] as? String, let index = self.subscribedPodcastsArray.index(where: { $0.id == podcastId }) {
+            
+            self.subscribedPodcastsArray.remove(at: index)
+            
+            DispatchQueue.main.async {
+                self.tableView.deleteRows(at: [IndexPath(row: index, section: 0)], with: .fade)
+            }
+        } else if let feedUrl = notification.userInfo?["feedUrl"] as? String, let index = self.subscribedPodcastsArray.index(where: { $0.feedUrl == feedUrl }) {
             self.subscribedPodcastsArray.remove(at: index)
 
             DispatchQueue.main.async {
@@ -308,7 +316,7 @@ extension PodcastsTableViewController {
     }
     
     func refreshParsingStatus(_ notification:Notification) {
-        let total = self.parsingPodcasts.urls.count
+        let total = self.parsingPodcasts.podcastKeys.count
         let currentItem = self.parsingPodcasts.currentlyParsingItem
         
         DispatchQueue.main.async {
