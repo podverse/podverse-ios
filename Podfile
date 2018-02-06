@@ -14,6 +14,7 @@ target 'Podverse' do
   pod 'p2.OAuth2', '3.0.3'
   pod 'StreamingKit', :git => 'https://github.com/podverse/StreamingKit.git'
   pod 'SDWebImage', '~> 4.0'
+  pod 'AppCenter'
 
   target 'PodverseTests' do
     inherit! :search_paths

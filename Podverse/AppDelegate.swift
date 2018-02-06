@@ -10,6 +10,9 @@ import UIKit
 import AVFoundation
 import MediaPlayer
 import Lock
+import AppCenter
+import AppCenterAnalytics
+import AppCenterCrashes
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -52,6 +55,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         PVAuth.shared.syncUserInfoWithServer()
         
         PVDownloader.shared.resumeDownloadingAllEpisodes()
+        
+        MSAppCenter.start("0d5dc5a6-3dea-457d-8b81-faff259d7f88", withServices:[ MSAnalytics.self, MSCrashes.self ])
         
         return true
     }
