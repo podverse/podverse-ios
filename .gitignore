@@ -30,7 +30,6 @@ test_builds/
 *.dSYM.zip
 *.dSYM
 .build/
-Auth0.plist
 
 # CocoaPods
 Pods/
