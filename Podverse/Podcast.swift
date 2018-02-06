@@ -172,6 +172,9 @@ class Podcast: NSManagedObject {
             request.httpMethod = "POST"
             
             guard let idToken = UserDefaults.standard.string(forKey: "idToken") else {
+                DispatchQueue.main.async {
+                    completion([])
+                }
                 return
             }
             
@@ -204,6 +207,9 @@ class Podcast: NSManagedObject {
                         
                     } catch {
                         print("Error: " + error.localizedDescription)
+                        DispatchQueue.main.async {
+                            completion([])
+                        }
                     }
                 }
                 

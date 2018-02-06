@@ -63,6 +63,9 @@ class PVSubscriber {
             request.httpMethod = "POST"
             
             guard let idToken = UserDefaults.standard.string(forKey: "idToken") else {
+                DispatchQueue.main.async {
+                    completion(false)
+                }
                 return
             }
             
