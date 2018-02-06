@@ -92,7 +92,7 @@ class PodcastsTableViewController: PVViewController, AutoDownloadProtocol {
             for podcast in podcastArray {
                 let feedUrl = NSURL(string:podcast.feedUrl)
                 
-                let pvFeedParser = PVFeedParser(shouldOnlyGetMostRecentEpisode: true, shouldSubscribe:false)
+                let pvFeedParser = PVFeedParser(shouldOnlyGetMostRecentEpisode: true, shouldSubscribe:false, podcastId: nil)
                 pvFeedParser.delegate = self
                 if let feedUrlString = feedUrl?.absoluteString {
                     if !self.parsingPodcasts.hasMatchingUrl(feedUrl: feedUrlString) {
@@ -216,7 +216,7 @@ extension PodcastsTableViewController:UITableViewDelegate, UITableViewDataSource
             self.subscribedPodcastsArray.remove(at: indexPath.row)
             tableView.deleteRows(at: [indexPath], with: .fade)
             
-            PVSubscriber.unsubscribeFromPodcast(feedUrlString: podcastToEditFeedUrl)
+            PVSubscriber.unsubscribeFromPodcast(feedUrlString: podcastToEditFeedUrl, podcastId: nil)
             
             if !checkForResults(results: self.subscribedPodcastsArray) {
                 self.loadNoPodcastsSubscribedMessage()

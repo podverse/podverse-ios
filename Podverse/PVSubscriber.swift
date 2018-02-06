@@ -11,7 +11,7 @@ import CoreData
 
 class PVSubscriber {
     
-    static func subscribeToPodcast(feedUrlString: String?) {
+    static func subscribeToPodcast(feedUrlString: String?, podcastId: String?) {
         
         if let feedUrlString = feedUrlString {
             
@@ -20,7 +20,7 @@ class PVSubscriber {
                 //
             }
             
-            let feedParser = PVFeedParser(shouldOnlyGetMostRecentEpisode: false, shouldSubscribe: true)
+            let feedParser = PVFeedParser(shouldOnlyGetMostRecentEpisode: false, shouldSubscribe: true, podcastId: podcastId)
             feedParser.parsePodcastFeed(feedUrlString: feedUrlString)
             
             DispatchQueue.main.async {
@@ -31,7 +31,7 @@ class PVSubscriber {
         
     }
     
-    static func unsubscribeFromPodcast(feedUrlString: String?) {
+    static func unsubscribeFromPodcast(feedUrlString: String?, podcastId: String?) {
         
         if let feedUrlString = feedUrlString {
             
@@ -39,15 +39,15 @@ class PVSubscriber {
             updatePodcastOnServer(feedUrl: feedUrlString, shouldSubscribe: false) { wasSuccessful in
                 //
             }
-            
+
             PVDeleter.deletePodcast(feedUrl: feedUrlString)
             
         }
         
     }
     
-    static func checkIfSubscribed(feedUrlString: String?) -> Bool {
-        if let feedUrlString = feedUrlString, let _ = Podcast.podcastForFeedUrl(feedUrlString: feedUrlString) {
+    static func checkIfSubscribed(podcastId: String?) -> Bool {
+        if let podcastId = podcastId, let _ = Podcast.podcastForId(id: podcastId) {
             return true
         } else {
             return false

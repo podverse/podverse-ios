@@ -48,13 +48,13 @@ enum PlayingSpeed {
             case .threeQuarts:
                 return 0.75
             case .regular:
-                return 1
+                return 1.0
             case .timeAndQuarter:
                 return 1.25
             case .timeAndHalf:
                 return 1.5
             case .double:
-                return 2
+                return 2.0
             }
         }
     }
@@ -69,7 +69,7 @@ protocol PVMediaPlayerUIDelegate {
     func playerHistoryItemPaused()
 }
 
-class PVMediaPlayer: NSObject {
+class PVMediaPlayer:NSObject {
 
     static let shared = PVMediaPlayer()
     
@@ -103,9 +103,8 @@ class PVMediaPlayer: NSObject {
     }
 
     override init() {
-        
         super.init()
-        
+        self.audioPlayer.delegate = self
         addObservers()
         startClipTimer()
         startPlaybackTimer()
@@ -165,12 +164,10 @@ class PVMediaPlayer: NSObject {
     }
     
     fileprivate func addObservers() {
-        self.addObserver(self, forKeyPath: #keyPath(audioPlayer.state), options: [.new], context: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(headphonesWereUnplugged), name: .AVAudioSessionRouteChange, object: AVAudioSession.sharedInstance())
     }
     
     fileprivate func removeObservers() {
-        self.removeObserver(self, forKeyPath: #keyPath(audioPlayer.state))
         NotificationCenter.default.removeObserver(self, name: .AVAudioSessionRouteChange, object: AVAudioSession.sharedInstance())
     }
     
@@ -272,7 +269,7 @@ class PVMediaPlayer: NSObject {
     
     func pause() {
         savePlaybackPosition()
-        self.audioPlayer.rate = 0
+        self.audioPlayer.rate = 0.0
         self.audioPlayer.pause()
     }
     
@@ -359,6 +356,10 @@ class PVMediaPlayer: NSObject {
     
     func loadPlayerHistoryItem(item: PlayerHistoryItem) {
         
+        self.audioPlayer.dispose()
+        self.audioPlayer = STKAudioPlayer()
+        self.audioPlayer.delegate = self
+        
         self.nowPlayingItem = item
         self.nowPlayingItem?.hasReachedEnd = false
         self.shouldHideClipDataNextPlay = false
@@ -372,9 +373,6 @@ class PVMediaPlayer: NSObject {
         // If the audioPlayer was last in the errored state, attempting to pause will cause the app to crash.
         if self.hasErrored {
             self.hasErrored = false
-        } else {
-            // NOTE: use the self.audioPlayer.pause method directly here, instead of self.pause()
-            self.audioPlayer.pause()
         }
         
         // If you are loading a clip, or an episode from the beginning, the item.lastPlaybackPosition will be overridden in the observeValue or seek method.
@@ -408,19 +406,17 @@ class PVMediaPlayer: NSObject {
                     
                     if let fileName = episode.fileName {
                         let destinationUrl = docDirectoryUrl.appendingPathComponent(fileName)
-                        let dataSource = STKAudioPlayer.dataSource(from: destinationUrl)
-                        self.audioPlayer.play(dataSource)
+                        self.audioPlayer.play(destinationUrl)
+                        
                     } else {
-                        let dataSource = STKAudioPlayer.dataSource(from: episodeMediaUrl)
-                        self.audioPlayer.play(dataSource)
+                        self.audioPlayer.play(episodeMediaUrl)
                     }
                 }
             }
 
             // Else remotely stream the whole episode.
             else {
-                let dataSource = STKAudioPlayer.dataSource(from: episodeMediaUrl)
-                self.audioPlayer.play(dataSource)
+                self.audioPlayer.play(episodeMediaUrl)
             }
             
             self.shouldSetupClip = item.isClip()
@@ -436,9 +432,9 @@ class PVMediaPlayer: NSObject {
 //        if notification.name == NSNotification.Name.AVAudioSessionInterruption && notification.userInfo != nil {
 //            var info = notification.userInfo!
 //            var intValue: UInt = 0
-//            
+//
 //            (info[AVAudioSessionInterruptionTypeKey] as! NSValue).getValue(&intValue)
-//            
+//
 //            switch AVAudioSessionInterruptionType(rawValue: intValue) {
 //                case .some(.began):
 //                    saveCurrentTimeAsPlaybackPosition()
@@ -452,74 +448,89 @@ class PVMediaPlayer: NSObject {
 //        }
     }
     
-    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
-        if let keyPath = keyPath, let item = self.nowPlayingItem {
-            if keyPath == #keyPath(audioPlayer.state) {
+}
+
+extension PVMediaPlayer:STKAudioPlayerDelegate {
+    
+    func audioPlayer(_ audioPlayer: STKAudioPlayer, stateChanged state: STKAudioPlayerState, previousState: STKAudioPlayerState) {
+        
+        if let item = self.nowPlayingItem {
+            if state == .buffering {
+                self.delegate?.playerHistoryItemBuffering()
+                return
+            }
+            
+            if state == .error {
+                self.hasErrored = true
+                self.delegate?.playerHistoryItemErrored()
+                return
+            }
+            
+            if state == .paused {
+                self.delegate?.playerHistoryItemPaused()
+                return
+            }
+            
+            if state == .playing {
                 
-                if self.audioPlayer.state == .buffering {
-                    self.delegate?.playerHistoryItemBuffering()
-                    return
-                }
-                
-                if self.audioPlayer.state == .error {
-                    self.hasErrored = true
-                    self.delegate?.playerHistoryItemErrored()
-                    return
-                }
-                
-                if self.audioPlayer.state == .paused {
-                    self.delegate?.playerHistoryItemPaused()
-                    return
-                }
-                
-                if self.audioPlayer.state == .playing {
+                if self.audioPlayer.duration > 0 {
+                    updateDuration(episodeMediaUrl: nil)
                     
-                    if self.audioPlayer.duration > 0 {
-                        updateDuration(episodeMediaUrl: nil)
+                    if self.shouldSetupClip == true {
+                        if let startTime = item.startTime {
+                            self.seek(toTime: Double(startTime))
+                        }
                         
-                        if self.shouldSetupClip == true {
-                            if let startTime = item.startTime {
-                                self.seek(toTime: Double(startTime))
-                            }
-                            
-                            if let endTime = item.endTime {
-                                self.shouldStopAtEndTime = endTime
-                            }
-                            
-                            self.shouldSetupClip = false
-                            
-                            if self.shouldStartFromTime > 0 {
-                                self.audioPlayer.seek(toTime: Double(self.shouldStartFromTime))
-                                self.shouldStartFromTime = 0
-                                self.isItemLoaded = true
-                                self.delegate?.playerHistoryItemLoaded()
-                            }
-                            
-                            return
-                            
-                        } else if self.shouldStartFromTime > 0 {
+                        if let endTime = item.endTime {
+                            self.shouldStopAtEndTime = endTime
+                        }
+                        
+                        self.shouldSetupClip = false
+                        
+                        if self.shouldStartFromTime > 0 {
                             self.audioPlayer.seek(toTime: Double(self.shouldStartFromTime))
                             self.shouldStartFromTime = 0
                             self.isItemLoaded = true
-                            self.delegate?.playerHistoryItemLoaded()
-                            return
                         }
                         
+                    } else if self.shouldStartFromTime > 0 {
+                        self.audioPlayer.seek(toTime: Double(self.shouldStartFromTime))
+                        self.shouldStartFromTime = 0
+                        self.isItemLoaded = true
                     }
                     
                 }
                 
-                if self.audioPlayer.state == .playing && !self.shouldSetupClip && self.shouldStartFromTime == 0 {
-                    self.isItemLoaded = true
-                    self.delegate?.playerHistoryItemLoaded()
-                }
-                
-                if self.audioPlayer.state == .stopped, !self.hasErrored {
-                    return
-                }
+                self.delegate?.playerHistoryItemLoaded()
                 
             }
+            
+            if state == .playing && !self.shouldSetupClip && self.shouldStartFromTime == 0 {
+                self.isItemLoaded = true
+                self.delegate?.playerHistoryItemLoaded()
+            }
+            
         }
+    }
+    
+    func audioPlayer(_ audioPlayer: STKAudioPlayer, didCancelQueuedItems queuedItems: [Any]) {
+        
+    }
+    
+    func audioPlayer(_ audioPlayer: STKAudioPlayer, didStartPlayingQueueItemId queueItemId: NSObject) {
+        
+    }
+    
+    func audioPlayer(_ audioPlayer: STKAudioPlayer, didFinishBufferingSourceWithQueueItemId queueItemId: NSObject) {
+        
+    }
+    
+    func audioPlayer(_ audioPlayer: STKAudioPlayer, didFinishPlayingQueueItemId queueItemId: NSObject, with stopReason: STKAudioPlayerStopReason, andProgress progress: Double, andDuration duration: Double) {
+        
+    }
+    
+    func audioPlayer(_ audioPlayer: STKAudioPlayer, unexpectedError errorCode: STKAudioPlayerErrorCode) {
+        print(errorCode)
     }
     
 }

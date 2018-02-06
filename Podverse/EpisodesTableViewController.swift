@@ -7,7 +7,7 @@ protocol AutoDownloadProtocol: NSObjectProtocol {
 
 class EpisodesTableViewController: PVViewController {
     
-    var audiosearchId:Int64?
+    var id:Int64?
     var clipsArray = [MediaRef]()
     weak var delegate: AutoDownloadProtocol?
     var episodesArray = [Episode]()

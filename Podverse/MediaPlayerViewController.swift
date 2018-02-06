@@ -13,7 +13,6 @@ import UIKit
 
 class MediaPlayerViewController: PVViewController {
     
-    let audioPlayer = PVMediaPlayer.shared.audioPlayer
     let reachability = PVReachability.shared
     var timer: Timer?
     
@@ -202,23 +201,26 @@ class MediaPlayerViewController: PVViewController {
     }
     
     func togglePlayIcon() {
+        
+        let audioPlayer = PVMediaPlayer.shared.audioPlayer
+        
         DispatchQueue.main.async {
-            if self.audioPlayer.state == .stopped || self.audioPlayer.state == .paused {
+            if audioPlayer.state == .stopped || audioPlayer.state == .paused {
                 self.activityIndicator.isHidden = true
                 self.play.setImage(UIImage(named:"play"), for: .normal)
                 self.play.tintColor = UIColor.white
                 self.play.isHidden = false
-            } else if self.audioPlayer.state == .error {
+            } else if audioPlayer.state == .error {
                 self.activityIndicator.isHidden = true
                 self.play.setImage(UIImage(named:"playerror"), for: .normal)
                 self.play.tintColor = UIColor.red
                 self.play.isHidden = false
-            } else if self.audioPlayer.state == .playing && !self.pvMediaPlayer.shouldSetupClip {
+            } else if audioPlayer.state == .playing && !self.pvMediaPlayer.shouldSetupClip {
                 self.activityIndicator.isHidden = true
                 self.play.setImage(UIImage(named:"pause"), for: .normal)
                 self.play.tintColor = UIColor.white
                 self.play.isHidden = false
-            } else if self.audioPlayer.state == .buffering || self.pvMediaPlayer.shouldSetupClip {
+            } else if audioPlayer.state == .buffering || self.pvMediaPlayer.shouldSetupClip {
                 self.activityIndicator.isHidden = false
                 self.play.isHidden = true
             } else {
@@ -525,9 +527,9 @@ extension MediaPlayerViewController:PVMediaPlayerUIDelegate {
         DispatchQueue.main.async {
             self.setupClipFlags()
             self.updateTime()
+            self.togglePlayIcon()
         }
         
-        self.togglePlayIcon()
     }
     
     func playerHistoryItemLoadingBegan() {
@@ -536,9 +538,8 @@ extension MediaPlayerViewController:PVMediaPlayerUIDelegate {
             self.endTimeFlagView.isHidden = true
             self.populatePlayerInfo()
             self.showPendingTime()
+            self.togglePlayIcon()
         }
-        
-        self.togglePlayIcon()
     }
     
     func playerHistoryItemPaused() {

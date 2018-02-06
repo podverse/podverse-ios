@@ -18,9 +18,10 @@ class MediaRef {
     var episodeMediaUrl:String?
     var episodePubDate:Date?
     var episodeSummary:String?
-    var podcastTitle:String?
+    var podcastId:String?
     var podcastFeedUrl:String?
     var podcastImageUrl:String?
+    var podcastTitle:String?
     var isPublic:Bool? = false
     
     static func jsonToMediaRef(item: [String:Any]) -> MediaRef {
@@ -33,12 +34,13 @@ class MediaRef {
         mediaRef.endTime = item["endTime"] as? Int64
         
         mediaRef.episodeTitle = item["episodeTitle"] as? String
-        mediaRef.episodeMediaUrl = item["episodeMediaURL"] as? String
+        mediaRef.episodeMediaUrl = item["episodeMediaUrl"] as? String
         mediaRef.episodeSummary = item["episodeSummary"] as? String
         
         mediaRef.podcastTitle = item["podcastTitle"] as? String
-        mediaRef.podcastFeedUrl = item["podcastFeedURL"] as? String
-        mediaRef.podcastImageUrl = item["podcastImageURL"] as? String
+        mediaRef.podcastId = item["podcastId"] as? String
+        mediaRef.podcastFeedUrl = item["podcastFeedUrl"] as? String
+        mediaRef.podcastImageUrl = item["podcastImageUrl"] as? String
         
         if let episodePubDate = item["episodePubDate"] as? String {
             mediaRef.episodePubDate = episodePubDate.toServerDate()
@@ -50,7 +52,7 @@ class MediaRef {
         
     }
     
-    static func retrieveMediaRefsFromServer(episodeMediaUrl: String? = nil, podcastFeedUrls: [String] = [], onlySubscribed: Bool? = nil, sortingType: ClipSorting? = nil, page: Int? = 1, completion: @escaping (_ mediaRefs:[MediaRef]?) -> Void) {
+    static func retrieveMediaRefsFromServer(episodeMediaUrl: String? = nil, podcastIds: [String] = [], podcastFeedUrls: [String] = [], onlySubscribed: Bool? = nil, sortingType: ClipSorting? = nil, page: Int? = 1, completion: @escaping (_ mediaRefs:[MediaRef]?) -> Void) {
         
         if let url = URL(string: BASE_URL + "api/clips") {
             
@@ -63,11 +65,11 @@ class MediaRef {
             var values: [String: Any] = [:]
             
             if let episodeMediaUrl = episodeMediaUrl {
-                values["episodeMediaURL"] = episodeMediaUrl
-            }
-            
-            if podcastFeedUrls.count > 0 {
-                values["podcastFeedURLs"] = podcastFeedUrls
+                values["episodeMediaUrl"] = episodeMediaUrl
+            } else if podcastIds.count > 0 {
+                values["podcastIds"] = podcastIds
+            } else if podcastFeedUrls.count > 0 {
+                values["podcastFeedUrls"] = podcastFeedUrls
             }
             
             if let sortingType = sortingType {

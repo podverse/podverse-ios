@@ -108,7 +108,7 @@ class MakeClipTitleViewController: UIViewController, UITextViewDelegate {
             if let title = self.titleInput.text {
                 mediaRefItem.clipTitle = title
             }
-            
+                        
             mediaRefItem.isPublic = self.isPublic
             
             mediaRefItem.saveToServerAsMediaRef() { mediaRef in

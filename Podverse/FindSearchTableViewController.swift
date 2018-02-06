@@ -10,7 +10,7 @@ import UIKit
 
 class FindSearchTableViewController: PVViewController {
     
-    var searchResults = [AudiosearchPodcast]()
+    var podcasts = [SearchPodcast]()
 
     @IBOutlet weak var activityView: UIView!
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
@@ -84,44 +84,41 @@ extension FindSearchTableViewController: UITableViewDataSource, UITableViewDeleg
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return self.searchResults.count
+        return self.podcasts.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! PodcastSearchResultTableViewCell
         
-        let podcast = self.searchResults[indexPath.row]
+        let podcast = self.podcasts[indexPath.row]
         
         cell.title.text = podcast.title
-        cell.network.text = podcast.network
+        cell.hosts.text = podcast.hosts
         cell.categories.text = podcast.categories
         
-        cell.pvImage.sd_setImage(with: URL(string: podcast.imageThumbUrl ?? ""), placeholderImage: #imageLiteral(resourceName: "PodverseIcon"))
+        cell.pvImage.sd_setImage(with: URL(string: podcast.imageUrl ?? ""), placeholderImage: #imageLiteral(resourceName: "PodverseIcon"))
         
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let podcast = self.searchResults[indexPath.row]
-        AudiosearchPodcast.showAudiosearchPodcastActions(podcast: podcast, vc: self)
+        let podcast = self.podcasts[indexPath.row]
+        SearchPodcast.showSearchPodcastActions(searchPodcast: podcast, vc: self)
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == "Show Audiosearch Podcast About" {
-            if let audiosearchPodcastVC = segue.destination as? AudiosearchPodcastViewController, let indexPath = self.tableView.indexPathForSelectedRow, indexPath.row < self.searchResults.count {
-                let podcast = searchResults[indexPath.row]
-                audiosearchPodcastVC.audiosearchId = podcast.id
-                audiosearchPodcastVC.feedUrl = podcast.rssUrl
-                audiosearchPodcastVC.filterTypeOverride = .about
-            }
-        }
-        
-        if segue.identifier == "Show Audiosearch Podcast Clips" {
-            if let audiosearchPodcastVC = segue.destination as? AudiosearchPodcastViewController, let indexPath = self.tableView.indexPathForSelectedRow, indexPath.row < self.searchResults.count {
-                let podcast = searchResults[indexPath.row]
-                audiosearchPodcastVC.audiosearchId = podcast.id
-                audiosearchPodcastVC.feedUrl = podcast.rssUrl
-                audiosearchPodcastVC.filterTypeOverride = .clips
+        if segue.identifier == "Show Search Podcast" {
+            if let searchPodcastVC = segue.destination as? SearchPodcastViewController, let indexPath = self.tableView.indexPathForSelectedRow, indexPath.row < self.podcasts.count {
+                let podcast = podcasts[indexPath.row]
+                searchPodcastVC.searchPodcast = podcast
+                
+                if let sender = sender as? String, sender == "About" {
+                    searchPodcastVC.filterTypeOverride = .about
+                } else if let sender = sender as? String, sender == "Clips" {
+                    searchPodcastVC.filterTypeOverride = .clips
+                } else if let sender = sender as? String, sender == "Episodes" {
+                    searchPodcastVC.filterTypeOverride = .episodes
+                }
             }
         }
     }
@@ -136,7 +133,7 @@ extension FindSearchTableViewController: UISearchBarDelegate {
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         searchBar.resignFirstResponder()
         
-        self.searchResults.removeAll()
+        self.podcasts.removeAll()
         
         if let text = searchBar.text {
             
@@ -147,34 +144,24 @@ extension FindSearchTableViewController: UISearchBarDelegate {
             
             showActivityIndicator()
             
-            AudioSearchClientSwift.search(query: text, params: nil, type: "shows") { (serviceResponse) in
-                
-                if let response = serviceResponse.0 {
-                    if let results = response["results"] as? [AnyObject] {
-                        for result in results {
-                            if let searchResult = AudiosearchPodcast.convertJSONToAudiosearchPodcast(result) {
-                                self.searchResults.append(searchResult)
-                            }
-                        }
-                    }
-                }
-                
-                if let error = serviceResponse.1 {
-                    print(error.localizedDescription)
+            SearchPodcast.searchPodcastsByTitle(title: text) { searchPodcasts in
+                if let searchPodcasts = searchPodcasts {
+                    self.podcasts = searchPodcasts
                 }
                 
                 DispatchQueue.main.async {
                     self.hideActivityIndicator()
-                    
-                    if self.searchResults.isEmpty {
+
+                    if self.podcasts.isEmpty {
                         self.loadNoResultsMessage()
                     } else {
                         self.tableView.reloadData()
                         self.tableView.isHidden = false
                     }
-                    
+
                 }
             }
+            
         }
         
     }

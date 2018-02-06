@@ -14,7 +14,7 @@ class FindTableViewController: PVViewController {
     
     let reachability = PVReachability.shared
     
-    let findSearchArray = ["Search", "Add Podcast by RSS", "Browse by Category", "Browse by Network"]
+    let findSearchArray = ["Search", "Add Podcast by RSS"]
     
     var podcastVC:PodcastsTableViewController? {
         get {
@@ -60,52 +60,36 @@ extension FindTableViewController:UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-            if indexPath.row == 0 {
-                self.performSegue(withIdentifier: "Search for Podcasts", sender: tableView)
+        if indexPath.row == 0 {
+            self.performSegue(withIdentifier: "Search for Podcasts", sender: tableView)
+        }
+        else {
+            if !checkForConnectivity() {
+                showInternetNeededAlertWithDescription(message: "Connect to WiFi or cellular data to add podcast by RSS URL.")
+                return
             }
-            else if indexPath.row == 1 {
-                if !checkForConnectivity() {
-                    showInternetNeededAlertWithDescription(message: "Connect to WiFi or cellular data to add podcast by RSS URL.")
-                    return
-                }
-                let addByRSSAlert = UIAlertController(title: "Add Podcast by RSS Feed", message: "Type the RSS feed URL below.", preferredStyle: UIAlertControllerStyle.alert)
-                
-                addByRSSAlert.addTextField(configurationHandler: {(textField: UITextField!) in
-                    textField.placeholder = "https://rssfeed.example.com/"
-                })
-                
-                addByRSSAlert.addAction(UIAlertAction(title: "Cancel", style: .default, handler: nil))
-                
-                addByRSSAlert.addAction(UIAlertAction(title: "Add", style: .default, handler: { (action: UIAlertAction!) in
-                    if let textField = addByRSSAlert.textFields?[0], let text = textField.text {
-                        DispatchQueue.global().async {
-                            PVSubscriber.subscribeToPodcast(feedUrlString: text)
-                        }
+            let addByRSSAlert = UIAlertController(title: "Add Podcast by RSS Feed", message: "Type the RSS feed URL below.", preferredStyle: UIAlertControllerStyle.alert)
+            
+            addByRSSAlert.addTextField(configurationHandler: {(textField: UITextField!) in
+                textField.placeholder = "https://rssfeed.example.com/"
+            })
+            
+            addByRSSAlert.addAction(UIAlertAction(title: "Cancel", style: .default, handler: nil))
+            
+            addByRSSAlert.addAction(UIAlertAction(title: "Add", style: .default, handler: { (action: UIAlertAction!) in
+                if let textField = addByRSSAlert.textFields?[0], let text = textField.text {
+                    DispatchQueue.global().async {
+                        PVSubscriber.subscribeToPodcast(feedUrlString: text, podcastId: nil)
                     }
-                }))
-                
-                present(addByRSSAlert, animated: true, completion: nil)
+                }
+            }))
+            
+            present(addByRSSAlert, animated: true, completion: nil)
 
-            }
-            else if indexPath.row == 2 {
-                self.performSegue(withIdentifier: "Show Browse Groups", sender: "Categories")
-            }
-            else {
-                self.performSegue(withIdentifier: "Show Browse Groups", sender: "Networks")
-            }
+        }
         
         tableView.deselectRow(at: indexPath, animated: true)
 
-    }
-    
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == "Show Browse Groups", let sender = sender as? String, let findBrowseGroupsVC = segue.destination as? FindBrowseGroupsViewController {
-            if sender == "Categories" {
-                findBrowseGroupsVC.shouldLoadCategories = true
-            } else if sender == "Networks" {
-                findBrowseGroupsVC.shouldLoadNetworks = true
-            }            
-        }
     }
     
 }

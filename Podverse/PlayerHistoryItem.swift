@@ -11,6 +11,7 @@ import UIKit
 class PlayerHistoryItem: NSObject, NSCoding {
     
     var mediaRefId:String?
+    let podcastId:String?
     let podcastFeedUrl:String?
     let podcastTitle:String?
     let podcastImageUrl:String?
@@ -30,8 +31,9 @@ class PlayerHistoryItem: NSObject, NSCoding {
     var lastUpdated:Date?
     var isPublic:Bool?
     
-    required init(mediaRefId:String? = nil, podcastFeedUrl:String? = nil, podcastTitle:String? = nil, podcastImageUrl:String? = nil, episodeDuration: Int64? = nil, episodeMediaUrl:String? = nil, episodeTitle:String? = nil, episodeImageUrl:String? = nil, episodeSummary:String? = nil, episodePubDate:Date? = nil, startTime:Int64? = nil, endTime:Int64? = nil, clipTitle:String? = nil, ownerName:String? = nil, ownerId:String? = nil, hasReachedEnd:Bool, lastPlaybackPosition:Int64? = 0, lastUpdated:Date? = nil, isPublic:Bool = false) {
+    required init(mediaRefId:String? = nil, podcastId:String?, podcastFeedUrl:String? = nil, podcastTitle:String? = nil, podcastImageUrl:String? = nil, episodeDuration: Int64? = nil, episodeMediaUrl:String? = nil, episodeTitle:String? = nil, episodeImageUrl:String? = nil, episodeSummary:String? = nil, episodePubDate:Date? = nil, startTime:Int64? = nil, endTime:Int64? = nil, clipTitle:String? = nil, ownerName:String? = nil, ownerId:String? = nil, hasReachedEnd:Bool, lastPlaybackPosition:Int64? = 0, lastUpdated:Date? = nil, isPublic:Bool = false) {
         self.mediaRefId = mediaRefId
+        self.podcastId = podcastId
         self.podcastFeedUrl = podcastFeedUrl
         self.podcastTitle = podcastTitle
         self.podcastImageUrl = podcastImageUrl
@@ -54,6 +56,7 @@ class PlayerHistoryItem: NSObject, NSCoding {
     
     required init(coder decoder: NSCoder) {
         self.mediaRefId = decoder.decodeObject(forKey: "mediaRefId") as? String
+        self.podcastId = decoder.decodeObject(forKey: "podcastId") as? String
         self.podcastFeedUrl = decoder.decodeObject(forKey: "podcastFeedUrl") as? String
         self.podcastTitle = decoder.decodeObject(forKey: "podcastTitle") as? String
         self.podcastImageUrl = decoder.decodeObject(forKey: "podcastImageUrl") as? String
@@ -76,6 +79,7 @@ class PlayerHistoryItem: NSObject, NSCoding {
     
     func encode(with coder: NSCoder) {
         coder.encode(mediaRefId, forKey: "mediaRefId")
+        coder.encode(podcastId, forKey: "podcastId")
         coder.encode(podcastFeedUrl, forKey:"podcastFeedUrl")
         coder.encode(podcastTitle, forKey:"podcastTitle")
         coder.encode(podcastImageUrl, forKey:"podcastImageUrl")
@@ -156,8 +160,12 @@ class PlayerHistoryItem: NSObject, NSCoding {
             }
         }
         
+        if let podcastId = self.podcastId {
+            postString += "podcastId=" + podcastId + "&"
+        }
+        
         if let podcastFeedUrl = self.podcastFeedUrl {
-            postString += "podcastFeedURL=" + podcastFeedUrl + "&"
+            postString += "podcastFeedUrl=" + podcastFeedUrl + "&"
         }
         
         if let podcastTitle = self.podcastTitle {
@@ -165,19 +173,19 @@ class PlayerHistoryItem: NSObject, NSCoding {
         }
         
         if let podcastImageUrl = self.podcastImageUrl {
-            postString += "podcastImageURL=" + podcastImageUrl + "&"
+            postString += "podcastImageUrl=" + podcastImageUrl + "&"
         }
-        
+
         if let episodeDuration = self.episodeDuration {
             postString += "episodeDuration=" + String(episodeDuration) + "&"
         }
-        
+
         if let episodeImageUrl = self.episodeImageUrl {
-            postString += "episodeImageURL=" + episodeImageUrl + "&"
+            postString += "episodeImageUrl=" + episodeImageUrl + "&"
         }
         
         if let episodeMediaUrl = self.episodeMediaUrl {
-            postString += "episodeMediaURL=" + episodeMediaUrl + "&"
+            postString += "episodeMediaUrl=" + episodeMediaUrl + "&"
         }
         
         if let episodePubDate = self.episodePubDate {
@@ -268,7 +276,7 @@ class PlayerHistoryItem: NSObject, NSCoding {
     }
     
     func copyPlayerHistoryItem() -> PlayerHistoryItem {
-        let copy = PlayerHistoryItem(mediaRefId: mediaRefId, podcastFeedUrl: podcastFeedUrl, podcastTitle: podcastTitle, podcastImageUrl: podcastImageUrl, episodeDuration: episodeDuration, episodeMediaUrl: episodeMediaUrl, episodeTitle: episodeTitle, episodeImageUrl: episodeImageUrl, episodeSummary: episodeSummary, episodePubDate: episodePubDate, startTime: startTime, endTime: endTime, clipTitle: clipTitle, ownerName: ownerName, ownerId: ownerId, hasReachedEnd: false, lastPlaybackPosition: lastPlaybackPosition, lastUpdated: lastUpdated)
+        let copy = PlayerHistoryItem(mediaRefId: mediaRefId, podcastId: podcastId, podcastFeedUrl: podcastFeedUrl, podcastTitle: podcastTitle, podcastImageUrl: podcastImageUrl, episodeDuration: episodeDuration, episodeMediaUrl: episodeMediaUrl, episodeTitle: episodeTitle, episodeImageUrl: episodeImageUrl, episodeSummary: episodeSummary, episodePubDate: episodePubDate, startTime: startTime, endTime: endTime, clipTitle: clipTitle, ownerName: ownerName, ownerId: ownerId, hasReachedEnd: false, lastPlaybackPosition: lastPlaybackPosition, lastUpdated: lastUpdated)
         return copy
     }
     
