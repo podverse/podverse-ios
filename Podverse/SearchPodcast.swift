@@ -137,7 +137,9 @@ class SearchPodcast {
                 }
                 
                 if let data = data, let urlString = String(data: data, encoding: .utf8) {
-                    completion(urlString)
+                    DispatchQueue.main.async {
+                        completion(urlString)
+                    }
                 }
                 
             }
@@ -179,6 +181,9 @@ class SearchPodcast {
                             
                         } catch {
                             print("Error: " + error.localizedDescription)
+                            DispatchQueue.main.async {
+                                completion([])
+                            }
                         }
                     }
                     
