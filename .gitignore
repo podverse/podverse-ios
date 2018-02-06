@@ -29,7 +29,6 @@ test_builds/
 *.hmap
 *.dSYM.zip
 *.dSYM
-*.xcworkspace
 .build/
 Auth0.plist
 
