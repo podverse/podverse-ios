@@ -18,21 +18,21 @@ class MakeClipTimeViewController: UIViewController, UITextFieldDelegate {
     let pvMediaPlayer = PVMediaPlayer.shared
     var startTime: Int?
     var timer: Timer?
-    
+    var isPublic = false
+
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
-    @IBOutlet weak var clearButton: UIButton!
     @IBOutlet weak var currentTime: UILabel!
     @IBOutlet weak var duration: UILabel!
     @IBOutlet weak var endPreview: UIButton!
     @IBOutlet weak var endTimeInput: UITextField!
-    @IBOutlet weak var play: UIButton!
     @IBOutlet weak var playbackControlView: UIView!
     @IBOutlet weak var progress: UISlider!
     @IBOutlet weak var setTime: UIButton!
     @IBOutlet weak var startPreview: UIButton!
     @IBOutlet weak var startTimeInput: UITextField!
-    
-    @IBOutlet weak var nextButton: UIButton!
+    @IBOutlet weak var play: UIImageView!
+    @IBOutlet weak var visibilityButton: UIButton!
+    @IBOutlet weak var titleInput: UITextField!
     
     override func viewWillAppear(_ animated: Bool) {
         navigationController?.interactivePopGestureRecognizer?.isEnabled = false
@@ -64,15 +64,33 @@ class MakeClipTimeViewController: UIViewController, UITextFieldDelegate {
         self.endTimeInput.inputView = UIView()
         
         self.startTimeInput.text = PVTimeHelper.convertIntToHMSString(time: self.startTime)
-        self.endTimeInput.placeholder = "(optional)"
+        
+        self.endTimeInput.layer.masksToBounds = false
+        self.endTimeInput.layer.shadowRadius = 12.0
+        self.endTimeInput.layer.shadowColor = UIColor.clear.cgColor
+        self.endTimeInput.layer.shadowOffset = CGSize(width:1.0, height:1.0)
+        self.endTimeInput.layer.shadowOpacity = 1.0
+        
+        self.startTimeInput.layer.masksToBounds = false
+        self.startTimeInput.layer.shadowRadius = 12.0
+        self.startTimeInput.layer.shadowColor = UIColor.clear.cgColor
+        self.startTimeInput.layer.shadowOffset = CGSize(width:1.0, height:1.0)
+        self.startTimeInput.layer.shadowOpacity = 1.0
+        
+        let paddingView : UIView = UIView(frame: CGRect(x:0, y:0, width:10, height:35))
+        //Change your required space instaed of 5.
+        self.titleInput.leftView = paddingView
+        self.titleInput.leftViewMode = UITextFieldViewMode.always
         
         self.setTime.layer.borderColor = UIColor.lightGray.cgColor
-        self.nextButton.layer.borderColor = UIColor.lightGray.cgColor
-        
-        self.setTime.layer.borderWidth = 1
-        self.nextButton.layer.borderWidth = 1
-        
-        self.endTimeInput.becomeFirstResponder()
+                        
+        if let savedVisibilityType = UserDefaults.standard.value(forKey: kMakeClipVisibilityType) as? String, let visibilityType = VisibilityOptions(rawValue: savedVisibilityType) {
+            self.visibilityButton.setTitle(visibilityType.text + " ▼", for: .normal)
+            self.isPublic = visibilityType == VisibilityOptions.isPublic ? true : false
+        } else {
+            self.visibilityButton.setTitle(VisibilityOptions.isPublic.text + " ▼", for: .normal)
+            self.isPublic = true
+        }
     }
     
     deinit {
@@ -123,17 +141,6 @@ class MakeClipTimeViewController: UIViewController, UITextFieldDelegate {
         }
     }
     
-    @IBAction func clearEndTime(_ sender: Any) {
-        if let _ = self.endTime {
-            self.endTime = nil
-            self.endTimeInput.text = nil
-        }
-    }
-    
-    @IBAction func play(_ sender: Any) {
-        pvMediaPlayer.playOrPause()
-    }
-    
     @IBAction func timeJumpBackward(_ sender: Any) {
         let newTime = self.pvMediaPlayer.progress - 15
         
@@ -164,7 +171,52 @@ class MakeClipTimeViewController: UIViewController, UITextFieldDelegate {
         }
     }
     
-    @IBAction func nextButtonTouched(_ sender: Any) {
+    @IBAction func previewClip(_ sender: Any) {
+        if let startTime = self.startTime {
+            self.pvMediaPlayer.seek(toTime: Double(startTime))
+        }
+        
+        if let endTime = self.endTime {
+            self.pvMediaPlayer.shouldStopAtEndTime = Int64(endTime)
+        }
+        
+        self.pvMediaPlayer.play()
+    }
+    
+    fileprivate func addObservers() {
+        self.addObserver(self, forKeyPath: #keyPath(audioPlayer.state), options: [.new, .old], context: nil)
+    }
+    
+    fileprivate func removeObservers() {
+        self.removeObserver(self, forKeyPath: #keyPath(audioPlayer.state), context: nil)
+    }
+    
+    @IBAction func showVisibilityMenu(_ sender: Any) {
+        let visibilityActions = UIAlertController(title: "Clip Visibility", message: nil, preferredStyle: .actionSheet)
+        
+        visibilityActions.addAction(UIAlertAction(title: VisibilityOptions.isPublic.text, style: .default, handler: { action in
+            self.isPublic = true
+            UserDefaults.standard.set(VisibilityOptions.isPublic.text, forKey: kMakeClipVisibilityType)
+            self.visibilityButton.setTitle(VisibilityOptions.isPublic.text + " ▼", for: .normal)
+            
+        }
+        ))
+        
+        visibilityActions.addAction(UIAlertAction(title: VisibilityOptions.isOnlyWithLink.text, style: .default, handler: { action in
+            self.isPublic = false
+            UserDefaults.standard.set(VisibilityOptions.isOnlyWithLink.text, forKey: kMakeClipVisibilityType)
+            self.visibilityButton.setTitle(VisibilityOptions.isOnlyWithLink.text + " ▼", for: .normal)
+        }
+        ))
+        
+        visibilityActions.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        
+        self.present(visibilityActions, animated: true, completion: nil)
+    }
+    
+    @IBAction func save(_ sender: Any) {
+        
+        self.view.endEditing(true)
         
         guard let startTime = self.startTime else {
             let alertController = UIAlertController(title: "Invalid Clip Time", message: "Start time must be provided.", preferredStyle: .alert)
@@ -176,13 +228,9 @@ class MakeClipTimeViewController: UIViewController, UITextFieldDelegate {
         
         if let endTime = self.endTime {
             
-            var alertMessage: String?
-            
-            // TODO: what's cleaner logic here?
+            var alertMessage = "Start time is later than end time."
             if startTime == endTime {
                 alertMessage = "Start time is equal to end time."
-            } else {
-                alertMessage = "Start time is later than end time."
             }
             
             if startTime == endTime || startTime >= endTime {
@@ -195,15 +243,55 @@ class MakeClipTimeViewController: UIViewController, UITextFieldDelegate {
             
         }
         
-        self.performSegue(withIdentifier: "Show Make Clip Title", sender: nil)
+        if let mediaRefItem = self.playerHistoryItem?.copyPlayerHistoryItem() {
+            
+            if let startTime = self.startTime {
+                mediaRefItem.startTime = Int64(startTime)
+            }
+            
+            if let endTime = self.endTime {
+                mediaRefItem.endTime = Int64(endTime)
+            }
+            
+            if let title = self.titleInput.text {
+                mediaRefItem.clipTitle = title
+            }
+            
+            mediaRefItem.isPublic = self.isPublic
+            
+            mediaRefItem.saveToServerAsMediaRef() { mediaRef in
+                if let id = mediaRef?.id {
+                    self.displayClipCreatedAlert(mediaRefId: id)
+                }
+            }
+        }
     }
     
-    fileprivate func addObservers() {
-        self.addObserver(self, forKeyPath: #keyPath(audioPlayer.state), options: [.new, .old], context: nil)
-    }
-    
-    fileprivate func removeObservers() {
-        self.removeObserver(self, forKeyPath: #keyPath(audioPlayer.state), context: nil)
+    private func displayClipCreatedAlert(mediaRefId: String) {
+        
+        let actions = UIAlertController(title: "Clip Created", message: BASE_URL + "clips/" + mediaRefId, preferredStyle: .actionSheet)
+        
+        actions.addAction(UIAlertAction(title: "Share", style: .default, handler: { action in
+            let clipUrlItem = [BASE_URL + "clips/" + mediaRefId]
+            let activityVC = UIActivityViewController(activityItems: clipUrlItem, applicationActivities: nil)
+            activityVC.popoverPresentationController?.sourceView = self.view
+            
+            activityVC.completionWithItemsHandler = { activityType, success, items, error in
+                if activityType == UIActivityType.copyToPasteboard {
+                    self.showToast(message: kLinkCopiedToast)
+                }
+                
+                self.navigationController?.popViewController(animated: true)
+            }
+            
+            self.present(activityVC, animated: true, completion: nil)
+        }))
+        
+        actions.addAction(UIAlertAction(title: "Done", style: .cancel, handler: { action in
+            self.navigationController?.popViewController(animated: true)
+        }))
+        
+        self.present(actions, animated: true, completion: nil)
     }
     
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
@@ -235,18 +323,17 @@ class MakeClipTimeViewController: UIViewController, UITextFieldDelegate {
         DispatchQueue.main.async {
             if self.pvMediaPlayer.audioPlayer.state == .stopped || self.pvMediaPlayer.audioPlayer.state == .paused {
                 self.activityIndicator.isHidden = true
-                self.play.setImage(UIImage(named:"play"), for: .normal)
+                self.play.image = UIImage(named:"play")
                 self.play.tintColor = UIColor.black
                 self.play.isHidden = false
             } else if self.pvMediaPlayer.audioPlayer.state == .error {
                 self.activityIndicator.isHidden = true
-                self.play.setImage(UIImage(named:"playerror"), for: .normal)
-                // TODO: why doesn't this turn red? The play button stays black for some reason. It works in MakeClipTitleVC tho...
+                self.play.image = UIImage(named:"playerror")?.withRenderingMode(.alwaysTemplate)
                 self.play.tintColor = UIColor.red
                 self.play.isHidden = false
             } else if self.pvMediaPlayer.audioPlayer.state == .playing && !self.pvMediaPlayer.shouldSetupClip {
                 self.activityIndicator.isHidden = true
-                self.play.setImage(UIImage(named:"pause"), for: .normal)
+                self.play.image = UIImage(named:"pause")
                 self.play.tintColor = UIColor.black
                 self.play.isHidden = false
             } else if self.pvMediaPlayer.audioPlayer.state == .buffering || self.pvMediaPlayer.shouldSetupClip {
@@ -254,7 +341,7 @@ class MakeClipTimeViewController: UIViewController, UITextFieldDelegate {
                 self.play.isHidden = true
             } else {
                 self.activityIndicator.isHidden = true
-                self.play.setImage(UIImage(named:"play"), for: .normal)
+                self.play.image = UIImage(named:"play")
                 self.play.tintColor = UIColor.black
                 self.play.isHidden = false
             }
@@ -289,11 +376,22 @@ class MakeClipTimeViewController: UIViewController, UITextFieldDelegate {
     }
     
     func textFieldDidBeginEditing(_ textField: UITextField) {
-        textField.backgroundColor = UIColor.yellow
+        textField.layer.shadowColor = UIColor.white.cgColor
     }
     
     func textFieldDidEndEditing(_ textField: UITextField) {
-        textField.backgroundColor = UIColor.white
+        textField.layer.shadowColor = UIColor.clear.cgColor
+    }
+    
+    func textFieldShouldClear(_ textField: UITextField) -> Bool {
+        self.endTime = nil
+        
+        return true
+    }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
     }
     
     // Prevent select / paste menu options from appearing in UITextFields
@@ -306,6 +404,10 @@ class MakeClipTimeViewController: UIViewController, UITextFieldDelegate {
         }
         
         return super.canPerformAction(action, withSender: sender)
+    }
+    
+    @IBAction func sliderTapped(_ sender: Any) {
+        pvMediaPlayer.playOrPause()
     }
     
     @IBAction func slidingRecognized(_ sender: Any) {
@@ -335,19 +437,4 @@ class MakeClipTimeViewController: UIViewController, UITextFieldDelegate {
             
         }
     }
-    
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        
-        if segue.identifier == "Show Make Clip Title" {
-            
-            if let playerHistoryItem = playerHistoryItem, let makeClipTitleViewController = segue.destination as? MakeClipTitleViewController {
-                makeClipTitleViewController.playerHistoryItem = playerHistoryItem
-                makeClipTitleViewController.startTime = self.startTime
-                makeClipTitleViewController.endTime = self.endTime
-            }
-            
-        }
-        
-    }
-    
 }
