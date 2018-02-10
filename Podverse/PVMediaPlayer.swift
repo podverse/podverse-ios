@@ -203,7 +203,7 @@ class PVMediaPlayer:NSObject {
         }
         
         // If nothing loaded in the player, but playOrPause was pressed, then attempt to load and play the file.
-        if checkIfNothingIsCurrentlyLoadedInPlayer() {
+        if !playerIsLoaded() {
             self.shouldAutoplayOnce = true
             if let item = self.nowPlayingItem {
                 self.loadPlayerHistoryItem(item: item)
@@ -222,13 +222,13 @@ class PVMediaPlayer:NSObject {
         
     }
     
-    func checkIfNothingIsCurrentlyLoadedInPlayer() -> Bool {
+    func playerIsLoaded() -> Bool {
         let state = audioPlayer.state
         
         if state == STKAudioPlayerState.disposed || state == STKAudioPlayerState.error || state == STKAudioPlayerState.stopped {
-            return true
-        } else {
             return false
+        } else {
+            return true
         }
     }
     
@@ -252,9 +252,9 @@ class PVMediaPlayer:NSObject {
         
         if let podcastImageUrlString = item.podcastImageUrl, let podcastImageUrl = URL(string: podcastImageUrlString) {
             if let data = try? Data(contentsOf: podcastImageUrl), let image = UIImage(data: data) {
-                let artwork = MPMediaItemArtwork.init(image: image)
+                let artwork = MPMediaItemArtwork(image: image)
                 
-                MPNowPlayingInfoCenter.default().nowPlayingInfo = [MPMediaItemPropertyArtist: item.podcastTitle, MPMediaItemPropertyTitle: item.episodeTitle, MPMediaItemPropertyArtwork: artwork, MPMediaItemPropertyPlaybackDuration: self.duration, MPNowPlayingInfoPropertyElapsedPlaybackTime: currentPlaybackTime, MPNowPlayingInfoPropertyPlaybackRate: currentPlayerRate]
+                MPNowPlayingInfoCenter.default().nowPlayingInfo = [MPMediaItemPropertyArtist: item.podcastTitle ?? "", MPMediaItemPropertyTitle: item.episodeTitle ?? "", MPMediaItemPropertyArtwork: artwork, MPMediaItemPropertyPlaybackDuration: self.duration ?? "", MPNowPlayingInfoPropertyElapsedPlaybackTime: currentPlaybackTime, MPNowPlayingInfoPropertyPlaybackRate: currentPlayerRate]
                 
             }
         }
