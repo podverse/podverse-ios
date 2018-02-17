@@ -143,12 +143,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func playOrPauseEvent() { 
-//        self.pvMediaPlayer.playOrPause()
-//        self.pvMediaPlayer.updateMPNowPlayingInfoCenter()
+        self.pvMediaPlayer.playOrPause()
+        self.pvMediaPlayer.updateMPNowPlayingInfoCenter()
     }
     
     func updatePlaybackPosition(event:MPChangePlaybackPositionCommandEvent) {
-//        self.pvMediaPlayer.seek(toTime: event.positionTime)
+        self.pvMediaPlayer.seek(toTime: event.positionTime)
     }
     
 }
