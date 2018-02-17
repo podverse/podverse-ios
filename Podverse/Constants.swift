@@ -299,8 +299,8 @@ enum EpisodeActions: String {
 }
 
 enum VisibilityOptions:String {
-    case isPublic = "Public"
-    case isOnlyWithLink = "Only with link"
+    case isPublic
+    case isOnlyWithLink
     
     var text:String {
         get {
