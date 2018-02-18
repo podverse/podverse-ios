@@ -205,6 +205,10 @@ class SearchPodcast {
                 podcastActions.addAction(UIAlertAction(title: "Unsubscribe", style: .default, handler: { action in
                     PVSubscriber.unsubscribeFromPodcast(podcastId: id, feedUrl: nil)
                 }))
+            } else if ParsingPodcasts.shared.hasMatchingId(podcastId: id) {
+                podcastActions.addAction(UIAlertAction(title: "Unsubscribe", style: .default, handler: { action in
+                    PVSubscriber.unsubscribeFromPodcast(podcastId: id, feedUrl: nil)
+                }))
             } else {
                 podcastActions.addAction(UIAlertAction(title: "Subscribe", style: .default, handler: { action in
                     self.authorityFeedUrlForPodcast(id: id) { feedUrl in

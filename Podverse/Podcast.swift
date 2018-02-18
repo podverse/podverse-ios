@@ -155,7 +155,7 @@ class Podcast: NSManagedObject {
         }
     }
     
-    static func syncSubscribedPodcastsWithServer(delegate: PVFeedParserDelegate) {
+    static func syncSubscribedPodcastsWithServer() {
         
         // Only podcasts that have an id will sync with the server. If a user manually adds a podcast by RSS feed locally to the app, it will not be saved to the server.
         retrieveSubscribedPodcastsFromServer() { syncPodcasts in
@@ -164,7 +164,6 @@ class Podcast: NSManagedObject {
                 for syncPodcast in syncPodcasts {
                     if let feedUrl = syncPodcast.feedUrl, let podcastId = syncPodcast.id {
                         let pvFeedParser = PVFeedParser(shouldOnlyGetMostRecentEpisode: true, shouldSubscribe: false, podcastId: syncPodcast.id)
-                        pvFeedParser.delegate = delegate
                         pvFeedParser.parsePodcastFeed(feedUrlString: feedUrl)
                     }
                 }
