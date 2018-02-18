@@ -104,7 +104,6 @@ class EpisodeTableViewController: PVViewController {
     }
     
     fileprivate func setupNotificationListeners() {
-        NotificationCenter.default.addObserver(self, selector: #selector(self.feedParsingComplete(_:)), name: .feedParsingComplete, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(self.downloadStarted(_:)), name: .downloadStarted, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(self.downloadResumed(_:)), name: .downloadResumed, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(self.downloadPaused(_:)), name: .downloadPaused, object: nil)
@@ -112,7 +111,6 @@ class EpisodeTableViewController: PVViewController {
     }
     
     fileprivate func removeObservers() {
-        NotificationCenter.default.removeObserver(self, name: .feedParsingComplete, object: nil)
         NotificationCenter.default.removeObserver(self, name: .downloadStarted, object: nil)
         NotificationCenter.default.removeObserver(self, name: .downloadResumed, object: nil)
         NotificationCenter.default.removeObserver(self, name: .downloadPaused, object: nil)
@@ -432,14 +430,6 @@ extension EpisodeTableViewController: UITableViewDataSource, UITableViewDelegate
 }
 
 extension EpisodeTableViewController {
-    
-    func feedParsingComplete(_ notification:Notification) {
-        if let url = notification.userInfo?["feedUrl"] as? String, url == self.feedUrl, self.filterTypeSelected != .clips {
-            DispatchQueue.main.async {
-                self.reloadEpisodeData()
-            }
-        }
-    }
     
     func updateButtonsByNotification(_ notification:Notification) {
         if let downloadingEpisode = notification.userInfo?[Episode.episodeKey] as? DownloadingEpisode, let dlMediaUrl = downloadingEpisode.mediaUrl, let mediaUrl = self.mediaUrl, dlMediaUrl == mediaUrl {
