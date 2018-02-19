@@ -162,19 +162,7 @@ class MakeClipTimeViewController: UIViewController, UITextFieldDelegate {
         self.endTimeLabel.textColor = UIColor.lightGray
         self.clearEndTimeButton.isHidden = true
     }
-    
-    @IBAction func previewClip(_ sender: Any) {
-        if let startTime = self.startTime {
-            self.pvMediaPlayer.seek(toTime: Double(startTime))
-        }
         
-        if let endTime = self.endTime {
-            self.pvMediaPlayer.shouldStopAtEndTime = Int64(endTime)
-        }
-        
-        self.pvMediaPlayer.play()
-    }
-    
     @IBAction func showVisibilityMenu(_ sender: Any) {
         let visibilityActions = UIAlertController(title: "Clip Visibility", message: nil, preferredStyle: .actionSheet)
         
