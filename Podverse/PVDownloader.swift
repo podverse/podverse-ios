@@ -79,22 +79,23 @@ class PVDownloader:NSObject {
     
     func resumeDownloadingEpisode(downloadingEpisode: DownloadingEpisode) {
         
-        guard shouldDownload() else {
-            return
-        }
-        
         if let downloadTaskResumeData = downloadingEpisode.taskResumeData {
             let downloadTask = downloadSession.downloadTask(withResumeData: downloadTaskResumeData)
             downloadingEpisode.taskIdentifier = downloadTask.taskIdentifier
             downloadingEpisode.taskResumeData = nil
             
+            DispatchQueue.main.async {
+                NotificationCenter.default.post(name: .downloadResumed, object: nil, userInfo: [Episode.episodeKey:downloadingEpisode])
+            }
+            
+            guard shouldDownload() else {
+                return
+            }
+            
             let taskID = beginBackgroundTask()
             downloadTask.resume()
             endBackgroundTask(taskID)
             
-            DispatchQueue.main.async {
-               NotificationCenter.default.post(name: .downloadResumed, object: nil, userInfo: [Episode.episodeKey:downloadingEpisode])
-            }
         }
     }
     
@@ -116,6 +117,10 @@ class PVDownloader:NSObject {
                 return
             }
             
+            DispatchQueue.main.async {
+                NotificationCenter.default.post(name: .downloadStarted, object: nil, userInfo: [Episode.episodeKey:downloadingEpisode])
+            }
+            
             guard shouldDownload() else {
                 return
             }
@@ -124,9 +129,6 @@ class PVDownloader:NSObject {
             downloadTask.resume()
             endBackgroundTask(taskID)
             
-            DispatchQueue.main.async {
-                NotificationCenter.default.post(name: .downloadStarted, object: nil, userInfo: [Episode.episodeKey:downloadingEpisode])
-            }
         }
     }
     
