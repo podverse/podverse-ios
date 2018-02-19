@@ -35,7 +35,7 @@ class PVDownloader:NSObject {
         
         // Initialize the session configuration, then create the session
         sessionConfiguration.httpMaximumConnectionsPerHost = 3
-        sessionConfiguration.allowsCellularAccess = false
+        sessionConfiguration.allowsCellularAccess = UserDefaults.standard.bool(forKey: kAllowCellularDataDownloads)
         
         downloadSession = URLSession(configuration: sessionConfiguration, delegate: self, delegateQueue: nil)
     }
@@ -78,6 +78,11 @@ class PVDownloader:NSObject {
     }
     
     func resumeDownloadingEpisode(downloadingEpisode: DownloadingEpisode) {
+        
+        guard shouldDownload() else {
+            return
+        }
+        
         if let downloadTaskResumeData = downloadingEpisode.taskResumeData {
             let downloadTask = downloadSession.downloadTask(withResumeData: downloadTaskResumeData)
             downloadingEpisode.taskIdentifier = downloadTask.taskIdentifier
@@ -94,6 +99,7 @@ class PVDownloader:NSObject {
     }
     
     func startDownloadingEpisode(episode: Episode) {
+        
         if let downloadSourceStringURL = episode.mediaUrl, let downloadSourceURL = URL(string: downloadSourceStringURL) {
             
             let downloadTask = downloadSession.downloadTask(with: downloadSourceURL)
@@ -107,6 +113,10 @@ class PVDownloader:NSObject {
                 incrementBadge()
             } else {
                 print("that's already downloading / downloaded")
+                return
+            }
+            
+            guard shouldDownload() else {
                 return
             }
             
@@ -165,6 +175,10 @@ class PVDownloader:NSObject {
     
     fileprivate func endBackgroundTask(_ taskID: UIBackgroundTaskIdentifier) {
         UIApplication.shared.endBackgroundTask(taskID)
+    }
+    
+    func shouldDownload() -> Bool {
+        return (reachability.hasWiFiConnection()) || (!reachability.hasWiFiConnection() && UserDefaults.standard.bool(forKey: kAllowCellularDataDownloads))
     }
 }
 

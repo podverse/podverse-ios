@@ -39,7 +39,7 @@ class MoreTableViewController: PVViewController {
 extension MoreTableViewController:UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 3
+        return 4
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -56,8 +56,8 @@ extension MoreTableViewController:UITableViewDelegate, UITableViewDataSource {
             } else {
                 cell.textLabel?.text = "Log in"
             }
-//        case 3:
-//            cell.textLabel?.text = "Settings"
+        case 3:
+            cell.textLabel?.text = "Settings"
         default: break
         }
         
@@ -90,8 +90,8 @@ extension MoreTableViewController:UITableViewDelegate, UITableViewDataSource {
             } else {
                 pvAuth.showAuth0Lock(vc: self)
             }
-//        case 3:
-//            performSegue(withIdentifier: "Show Settings", sender: nil)
+        case 3:
+            performSegue(withIdentifier: "Show Settings", sender: nil)
         default: break
         }
         

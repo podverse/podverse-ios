@@ -78,7 +78,7 @@ class PodcastsTableViewController: PVViewController, AutoDownloadProtocol {
         if checkForConnectivity() == false {
 
             if refreshControl.isRefreshing == true {
-                showInternetNeededAlertWithDescription(message:"Connect to WiFi or cellular data to parse podcast feeds.")
+                showInternetNeededAlertWithDescription(message:"Connect to the internet to parse podcast feeds.")
                 self.refreshControl.endRefreshing()
             }
 
