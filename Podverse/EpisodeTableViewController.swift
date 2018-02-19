@@ -288,6 +288,7 @@ class EpisodeTableViewController: PVViewController {
             
             if let buttonView = noDataView.subviews.first(where: {$0 is UIButton}), let button = buttonView as? UIButton {
                 button.setTitle(buttonTitle, for: .normal)
+                button.setTitleColor(.blue, for: .normal)
             }
         }
         else {
