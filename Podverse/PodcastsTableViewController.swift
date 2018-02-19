@@ -46,7 +46,7 @@ class PodcastsTableViewController: PVViewController, AutoDownloadProtocol {
         self.parseStatus.isHidden = true
         self.parseActivityIndicator.isHidden = true
         
-        Podcast.syncSubscribedPodcastsWithServer(delegate:self)
+        Podcast.syncSubscribedPodcastsWithServer()
 
         refreshPodcastFeeds()
         loadPodcastData()
@@ -60,6 +60,8 @@ class PodcastsTableViewController: PVViewController, AutoDownloadProtocol {
     }
     
     fileprivate func addObservers() {
+        NotificationCenter.default.addObserver(self, selector: #selector(self.loggedInSuccessfully), name: .loggedInSuccessfully, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.feedParsingComplete(_:)), name: .feedParsingComplete, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(self.downloadFinished(_:)), name: .downloadFinished, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(self.refreshParsingStatus(_:)), name: NSNotification.Name(rawValue: kBeginParsingPodcast), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(self.refreshParsingStatus(_:)), name: NSNotification.Name(rawValue: kFinishedParsingPodcast), object: nil)
@@ -67,6 +69,8 @@ class PodcastsTableViewController: PVViewController, AutoDownloadProtocol {
     }
     
     fileprivate func removeObservers() {
+        NotificationCenter.default.removeObserver(self, name: .loggedInSuccessfully, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .feedParsingComplete, object: nil)
         NotificationCenter.default.removeObserver(self, name: .downloadFinished, object: nil)
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name(rawValue: kBeginParsingPodcast), object: nil)
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name(rawValue: kFinishedParsingPodcast), object: nil)
@@ -95,7 +99,6 @@ class PodcastsTableViewController: PVViewController, AutoDownloadProtocol {
                 let podcastId = podcast.id
                 
                 let pvFeedParser = PVFeedParser(shouldOnlyGetMostRecentEpisode: true, shouldSubscribe:false, podcastId: podcastId)
-                pvFeedParser.delegate = self
                 if let feedUrlString = feedUrl?.absoluteString {
                     pvFeedParser.parsePodcastFeed(feedUrlString: feedUrlString)
                 }
@@ -241,38 +244,6 @@ extension PodcastsTableViewController:UITableViewDelegate, UITableViewDataSource
 
 }
 
-extension PodcastsTableViewController:PVFeedParserDelegate {
-    
-    func feedParsingComplete(feedUrl:String?) {
-        if let url = feedUrl, let index = self.subscribedPodcastsArray.index(where: { url == $0.feedUrl }) {
-            
-            if let podcast = Podcast.podcastForFeedUrl(feedUrlString: url, managedObjectContext: self.moc) {
-                self.subscribedPodcastsArray[index] = podcast
-                DispatchQueue.main.async {
-                    self.tableView.reloadRows(at: [IndexPath(row: index, section: 0)], with: .none)
-                }
-            }
-        }
-        else {
-            DispatchQueue.main.async {
-                self.loadPodcastData()
-            }
-        }
-        
-        if let navVCs = self.navigationController?.viewControllers, navVCs.count > 1,
-            let episodesTableVC = self.navigationController?.viewControllers[1] as? EpisodesTableViewController {
-            if episodesTableVC.filterTypeSelected != .clips {
-                DispatchQueue.main.async {
-                    episodesTableVC.reloadEpisodeData()
-                }
-            }
-        }
-    }
-    
-    func feedParsingStarted() { }
-    
-}
-
 extension PodcastsTableViewController {
     
     func downloadFinished(_ notification:Notification) {
@@ -294,6 +265,27 @@ extension PodcastsTableViewController {
                 self.tableView.reloadRows(at: [IndexPath(row: index, section: 0)], with: .none)
             }
         }
+    }
+    
+    func feedParsingComplete(_ notification:Notification) {
+        if let url = notification.userInfo?["feedUrl"] as? String, let index = self.subscribedPodcastsArray.index(where: { url == $0.feedUrl }) {
+            
+            if let podcast = Podcast.podcastForFeedUrl(feedUrlString: url, managedObjectContext: self.moc) {
+                self.subscribedPodcastsArray[index] = podcast
+                DispatchQueue.main.async {
+                    self.tableView.reloadRows(at: [IndexPath(row: index, section: 0)], with: .none)
+                }
+            }
+        }
+        else {
+            DispatchQueue.main.async {
+                self.loadPodcastData()
+            }
+        }
+    }
+    
+    func loggedInSuccessfully() {
+        Podcast.syncSubscribedPodcastsWithServer()
     }
     
     override func podcastDeleted(_ notification:Notification) {

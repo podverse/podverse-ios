@@ -9,13 +9,9 @@
 import Foundation
 import CoreData
 
-protocol PVFeedParserDelegate {
-    func feedParsingComplete(feedUrl:String?)
-    func feedParserStarted()
-}
-
-extension PVFeedParserDelegate {
-    func feedParserStarted() { }
+extension Notification.Name {
+    static let feedParsingComplete = Notification.Name("feedParsingComplete")
+    static let feedParsingStarted = Notification.Name("feedParsingStarted")
 }
 
 class PVFeedParser {
@@ -28,7 +24,6 @@ class PVFeedParser {
     var subscribeToPodcast: Bool
     var downloadMostRecentEpisode = false
     var latestEpisodePubDate:Date?
-    var delegate:PVFeedParserDelegate?
     let parsingPodcasts = ParsingPodcasts.shared
     var podcastId:String?
     
@@ -243,8 +238,9 @@ extension PVFeedParser:FeedParserDelegate {
             self.privateMoc.saveData(nil)
         }
         
-        self.delegate?.feedParsingComplete(feedUrl: podcast.feedUrl)
-
+        DispatchQueue.main.async {
+            NotificationCenter.default.post(name: .feedParsingComplete, object: nil, userInfo: ["feedUrl": podcast.feedUrl])
+        }
         
         print("Feed parser has finished!")
     }
@@ -253,7 +249,9 @@ extension PVFeedParser:FeedParserDelegate {
         
         guard let feedUrl = self.feedUrl, let podcast = podcast else {
             self.parsingPodcasts.podcastFinishedParsing()
-            self.delegate?.feedParsingComplete(feedUrl:nil)
+            DispatchQueue.main.async {
+                NotificationCenter.default.post(name: .feedParsingComplete, object: nil, userInfo: nil)
+            }
             return
         }
         
@@ -270,7 +268,9 @@ extension PVFeedParser:FeedParserDelegate {
             }
             else {
                 self.parsingPodcasts.podcastFinishedParsing()
-                self.delegate?.feedParsingComplete(feedUrl: feedUrl)
+                DispatchQueue.main.async {
+                    NotificationCenter.default.post(name: .feedParsingComplete, object: nil, userInfo: ["feedUrl": feedUrl])
+                }
             }
         } else {
             print("No newer episode available, don't download")

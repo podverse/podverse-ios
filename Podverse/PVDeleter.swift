@@ -29,6 +29,8 @@ class PVDeleter: NSObject {
                     return
                 }
                 
+                ParsingPodcasts.shared.removePodcast(podcastId: podcastId, feedUrl: nil)
+                
                 podcast = Podcast.podcastForId(id: podcastId, managedObjectContext: privateMoc)
             } else if let feedUrl = feedUrl {
                 
@@ -40,10 +42,9 @@ class PVDeleter: NSObject {
             } else {
                 return
             }
-
+            
             if let podcast = podcast {
                 DeletingPodcasts.shared.addPodcast(podcastId: podcast.id, feedUrl: podcast.feedUrl)
-                ParsingPodcasts.shared.removePodcast(podcastId: podcast.id, feedUrl: podcast.feedUrl)
                 podcast.removeFromAutoDownloadList()
                 deleteAllEpisodesFromPodcast(podcastId: podcast.id, feedUrl: podcast.feedUrl)
                 privateMoc.delete(podcast)

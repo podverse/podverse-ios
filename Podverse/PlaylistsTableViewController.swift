@@ -24,8 +24,6 @@ class PlaylistsTableViewController: PVViewController {
         
         self.activityIndicator.hidesWhenStopped = true
         
-        PVAuth.shared.delegate = self
-        
         retrievePlaylists()
         
     }
@@ -184,8 +182,10 @@ extension PlaylistsTableViewController:UITableViewDelegate, UITableViewDataSourc
     
 }
 
-extension PlaylistsTableViewController:PVAuthDelegate {
-    func loggedInSuccessfully() {
-        self.retrievePlaylists()
+extension PlaylistsTableViewController {
+    
+    func loggedInSuccessfully(_ notification:Notification) {
+        retrievePlaylists()
     }
+    
 }

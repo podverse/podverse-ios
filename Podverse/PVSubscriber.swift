@@ -23,10 +23,6 @@ class PVSubscriber {
             let feedParser = PVFeedParser(shouldOnlyGetMostRecentEpisode: false, shouldSubscribe: true, podcastId: podcastId)
             feedParser.parsePodcastFeed(feedUrlString: feedUrl)
             
-            DispatchQueue.main.async {
-                feedParser.delegate = ((UIApplication.shared.keyWindow?.rootViewController as? UITabBarController)?.viewControllers?.first as? UINavigationController)?.topViewController as? PodcastsTableViewController
-            }
-
         }
         
     }
