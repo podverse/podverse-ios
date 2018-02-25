@@ -335,57 +335,61 @@ class MediaPlayerViewController: PVViewController {
     
     func showShareMenu() {
         
-        let shareActions = UIAlertController(title: "Share", message: nil, preferredStyle: .actionSheet)
-        
         if let item = self.playerHistoryManager.historyItems.first {
             
-            // TODO:
-            // Official
-            // // Episode
-            // // Podcast
-            // Podverse
-            // // Clip
-            // // Episode
-            // // Podcast
-            
-            shareActions.addAction(UIAlertAction(title: "Episode Link", style: .default, handler: { action in
-                if let episodeMediaUrl = item.episodeMediaUrl {
-                    let episodeUrlItem = [BASE_URL + "episodes/alias?mediaURL=" + episodeMediaUrl]
-                    let activityVC = UIActivityViewController(activityItems: episodeUrlItem, applicationActivities: nil)
-                    activityVC.popoverPresentationController?.sourceView = self.view
-                    
-                    activityVC.completionWithItemsHandler = { activityType, success, items, error in
-                        if activityType == UIActivityType.copyToPasteboard {
-                            self.showToast(message: kLinkCopiedToast)
-                        }
-                    }
-                    
-                    self.present(activityVC, animated: true, completion: nil)
-                }
-            }))
-            
+            // If a mediaRefId is present, then allow the option to copy the link to the Episode or Clip. Else, copy the link to the Episode.
             if let mediaRefId = item.mediaRefId {
-                shareActions.addAction(UIAlertAction(title: "Clip Link", style: .default, handler: { action in
-                    let mediaRefUrlItem = [BASE_URL + "clips/" + mediaRefId]
-                    let activityVC = UIActivityViewController(activityItems: mediaRefUrlItem, applicationActivities: nil)
-                    activityVC.popoverPresentationController?.sourceView = self.view
-                    
-                    activityVC.completionWithItemsHandler = { activityType, success, items, error in
-                        if activityType == UIActivityType.copyToPasteboard {
-                            self.showToast(message: kLinkCopiedToast)
-                        }
+                let shareActions = UIAlertController(title: "Share", message: nil, preferredStyle: .actionSheet)
+                
+                shareActions.addAction(UIAlertAction(title: "Episode Link", style: .default, handler: { action in
+                    if let episodeMediaUrl = item.episodeMediaUrl {
+                        self.loadActivityViewWithEpisodeLink(episodeMediaUrl: episodeMediaUrl)
                     }
-                    
-                    self.present(activityVC, animated: true, completion: nil)
                 }))
+                
+                shareActions.addAction(UIAlertAction(title: "Clip Link", style: .default, handler: { action in
+                    self.loadActvityViewWithClipLink(mediaRefId:mediaRefId)
+                }))
+                
+                shareActions.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+                
+                self.present(shareActions, animated: true, completion: nil)
+                
+            } else {
+                if let episodeMediaUrl = item.episodeMediaUrl {
+                    loadActivityViewWithEpisodeLink(episodeMediaUrl: episodeMediaUrl)
+                }
             }
-                        
-            shareActions.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
-            
-            self.present(shareActions, animated: true, completion: nil)
-            
         }
         
+    }
+    
+    func loadActivityViewWithEpisodeLink(episodeMediaUrl:String) {
+        let episodeUrlItem = [BASE_URL + "episodes/alias?mediaUrl=" + episodeMediaUrl]
+        let activityVC = UIActivityViewController(activityItems: episodeUrlItem, applicationActivities: nil)
+        activityVC.popoverPresentationController?.sourceView = self.view
+        
+        activityVC.completionWithItemsHandler = { activityType, success, items, error in
+            if activityType == UIActivityType.copyToPasteboard {
+                self.showToast(message: kLinkCopiedToast)
+            }
+        }
+        
+        self.present(activityVC, animated: true, completion: nil)
+    }
+    
+    func loadActvityViewWithClipLink(mediaRefId:String) {
+        let mediaRefUrlItem = [BASE_URL + "clips/" + mediaRefId]
+        let activityVC = UIActivityViewController(activityItems: mediaRefUrlItem, applicationActivities: nil)
+        activityVC.popoverPresentationController?.sourceView = self.view
+        
+        activityVC.completionWithItemsHandler = { activityType, success, items, error in
+            if activityType == UIActivityType.copyToPasteboard {
+                self.showToast(message: kLinkCopiedToast)
+            }
+        }
+        
+        self.present(activityVC, animated: true, completion: nil)
     }
     
     func showAboutView() {
