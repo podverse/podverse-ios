@@ -202,6 +202,7 @@ class MediaPlayerViewController: PVViewController {
     
     func togglePlayIcon() {
         
+        // Grab audioPlayer each time to ensure we are checking the correct state
         let audioPlayer = PVMediaPlayer.shared.audioPlayer
         
         DispatchQueue.main.async {

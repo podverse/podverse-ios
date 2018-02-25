@@ -42,7 +42,6 @@ class MakeClipTimeViewController: UIViewController, UITextFieldDelegate {
         super.viewDidLoad()
 
         setupTimer()
-        addObservers()
         populatePlayerInfo()
         
         self.navigationItem.backBarButtonItem = UIBarButtonItem(title:"Back", style:.plain, target:nil, action:nil)
@@ -54,6 +53,7 @@ class MakeClipTimeViewController: UIViewController, UITextFieldDelegate {
         self.endTimeLabel.textColor = UIColor.lightGray        
         self.titleInput.leftView = UIView(frame: CGRect(x:0, y:0, width:10, height:35))
         self.titleInput.leftViewMode = UITextFieldViewMode.always
+        self.titleInput.returnKeyType = .done
         
         if let savedVisibilityType = UserDefaults.standard.value(forKey: kMakeClipVisibilityType) as? String, let visibilityType = VisibilityOptions(rawValue: savedVisibilityType) {
             self.visibilityButton.setTitle(visibilityType.text + " ▼", for: .normal)
@@ -73,6 +73,7 @@ class MakeClipTimeViewController: UIViewController, UITextFieldDelegate {
     
     override func viewWillAppear(_ animated: Bool) {
         navigationController?.interactivePopGestureRecognizer?.isEnabled = false
+        self.pvMediaPlayer.delegate = self
         togglePlayIcon()
         updateTime()
     }
@@ -82,7 +83,6 @@ class MakeClipTimeViewController: UIViewController, UITextFieldDelegate {
     }
     
     deinit {
-        removeObservers()
         removeTimer()
     }
     
@@ -162,27 +162,7 @@ class MakeClipTimeViewController: UIViewController, UITextFieldDelegate {
         self.endTimeLabel.textColor = UIColor.lightGray
         self.clearEndTimeButton.isHidden = true
     }
-    
-    @IBAction func previewClip(_ sender: Any) {
-        if let startTime = self.startTime {
-            self.pvMediaPlayer.seek(toTime: Double(startTime))
-        }
         
-        if let endTime = self.endTime {
-            self.pvMediaPlayer.shouldStopAtEndTime = Int64(endTime)
-        }
-        
-        self.pvMediaPlayer.play()
-    }
-    
-    fileprivate func addObservers() {
-        self.addObserver(self, forKeyPath: #keyPath(audioPlayer.state), options: [.new, .old], context: nil)
-    }
-    
-    fileprivate func removeObservers() {
-        self.removeObserver(self, forKeyPath: #keyPath(audioPlayer.state), context: nil)
-    }
-    
     @IBAction func showVisibilityMenu(_ sender: Any) {
         let visibilityActions = UIAlertController(title: "Clip Visibility", message: nil, preferredStyle: .actionSheet)
         
@@ -288,17 +268,6 @@ class MakeClipTimeViewController: UIViewController, UITextFieldDelegate {
         self.present(actions, animated: true, completion: nil)
     }
     
-    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
-        if let keyPath = keyPath {
-            if keyPath == #keyPath(audioPlayer.state) {
-                DispatchQueue.main.async {
-                    self.togglePlayIcon()
-                    self.updateTime()
-                }
-            }
-        }
-    }
-    
     private func setupTimer() {
         self.timer = Timer.scheduledTimer(timeInterval: 0.25, target: self, selector: #selector(updateTime), userInfo: nil, repeats: true)
     }
@@ -315,23 +284,27 @@ class MakeClipTimeViewController: UIViewController, UITextFieldDelegate {
         }
     }
     
-    private func togglePlayIcon() {
-        if self.pvMediaPlayer.audioPlayer.state == .stopped || self.pvMediaPlayer.audioPlayer.state == .paused {
+    func togglePlayIcon() {
+        
+        // Grab audioPlayer each time to ensure we are checking the correct state
+        let audioPlayer = PVMediaPlayer.shared.audioPlayer
+        
+        if audioPlayer.state == .stopped || audioPlayer.state == .paused {
             self.activityIndicator.isHidden = true
             self.play.image = UIImage(named:"play")
             self.play.tintColor = UIColor.black
             self.play.isHidden = false
-        } else if self.pvMediaPlayer.audioPlayer.state == .error {
+        } else if audioPlayer.state == .error {
             self.activityIndicator.isHidden = true
             self.play.image = UIImage(named:"playerror")?.withRenderingMode(.alwaysTemplate)
             self.play.tintColor = UIColor.red
             self.play.isHidden = false
-        } else if self.pvMediaPlayer.audioPlayer.state == .playing && !self.pvMediaPlayer.shouldSetupClip {
+        } else if audioPlayer.state == .playing && !self.pvMediaPlayer.shouldSetupClip {
             self.activityIndicator.isHidden = true
             self.play.image = UIImage(named:"pause")
             self.play.tintColor = UIColor.black
             self.play.isHidden = false
-        } else if self.pvMediaPlayer.audioPlayer.state == .buffering || self.pvMediaPlayer.shouldSetupClip {
+        } else if audioPlayer.state == .buffering || self.pvMediaPlayer.shouldSetupClip {
             self.activityIndicator.isHidden = false
             self.play.isHidden = true
         } else {
@@ -342,7 +315,7 @@ class MakeClipTimeViewController: UIViewController, UITextFieldDelegate {
         }
     }
     
-    @objc private func updateTime () {            
+    @objc func updateTime () {
         var playbackPosition = Double(0)
         if self.pvMediaPlayer.progress > 0 {
             playbackPosition = self.pvMediaPlayer.progress
@@ -401,4 +374,34 @@ class MakeClipTimeViewController: UIViewController, UITextFieldDelegate {
             
         }
     }
+}
+
+extension MakeClipTimeViewController:PVMediaPlayerUIDelegate {
+    
+    func playerHistoryItemBuffering() {
+        self.togglePlayIcon()
+    }
+    
+    func playerHistoryItemErrored() {
+        self.togglePlayIcon()
+    }
+    
+    func playerHistoryItemLoaded() {
+        DispatchQueue.main.async {
+            self.updateTime()
+            self.togglePlayIcon()
+        }
+        
+    }
+    
+    func playerHistoryItemLoadingBegan() {
+        DispatchQueue.main.async {
+            self.togglePlayIcon()
+        }
+    }
+    
+    func playerHistoryItemPaused() {
+        self.togglePlayIcon()
+    }
+    
 }
