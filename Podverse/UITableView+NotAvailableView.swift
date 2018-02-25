@@ -36,7 +36,7 @@ extension UIViewController {
         noDataTextLabel.numberOfLines = 5
         noDataTextLabel.textAlignment = .center
         actionButton.setTitle(buttonTitle, for: .normal)
-        actionButton.setTitleColor(isBlackBg ? .white : .black, for: .normal)
+        actionButton.setTitleColor(.blue, for: .normal)
         
         if let image = buttonImage {
             actionButton.setImage(image, for: .normal)
