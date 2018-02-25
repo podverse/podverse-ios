@@ -85,14 +85,14 @@ extension DownloadsTableViewController:UITableViewDelegate, UITableViewDataSourc
         
         if episode.downloadComplete == true {
             cell.status.text = "Finished"
-            cell.progress.setProgress(1.0, animated: false)
         } else if episode.taskResumeData != nil {
             cell.status.text = "Paused"
         } else {
             cell.status.text = "Downloading"
         }
         
-        cell.progressStats.text = ""
+        cell.progress.setProgress(episode.progress, animated: false)
+        cell.progressStats.text = episode.formattedTotalBytesDownloaded
         
         return cell
         
