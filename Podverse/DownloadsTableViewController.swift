@@ -103,6 +103,9 @@ extension DownloadsTableViewController:UITableViewDelegate, UITableViewDataSourc
         let downloadingEpisode = DownloadingEpisodeList.shared.downloadingEpisodes[indexPath.row]
         
         if downloadingEpisode.taskResumeData != nil {
+            if !PVDownloader.shared.shouldDownload() {
+                self.showAllowCellularDataAlert()
+            }
             pvDownloader.resumeDownloadingEpisode(downloadingEpisode: downloadingEpisode)
         } else if downloadingEpisode.downloadComplete == true {
             let moc = CoreDataHelper.createMOCForThread(threadType: .mainThread)

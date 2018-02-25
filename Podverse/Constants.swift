@@ -68,6 +68,10 @@ let kMyEpisodesPlaylist = "My Episodes"
 
 let kUserId = "userId"
 
+let kAllowCellularDataDownloads = "allowCellularDataDownloads"
+
+let kAskedToAllowCellularDataDownloads = "askedToAllowCellularDataDownloads"
+
 let kAutoDownloadingFeedUrls = "autoDownloadingFeedUrls"
 
 let kDownloadingMediaUrls = "downloadingMediaUrls"
