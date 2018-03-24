@@ -12,6 +12,7 @@ class SearchEpisode {
     
     var id: String?
     var isPublic: Bool = false
+    var duration: NSNumber?
     var mediaUrl: String?
     var pubDate: String?
     var summary: String?
@@ -43,6 +44,10 @@ class SearchEpisode {
         
         if let title = json["title"] as? String {
             searchEpisode.title = title
+        }
+        
+        if let duration = json["duration"] as? NSNumber {
+            searchEpisode.duration = duration
         }
         
         return searchEpisode

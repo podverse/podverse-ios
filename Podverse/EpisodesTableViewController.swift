@@ -47,6 +47,7 @@ class EpisodesTableViewController: PVViewController {
     @IBOutlet weak var autoDownloadLabel: UILabel!
     @IBOutlet weak var autoDownloadSwitch: UISwitch!
     @IBOutlet weak var bottomButton: UITableView!
+    
     @IBOutlet weak var headerImageView: UIImageView!
     @IBOutlet weak var headerPodcastTitle: UILabel!
     @IBOutlet weak var tableView: UITableView!
@@ -495,8 +496,10 @@ extension EpisodesTableViewController: UITableViewDataSource, UITableViewDelegat
                 cell.summary?.text = trimmed.removeHTMLFromString()?.trimmingCharacters(in: .whitespacesAndNewlines)
             }
             
-            let totalClips = String(123)
-            cell.totalClips?.text = String(totalClips + " clips")
+            if let duration = episode.duration {
+                let dur = Int64(duration)
+                cell.duration?.text = dur.toDurationString()
+            }
             
             if let pubDate = episode.pubDate {
                 cell.pubDate?.text = pubDate.toShortFormatString()
