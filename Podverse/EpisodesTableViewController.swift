@@ -22,10 +22,16 @@ class EpisodesTableViewController: PVViewController {
             
             if filterTypeSelected == .clips {
                 self.tableViewHeader.sortingButton.isHidden = false
-                self.clipQueryStatusView.isHidden = false
+                self.tableStatusView.isHidden = false
+                self.showAllEpisodesButton.isHidden = true
+            } else if filterTypeSelected == .downloaded {
+                self.tableViewHeader.sortingButton.isHidden = true
+                self.tableStatusView.isHidden = false
+                self.showAllEpisodesButton.isHidden = false
             } else {
                 self.tableViewHeader.sortingButton.isHidden = true
-                self.clipQueryStatusView.isHidden = true
+                self.tableStatusView.isHidden = true
+                self.showAllEpisodesButton.isHidden = true
             }
         }
     }
@@ -46,16 +52,19 @@ class EpisodesTableViewController: PVViewController {
     @IBOutlet weak var activityView: UIView!
     @IBOutlet weak var autoDownloadLabel: UILabel!
     @IBOutlet weak var autoDownloadSwitch: UISwitch!
-    @IBOutlet weak var bottomButton: UITableView!
     @IBOutlet weak var headerImageView: UIImageView!
     @IBOutlet weak var headerPodcastTitle: UILabel!
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var tableViewHeader: FiltersTableHeaderView!
     @IBOutlet weak var webView: UIWebView!
     
+    @IBOutlet weak var tableStatusView: UIView!
+    
+    @IBOutlet weak var showAllEpisodesButton: UIButton!
+    
     @IBOutlet weak var clipQueryActivityIndicator: UIActivityIndicatorView!
     @IBOutlet weak var clipQueryMessage: UILabel!
-    @IBOutlet weak var clipQueryStatusView: UIView!
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -215,7 +224,9 @@ class EpisodesTableViewController: PVViewController {
         }
     }
     
-    
+    @IBAction func showAllEpisodesTap(_ sender: Any) {
+        loadAllEpisodeData()
+    }
     
     func loadAllEpisodeData() {
         self.filterTypeSelected = .allEpisodes
@@ -225,7 +236,9 @@ class EpisodesTableViewController: PVViewController {
     func reloadEpisodeData() {
         
         self.hideNoDataView()
+        hideActivityIndicator()
         self.tableView.isHidden = false
+        self.webView.isHidden = true
 
         if let feedUrl = feedUrl, let podcast = Podcast.podcastForFeedUrl(feedUrlString: feedUrl, managedObjectContext: moc) {
             
