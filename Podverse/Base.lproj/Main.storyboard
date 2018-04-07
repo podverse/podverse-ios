@@ -1328,8 +1328,8 @@
                                                     <color key="textColor" cocoaTouchSystemColor="scrollViewTexturedBackgroundColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Total Clips" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jjJ-TO-vZ3">
-                                                    <rect key="frame" x="15" y="111" width="64" height="16"/>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Duration" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jjJ-TO-vZ3">
+                                                    <rect key="frame" x="15" y="111" width="52" height="16"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="13"/>
                                                     <color key="textColor" cocoaTouchSystemColor="scrollViewTexturedBackgroundColor"/>
                                                     <nil key="highlightedColor"/>
@@ -1357,10 +1357,10 @@
                                             </constraints>
                                         </tableViewCellContentView>
                                         <connections>
+                                            <outlet property="duration" destination="jjJ-TO-vZ3" id="AY3-5s-TtF"/>
                                             <outlet property="pubDate" destination="mAZ-C6-mgt" id="r9o-lJ-665"/>
                                             <outlet property="summary" destination="0Sx-hq-AV8" id="rsG-tc-xii"/>
                                             <outlet property="title" destination="asQ-b0-GpZ" id="wCt-3Y-PQZ"/>
-                                            <outlet property="totalClips" destination="jjJ-TO-vZ3" id="R5u-fh-hOC"/>
                                         </connections>
                                     </tableViewCell>
                                 </prototypes>
@@ -1511,8 +1511,8 @@
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Total Clips" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Yf5-8c-0wb">
-                                                    <rect key="frame" x="15" y="111" width="64" height="16"/>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Duration" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Yf5-8c-0wb">
+                                                    <rect key="frame" x="15" y="111" width="52" height="16"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="13"/>
                                                     <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                                     <nil key="highlightedColor"/>
@@ -1596,10 +1596,10 @@
                                             <outlet property="activityIndicator" destination="ge7-5Q-KDW" id="zoV-lb-HVI"/>
                                             <outlet property="activityView" destination="yVd-SA-sTu" id="bNP-1w-9UE"/>
                                             <outlet property="button" destination="qXH-qS-KYk" id="38V-tS-Onr"/>
+                                            <outlet property="duration" destination="Yf5-8c-0wb" id="ytD-zW-vkW"/>
                                             <outlet property="pubDate" destination="q33-Fx-AWL" id="fSD-5F-1DS"/>
                                             <outlet property="summary" destination="f2v-X2-dYP" id="M2R-dm-dzk"/>
                                             <outlet property="title" destination="inE-9g-tFS" id="bUW-yS-PaF"/>
-                                            <outlet property="totalClips" destination="Yf5-8c-0wb" id="HOV-Po-OzC"/>
                                             <segue destination="Q8B-A3-mxB" kind="show" identifier="Show Episode" id="EBt-nB-N1N"/>
                                         </connections>
                                     </tableViewCell>

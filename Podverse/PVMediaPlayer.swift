@@ -429,23 +429,23 @@ class PVMediaPlayer:NSObject {
     }
     
     @objc func playInterrupted(notification: NSNotification) {
-//        if notification.name == NSNotification.Name.AVAudioSessionInterruption && notification.userInfo != nil {
-//            var info = notification.userInfo!
-//            var intValue: UInt = 0
-//
-//            (info[AVAudioSessionInterruptionTypeKey] as! NSValue).getValue(&intValue)
-//
-//            switch AVAudioSessionInterruptionType(rawValue: intValue) {
-//                case .some(.began):
-//                    saveCurrentTimeAsPlaybackPosition()
-//                case .some(.ended):
-//                    if mediaPlayerIsPlaying == true {
-//                        playOrPause()
-//                    }
-//                default:
-//                    break
-//            }
-//        }
+        if notification.name == NSNotification.Name.AVAudioSessionInterruption && notification.userInfo != nil {
+            var info = notification.userInfo!
+            var intValue: UInt = 0
+
+            (info[AVAudioSessionInterruptionTypeKey] as! NSValue).getValue(&intValue)
+            
+            switch AVAudioSessionInterruptionType(rawValue: intValue) {
+                case .some(.began):
+                    savePlaybackPosition()
+                case .some(.ended):
+                    if audioPlayer.state == .playing {
+                        playOrPause()
+                    }
+                default:
+                    break
+            }
+        }
     }
     
 }

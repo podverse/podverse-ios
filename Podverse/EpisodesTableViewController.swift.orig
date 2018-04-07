@@ -52,6 +52,11 @@ class EpisodesTableViewController: PVViewController {
     @IBOutlet weak var activityView: UIView!
     @IBOutlet weak var autoDownloadLabel: UILabel!
     @IBOutlet weak var autoDownloadSwitch: UISwitch!
+<<<<<<< HEAD
+=======
+    @IBOutlet weak var bottomButton: UITableView!
+    
+>>>>>>> cae62c72c06008b5f3a7f642d246eac2394995eb
     @IBOutlet weak var headerImageView: UIImageView!
     @IBOutlet weak var headerPodcastTitle: UILabel!
     @IBOutlet weak var tableView: UITableView!
