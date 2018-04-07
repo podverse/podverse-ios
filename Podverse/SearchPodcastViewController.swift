@@ -423,11 +423,9 @@ extension SearchPodcastViewController: UITableViewDataSource, UITableViewDelegat
 
                 cell.summary?.text = trimmed.removeHTMLFromString()?.trimmingCharacters(in: .whitespacesAndNewlines)
             }
+            
+            cell.duration?.text = String(describing: episode.duration)
 
-            let totalClips = String(123)
-            cell.totalClips?.text = String(totalClips + " clips")
-
-            cell.totalClips.text = "123"
             cell.pubDate.text = episode.pubDate?.toServerDate()?.toShortFormatString()
             
             return cell
