@@ -37,7 +37,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         setupUI()
         setupRemoteFunctions()
                 
-        // Ask for permission for Podverse to use push notifications
         application.registerUserNotificationSettings(UIUserNotificationSettings(types: [.alert, .badge, .sound], categories: nil))  // types are UIUserNotificationType members
         application.beginBackgroundTask(withName: "showNotification", expirationHandler: nil)
         

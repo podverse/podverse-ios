@@ -80,6 +80,11 @@ class MediaPlayerViewController: PVViewController {
         updateTime()
     }
     
+    // Adding togglePlayIcon in viewDidAppear and viewWillAppear since the icon was not always correct after returning from the background
+    override func viewDidAppear(_ animated: Bool) {
+        togglePlayIcon()
+    }
+    
     override func viewWillDisappear(_ animated: Bool) {
         navigationController?.interactivePopGestureRecognizer?.isEnabled = true
     }
