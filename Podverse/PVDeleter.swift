@@ -127,7 +127,10 @@ class PVDeleter: NSObject {
                     privateMoc.saveData() {
                         if shouldCallNotificationMethod == true {
                             DispatchQueue.main.async {
-                                NotificationCenter.default.post(name: .episodeDeleted, object: nil, userInfo: ["mediaUrl":mediaUrl ?? ""])
+                                NotificationCenter.default.post(name: .episodeDeleted, object: nil, userInfo: [
+                                    "feedUrl": podcastFeedUrl,
+                                    "mediaUrl": mediaUrl
+                                ])
                             }
                         }
                     }
