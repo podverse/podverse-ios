@@ -125,8 +125,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         rcc.ratingCommand.isEnabled = false
         rcc.seekBackwardCommand.isEnabled = false
         rcc.seekForwardCommand.isEnabled = false
-        rcc.skipBackwardCommand.isEnabled = false
-        rcc.skipForwardCommand.isEnabled = false
+        rcc.skipBackwardCommand.isEnabled = true
+        rcc.skipForwardCommand.isEnabled = true
         rcc.stopCommand.isEnabled = false
         
     }
