@@ -42,7 +42,7 @@ extension String {
         s = s.replacingOccurrences(of: "&uacute;", with: "ú")
         s = s.replacingOccurrences(of: "&ntilde;", with: "ñ")
         s = s.replacingOccurrences(of: "&#8217;", with: "'")
-
+        
         return s
     }
 }
