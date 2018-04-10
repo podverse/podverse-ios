@@ -1479,6 +1479,15 @@
                                             <rect key="frame" x="169" y="4" width="37" height="37"/>
                                             <color key="color" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                                         </activityIndicatorView>
+                                        <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7o6-kw-IKa">
+                                            <rect key="frame" x="4" y="6" width="133" height="32"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                            <state key="normal" title="Show All Episodes"/>
+                                            <connections>
+                                                <action selector="showAllEpisodesTap:" destination="DYF-Bg-yz8" eventType="touchUpInside" id="2MX-uB-4ek"/>
+                                            </connections>
+                                        </button>
                                     </subviews>
                                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                     <constraints>
@@ -1754,12 +1763,12 @@
                         <outlet property="activityView" destination="PyK-Wl-Tyq" id="ENu-1p-ZaB"/>
                         <outlet property="autoDownloadLabel" destination="TnX-z2-VIN" id="jUQ-rY-nCP"/>
                         <outlet property="autoDownloadSwitch" destination="yez-rs-zzS" id="u4r-5a-L2r"/>
-                        <outlet property="bottomButton" destination="VOa-dX-ejH" id="akg-G5-uRs"/>
                         <outlet property="clipQueryActivityIndicator" destination="p7G-J3-fHw" id="nmi-5B-rNU"/>
                         <outlet property="clipQueryMessage" destination="fVU-F5-afy" id="HPz-bI-B8N"/>
-                        <outlet property="clipQueryStatusView" destination="ZfV-H5-Bm9" id="rcN-tW-vcI"/>
                         <outlet property="headerImageView" destination="W2q-RV-W1m" id="y4A-4E-KUw"/>
                         <outlet property="headerPodcastTitle" destination="4bn-tB-LUD" id="iII-EY-sLo"/>
+                        <outlet property="showAllEpisodesButton" destination="7o6-kw-IKa" id="SMN-ZV-992"/>
+                        <outlet property="tableStatusView" destination="ZfV-H5-Bm9" id="YUl-Pv-JuH"/>
                         <outlet property="tableView" destination="VOa-dX-ejH" id="QWe-WP-Gqg"/>
                         <outlet property="tableViewHeader" destination="x3o-LX-P4g" id="NI1-PX-ihS"/>
                         <outlet property="webView" destination="zuu-LB-Oaw" id="ILO-36-4Y5"/>
