@@ -37,7 +37,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         setupUI()
         setupRemoteFunctions()
                 
-        // Ask for permission for Podverse to use push notifications
         application.registerUserNotificationSettings(UIUserNotificationSettings(types: [.alert, .badge, .sound], categories: nil))  // types are UIUserNotificationType members
         application.beginBackgroundTask(withName: "showNotification", expirationHandler: nil)
         
@@ -126,8 +125,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         rcc.ratingCommand.isEnabled = false
         rcc.seekBackwardCommand.isEnabled = false
         rcc.seekForwardCommand.isEnabled = false
-        rcc.skipBackwardCommand.isEnabled = false
-        rcc.skipForwardCommand.isEnabled = false
+        rcc.skipBackwardCommand.isEnabled = true
+        rcc.skipForwardCommand.isEnabled = true
         rcc.stopCommand.isEnabled = false
         
     }

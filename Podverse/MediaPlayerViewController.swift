@@ -79,7 +79,7 @@ class MediaPlayerViewController: PVViewController {
         togglePlayIcon()
         updateTime()
     }
-    
+        
     override func viewWillDisappear(_ animated: Bool) {
         navigationController?.interactivePopGestureRecognizer?.isEnabled = true
     }

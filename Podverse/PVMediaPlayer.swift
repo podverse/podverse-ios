@@ -165,10 +165,12 @@ class PVMediaPlayer:NSObject {
     
     fileprivate func addObservers() {
         NotificationCenter.default.addObserver(self, selector: #selector(headphonesWereUnplugged), name: .AVAudioSessionRouteChange, object: AVAudioSession.sharedInstance())
+        NotificationCenter.default.addObserver(self, selector: #selector(playInterrupted), name: .AVAudioSessionInterruption, object: AVAudioSession.sharedInstance())
     }
     
     fileprivate func removeObservers() {
         NotificationCenter.default.removeObserver(self, name: .AVAudioSessionRouteChange, object: AVAudioSession.sharedInstance())
+        NotificationCenter.default.removeObserver(self, name: .AVAudioSessionInterruption, object: AVAudioSession.sharedInstance())
     }
     
     @objc private func stopAtEndTime() {
@@ -354,7 +356,7 @@ class PVMediaPlayer:NSObject {
         }
     }
     
-    func loadPlayerHistoryItem(item: PlayerHistoryItem) {
+    func loadPlayerHistoryItem(item: PlayerHistoryItem, startFromLastPlaybackPosition: Bool = false) {
         
         self.audioPlayer.dispose()
         self.audioPlayer = STKAudioPlayer()
@@ -375,7 +377,6 @@ class PVMediaPlayer:NSObject {
             self.hasErrored = false
         }
         
-        // If you are loading a clip, or an episode from the beginning, the item.lastPlaybackPosition will be overridden in the observeValue or seek method.
         if let lastPlaybackPosition = item.lastPlaybackPosition, !self.shouldSetupClip {
             self.shouldStartFromTime = lastPlaybackPosition
         }
@@ -419,7 +420,12 @@ class PVMediaPlayer:NSObject {
                 self.audioPlayer.play(episodeMediaUrl)
             }
             
-            self.shouldSetupClip = item.isClip()
+            if (!startFromLastPlaybackPosition) {
+                self.shouldSetupClip = item.isClip()
+            } else {
+                self.shouldSetupClip = false
+            }
+            
 
         }
         
@@ -429,18 +435,20 @@ class PVMediaPlayer:NSObject {
     }
     
     @objc func playInterrupted(notification: NSNotification) {
-        if notification.name == NSNotification.Name.AVAudioSessionInterruption && notification.userInfo != nil {
-            var info = notification.userInfo!
+        if notification.name == NSNotification.Name.AVAudioSessionInterruption, let userInfo = notification.userInfo {
             var intValue: UInt = 0
-
-            (info[AVAudioSessionInterruptionTypeKey] as! NSValue).getValue(&intValue)
+            (userInfo[AVAudioSessionInterruptionTypeKey] as! NSValue).getValue(&intValue)
             
             switch AVAudioSessionInterruptionType(rawValue: intValue) {
                 case .some(.began):
                     savePlaybackPosition()
                 case .some(.ended):
-                    if audioPlayer.state == .playing {
-                        playOrPause()
+                    var intOptionValue: UInt = 0
+                    (userInfo[AVAudioSessionInterruptionOptionKey] as! NSValue).getValue(&intOptionValue)
+                    if intOptionValue == AVAudioSessionInterruptionFlags_ShouldResume && self.audioPlayer.state == .playing, let item = self.nowPlayingItem {
+                        // Resuming from background might not work in StreamingKit, so I am loading the playerHistoryItem over again
+                        // Using startFromLastPlaybackPosition so if a clip is now playing, then it will resume from the last playback position instead of the clip start time
+                        self.loadPlayerHistoryItem(item: item, startFromLastPlaybackPosition: true)
                     }
                 default:
                     break

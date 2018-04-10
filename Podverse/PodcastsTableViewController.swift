@@ -110,7 +110,7 @@ class PodcastsTableViewController: PVViewController, AutoDownloadProtocol {
     }
     
     func loadPodcastData() {
-        
+        self.moc.refreshAllObjects()
         self.subscribedPodcastsArray = CoreDataHelper.fetchEntities(className:"Podcast", predicate: nil, moc:self.moc) as! [Podcast]
         self.subscribedPodcastsArray = self.subscribedPodcastsArray.filter { !DeletingPodcasts.shared.podcastKeys.contains($0.feedUrl) }
         
@@ -259,16 +259,17 @@ extension PodcastsTableViewController {
     
     override func episodeDeleted(_ notification:Notification) {
         super.episodeDeleted(notification)
-        
-        if let mediaUrl = notification.userInfo?["mediaUrl"] as? String, let episodes = CoreDataHelper.fetchEntities(className: "Episode", predicate: NSPredicate(format: "mediaUrl == %@", mediaUrl), moc: self.moc) as? [Episode], let episode = episodes.first, let index = self.subscribedPodcastsArray.index(where: { $0.feedUrl == episode.podcast.feedUrl }) {
+        self.moc.refreshAllObjects()
+        if let feedUrl = notification.userInfo?["feedUrl"] as? String, let podcasts = CoreDataHelper.fetchEntities(className: "Podcast", predicate: NSPredicate(format: "feedUrl == %@", feedUrl), moc: self.moc) as? [Podcast], let podcast = podcasts.first, let index = self.subscribedPodcastsArray.index(where: { $0.feedUrl == podcast.feedUrl }) {
             DispatchQueue.main.async {
-                self.subscribedPodcastsArray[index] = episode.podcast
+                self.subscribedPodcastsArray[index] = podcast
                 self.tableView.reloadRows(at: [IndexPath(row: index, section: 0)], with: .none)
             }
         }
     }
     
     func feedParsingComplete(_ notification:Notification) {
+        self.moc.refreshAllObjects()
         if let url = notification.userInfo?["feedUrl"] as? String, let index = self.subscribedPodcastsArray.index(where: { url == $0.feedUrl }) {
             
             if let podcast = Podcast.podcastForFeedUrl(feedUrlString: url, managedObjectContext: self.moc) {
