@@ -7,7 +7,6 @@
 
 import Foundation
 
-
 let kDateDateFormat = "yyyy-MM-dd'T'HH:mm:sszzz"
 let kDateTimeIntervalStringRegex = "^([0-9]{2}):([0-9]{2}):([0-9]{2})"
 
@@ -236,7 +235,7 @@ extension Date {
         return Int(interval / Date.dayInSeconds())
     }
     
-
+    
     // MARK: To String
     
     func toString() -> String {
@@ -247,24 +246,24 @@ extension Date {
     {
         var dateFormat: String
         switch format {
-            case .dotNet:
-                return "Date(\(self.timeIntervalSince1970))"
-            case .iso8601:
-                dateFormat = "yyyy-MM-dd'T'HH:mm:ssZ"
-            case .rfc822:
-                dateFormat = "EEE, d MMM yyyy HH:mm:ss zzz"
-            case .incompleteRFC822:
-                dateFormat = "d MMM yyyy HH:mm:ss zzz"
-            case .incompleteISO8601:
-                dateFormat = "yyyy-MM-dd HH:mm:sszzz"
-            case .custom(let string):
-                dateFormat = string
+        case .dotNet:
+            return "Date(\(self.timeIntervalSince1970))"
+        case .iso8601:
+            dateFormat = "yyyy-MM-dd'T'HH:mm:ssZ"
+        case .rfc822:
+            dateFormat = "EEE, d MMM yyyy HH:mm:ss zzz"
+        case .incompleteRFC822:
+            dateFormat = "d MMM yyyy HH:mm:ss zzz"
+        case .incompleteISO8601:
+            dateFormat = "yyyy-MM-dd HH:mm:sszzz"
+        case .custom(let string):
+            dateFormat = string
         }
         let formatter = DateFormatter()
         formatter.dateFormat = dateFormat
         return formatter.string(from: self)
     }
-
+    
     func toString(dateStyle: DateFormatter.Style, timeStyle: DateFormatter.Style, doesRelativeDateFormatting: Bool = false) -> String
     {
         let formatter = DateFormatter()
@@ -273,5 +272,5 @@ extension Date {
         formatter.doesRelativeDateFormatting = doesRelativeDateFormatting
         return formatter.string(from: self)
     }
-   
+    
 }

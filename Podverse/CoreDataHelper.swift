@@ -193,7 +193,7 @@ class CoreDataHelper {
         if episodeSet.count > 0 {
             return episodeSet[0]
         } else {
-            let oid = CoreDataHelper.insertManagedObject(className: "Episode")
+            let oid = CoreDataHelper.insertManagedObject(className: "Episode", moc: moc)
             return CoreDataHelper.fetchEntityWithID(objectId: oid, moc: moc) as! Episode
         }
     }
