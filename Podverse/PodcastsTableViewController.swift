@@ -45,11 +45,22 @@ class PodcastsTableViewController: PVViewController, AutoDownloadProtocol {
         self.refreshControl.addTarget(self, action: #selector(refreshPodcastFeeds), for: UIControlEvents.valueChanged)
         self.tableView.addSubview(refreshControl)
         
-        self.parseActivityIndicator.isHidden = true
+        self.parseActivityIndicator.hidesWhenStopped = true
         
-        Podcast.syncSubscribedPodcastsWithServer()
-
-        refreshPodcastFeeds()
+        if PVAuth.userIsLoggedIn {
+            Podcast.syncSubscribedPodcastsWithServer()
+            self.parseStatus.text = "Syncing with server"
+            self.parseActivityIndicator.startAnimating()
+        } else {
+            if let lastParsedDate = UserDefaults.standard.object(forKey: kLastParsedDate) as? Date {
+                if let diff = Calendar.current.dateComponents([.hour], from: lastParsedDate, to: Date()).hour, diff > 1 {
+                    refreshPodcastFeeds()
+                } else {
+                    self.parseStatus.text = "Updated: " + lastParsedDate.toString()
+                }
+            }
+        }
+        
         loadPodcastData()
         
         
@@ -317,13 +328,11 @@ extension PodcastsTableViewController {
         DispatchQueue.main.async {
             if total > 0 && currentItem < total {
                 self.parseActivityIndicator.startAnimating()
-                self.parseActivityIndicator.isHidden = false
                 self.parseStatus.text = String(currentItem) + "/" + String(total) + " parsing"
             } else {
                 self.parseActivityIndicator.stopAnimating()
-                self.parseActivityIndicator.isHidden = true
-                if let lastParsedTime = UserDefaults.standard.string(forKey: "LAST_PARSED_TIME") {
-                    self.parseStatus.text = "Updated: " + lastParsedTime
+                if let lastParsedDate = UserDefaults.standard.object(forKey: kLastParsedDate) as? Date {
+                    self.parseStatus.text = "Updated: " + lastParsedDate.toString()
                 }
             }
         }
