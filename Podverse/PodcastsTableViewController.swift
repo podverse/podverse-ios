@@ -36,6 +36,8 @@ class PodcastsTableViewController: PVViewController, AutoDownloadProtocol {
             
             UserDefaults.standard.set(NSUUID().uuidString, forKey: "ONE_TIME_LOGIN")
         }
+        
+        self.parseStatus.text = ""
 
         self.tabBarController?.tabBar.isTranslucent = false
         
@@ -43,7 +45,6 @@ class PodcastsTableViewController: PVViewController, AutoDownloadProtocol {
         self.refreshControl.addTarget(self, action: #selector(refreshPodcastFeeds), for: UIControlEvents.valueChanged)
         self.tableView.addSubview(refreshControl)
         
-        self.parseStatus.isHidden = true
         self.parseActivityIndicator.isHidden = true
         
         Podcast.syncSubscribedPodcastsWithServer()
@@ -317,12 +318,13 @@ extension PodcastsTableViewController {
             if total > 0 && currentItem < total {
                 self.parseActivityIndicator.startAnimating()
                 self.parseActivityIndicator.isHidden = false
-                self.parseStatus.isHidden = false
                 self.parseStatus.text = String(currentItem) + "/" + String(total) + " parsing"
             } else {
                 self.parseActivityIndicator.stopAnimating()
                 self.parseActivityIndicator.isHidden = true
-                self.parseStatus.isHidden = true
+                if let lastParsedTime = UserDefaults.standard.string(forKey: "LAST_PARSED_TIME") {
+                    self.parseStatus.text = "Updated: " + lastParsedTime
+                }
             }
         }
     }

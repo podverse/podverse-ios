@@ -268,13 +268,13 @@
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="parsing status" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="yzx-Rk-Jug">
-                                        <rect key="frame" x="264" y="11" width="103" height="19.5"/>
-                                        <fontDescription key="fontDescription" type="system" pointSize="16"/>
-                                        <nil key="textColor"/>
+                                        <rect key="frame" x="270" y="13" width="97" height="18"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                        <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="3VS-XD-zBF">
-                                        <rect key="frame" x="236" y="12" width="20" height="20"/>
+                                        <rect key="frame" x="242" y="13" width="20" height="20"/>
                                         <color key="color" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     </activityIndicatorView>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="DGq-af-fGx">
@@ -300,13 +300,13 @@
                                     <constraint firstItem="6cZ-td-vhZ" firstAttribute="leading" secondItem="oif-Up-GTP" secondAttribute="leading" constant="8" id="Kmm-EZ-srG"/>
                                     <constraint firstAttribute="trailing" secondItem="yzx-Rk-Jug" secondAttribute="trailing" constant="8" id="VJ3-wY-Se0"/>
                                     <constraint firstAttribute="bottom" secondItem="DGq-af-fGx" secondAttribute="bottom" id="bxV-j9-2MG"/>
-                                    <constraint firstItem="yzx-Rk-Jug" firstAttribute="top" secondItem="oif-Up-GTP" secondAttribute="top" constant="11" id="c5e-iQ-jlH"/>
+                                    <constraint firstItem="yzx-Rk-Jug" firstAttribute="top" secondItem="oif-Up-GTP" secondAttribute="top" constant="13" id="c5e-iQ-jlH"/>
                                     <constraint firstItem="6cZ-td-vhZ" firstAttribute="top" secondItem="oif-Up-GTP" secondAttribute="top" constant="12" id="fdD-oH-SGH"/>
                                     <constraint firstAttribute="trailing" secondItem="DGq-af-fGx" secondAttribute="trailing" id="jsm-Nb-0cl"/>
                                     <constraint firstItem="I8m-uc-kfc" firstAttribute="leading" secondItem="oif-Up-GTP" secondAttribute="leading" id="lWy-xW-FTk"/>
                                     <constraint firstItem="I8m-uc-kfc" firstAttribute="top" secondItem="oif-Up-GTP" secondAttribute="top" id="r9K-Hx-QbO"/>
                                     <constraint firstAttribute="height" constant="44" id="xK9-sG-fg4"/>
-                                    <constraint firstItem="3VS-XD-zBF" firstAttribute="top" secondItem="oif-Up-GTP" secondAttribute="top" constant="12" id="zP7-VQ-8Wp"/>
+                                    <constraint firstItem="3VS-XD-zBF" firstAttribute="top" secondItem="oif-Up-GTP" secondAttribute="top" constant="13" id="zP7-VQ-8Wp"/>
                                 </constraints>
                             </view>
                         </subviews>
@@ -1484,9 +1484,8 @@
                                             <rect key="frame" x="169" y="4" width="37" height="37"/>
                                             <color key="color" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                                         </activityIndicatorView>
-                                        <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7o6-kw-IKa">
-                                            <rect key="frame" x="4" y="6" width="133" height="32"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7o6-kw-IKa">
+                                            <rect key="frame" x="121" y="6" width="133" height="32"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="16"/>
                                             <state key="normal" title="Show All Episodes"/>
                                             <connections>
@@ -1496,6 +1495,8 @@
                                     </subviews>
                                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                     <constraints>
+                                        <constraint firstItem="7o6-kw-IKa" firstAttribute="centerY" secondItem="ZfV-H5-Bm9" secondAttribute="centerY" id="7dg-QD-2Ho"/>
+                                        <constraint firstItem="7o6-kw-IKa" firstAttribute="centerX" secondItem="ZfV-H5-Bm9" secondAttribute="centerX" id="EY3-tz-4dy"/>
                                         <constraint firstItem="fVU-F5-afy" firstAttribute="centerX" secondItem="ZfV-H5-Bm9" secondAttribute="centerX" id="LXM-u4-2L1"/>
                                         <constraint firstItem="p7G-J3-fHw" firstAttribute="centerX" secondItem="ZfV-H5-Bm9" secondAttribute="centerX" id="Wvw-AP-VjI"/>
                                         <constraint firstItem="fVU-F5-afy" firstAttribute="centerY" secondItem="ZfV-H5-Bm9" secondAttribute="centerY" id="mJ9-hq-gdX"/>
