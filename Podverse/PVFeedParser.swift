@@ -51,9 +51,7 @@ class PVFeedParser {
             return
         }
 
-        if !self.downloadMostRecentEpisode {
-            self.parsingPodcasts.addPodcast(podcastId: self.podcastId, feedUrl: feedUrlString)
-        }
+        self.parsingPodcasts.addPodcast(podcastId: self.podcastId, feedUrl: feedUrlString)
         
         self.feedUrl = feedUrlString
         
@@ -229,7 +227,7 @@ class PVFeedParser {
                     self.downloadMostRecentEpisode = false
                 }
                 
-                if self.onlyGetMostRecentEpisode {
+                if self.onlyGetMostRecentEpisode && !self.subscribeToPodcast {
                     break
                 }
             }
@@ -359,7 +357,7 @@ class PVFeedParser {
                     self.downloadMostRecentEpisode = false
                 }
                 
-                if self.onlyGetMostRecentEpisode {
+                if self.onlyGetMostRecentEpisode && !self.subscribeToPodcast {
                     break
                 }
             }
@@ -470,7 +468,7 @@ class PVFeedParser {
                     self.downloadMostRecentEpisode = false
                 }
                 
-                if self.onlyGetMostRecentEpisode {
+                if self.onlyGetMostRecentEpisode && !self.subscribeToPodcast {
                     break
                 }
             }
