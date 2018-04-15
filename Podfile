@@ -11,10 +11,11 @@ target 'Podverse' do
   pod 'Lock', '~> 2.3'
   pod 'Auth0', '~> 1.6'
   pod 'ReachabilitySwift', '~> 3'
-  pod 'p2.OAuth2', '3.0.3'
-  pod 'StreamingKit', :git => 'https://github.com/podverse/StreamingKit.git'
+  pod 'p2.OAuth2', '~> 4.0.0'
+  pod 'StreamingKit', :git => 'https://github.com/podverse/StreamingKit.git', :branch => 'master'
   pod 'SDWebImage', '~> 4.0'
   pod 'FeedKit', '~> 6.0'
+  pod 'HanekeSwift', :git => 'https://github.com/Haneke/HanekeSwift.git', :tag => 'v0.11.1'
 
   target 'PodverseTests' do
     inherit! :search_paths

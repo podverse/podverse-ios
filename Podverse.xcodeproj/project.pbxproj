@@ -501,7 +501,6 @@
 				E79515D61E03853400382BF8 /* Frameworks */,
 				E79515D71E03853400382BF8 /* Resources */,
 				EC2BE28CAC6A390DE7FB9C13 /* [CP] Embed Pods Frameworks */,
-				5342AB4D7B7C3000C4B004AE /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -520,8 +519,6 @@
 				E79515EB1E03853500382BF8 /* Sources */,
 				E79515EC1E03853500382BF8 /* Frameworks */,
 				E79515ED1E03853500382BF8 /* Resources */,
-				52005C8FB46AFC209AAC4E7C /* [CP] Embed Pods Frameworks */,
-				46701456B25E41A9DE4EA423 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -541,8 +538,6 @@
 				E79515F61E03853500382BF8 /* Sources */,
 				E79515F71E03853500382BF8 /* Frameworks */,
 				E79515F81E03853500382BF8 /* Resources */,
-				77D544084524CE40F2AD5762 /* [CP] Embed Pods Frameworks */,
-				07D82A356CE8E0AD28388FFB /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -639,66 +634,6 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		07D82A356CE8E0AD28388FFB /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-PodverseUITests/Pods-PodverseUITests-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		46701456B25E41A9DE4EA423 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-PodverseTests/Pods-PodverseTests-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		52005C8FB46AFC209AAC4E7C /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-PodverseTests/Pods-PodverseTests-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		5342AB4D7B7C3000C4B004AE /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Podverse/Pods-Podverse-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 		67AC66BCB6B3CCEE974AE601 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -735,21 +670,6 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		77D544084524CE40F2AD5762 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-PodverseUITests/Pods-PodverseUITests-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 		9C12F87B017831DBACE2FCC8 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -778,6 +698,7 @@
 				"${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework",
 				"${BUILT_PRODUCTS_DIR}/Auth0/Auth0.framework",
 				"${BUILT_PRODUCTS_DIR}/FeedKit/FeedKit.framework",
+				"${BUILT_PRODUCTS_DIR}/HanekeSwift/Haneke.framework",
 				"${BUILT_PRODUCTS_DIR}/Lock/Lock.framework",
 				"${BUILT_PRODUCTS_DIR}/ReachabilitySwift/ReachabilitySwift.framework",
 				"${BUILT_PRODUCTS_DIR}/SDWebImage/SDWebImage.framework",
@@ -790,6 +711,7 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Alamofire.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Auth0.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FeedKit.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Haneke.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Lock.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ReachabilitySwift.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SDWebImage.framework",
