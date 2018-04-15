@@ -290,6 +290,22 @@ class PVMediaPlayer:NSObject {
             nowPlayingItem.hasReachedEnd = true
             playerHistoryManager.addOrUpdateItem(item: nowPlayingItem)
             
+            if UserDefaults.standard.bool(forKey: kShouldPlayContinuously) {
+                var podcast:Podcast?
+                
+                if let podcastId = nowPlayingItem.podcastId  {
+                    podcast = Podcast.podcastForId(id: podcastId, managedObjectContext: moc)
+                } else if let podcastFeedUrl = nowPlayingItem.podcastFeedUrl {
+                    podcast = Podcast.podcastForFeedUrl(feedUrlString: podcastFeedUrl, managedObjectContext: moc)
+                }
+                
+                if let episodeMediaUrl = nowPlayingItem.episodeMediaUrl, let nextDownloadedEpisode = podcast?.retrieveNextDownloadedEpisode(currentEpisodeMediaUrl: episodeMediaUrl) {
+                    self.shouldAutoplayOnce = true
+                    let playerHistoryItem = self.playerHistoryManager.convertEpisodeToPlayerHistoryItem(episode: nextDownloadedEpisode)
+                    self.loadPlayerHistoryItem(item: playerHistoryItem)
+                }
+            }
+            
             DispatchQueue.main.async {
                 NotificationCenter.default.post(name: .playerHasFinished, object: nil, userInfo: nil)
             }
