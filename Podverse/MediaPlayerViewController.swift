@@ -23,7 +23,7 @@ class MediaPlayerViewController: PVViewController {
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     @IBOutlet weak var clipsContainerView: UIView!
     @IBOutlet weak var currentTime: UILabel!
-    @IBOutlet weak var device: UIButton!
+    @IBOutlet weak var continuousPlayback: UIButton!
     @IBOutlet weak var duration: UILabel!
     @IBOutlet weak var episodePubDate: UILabel!
     @IBOutlet weak var episodeTitle: UILabel!
@@ -44,7 +44,7 @@ class MediaPlayerViewController: PVViewController {
         let share = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.action, target: self, action: #selector(showShareMenu))
         let makeClip = UIBarButtonItem(image: UIImage(named:"clip"), style: .plain, target: self, action: #selector(showMakeClip))
         let addToPlaylist = UIBarButtonItem(image: UIImage(named:"add"), style: .plain, target: self, action: #selector(showAddToPlaylist))
-        navigationItem.rightBarButtonItems = [share, makeClip, addToPlaylist]
+        navigationItem.rightBarButtonItems = [share, addToPlaylist, makeClip]
 
         self.progress.setThumbImage(#imageLiteral(resourceName: "SliderCurrentPosition"), for: .normal)
         
@@ -57,6 +57,8 @@ class MediaPlayerViewController: PVViewController {
         self.activityIndicator.startAnimating()
         
         setupTimer()
+        
+        updateContinuousPlaybackIcon()
         
         // If autoplaying, we don't want the flags to appear immediately, as the pvMediaPlayer may still have an old duration value, and the flags will appear relative to the old duration.
         // If not autoplaying, then the pvMediaPlayer.duration should still be accurate, and we can set the clip flags immediately.
@@ -86,7 +88,7 @@ class MediaPlayerViewController: PVViewController {
     
     fileprivate func addObservers() {
         NotificationCenter.default.addObserver(self, selector: #selector(hideClipData), name: .hideClipData, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(pause), name: .playerHasFinished, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(handleDidFinishPlaying), name: .playerHasFinished, object: nil)
     }
     
     fileprivate func removeObservers() {
@@ -179,6 +181,19 @@ class MediaPlayerViewController: PVViewController {
         pvMediaPlayer.pause()
     }
     
+    @IBAction func toggleContinuousPlayback(_ sender: Any) {
+        self.pvMediaPlayer.toggleShouldPlayContinuously()
+        updateContinuousPlaybackIcon()
+    }
+    
+    @objc func handleDidFinishPlaying () {
+        if let
+            nowPlayingItem = self.pvMediaPlayer.nowPlayingItem,
+            !nowPlayingItem.isClip() {
+            navigationController?.popViewController(animated: true)
+        }
+    }
+    
     fileprivate func setupContainerView() {
         if let currentVC = self.storyboard?.instantiateViewController(withIdentifier: self.aboutClipsStoryboardId) {
             self.currentChildViewController = currentVC
@@ -198,6 +213,14 @@ class MediaPlayerViewController: PVViewController {
         self.clipsContainerView.layer.borderWidth = 1.0
         
         self.pageControl.currentPage = 0
+    }
+    
+    fileprivate func updateContinuousPlaybackIcon () {
+        if UserDefaults.standard.bool(forKey: kShouldPlayContinuously) {
+            self.continuousPlayback.setTitle("On", for: .normal)
+        } else {
+            self.continuousPlayback.setTitle("Off", for: .normal)
+        }
     }
     
     func togglePlayIcon() {

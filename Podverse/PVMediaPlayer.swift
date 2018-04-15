@@ -234,6 +234,11 @@ class PVMediaPlayer:NSObject {
         }
     }
     
+    func toggleShouldPlayContinuously () {
+        let currentValue = UserDefaults.standard.bool(forKey: kShouldPlayContinuously)
+        UserDefaults.standard.set(!currentValue, forKey: kShouldPlayContinuously)
+    }
+    
     func seek(toTime: Double) {
         self.shouldStartFromTime = Int64(toTime)
         
@@ -278,19 +283,21 @@ class PVMediaPlayer:NSObject {
     }
     
     @objc func playerDidFinishPlaying() {
-        
-        clearPlaybackPosition()
-        
-        if let nowPlayingItem = playerHistoryManager.historyItems.first, let episodeMediaUrl = nowPlayingItem.episodeMediaUrl, let episode = Episode.episodeForMediaUrl(mediaUrlString: episodeMediaUrl, managedObjectContext: moc) {
-            PVDeleter.deleteEpisode(mediaUrl: episode.mediaUrl, fileOnly: true, shouldCallNotificationMethod: true)
-            nowPlayingItem.hasReachedEnd = true
-            playerHistoryManager.addOrUpdateItem(item: nowPlayingItem)
+        if let nowPlayingItem = playerHistoryManager.historyItems.first, !nowPlayingItem.isClip() {
+            
+            clearPlaybackPosition()
+            
+            if let episodeMediaUrl = nowPlayingItem.episodeMediaUrl, let episode = Episode.episodeForMediaUrl(mediaUrlString: episodeMediaUrl, managedObjectContext: moc) {
+                PVDeleter.deleteEpisode(mediaUrl: episode.mediaUrl, fileOnly: true, shouldCallNotificationMethod: true)
+                nowPlayingItem.hasReachedEnd = true
+                playerHistoryManager.addOrUpdateItem(item: nowPlayingItem)
+            }
+            
+            DispatchQueue.main.async {
+                NotificationCenter.default.post(name: .playerHasFinished, object: nil, userInfo: nil)
+            }
+            
         }
-        
-        DispatchQueue.main.async {
-            NotificationCenter.default.post(name: .playerHasFinished, object: nil, userInfo: nil)
-        }
-        
     }
     
     // If you seek before the startTime of a clip, this will return true. Returns false if a clip has an endTime, and the progress moves later than the endTime.
@@ -528,7 +535,7 @@ extension PVMediaPlayer:STKAudioPlayerDelegate {
     }
     
     func audioPlayer(_ audioPlayer: STKAudioPlayer, didFinishPlayingQueueItemId queueItemId: NSObject, with stopReason: STKAudioPlayerStopReason, andProgress progress: Double, andDuration duration: Double) {
-        
+        playerDidFinishPlaying()
     }
     
     func audioPlayer(_ audioPlayer: STKAudioPlayer, unexpectedError errorCode: STKAudioPlayerErrorCode) {
