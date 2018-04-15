@@ -136,7 +136,7 @@ class EpisodesTableViewController: PVViewController {
         }
     }
     
-    func downloadPlay(sender: UIButton) {
+    @objc func downloadPlay(sender: UIButton) {
         if let cell = sender.superview?.superview as? EpisodeTableViewCell,
             let indexRow = self.tableView.indexPath(for: cell)?.row {
             
@@ -179,7 +179,7 @@ class EpisodesTableViewController: PVViewController {
         }
     }
     
-    func reloadEpisodeOrClipData() {
+    @objc func reloadEpisodeOrClipData() {
         if self.filterTypeSelected == .clips {
             retrieveClips()
         } else {
@@ -228,7 +228,7 @@ class EpisodesTableViewController: PVViewController {
         loadAllEpisodeData()
     }
     
-    func loadAllEpisodeData() {
+    @objc func loadAllEpisodeData() {
         self.filterTypeSelected = .allEpisodes
         reloadEpisodeData()
     }
@@ -393,7 +393,7 @@ class EpisodesTableViewController: PVViewController {
         }
     }
     
-    func showShareMenu() {
+    @objc func showShareMenu() {
         
         let shareActions = UIAlertController(title: "Share Podcast", message: nil, preferredStyle: .actionSheet)
         
@@ -509,7 +509,7 @@ extension EpisodesTableViewController: UITableViewDataSource, UITableViewDelegat
             }
             
             if let duration = episode.duration {
-                let dur = Int64(duration)
+                let dur = Int64(truncating: duration)
                 cell.duration?.text = dur.toDurationString()
             }
             
@@ -613,23 +613,23 @@ extension EpisodesTableViewController {
         }
     }
     
-    func downloadFinished(_ notification:Notification) {
+    @objc func downloadFinished(_ notification:Notification) {
         updateCellByNotification(notification)
     }
     
-    func downloadPaused(_ notification:Notification) {
+    @objc func downloadPaused(_ notification:Notification) {
         updateCellByNotification(notification)
     }
     
-    func downloadCanceled(_ notification:Notification) {
+    @objc func downloadCanceled(_ notification:Notification) {
         updateCellByNotification(notification)
     }
 
-    func downloadResumed(_ notification:Notification) {
+    @objc func downloadResumed(_ notification:Notification) {
         updateCellByNotification(notification)
     }
     
-    func downloadStarted(_ notification:Notification) {
+    @objc func downloadStarted(_ notification:Notification) {
         updateCellByNotification(notification)
     }
     
@@ -651,7 +651,7 @@ extension EpisodesTableViewController:UIWebViewDelegate {
     func webView(_ webView: UIWebView, shouldStartLoadWith request: URLRequest, navigationType: UIWebViewNavigationType) -> Bool {
         if navigationType == UIWebViewNavigationType.linkClicked {
             if let url = request.url {
-                UIApplication.shared.openURL(url)
+                UIApplication.shared.open(url)
             }
             return false
         }

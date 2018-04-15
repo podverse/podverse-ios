@@ -159,13 +159,16 @@ class Podcast: NSManagedObject {
         
         // Only podcasts that have an id will sync with the server. If a user manually adds a podcast by RSS feed locally to the app, it will not be saved to the server.
         retrieveSubscribedPodcastsFromServer() { syncPodcasts in
-
-            if let syncPodcasts = syncPodcasts {
-                for syncPodcast in syncPodcasts {
-                    if let feedUrl = syncPodcast.feedUrl, let podcastId = syncPodcast.id {
-                        let pvFeedParser = PVFeedParser(shouldOnlyGetMostRecentEpisode: true, shouldSubscribe: false, podcastId: syncPodcast.id)
-                        pvFeedParser.parsePodcastFeed(feedUrlString: feedUrl)
-                    }
+            
+            guard let syncPodcasts = syncPodcasts, syncPodcasts.count > 0 else {
+                NotificationCenter.default.post(name: .feedParsingComplete, object: nil, userInfo: nil)
+                return
+            }
+            
+            for syncPodcast in syncPodcasts {
+                if let feedUrl = syncPodcast.feedUrl {
+                    let pvFeedParser = PVFeedParser(shouldOnlyGetMostRecentEpisode: true, shouldSubscribe: false, podcastId: syncPodcast.id)
+                    pvFeedParser.parsePodcastFeed(feedUrlString: feedUrl)
                 }
             }
 

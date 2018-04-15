@@ -149,7 +149,7 @@ extension DownloadsTableViewController:UITableViewDelegate, UITableViewDataSourc
 }
 
 extension DownloadsTableViewController {
-    func downloadFinished(_ notification:Notification) {
+    @objc func downloadFinished(_ notification:Notification) {
         if let episode = notification.userInfo?[Episode.episodeKey] as? DownloadingEpisode, 
            let indexPath = indexPathOfDownload(mediaUrl: episode.mediaUrl),
            let cell = tableView.cellForRow(at: indexPath) as? DownloadTableViewCell {
@@ -159,7 +159,7 @@ extension DownloadsTableViewController {
         }
     }
     
-    func downloadPaused(_ notification:Notification) {
+    @objc func downloadPaused(_ notification:Notification) {
         if let episode = notification.userInfo?[Episode.episodeKey] as? DownloadingEpisode, 
            let indexPath = indexPathOfDownload(mediaUrl: episode.mediaUrl),
            let cell = self.tableView.cellForRow(at: indexPath) as? DownloadTableViewCell {
@@ -169,7 +169,7 @@ extension DownloadsTableViewController {
         }
     }
     
-    func downloadProgressed(_ notification:Notification) {
+    @objc func downloadProgressed(_ notification:Notification) {
         if let episode = notification.userInfo?[Episode.episodeKey] as? DownloadingEpisode, 
            let indexPath = indexPathOfDownload(mediaUrl: episode.mediaUrl),
            let cell = self.tableView.cellForRow(at: indexPath) as? DownloadTableViewCell {
@@ -178,7 +178,7 @@ extension DownloadsTableViewController {
             cell.status.text = "Downloading"
         }
     }
-    func downloadResumed(_ notification:Notification) {
+    @objc func downloadResumed(_ notification:Notification) {
         if let episode = notification.userInfo?[Episode.episodeKey] as? DownloadingEpisode, 
            let indexPath = indexPathOfDownload(mediaUrl: episode.mediaUrl),
            let cell = self.tableView.cellForRow(at: indexPath) as? DownloadTableViewCell {
@@ -188,7 +188,7 @@ extension DownloadsTableViewController {
         }
     }
     
-    func downloadStarted() {
+    @objc func downloadStarted() {
         self.tableView.reloadData()
     }
     

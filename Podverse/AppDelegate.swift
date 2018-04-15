@@ -10,9 +10,10 @@ import UIKit
 import AVFoundation
 import MediaPlayer
 import Lock
+import UserNotifications
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate {
+class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterDelegate {
 
     var window: UIWindow?
     var backgroundTransferCompletionHandler: (() -> Void)?
@@ -36,9 +37,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         UIApplication.shared.statusBarStyle = .lightContent
         setupUI()
         setupRemoteFunctions()
-                
-        application.registerUserNotificationSettings(UIUserNotificationSettings(types: [.alert, .badge, .sound], categories: nil))  // types are UIUserNotificationType members
-        application.beginBackgroundTask(withName: "showNotification", expirationHandler: nil)
+        
+        
+        let center = UNUserNotificationCenter.current()
+        center.delegate = self
+        center.requestAuthorization(options: [.sound, .alert, .badge]) { (granted, error) in
+            if granted {
+                application.registerForRemoteNotifications()
+            }
+        }
         
         // Load the last playerHistoryItem in the media player if the user didn't finish listening to it
         playerHistoryManager.loadData()
@@ -86,7 +93,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         UINavigationBar.appearance().isTranslucent = false
         UINavigationBar.appearance().barTintColor = UIColor(red: 41.0/255.0, green: 104.0/255.0, blue: 177.0/255.0, alpha: 1.0)
         UINavigationBar.appearance().tintColor = UIColor.white
-        UINavigationBar.appearance().titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white, NSFontAttributeName: UIFont.boldSystemFont(ofSize: 17.0)]
+        UINavigationBar.appearance().titleTextAttributes = [NSAttributedStringKey.foregroundColor: UIColor.white, NSAttributedStringKey.font: UIFont.boldSystemFont(ofSize: 17.0)]
     }
     
     fileprivate func setupRemoteFunctions() {
@@ -131,22 +138,22 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
     }
 
-    func skipBackwardEvent() {
+    @objc func skipBackwardEvent() {
         self.pvMediaPlayer.seek(toTime: self.pvMediaPlayer.progress - 15)
         MPNowPlayingInfoCenter.default().nowPlayingInfo?[MPNowPlayingInfoPropertyElapsedPlaybackTime] = self.pvMediaPlayer.progress
     }
     
-    func skipForwardEvent() {
+    @objc func skipForwardEvent() {
         self.pvMediaPlayer.seek(toTime: self.pvMediaPlayer.progress + 15)
         MPNowPlayingInfoCenter.default().nowPlayingInfo?[MPNowPlayingInfoPropertyElapsedPlaybackTime] = self.pvMediaPlayer.progress
     }
     
-    func playOrPauseEvent() { 
+    @objc func playOrPauseEvent() { 
         self.pvMediaPlayer.playOrPause()
         self.pvMediaPlayer.updateMPNowPlayingInfoCenter()
     }
     
-    func updatePlaybackPosition(event:MPChangePlaybackPositionCommandEvent) {
+    @objc func updatePlaybackPosition(event:MPChangePlaybackPositionCommandEvent) {
         self.pvMediaPlayer.seek(toTime: event.positionTime)
     }
     

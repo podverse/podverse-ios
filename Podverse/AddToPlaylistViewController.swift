@@ -72,7 +72,7 @@ class AddToPlaylistViewController: UIViewController {
         
     }
     
-    func showCreatePlaylist() {
+    @objc func showCreatePlaylist() {
         
         if !checkForConnectivity() {
             loadNoInternetMessage()
@@ -103,7 +103,7 @@ class AddToPlaylistViewController: UIViewController {
         
     }
     
-    func reloadPlaylistData() {
+    @objc func reloadPlaylistData() {
         
         hideActivityIndicator()
         

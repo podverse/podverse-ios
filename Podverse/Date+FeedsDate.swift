@@ -106,17 +106,17 @@ extension Date {
             
             var s = string
             if string.hasSuffix(" 00:00") {
-                s = s.substring(to: s.index(s.endIndex, offsetBy: -6)) + "GMT"
+                s = String(s[..<s.index(s.endIndex, offsetBy: -6)]) + "GMT"
             } else if string.hasSuffix("+00:00") {
-                s = s.substring(to: s.index(s.endIndex, offsetBy: -6)) + "GMT"
+                s = String(s[..<s.index(s.endIndex, offsetBy: -6)]) + "GMT"
             } else if string.hasSuffix("Z") {
-                s = s.substring(to: s.index(s.endIndex, offsetBy: -1)) + "GMT"
+                s = String(s[..<s.index(s.endIndex, offsetBy: -1)]) + "GMT"
             } else if string.hasSuffix("+0000") {
-                s = s.substring(to: s.index(s.endIndex, offsetBy: -5)) + "GMT"
+                s = String(s[..<s.index(s.endIndex, offsetBy: -5)]) + "GMT"
             }
             
             let formatter = DateFormatter()
-            formatter.locale = NSLocale(localeIdentifier: "en_US_POSIX") as Locale!
+            formatter.locale = NSLocale(localeIdentifier: "en_US_POSIX") as Locale
             formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:sszzz"
             if let date = formatter.date(from: string as String) {
                 self.init(timeInterval:0, since:date)
@@ -128,17 +128,17 @@ extension Date {
             
             var s = string
             if string.hasSuffix(" 00:00") {
-                s = s.substring(to: s.index(s.endIndex, offsetBy: -6)) + "GMT"
+                s = String(s[..<s.index(s.endIndex, offsetBy: -6)]) + "GMT"
             } else if string.hasSuffix("+00:00") {
-                s = s.substring(to: s.index(s.endIndex, offsetBy: -6)) + "GMT"
+                s = String(s[..<s.index(s.endIndex, offsetBy: -6)]) + "GMT"
             } else if string.hasSuffix("Z") {
-                s = s.substring(to: s.index(s.endIndex, offsetBy: -1)) + "GMT"
+                s = String(s[..<s.index(s.endIndex, offsetBy: -1)]) + "GMT"
             } else if string.hasSuffix("+0000") {
-                s = s.substring(to: s.index(s.endIndex, offsetBy: -5)) + "GMT"
+                s = String(s[..<s.index(s.endIndex, offsetBy: -5)]) + "GMT"
             }
             
             let formatter = DateFormatter()
-            formatter.locale = NSLocale(localeIdentifier: "en_US_POSIX") as Locale!
+            formatter.locale = NSLocale(localeIdentifier: "en_US_POSIX") as Locale
             formatter.dateFormat = "yyyy-MM-dd HH:mm:sszzz"
             if let date = formatter.date(from: string as String) {
                 self.init(timeInterval:0, since:date)
@@ -150,14 +150,14 @@ extension Date {
             
             var s  = string
             if string.hasSuffix("Z") {
-                s = s.substring(to: s.index(s.endIndex, offsetBy: -1)) + "GMT"
+                s = String(s[..<s.index(s.endIndex, offsetBy: -1)]) + "GMT"
             } else if string.hasSuffix("+0000") {
-                s = s.substring(to: s.index(s.endIndex, offsetBy: -5)) + "GMT"
+                s = String(s[..<s.index(s.endIndex, offsetBy: -5)]) + "GMT"
             } else if string.hasSuffix("+00:00") {
-                s = s.substring(to: s.index(s.endIndex, offsetBy: -6)) + "GMT"
+                s = String(s[..<s.index(s.endIndex, offsetBy: -6)]) + "GMT"
             }
             let formatter = DateFormatter()
-            formatter.locale = NSLocale(localeIdentifier: "en_US_POSIX") as Locale!
+            formatter.locale = NSLocale(localeIdentifier: "en_US_POSIX") as Locale
             formatter.dateFormat = "EEE, d MMM yyyy HH:mm:ss zzz"
             if let date = formatter.date(from: string as String) {
                 self.init(timeInterval:0, since:date)
@@ -169,14 +169,14 @@ extension Date {
             
             var s  = string
             if string.hasSuffix("Z") {
-                s = s.substring(to: s.index(s.endIndex, offsetBy: -1)) + "GMT"
+                s = String(s[..<s.index(s.endIndex, offsetBy: -1)]) + "GMT"
             } else if string.hasSuffix("+0000") {
-                s = s.substring(to: s.index(s.endIndex, offsetBy: -5)) + "GMT"
+                s = String(s[..<s.index(s.endIndex, offsetBy: -5)]) + "GMT"
             } else if string.hasSuffix("+00:00") {
-                s = s.substring(to: s.index(s.endIndex, offsetBy: -6)) + "GMT"
+                s = String(s[..<s.index(s.endIndex, offsetBy: -6)]) + "GMT"
             }
             let formatter = DateFormatter()
-            formatter.locale = NSLocale(localeIdentifier: "en_US_POSIX") as Locale!
+            formatter.locale = NSLocale(localeIdentifier: "en_US_POSIX") as Locale
             formatter.dateFormat = "d MMM yyyy HH:mm:ss zzz"
             if let date = formatter.date(from: string as String) {
                 self.init(timeInterval:0, since:date)
@@ -187,7 +187,7 @@ extension Date {
         case .custom(let dateFormat):
             
             let formatter = DateFormatter()
-            formatter.locale = NSLocale(localeIdentifier: "en_US_POSIX") as Locale!
+            formatter.locale = NSLocale(localeIdentifier: "en_US_POSIX") as Locale
             formatter.dateFormat = dateFormat
             if let date = formatter.date(from: string as String) {
                 self.init(timeInterval:0, since:date)

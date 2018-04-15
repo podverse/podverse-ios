@@ -88,7 +88,7 @@ class PVViewController: UIViewController {
 }
 
 extension PVViewController {
-    func episodeDeleted(_ notification:Notification) {
+    @objc func episodeDeleted(_ notification:Notification) {
         if let mediaUrl = notification.userInfo?["mediaUrl"] as? String {
             if playerHistoryManager.checkIfEpisodeWasLastPlayed(mediaUrl: mediaUrl) == true {
                 DispatchQueue.main.async {
@@ -98,7 +98,7 @@ extension PVViewController {
         }
     }
     
-    func podcastDeleted(_ notification:Notification) {
+    @objc func podcastDeleted(_ notification:Notification) {
         
         if let podcastId = notification.userInfo?["podcastId"] as? String, playerHistoryManager.checkIfPodcastWasLastPlayed(podcastId: podcastId, feedUrl: nil) == true {
             DispatchQueue.main.async {

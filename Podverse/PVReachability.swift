@@ -91,7 +91,7 @@ class PVReachability {
         connectionNeededAlert.addAction(UIAlertAction(title: "Settings", style: .default) { (_) -> Void in
             let settingsURL = URL(string: UIApplicationOpenSettingsURLString)
             if let url = settingsURL {
-                UIApplication.shared.openURL(url)
+                UIApplication.shared.open(url)
             }
         })
         return connectionNeededAlert

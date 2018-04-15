@@ -140,7 +140,7 @@ class PlayerHistory {
     }
     
     func checkIfPodcastWasLastPlayed(podcastId:String?, feedUrl:String?) -> Bool {
-        if let podcastid = podcastId, historyItems.first?.podcastId == podcastId {
+        if let _ = podcastId, historyItems.first?.podcastId == podcastId {
             return true
         } else if let feedUrl = feedUrl, historyItems.first?.podcastFeedUrl == feedUrl {
             return true

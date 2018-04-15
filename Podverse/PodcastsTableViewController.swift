@@ -121,7 +121,15 @@ class PodcastsTableViewController: PVViewController, AutoDownloadProtocol {
         
     }
     
+    func updateLastParsedDate() {
+        self.parseActivityIndicator.stopAnimating()
+        if let lastParsedDate = UserDefaults.standard.object(forKey: kLastParsedDate) as? Date {
+            self.parseStatus.text = "Updated: " + lastParsedDate.toString()
+        }
+    }
+    
     func loadPodcastData() {
+        updateLastParsedDate()
         self.moc.refreshAllObjects()
         self.subscribedPodcastsArray = CoreDataHelper.fetchEntities(className:"Podcast", predicate: nil, moc:self.moc) as! [Podcast]
         self.subscribedPodcastsArray = self.subscribedPodcastsArray.filter { !DeletingPodcasts.shared.podcastKeys.contains($0.feedUrl) }
@@ -259,7 +267,7 @@ extension PodcastsTableViewController:UITableViewDelegate, UITableViewDataSource
 
 extension PodcastsTableViewController {
     
-    func downloadFinished(_ notification:Notification) {
+    @objc func downloadFinished(_ notification:Notification) {
         if let episode = notification.userInfo?[Episode.episodeKey] as? DownloadingEpisode,
             let index = self.subscribedPodcastsArray.index(where: { $0.feedUrl == episode.podcastFeedUrl }), 
             let cell = self.tableView.cellForRow(at: IndexPath(row: index, section: 0)) as? PodcastTableViewCell {
@@ -280,7 +288,7 @@ extension PodcastsTableViewController {
         }
     }
     
-    func feedParsingComplete(_ notification:Notification) {
+    @objc func feedParsingComplete(_ notification:Notification) {
         self.moc.refreshAllObjects()
         if let url = notification.userInfo?["feedUrl"] as? String, let index = self.subscribedPodcastsArray.index(where: { url == $0.feedUrl }) {
             
@@ -298,7 +306,7 @@ extension PodcastsTableViewController {
         }
     }
     
-    func loggedInSuccessfully() {
+    @objc func loggedInSuccessfully() {
         Podcast.syncSubscribedPodcastsWithServer()
     }
     
@@ -321,7 +329,7 @@ extension PodcastsTableViewController {
         }
     }
     
-    func refreshParsingStatus(_ notification:Notification) {
+    @objc func refreshParsingStatus(_ notification:Notification) {
         let total = self.parsingPodcasts.podcastKeys.count
         let currentItem = self.parsingPodcasts.currentlyParsingItem
         
@@ -330,10 +338,7 @@ extension PodcastsTableViewController {
                 self.parseActivityIndicator.startAnimating()
                 self.parseStatus.text = String(currentItem) + "/" + String(total) + " parsing"
             } else {
-                self.parseActivityIndicator.stopAnimating()
-                if let lastParsedDate = UserDefaults.standard.object(forKey: kLastParsedDate) as? Date {
-                    self.parseStatus.text = "Updated: " + lastParsedDate.toString()
-                }
+                self.updateLastParsedDate()
             }
         }
     }

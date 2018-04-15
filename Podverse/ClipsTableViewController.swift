@@ -70,7 +70,7 @@ class ClipsTableViewController: PVViewController {
         
     }
     
-    func resetAndRetrieveClips() {
+    @objc func resetAndRetrieveClips() {
         resetClipQuery()
         retrieveClips()
     }

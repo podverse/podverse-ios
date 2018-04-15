@@ -62,6 +62,8 @@ let kRefreshAddToPlaylistTableDataNotification = "refreshPodcastTableDataNotific
 
 let kItemAddedToPlaylistNotification = "itemAddedToPlaylistNotificiation"
 
+let kEpisodeDownloadedNotification = "episodeDownloadedNotification"
+
 let kMyClipsPlaylist = "My Clips"
 
 let kMyEpisodesPlaylist = "My Episodes"

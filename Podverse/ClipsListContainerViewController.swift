@@ -85,7 +85,7 @@ class ClipsListContainerViewController: UIViewController {
         self.clipQueryMessage.isHidden = true
     }
     
-    func retrieveClips() {
+    @objc func retrieveClips() {
         
         guard checkForConnectivity() else {
             loadNoInternetMessage()

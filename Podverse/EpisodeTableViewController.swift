@@ -183,7 +183,7 @@ class EpisodeTableViewController: PVViewController {
         }
     }
     
-    func reloadShowNotesOrClipData() {
+    @objc func reloadShowNotesOrClipData() {
         if self.filterTypeSelected == .clips {
             retrieveClips()
         } else {
@@ -306,7 +306,7 @@ class EpisodeTableViewController: PVViewController {
         loadNoDataView(message: Strings.Errors.noEpisodeClipsAvailable, buttonTitle: nil, buttonPressed: nil)
     }
     
-    func showShareMenu() {
+    @objc func showShareMenu() {
         
         let shareActions = UIAlertController(title: "Share Episode", message: nil, preferredStyle: .actionSheet)
         
@@ -374,7 +374,7 @@ extension EpisodeTableViewController:UIWebViewDelegate {
     func webView(_ webView: UIWebView, shouldStartLoadWith request: URLRequest, navigationType: UIWebViewNavigationType) -> Bool {
         if navigationType == UIWebViewNavigationType.linkClicked {
             if let url = request.url {
-                UIApplication.shared.openURL(url)
+                UIApplication.shared.open(url)
             }
             return false
         }
@@ -437,19 +437,19 @@ extension EpisodeTableViewController {
         }
     }
     
-    func downloadFinished(_ notification:Notification) {
+    @objc func downloadFinished(_ notification:Notification) {
         updateButtonsByNotification(notification)
     }
     
-    func downloadPaused(_ notification:Notification) {
+    @objc func downloadPaused(_ notification:Notification) {
         updateButtonsByNotification(notification)
     }
     
-    func downloadResumed(_ notification:Notification) {
+    @objc func downloadResumed(_ notification:Notification) {
         updateButtonsByNotification(notification)
     }
     
-    func downloadStarted(_ notification:Notification) {
+    @objc func downloadStarted(_ notification:Notification) {
         updateButtonsByNotification(notification)
     }
         

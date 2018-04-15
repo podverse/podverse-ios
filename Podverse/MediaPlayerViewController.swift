@@ -175,7 +175,7 @@ class MediaPlayerViewController: PVViewController {
         updateSpeedLabel()
     }
     
-    func pause() {
+    @objc func pause() {
         pvMediaPlayer.pause()
     }
     
@@ -292,7 +292,7 @@ class MediaPlayerViewController: PVViewController {
         speed.setTitle(pvMediaPlayer.playerSpeedRate.speedText, for: .normal)
     }
     
-    func showAddToPlaylist() {
+    @objc func showAddToPlaylist() {
         
         if !checkForConnectivity() {
             self.showInternetNeededAlertWithDescription(message: "You must be connected to the internet to add to playlists.")
@@ -322,7 +322,7 @@ class MediaPlayerViewController: PVViewController {
         
     }
     
-    func showMakeClip() {
+    @objc func showMakeClip() {
         
         if !checkForConnectivity() {
             self.showInternetNeededAlertWithDescription(message: "You must be connected to the internet to make clips.")
@@ -334,7 +334,7 @@ class MediaPlayerViewController: PVViewController {
         
     }
     
-    func showShareMenu() {
+    @objc func showShareMenu() {
         
         if let item = self.playerHistoryManager.historyItems.first {
             
@@ -393,7 +393,7 @@ class MediaPlayerViewController: PVViewController {
         self.present(activityVC, animated: true, completion: nil)
     }
     
-    func showAboutView() {
+    @objc func showAboutView() {
         if let newViewController = self.storyboard?.instantiateViewController(withIdentifier: self.aboutClipsStoryboardId), self.currentChildViewController is ClipsListContainerViewController {
             newViewController.view.translatesAutoresizingMaskIntoConstraints = false
             self.cycleFromViewController(oldViewController: self.currentChildViewController!, toViewController: newViewController)
@@ -402,7 +402,7 @@ class MediaPlayerViewController: PVViewController {
         }
     }
     
-    func showClipsContainerView() {
+    @objc func showClipsContainerView() {
         if let newViewController = self.storyboard?.instantiateViewController(withIdentifier: self.clipsListStoryBoardId) as? ClipsListContainerViewController, self.currentChildViewController is AboutPlayingItemViewController {
             newViewController.view.translatesAutoresizingMaskIntoConstraints = false
             self.cycleFromViewController(oldViewController: self.currentChildViewController!, toViewController: newViewController)

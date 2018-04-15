@@ -28,7 +28,7 @@ class PlaylistsTableViewController: PVViewController {
         
     }
     
-    func retrievePlaylists() {
+    @objc func retrievePlaylists() {
         
         guard checkConnectivity(), checkForAuthorization() else {
             return
@@ -125,7 +125,7 @@ class PlaylistsTableViewController: PVViewController {
         
     }
     
-    func presentLogin() {
+    @objc func presentLogin() {
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         if let loginVC = storyboard.instantiateViewController(withIdentifier: "LoginVC") as? LoginViewController {
             self.present(loginVC, animated: true, completion: nil)
