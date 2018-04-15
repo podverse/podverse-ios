@@ -179,10 +179,6 @@ class PVMediaPlayer:NSObject {
             self.pause()
             self.shouldHideClipDataNextPlay = true
             self.shouldStartFromTime = 0
-            
-            if self.shouldAutoplayAlways {
-                print("should autoplay to the next clip")
-            }
         }
         
     }
@@ -283,15 +279,16 @@ class PVMediaPlayer:NSObject {
     }
     
     @objc func playerDidFinishPlaying() {
-        if let nowPlayingItem = playerHistoryManager.historyItems.first, !nowPlayingItem.isClip() {
+        if let nowPlayingItem = playerHistoryManager.historyItems.first {
             
             clearPlaybackPosition()
             
             if let episodeMediaUrl = nowPlayingItem.episodeMediaUrl, let episode = Episode.episodeForMediaUrl(mediaUrlString: episodeMediaUrl, managedObjectContext: moc) {
                 PVDeleter.deleteEpisode(mediaUrl: episode.mediaUrl, fileOnly: true, shouldCallNotificationMethod: true)
-                nowPlayingItem.hasReachedEnd = true
-                playerHistoryManager.addOrUpdateItem(item: nowPlayingItem)
             }
+            
+            nowPlayingItem.hasReachedEnd = true
+            playerHistoryManager.addOrUpdateItem(item: nowPlayingItem)
             
             DispatchQueue.main.async {
                 NotificationCenter.default.post(name: .playerHasFinished, object: nil, userInfo: nil)
