@@ -79,6 +79,7 @@ class MediaPlayerViewController: PVViewController {
         navigationController?.interactivePopGestureRecognizer?.isEnabled = false
         self.pvMediaPlayer.delegate = self
         togglePlayIcon()
+        updateSpeedLabel()
         updateTime()
     }
         
