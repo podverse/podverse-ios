@@ -118,12 +118,7 @@ class PVDeleter: NSObject {
                     if fileOnly == false {
                         privateMoc.delete(episode)
                     }
-                    
-                    if let nowPlayingItem = PlayerHistory.manager.historyItems.first {
-                        nowPlayingItem.hasReachedEnd = true
-                        PlayerHistory.manager.addOrUpdateItem(item: nowPlayingItem)
-                    }
-                    
+                                        
                     privateMoc.saveData() {
                         if shouldCallNotificationMethod == true {
                             DispatchQueue.main.async {
