@@ -47,27 +47,28 @@ class PodcastsTableViewController: PVViewController, AutoDownloadProtocol {
         
         self.parseActivityIndicator.hidesWhenStopped = true
         
-        if PVAuth.userIsLoggedIn {
+        
+        if let lastParsedDate = UserDefaults.standard.object(forKey: kLastParsedDate) as? Date {
+            if let diff = Calendar.current.dateComponents([.hour], from: lastParsedDate, to: Date()).hour, diff > 1 {
+                if PVAuth.userIsLoggedIn {
+                    DispatchQueue.global().async {
+                        Podcast.syncSubscribedPodcastsWithServer()
+                    }
+                } else {
+                    refreshPodcastFeeds()
+                }
+            } else {
+                self.parseStatus.text = "Updated: " + lastParsedDate.toString()
+            }
+        }
+        // Else if it is the first time a user has logged in before anything has been parsed
+        else if PVAuth.userIsLoggedIn {
             DispatchQueue.global().async {
                 Podcast.syncSubscribedPodcastsWithServer()
             }
             
             self.parseStatus.text = "Syncing with server"
             self.parseActivityIndicator.startAnimating()
-        } else {
-            if let lastParsedDate = UserDefaults.standard.object(forKey: kLastParsedDate) as? Date {
-                if let diff = Calendar.current.dateComponents([.hour], from: lastParsedDate, to: Date()).hour, diff > 1 {
-                    if PVAuth.userIsLoggedIn {
-                        DispatchQueue.global().async {
-                            Podcast.syncSubscribedPodcastsWithServer()
-                        }
-                    } else {
-                        refreshPodcastFeeds()
-                    }
-                } else {
-                    self.parseStatus.text = "Updated: " + lastParsedDate.toString()
-                }
-            }
         }
         
         loadPodcastData()
