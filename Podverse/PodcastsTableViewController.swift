@@ -48,13 +48,22 @@ class PodcastsTableViewController: PVViewController, AutoDownloadProtocol {
         self.parseActivityIndicator.hidesWhenStopped = true
         
         if PVAuth.userIsLoggedIn {
-            Podcast.syncSubscribedPodcastsWithServer()
+            DispatchQueue.global().async {
+                Podcast.syncSubscribedPodcastsWithServer()
+            }
+            
             self.parseStatus.text = "Syncing with server"
             self.parseActivityIndicator.startAnimating()
         } else {
             if let lastParsedDate = UserDefaults.standard.object(forKey: kLastParsedDate) as? Date {
                 if let diff = Calendar.current.dateComponents([.hour], from: lastParsedDate, to: Date()).hour, diff > 1 {
-                    refreshPodcastFeeds()
+                    if PVAuth.userIsLoggedIn {
+                        DispatchQueue.global().async {
+                            Podcast.syncSubscribedPodcastsWithServer()
+                        }
+                    } else {
+                        refreshPodcastFeeds()
+                    }
                 } else {
                     self.parseStatus.text = "Updated: " + lastParsedDate.toString()
                 }
@@ -307,7 +316,11 @@ extension PodcastsTableViewController {
     }
     
     @objc func loggedInSuccessfully() {
-        Podcast.syncSubscribedPodcastsWithServer()
+        DispatchQueue.global().async {
+            Podcast.syncSubscribedPodcastsWithServer()
+        }
+        self.parseStatus.text = "Syncing with server"
+        self.parseActivityIndicator.startAnimating()
     }
     
     override func podcastDeleted(_ notification:Notification) {

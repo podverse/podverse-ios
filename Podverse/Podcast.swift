@@ -205,7 +205,8 @@ class Podcast: NSManagedObject {
     static func retrieveSubscribedPodcastsFromServer(completion: @escaping (_ syncPodcasts: [SyncablePodcast]?) -> Void) {
         
         if let url = URL(string: BASE_URL + "api/user/podcasts") {
-            var request = URLRequest(url: url, cachePolicy: NSURLRequest.CachePolicy.reloadIgnoringLocalAndRemoteCacheData, timeoutInterval: 60)
+            // NOTE: this request currently takes a long time, so the timeoutInterval is extra high
+            var request = URLRequest(url: url, cachePolicy: NSURLRequest.CachePolicy.reloadIgnoringLocalAndRemoteCacheData, timeoutInterval: 120)
             request.httpMethod = "POST"
             
             guard let idToken = UserDefaults.standard.string(forKey: "idToken") else {
