@@ -185,8 +185,8 @@ class Podcast: NSManagedObject {
         retrieveSubscribedPodcastsFromServer() { syncPodcasts in
             
             guard let syncPodcasts = syncPodcasts, syncPodcasts.count > 0 else {
-                NotificationCenter.default.post(name: .feedParsingComplete, object: nil, userInfo: nil)
                 UserDefaults.standard.set(Date(), forKey: kLastParsedDate)
+                NotificationCenter.default.post(name: .feedParsingComplete, object: nil, userInfo: nil)
                 return
             }
             
