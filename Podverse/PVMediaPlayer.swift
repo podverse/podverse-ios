@@ -279,6 +279,7 @@ class PVMediaPlayer:NSObject {
     }
     
     @objc func playerDidFinishPlaying() {
+        
         if let nowPlayingItem = playerHistoryManager.historyItems.first {
             
             clearPlaybackPosition()
@@ -303,6 +304,9 @@ class PVMediaPlayer:NSObject {
                     self.shouldAutoplayOnce = true
                     let playerHistoryItem = self.playerHistoryManager.convertEpisodeToPlayerHistoryItem(episode: nextDownloadedEpisode)
                     self.loadPlayerHistoryItem(item: playerHistoryItem)
+                    
+                    // Return out of function so the playerHasFinished notification is not posted, so the MediaPlayerVC doesn't pop back a page after playDidFinish
+                    return
                 }
             }
             
