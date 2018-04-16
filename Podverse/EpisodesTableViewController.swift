@@ -640,6 +640,9 @@ extension EpisodesTableViewController {
             if self.filterTypeSelected == .downloaded {
                 self.episodesArray.remove(at: index)
                 self.tableView.deleteRows(at: [IndexPath(row: index, section: 0)], with: .automatic)
+            } else if self.filterTypeSelected == .allEpisodes {
+                self.episodesArray[index].fileName = nil
+                self.tableView.reloadRows(at: [IndexPath(row: index, section: 0)], with: .automatic)
             }
         }
         
