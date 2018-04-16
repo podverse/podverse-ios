@@ -138,7 +138,6 @@ class PodcastsTableViewController: PVViewController, AutoDownloadProtocol {
     }
     
     func loadPodcastData() {
-        updateLastParsedDate()
         self.moc.refreshAllObjects()
         self.subscribedPodcastsArray = CoreDataHelper.fetchEntities(className:"Podcast", predicate: nil, moc:self.moc) as! [Podcast]
         self.subscribedPodcastsArray = self.subscribedPodcastsArray.filter { !DeletingPodcasts.shared.podcastKeys.contains($0.feedUrl) }
