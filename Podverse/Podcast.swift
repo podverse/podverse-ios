@@ -202,7 +202,7 @@ class Podcast: NSManagedObject {
             guard let syncPodcasts = syncPodcasts, syncPodcasts.count > 0 else {
                 UserDefaults.standard.set(Date(), forKey: kLastParsedDate)
                 DispatchQueue.main.async {
-                    NotificationCenter.default.post(name: .feedParsingComplete, object: nil, userInfo: nil)
+                    NotificationCenter.default.post(name: NSNotification.Name(rawValue: kFinishedAllParsingPodcasts), object: nil, userInfo: nil)
                 }
                 return
             }
