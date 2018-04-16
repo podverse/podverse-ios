@@ -67,7 +67,7 @@ class PVSubscriber {
                 return
             }
             
-            request.setValue(idToken, forHTTPHeaderField: "authorization")
+            request.setValue(idToken, forHTTPHeaderField: "Authorization")
             
             let postString = "podcastId=" + podcastId
             request.httpBody = postString.data(using: .utf8)

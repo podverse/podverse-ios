@@ -46,6 +46,8 @@ let kDownloadHasPausedOrResumed = "downloadHasPausedOrResumed"
 
 let kLoggedInSuccessfully = "loggedInSuccessfully"
 
+let kLoggedOutSuccessfully = "loggedOutSuccessfully"
+
 let kLastPlayingEpisodeURL = "lastPlayingEpisodeURL"
 
 let kUnfollowPodcast = "unfollowPodcast"
