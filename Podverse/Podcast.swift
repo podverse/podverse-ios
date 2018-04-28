@@ -112,6 +112,20 @@ class Podcast: NSManagedObject {
         return nil
     }
     
+    static func retrieveSubscribedIds() -> [String] {
+        let moc = CoreDataHelper.createMOCForThread(threadType: .privateThread)
+        var subscribedPodcastIds = [String]()
+        let subscribedPodcastsArray = CoreDataHelper.fetchEntities(className:"Podcast", predicate: nil, moc:moc) as! [Podcast]
+        
+        for podcast in subscribedPodcastsArray {
+            if let id = podcast.id {
+                subscribedPodcastIds.append(id)
+            }
+        }
+        
+        return subscribedPodcastIds
+    }
+
     static func retrieveSubscribedUrls() -> [String] {
         let moc = CoreDataHelper.createMOCForThread(threadType: .privateThread)
         var subscribedPodcastFeedUrls = [String]()
@@ -190,9 +204,16 @@ class Podcast: NSManagedObject {
                 return
             }
             
+            let subscribedIds = self.retrieveSubscribedIds()
+            
             for syncPodcast in syncPodcasts {
                 if let feedUrl = syncPodcast.feedUrl {
-                    let pvFeedParser = PVFeedParser(shouldOnlyGetMostRecentEpisode: true, shouldSubscribe: false, podcastId: syncPodcast.id)
+                    var shouldSubscribe = false
+                    if let id = syncPodcast.id, !subscribedIds.contains(id) {
+                        shouldSubscribe = true
+                    }
+                    
+                    let pvFeedParser = PVFeedParser(shouldOnlyGetMostRecentEpisode: true, shouldSubscribe: shouldSubscribe, podcastId: syncPodcast.id)
                     pvFeedParser.parsePodcastFeed(feedUrlString: feedUrl)
                 }
             }
