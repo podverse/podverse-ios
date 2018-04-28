@@ -76,7 +76,7 @@ class SearchPodcastViewController: PVViewController {
         self.clipQueryActivityIndicator.hidesWhenStopped = true
         self.clipQueryMessage.isHidden = true
         
-        if let podcast = self.searchPodcast, let id = podcast.id {
+        if let podcast = self.searchPodcast {
             let isSubscribed = PVSubscriber.checkIfSubscribed(podcastId: podcast.id)
             loadSubscribeButton(isSubscribed)
         }
@@ -237,7 +237,7 @@ class SearchPodcastViewController: PVViewController {
         self.tableView.reloadData()
     }
     
-    func retrieveClips() {
+    @objc func retrieveClips() {
         
         guard checkForConnectivity() else {
             loadNoInternetMessage()
@@ -389,7 +389,7 @@ extension SearchPodcastViewController:UIWebViewDelegate {
     func webView(_ webView: UIWebView, shouldStartLoadWith request: URLRequest, navigationType: UIWebViewNavigationType) -> Bool {
         if navigationType == UIWebViewNavigationType.linkClicked {
             if let url = request.url {
-                UIApplication.shared.openURL(url)
+                UIApplication.shared.open(url)
             }
             return false
         }

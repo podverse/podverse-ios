@@ -254,7 +254,9 @@ class PVMediaPlayer:NSObject {
         
         if let podcastImageUrlString = item.podcastImageUrl, let podcastImageUrl = URL(string: podcastImageUrlString) {
             if let data = try? Data(contentsOf: podcastImageUrl), let image = UIImage(data: data) {
-                let artwork = MPMediaItemArtwork(image: image)
+                let artwork = MPMediaItemArtwork.init(boundsSize: image.size, requestHandler: { size -> UIImage in
+                    return image
+                })
                 
                 MPNowPlayingInfoCenter.default().nowPlayingInfo = [MPMediaItemPropertyArtist: item.podcastTitle ?? "", MPMediaItemPropertyTitle: item.episodeTitle ?? "", MPMediaItemPropertyArtwork: artwork, MPMediaItemPropertyPlaybackDuration: self.duration ?? "", MPNowPlayingInfoPropertyElapsedPlaybackTime: currentPlaybackTime, MPNowPlayingInfoPropertyPlaybackRate: currentPlayerRate]
                 
@@ -315,33 +317,25 @@ class PVMediaPlayer:NSObject {
             return
         }
         
-        var podcastTitle = ""
-        var episodeTitle = ""
-        
         let rate = self.audioPlayer.rate
-        
-        if let pTitle = item.podcastTitle {
-            podcastTitle = pTitle
-        }
-        
-        if let eTitle = item.episodeTitle {
-            episodeTitle = eTitle
-        }
-        
         let currentPlaybackTime = NSNumber(value: self.progress)
         
         let podcastImage = Podcast.retrievePodcastImage(podcastImageURLString: item.podcastImageUrl, feedURLString: item.podcastFeedUrl, completion: { image in
-            MPNowPlayingInfoCenter.default().nowPlayingInfo?[MPMediaItemPropertyArtwork] = MPMediaItemArtwork(image: image)
+            MPNowPlayingInfoCenter.default().nowPlayingInfo?[MPMediaItemPropertyArtwork] = MPMediaItemArtwork.init(boundsSize: image.size, requestHandler: { size -> UIImage in
+                return image
+            })
         })
         
-        let artwork = MPMediaItemArtwork(image: podcastImage)
+        let artwork = MPMediaItemArtwork.init(boundsSize: podcastImage.size, requestHandler: { size -> UIImage in
+            return podcastImage
+        })
         
         MPNowPlayingInfoCenter.default().nowPlayingInfo = [
-            MPMediaItemPropertyArtist: podcastTitle, 
-            MPMediaItemPropertyTitle: episodeTitle, 
-            MPMediaItemPropertyArtwork: artwork, 
-            MPMediaItemPropertyPlaybackDuration: self.duration ?? 0, 
-            MPNowPlayingInfoPropertyElapsedPlaybackTime: currentPlaybackTime, 
+            MPMediaItemPropertyArtist: item.podcastTitle ?? "",
+            MPMediaItemPropertyTitle: item.episodeTitle ?? "",
+            MPMediaItemPropertyArtwork: artwork,
+            MPMediaItemPropertyPlaybackDuration: self.duration ?? "",
+            MPNowPlayingInfoPropertyElapsedPlaybackTime: currentPlaybackTime,
             MPNowPlayingInfoPropertyPlaybackRate: rate
         ]
     }

@@ -74,7 +74,7 @@ class AboutPlayingItemViewController: UIViewController, UIWebViewDelegate {
     func webView(_ webView: UIWebView, shouldStartLoadWith request: URLRequest, navigationType: UIWebViewNavigationType) -> Bool {
         if navigationType == UIWebViewNavigationType.linkClicked {
             if let url = request.url {
-                UIApplication.shared.openURL(url)
+                UIApplication.shared.open(url)
             }
             return false
         }

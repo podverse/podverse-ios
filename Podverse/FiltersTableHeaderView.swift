@@ -53,7 +53,7 @@ class FiltersTableHeaderView: UIView {
         
         self.filterButton.setTitle(filterTitle, for: .normal)
         self.filterButton.setTitleColor(titleColor, for: .normal)
-        self.filterButton.titleLabel?.font = UIFont.systemFont(ofSize: 17, weight: UIFontWeightSemibold)
+        self.filterButton.titleLabel?.font = UIFont.systemFont(ofSize: 17, weight: UIFont.Weight.semibold)
         self.filterButton.contentHorizontalAlignment = .left
         
         self.filterButton.addTarget(self, action: #selector(FiltersTableHeaderView.filterButtonTapped), for: .touchUpInside)
@@ -272,11 +272,11 @@ class FiltersTableHeaderView: UIView {
         self.delegate?.sortByTopWithTimeRange(timeRange: timeRange)
     }
     
-    func filterButtonTapped() {
+    @objc func filterButtonTapped() {
         self.delegate?.filterButtonTapped()
     }
     
-    func sortingButtonTapped() {
+    @objc func sortingButtonTapped() {
         self.delegate?.sortingButtonTapped()
     }
 }

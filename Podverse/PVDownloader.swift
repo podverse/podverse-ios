@@ -9,6 +9,7 @@
 import Foundation
 import UIKit
 import CoreData
+import UserNotifications
 
 extension Notification.Name {
     static let downloadStarted = Notification.Name("downloadStarted")
@@ -262,13 +263,17 @@ extension PVDownloader:URLSessionDelegate, URLSessionDownloadDelegate {
                     moc.saveData {                        
                         DispatchQueue.main.async {
                             NotificationCenter.default.post(name: .downloadFinished, object: nil, userInfo: [Episode.episodeKey:downloadingEpisode])
-
-                            let notification = UILocalNotification()
-                            notification.applicationIconBadgeNumber = UIApplication.shared.applicationIconBadgeNumber + 1
-                            notification.alertBody = podcastTitle + " - " + episodeTitle
-                            notification.alertAction = "open"
-                            notification.soundName = UILocalNotificationDefaultSoundName
-                            UIApplication.shared.presentLocalNotificationNow(notification)
+                            
+                            let content = UNMutableNotificationContent()
+                            content.title = "Podverse"
+                            content.body = podcastTitle + " - " + episodeTitle
+                            content.sound = UNNotificationSound.default()
+                            content.badge = UIApplication.shared.applicationIconBadgeNumber + 1 as NSNumber
+                            
+                            let request = UNNotificationRequest.init(identifier: kEpisodeDownloadedNotification, content: content, trigger: nil)
+                            
+                            let center = UNUserNotificationCenter.current()
+                            center.add(request)
                             
                             downloadingEpisode.removeFromDownloadHistory()
                             

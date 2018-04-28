@@ -143,7 +143,7 @@ class PlaylistDetailTableViewController: PVViewController {
         }
     }
     
-    func showShareMenu() {
+    @objc func showShareMenu() {
         
         if let playlistId = self.playlistId {
             let playlistUrlItem = [BASE_URL + "playlists/" + playlistId]

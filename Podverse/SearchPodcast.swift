@@ -129,7 +129,7 @@ class SearchPodcast {
             let task = URLSession.shared.dataTask(with: request) { data, response, error in
                 
                 guard error == nil else {
-                    print(error)
+                    print(error?.localizedDescription ?? "")
                     DispatchQueue.main.async {
                         completion(nil)
                     }

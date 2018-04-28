@@ -36,17 +36,17 @@ class PVTimeHelper {
         var seconds = 0
         var minutes = 0
         var hours = 0
-        if let secondsVal = hmsComponents.first, let secondsString = secondsVal, let sec = Int(secondsString)  {
+        if let secondsVal = hmsComponents.first, let sec = Int(secondsVal)  {
             seconds = sec
             hmsComponents.removeFirst()
         }
         
-        if let minutesVal = hmsComponents.first, let minutesString = minutesVal, let min = Int(minutesString) {
+        if let minutesVal = hmsComponents.first, let min = Int(minutesVal) {
             minutes = min
             hmsComponents.removeFirst()
         }
         
-        if let hoursVal = hmsComponents.first, let hoursString = hoursVal, let hr = Int(hoursString) {
+        if let hoursVal = hmsComponents.first, let hr = Int(hoursVal) {
             hours = hr
             hmsComponents.removeFirst()
         }

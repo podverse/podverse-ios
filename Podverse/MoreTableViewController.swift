@@ -71,7 +71,7 @@ extension MoreTableViewController:UITableViewDelegate, UITableViewDataSource {
             performSegue(withIdentifier: "Show Playlists", sender: nil)
         case 1:
             if let url = URL(string: BASE_URL + "about") {
-                UIApplication.shared.openURL(url)
+                UIApplication.shared.open(url)
             }
         case 2:
             if let _ = UserDefaults.standard.string(forKey: "idToken") {
@@ -101,7 +101,7 @@ extension MoreTableViewController:UITableViewDelegate, UITableViewDataSource {
 }
 
 extension MoreTableViewController {
-    func loggedInSuccessfully(_ notification:Notification) {
+    @objc func loggedInSuccessfully(_ notification:Notification) {
         DispatchQueue.main.async {
             self.tableView.reloadData()
         }
