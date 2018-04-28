@@ -111,7 +111,7 @@ class Podcast: NSManagedObject {
         
         return nil
     }
-
+    
     static func retrieveSubscribedIds() -> [String] {
         let moc = CoreDataHelper.createMOCForThread(threadType: .privateThread)
         var subscribedPodcastIds = [String]()
@@ -125,7 +125,6 @@ class Podcast: NSManagedObject {
         
         return subscribedPodcastIds
     }
-
 
     static func retrieveSubscribedUrls() -> [String] {
         let moc = CoreDataHelper.createMOCForThread(threadType: .privateThread)
