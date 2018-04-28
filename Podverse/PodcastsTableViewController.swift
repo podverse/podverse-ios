@@ -215,10 +215,9 @@ extension PodcastsTableViewController:UITableViewDelegate, UITableViewDataSource
             cell.autoDownloadIndicator?.text = "Auto DL OFF"
         }
         
-        let episodes = podcast.episodes
         // TODO: this slows down scrolling too much. How can we have this info without blocking the main thread?
-        let episodesDownloaded = episodes.filter{ $0.fileName != nil }
-        cell.totalEpisodes?.text = "\(episodesDownloaded.count) downloaded"
+        
+        cell.totalEpisodes?.text = "\(podcast.downloadedEpisodes) downloaded"
         
         cell.lastPublishedDate?.text = ""
         if let lastPubDate = podcast.lastPubDate {
@@ -277,13 +276,12 @@ extension PodcastsTableViewController:UITableViewDelegate, UITableViewDataSource
 extension PodcastsTableViewController {
     
     @objc func downloadFinished(_ notification:Notification) {
+        self.moc.refreshAllObjects()
+
         if let episode = notification.userInfo?[Episode.episodeKey] as? DownloadingEpisode,
-            let index = self.subscribedPodcastsArray.index(where: { $0.feedUrl == episode.podcastFeedUrl }), 
-            let cell = self.tableView.cellForRow(at: IndexPath(row: index, section: 0)) as? PodcastTableViewCell {
-            let episodes = subscribedPodcastsArray[index].episodes
-            let episodesDownloaded = episodes.filter{ $0.fileName != nil }
-            cell.totalEpisodes?.text = "\(episodesDownloaded.count) downloaded"
-        }
+            let index = self.subscribedPodcastsArray.index(where: { $0.feedUrl == episode.podcastFeedUrl }) {
+            self.tableView.reloadRows(at: [IndexPath(row: index, section: 0)], with: .none)
+        }        
     }
     
     override func episodeDeleted(_ notification:Notification) {
