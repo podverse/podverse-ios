@@ -34,10 +34,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
             print(error.localizedDescription)
         }
         
+        let colorView = UIView()
+        colorView.backgroundColor = UIColor.groupTableViewBackground
+        UITableViewCell.appearance().selectedBackgroundView = colorView
+        
         UIApplication.shared.statusBarStyle = .lightContent
         setupUI()
         setupRemoteFunctions()
-        
         
         let center = UNUserNotificationCenter.current()
         center.delegate = self

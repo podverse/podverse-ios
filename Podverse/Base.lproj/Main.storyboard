@@ -2524,16 +2524,24 @@
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7Cr-KC-kdT">
                                         <rect key="frame" x="16" y="68" width="44" height="30"/>
                                         <constraints>
+                                            <constraint firstAttribute="height" constant="30" id="TnN-40-hGm"/>
                                             <constraint firstAttribute="width" constant="44" id="ksg-RH-WPP"/>
                                         </constraints>
-                                        <state key="normal" title="Speed"/>
+                                        <state key="normal" title="1x"/>
                                         <connections>
                                             <action selector="changeSpeed:" destination="fGh-hH-QQS" eventType="touchUpInside" id="4bk-ss-WXb"/>
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="qsu-6Y-Pz9">
-                                        <rect key="frame" x="312" y="68" width="47" height="30"/>
-                                        <state key="normal" title="Device"/>
+                                        <rect key="frame" x="315" y="68" width="44" height="30"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="44" id="VOw-Ey-B1L"/>
+                                            <constraint firstAttribute="height" constant="30" id="a6u-Nt-Zcs"/>
+                                        </constraints>
+                                        <state key="normal" title="Off"/>
+                                        <connections>
+                                            <action selector="toggleContinuousPlayback:" destination="fGh-hH-QQS" eventType="touchUpInside" id="wnQ-xW-BQZ"/>
+                                        </connections>
                                     </button>
                                     <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="GzK-yD-80V">
                                         <rect key="frame" x="169" y="16" width="37" height="37"/>
@@ -2695,8 +2703,8 @@
                     <connections>
                         <outlet property="activityIndicator" destination="GzK-yD-80V" id="2N6-SD-vWP"/>
                         <outlet property="clipsContainerView" destination="XV8-p8-n0p" id="IzA-zb-lBt"/>
+                        <outlet property="continuousPlayback" destination="qsu-6Y-Pz9" id="IEX-4I-Xfi"/>
                         <outlet property="currentTime" destination="uTA-rm-Ib9" id="APu-g9-5sk"/>
-                        <outlet property="device" destination="qsu-6Y-Pz9" id="gA0-o7-2Iy"/>
                         <outlet property="duration" destination="Gf5-u2-hI0" id="UKG-7H-Q60"/>
                         <outlet property="endTimeFlagView" destination="c3H-2M-tIc" id="Db0-n9-1jz"/>
                         <outlet property="endTimeLeadingConstraint" destination="fQq-FE-BIa" id="wEe-LT-OwZ"/>

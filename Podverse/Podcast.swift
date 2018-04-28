@@ -88,6 +88,30 @@ class Podcast: NSManagedObject {
         }
     }
     
+    func retrieveNextDownloadedEpisode (currentEpisodeMediaUrl:String) -> Episode? {
+        let episodes = self.episodes
+        
+        let sortedEpisodes = episodes.sorted(by: { (prevEp, nextEp) -> Bool in
+            if let prevTimeInterval = prevEp.pubDate, let nextTimeInterval = nextEp.pubDate {
+                return (prevTimeInterval > nextTimeInterval)
+            }
+            
+            return false
+        })
+        
+        if let currentEpisodeIndex = sortedEpisodes.index(where: { $0.mediaUrl == currentEpisodeMediaUrl }) {
+            let nextEpisodes = Array(sortedEpisodes[currentEpisodeIndex...])
+            if let nextDownloadedEpisode = nextEpisodes.first(where: { $0.fileName != nil && $0.mediaUrl != currentEpisodeMediaUrl }) {
+                return nextDownloadedEpisode
+            } else {
+                let previousEpisodes = Array(sortedEpisodes[...currentEpisodeIndex])
+                return previousEpisodes.first(where: { $0.fileName != nil && $0.mediaUrl != currentEpisodeMediaUrl })
+            }
+        }
+        
+        return nil
+    }
+    
     static func retrieveSubscribedIds() -> [String] {
         let moc = CoreDataHelper.createMOCForThread(threadType: .privateThread)
         var subscribedPodcastIds = [String]()

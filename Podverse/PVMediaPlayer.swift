@@ -179,10 +179,6 @@ class PVMediaPlayer:NSObject {
             self.pause()
             self.shouldHideClipDataNextPlay = true
             self.shouldStartFromTime = 0
-            
-            if self.shouldAutoplayAlways {
-                print("should autoplay to the next clip")
-            }
         }
         
     }
@@ -234,6 +230,11 @@ class PVMediaPlayer:NSObject {
         }
     }
     
+    func toggleShouldPlayContinuously () {
+        let currentValue = UserDefaults.standard.bool(forKey: kShouldPlayContinuously)
+        UserDefaults.standard.set(!currentValue, forKey: kShouldPlayContinuously)
+    }
+    
     func seek(toTime: Double) {
         self.shouldStartFromTime = Int64(toTime)
         
@@ -279,18 +280,41 @@ class PVMediaPlayer:NSObject {
     
     @objc func playerDidFinishPlaying() {
         
-        clearPlaybackPosition()
-        
-        if let nowPlayingItem = playerHistoryManager.historyItems.first, let episodeMediaUrl = nowPlayingItem.episodeMediaUrl, let episode = Episode.episodeForMediaUrl(mediaUrlString: episodeMediaUrl, managedObjectContext: moc) {
-            PVDeleter.deleteEpisode(mediaUrl: episode.mediaUrl, fileOnly: true, shouldCallNotificationMethod: true)
+        if let nowPlayingItem = playerHistoryManager.historyItems.first {
+            
+            clearPlaybackPosition()
+            
+            if let episodeMediaUrl = nowPlayingItem.episodeMediaUrl, let episode = Episode.episodeForMediaUrl(mediaUrlString: episodeMediaUrl, managedObjectContext: moc) {
+                PVDeleter.deleteEpisode(mediaUrl: episode.mediaUrl, fileOnly: true, shouldCallNotificationMethod: true)
+            }
+            
             nowPlayingItem.hasReachedEnd = true
             playerHistoryManager.addOrUpdateItem(item: nowPlayingItem)
+            
+            if UserDefaults.standard.bool(forKey: kShouldPlayContinuously) {
+                var podcast:Podcast?
+                
+                if let podcastId = nowPlayingItem.podcastId  {
+                    podcast = Podcast.podcastForId(id: podcastId, managedObjectContext: moc)
+                } else if let podcastFeedUrl = nowPlayingItem.podcastFeedUrl {
+                    podcast = Podcast.podcastForFeedUrl(feedUrlString: podcastFeedUrl, managedObjectContext: moc)
+                }
+                
+                if let episodeMediaUrl = nowPlayingItem.episodeMediaUrl, let nextDownloadedEpisode = podcast?.retrieveNextDownloadedEpisode(currentEpisodeMediaUrl: episodeMediaUrl) {
+                    self.shouldAutoplayOnce = true
+                    let playerHistoryItem = self.playerHistoryManager.convertEpisodeToPlayerHistoryItem(episode: nextDownloadedEpisode)
+                    self.loadPlayerHistoryItem(item: playerHistoryItem)
+                    
+                    // Return out of function so the playerHasFinished notification is not posted, so the MediaPlayerVC doesn't pop back a page after playDidFinish
+                    return
+                }
+            }
+            
+            DispatchQueue.main.async {
+                NotificationCenter.default.post(name: .playerHasFinished, object: nil, userInfo: nil)
+            }
+            
         }
-        
-        DispatchQueue.main.async {
-            NotificationCenter.default.post(name: .playerHasFinished, object: nil, userInfo: nil)
-        }
-        
     }
     
     // If you seek before the startTime of a clip, this will return true. Returns false if a clip has an endTime, and the progress moves later than the endTime.
@@ -528,7 +552,7 @@ extension PVMediaPlayer:STKAudioPlayerDelegate {
     }
     
     func audioPlayer(_ audioPlayer: STKAudioPlayer, didFinishPlayingQueueItemId queueItemId: NSObject, with stopReason: STKAudioPlayerStopReason, andProgress progress: Double, andDuration duration: Double) {
-        
+        playerDidFinishPlaying()
     }
     
     func audioPlayer(_ audioPlayer: STKAudioPlayer, unexpectedError errorCode: STKAudioPlayerErrorCode) {

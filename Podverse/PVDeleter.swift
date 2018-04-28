@@ -97,8 +97,9 @@ class PVDeleter: NSObject {
                     let downloadSession = PVDownloader.shared.downloadSession
                     downloadSession?.getTasksWithCompletionHandler { dataTasks, uploadTasks, downloadTasks in
                         for downloadTask in downloadTasks {
-                            if let _ = DownloadingEpisodeList.shared.downloadingEpisodes.first(where:{ $0.taskIdentifier == downloadTask.taskIdentifier && $0.podcastFeedUrl == podcastFeedUrl}) {
+                            if let _ = DownloadingEpisodeList.shared.downloadingEpisodes.first(where:{ $0.taskIdentifier == downloadTask.taskIdentifier && $0.mediaUrl == mediaUrl}) {
                                 downloadTask.cancel()
+                                break
                             }
                         }
                     }
@@ -118,12 +119,7 @@ class PVDeleter: NSObject {
                     if fileOnly == false {
                         privateMoc.delete(episode)
                     }
-                    
-                    if let nowPlayingItem = PlayerHistory.manager.historyItems.first {
-                        nowPlayingItem.hasReachedEnd = true
-                        PlayerHistory.manager.addOrUpdateItem(item: nowPlayingItem)
-                    }
-                    
+                                        
                     privateMoc.saveData() {
                         if shouldCallNotificationMethod == true {
                             DispatchQueue.main.async {

@@ -118,6 +118,8 @@ let kNoPodcastAboutMessage = "No information available for this podcast."
 
 let kLinkCopiedToast = "Link Copied"
 
+let kShouldPlayContinuously = "shouldPlayContinuously"
+
 let rootPath = NSSearchPathForDirectoriesInDomains(FileManager.SearchPathDirectory.documentDirectory, .userDomainMask, true)[0]
 
 let TO_PLAYER_SEGUE_ID = "To Now Playing"
