@@ -29,6 +29,7 @@ class Podcast: NSManagedObject {
     @NSManaged public var id: String? // the id of the podcast on the official server
     @NSManaged public var summary: String?
     @NSManaged public var title: String
+    @NSManaged public var downloadedEpisodes: Int
     
     func addEpisodeObject(value: Episode) {
         self.mutableSetValue(forKey: "episodes").add(value)
@@ -152,9 +153,9 @@ class Podcast: NSManagedObject {
      
      - Returns: The podcast image that was fetched (Discardable)
      */
-    @discardableResult static func retrievePodcastImage(podcastImageURLString:String? = nil, feedURLString:String? = nil, completion:((_ podcastImage: UIImage) -> Void)? = nil) -> UIImage {
+    @discardableResult static func retrievePodcastImage(fullSized:Bool = false, podcastImageURLString:String? = nil, feedURLString:String? = nil, completion:((_ podcastImage: UIImage) -> Void)? = nil) -> UIImage {
                 
-        if let feedUrl = feedURLString, !feedUrl.isEmpty, let podcastImage = Podcast.fetchPodcastImage(podcastFeedUrl: feedUrl) {
+        if let feedUrl = feedURLString, !feedUrl.isEmpty, let podcastImage = Podcast.fetchPodcastImage(fullSized:fullSized, podcastFeedUrl: feedUrl) {
             return podcastImage
         }
         
@@ -169,11 +170,13 @@ class Podcast: NSManagedObject {
         return UIImage(named: "PodverseIcon")!
     }
     
-    private static func fetchPodcastImage(podcastFeedUrl: String) -> UIImage? {
+    private static func fetchPodcastImage(fullSized:Bool = false, podcastFeedUrl: String) -> UIImage? {
         let moc = CoreDataHelper.createMOCForThread(threadType: .mainThread)
         
         let predicate = NSPredicate(format: "feedUrl == %@", podcastFeedUrl)
-        if let podcastSet = CoreDataHelper.fetchEntities(className: "Podcast", predicate: predicate, moc:moc) as? [Podcast], let imageData = podcastSet.first?.imageData, let image = UIImage(data:imageData) {
+        if let podcastSet = CoreDataHelper.fetchEntities(className: "Podcast", predicate: predicate, moc:moc) as? [Podcast], 
+           let imageData = fullSized ? podcastSet.first?.imageData : podcastSet.first?.imageThumbData, 
+           let image = UIImage(data:imageData) {
             return image
         }
         

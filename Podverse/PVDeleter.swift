@@ -119,7 +119,11 @@ class PVDeleter: NSObject {
                     if fileOnly == false {
                         privateMoc.delete(episode)
                     }
-                                        
+
+                    if let podcast = CoreDataHelper.fetchEntityWithID(objectId: episode.podcast.objectID, moc: privateMoc) as? Podcast {
+                        podcast.downloadedEpisodes -= 1
+                    }
+
                     privateMoc.saveData() {
                         if shouldCallNotificationMethod == true {
                             DispatchQueue.main.async {
