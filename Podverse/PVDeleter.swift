@@ -46,21 +46,20 @@ class PVDeleter: NSObject {
             if let podcast = podcast {
                 DeletingPodcasts.shared.addPodcast(podcastId: podcast.id, feedUrl: podcast.feedUrl)
                 podcast.removeFromAutoDownloadList()
-                deleteAllEpisodesFromPodcast(podcastId: podcast.id, feedUrl: podcast.feedUrl)
-                privateMoc.delete(podcast)
-                privateMoc.saveData({
-                    DeletingPodcasts.shared.removePodcast(podcastId: podcastId, feedUrl: feedUrl)
-                    DispatchQueue.main.async {
-                        NotificationCenter.default.post(name: .podcastDeleted, object: nil, userInfo: ["podcastId": podcastId ?? "", "feedUrl": feedUrl ?? ""])
-                    }
+                deleteAllEpisodesFromPodcast(podcastId: podcast.id, feedUrl: podcast.feedUrl, completion: {() in
+                    privateMoc.delete(podcast)
+                    privateMoc.saveData({
+                        DeletingPodcasts.shared.removePodcast(podcastId: podcastId, feedUrl: feedUrl)
+                        DispatchQueue.main.async {
+                            NotificationCenter.default.post(name: .podcastDeleted, object: nil, userInfo: ["podcastId": podcastId ?? "", "feedUrl": feedUrl ?? ""])
+                        }
+                    })
                 })
             }
-            
         }
-        
     }
     
-    static func deleteAllEpisodesFromPodcast(podcastId:String?, feedUrl: String?) {
+    static func deleteAllEpisodesFromPodcast(podcastId:String?, feedUrl: String?, completion:@escaping ()->()) {
         
         DispatchQueue.global().async {
             let privateMoc = CoreDataHelper.createMOCForThread(threadType: .privateThread)
@@ -78,6 +77,8 @@ class PVDeleter: NSObject {
                     PVDeleter.deleteEpisode(mediaUrl: episode.mediaUrl)
                 }
             }
+            
+            completion()
         }
         
     }
@@ -116,12 +117,14 @@ class PVDeleter: NSObject {
                         episode.fileName = nil
                     }
                     
+                    if (fileOnly) {
+                        if let podcast = CoreDataHelper.fetchEntityWithID(objectId: episode.podcast.objectID, moc: privateMoc) as? Podcast {
+                            podcast.downloadedEpisodes -= 1
+                        }
+                    }
+                    
                     if fileOnly == false {
                         privateMoc.delete(episode)
-                    }
-
-                    if let podcast = CoreDataHelper.fetchEntityWithID(objectId: episode.podcast.objectID, moc: privateMoc) as? Podcast {
-                        podcast.downloadedEpisodes -= 1
                     }
 
                     privateMoc.saveData() {
