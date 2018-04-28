@@ -1,5 +1,5 @@
 # Uncomment the next line to define a global platform for your project
-platform :ios, '9'
+platform :ios, '11'
 source 'https://github.com/CocoaPods/Specs.git'
 
 target 'Podverse' do
@@ -14,6 +14,7 @@ target 'Podverse' do
   pod 'p2.OAuth2', '3.0.3'
   pod 'StreamingKit', :git => 'https://github.com/podverse/StreamingKit.git'
   pod 'SDWebImage', '~> 4.0'
+  pod 'FeedKit', '~> 6.0'
 
   target 'PodverseTests' do
     inherit! :search_paths
