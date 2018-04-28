@@ -199,8 +199,10 @@ class Podcast: NSManagedObject {
         retrieveSubscribedPodcastsFromServer() { syncPodcasts in
             
             guard let syncPodcasts = syncPodcasts, syncPodcasts.count > 0 else {
-                NotificationCenter.default.post(name: .feedParsingComplete, object: nil, userInfo: nil)
                 UserDefaults.standard.set(Date(), forKey: kLastParsedDate)
+                DispatchQueue.main.async {
+                    NotificationCenter.default.post(name: NSNotification.Name(rawValue: kFinishedAllParsingPodcasts), object: nil, userInfo: nil)
+                }
                 return
             }
             
@@ -226,7 +228,8 @@ class Podcast: NSManagedObject {
     static func retrieveSubscribedPodcastsFromServer(completion: @escaping (_ syncPodcasts: [SyncablePodcast]?) -> Void) {
         
         if let url = URL(string: BASE_URL + "api/user/podcasts") {
-            var request = URLRequest(url: url, cachePolicy: NSURLRequest.CachePolicy.reloadIgnoringLocalAndRemoteCacheData, timeoutInterval: 60)
+            // NOTE: this request currently takes a long time, so the timeoutInterval is extra high
+            var request = URLRequest(url: url, cachePolicy: NSURLRequest.CachePolicy.reloadIgnoringLocalAndRemoteCacheData, timeoutInterval: 120)
             request.httpMethod = "POST"
             
             guard let idToken = UserDefaults.standard.string(forKey: "idToken") else {
@@ -236,7 +239,7 @@ class Podcast: NSManagedObject {
                 return
             }
             
-            request.setValue(idToken, forHTTPHeaderField: "authorization")
+            request.setValue(idToken, forHTTPHeaderField: "Authorization")
             
             let task = URLSession.shared.dataTask(with: request) { userData, response, error in
                 

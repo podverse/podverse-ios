@@ -235,7 +235,7 @@ class PlayerHistoryItem: NSObject, NSCoding {
             request.httpMethod = "POST"
             
             if let idToken = UserDefaults.standard.string(forKey: "idToken") {
-                request.setValue(idToken, forHTTPHeaderField: "authorization")
+                request.setValue(idToken, forHTTPHeaderField: "Authorization")
             }
             
             let postString = self.convertToMediaRefPostString()

@@ -28,10 +28,12 @@ class MoreTableViewController: PVViewController {
     
     fileprivate func addObservers() {
         NotificationCenter.default.addObserver(self, selector: #selector(self.loggedInSuccessfully(_:)), name: .loggedInSuccessfully, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.loggedOutSuccessfully(_:)), name: .loggedOutSuccessfully, object: nil)
     }
     
     fileprivate func removeObservers() {
         NotificationCenter.default.removeObserver(self, name: .loggedInSuccessfully, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .loggedOutSuccessfully, object: nil)
     }
     
 }
@@ -102,6 +104,11 @@ extension MoreTableViewController:UITableViewDelegate, UITableViewDataSource {
 
 extension MoreTableViewController {
     @objc func loggedInSuccessfully(_ notification:Notification) {
+        DispatchQueue.main.async {
+            self.tableView.reloadData()
+        }
+    }
+    @objc func loggedOutSuccessfully(_ notification:Notification) {
         DispatchQueue.main.async {
             self.tableView.reloadData()
         }

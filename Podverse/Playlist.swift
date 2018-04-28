@@ -106,7 +106,7 @@ class Playlist {
             request.httpMethod = "POST"
             
             if let idToken = UserDefaults.standard.string(forKey: "idToken") {
-                request.setValue(idToken, forHTTPHeaderField: "authorization")
+                request.setValue(idToken, forHTTPHeaderField: "Authorization")
             }
             
             
@@ -165,7 +165,7 @@ class Playlist {
                 return
             }
             
-            request.setValue(idToken, forHTTPHeaderField: "authorization")
+            request.setValue(idToken, forHTTPHeaderField: "Authorization")
             
             var postString = ""
             
@@ -224,7 +224,7 @@ class Playlist {
             request.httpMethod = "POST"
             
             if let idToken = UserDefaults.standard.string(forKey: "idToken") {
-                request.setValue(idToken, forHTTPHeaderField: "authorization")
+                request.setValue(idToken, forHTTPHeaderField: "Authorization")
             }
             
             let postString = item.convertToMediaRefPostString(shouldSaveFullEpisode: shouldSaveFullEpisode)
@@ -273,7 +273,7 @@ class Playlist {
             request.httpMethod = "POST"
             
             if let idToken = UserDefaults.standard.string(forKey: "idToken") {
-                request.setValue(idToken, forHTTPHeaderField: "authorization")
+                request.setValue(idToken, forHTTPHeaderField: "Authorization")
             }
             
             let postString = "mediaRefId=" + mediaRefId
