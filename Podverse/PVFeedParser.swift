@@ -99,6 +99,7 @@ class PVFeedParser {
                         self.parsingPodcasts.podcastFinishedParsing()
                         DispatchQueue.main.async {
                             NotificationCenter.default.post(name: .feedParsingComplete, object: nil, userInfo: ["feedUrl": feedUrl])
+                            UserDefaults.standard.set(Date(), forKey: kLastParsedDate)
                         }
                     }
                 }
@@ -107,6 +108,7 @@ class PVFeedParser {
                 DispatchQueue.main.async {
                     if let feedUrl = self.feedUrl {
                         NotificationCenter.default.post(name: .feedParsingComplete, object: nil, userInfo: ["feedUrl": feedUrl])
+                        UserDefaults.standard.set(Date(), forKey: kLastParsedDate)
                     }
                 }
             }

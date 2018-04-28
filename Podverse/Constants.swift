@@ -98,6 +98,8 @@ let kInternetIsUnreachable = "internetIsUnreachable"
 
 let kWiFiIsUnreachable = "wiFiIsUnreachable"
 
+let kLastParsedDate = "lastParsedDate"
+
 let kDropdownCaret = " \u{2304}"
 
 let kNoDataViewTag = 999
