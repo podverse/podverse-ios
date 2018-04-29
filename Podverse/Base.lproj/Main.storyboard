@@ -492,6 +492,42 @@
                                             </constraints>
                                         </tableViewCellContentView>
                                     </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" rowHeight="76" id="Zoh-oj-iTC">
+                                        <rect key="frame" x="0.0" y="76" width="375" height="76"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="Zoh-oj-iTC" id="MFx-Ph-enr">
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="75.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Enable auto-download when subscribing to a podcast" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="6Mf-9m-aAe">
+                                                    <rect key="frame" x="16" y="11" width="280" height="58"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="height" constant="58" id="cIi-aQ-wNv"/>
+                                                    </constraints>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="e93-lh-lii">
+                                                    <rect key="frame" x="312" y="24" width="49" height="31"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="width" constant="47" id="bxw-Mg-wye"/>
+                                                        <constraint firstAttribute="height" constant="31" id="cx8-FH-gbs"/>
+                                                    </constraints>
+                                                    <connections>
+                                                        <action selector="enableAutoDownloadAction:" destination="pRO-aq-YrR" eventType="valueChanged" id="xvk-gb-gn7"/>
+                                                    </connections>
+                                                </switch>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="e93-lh-lii" firstAttribute="top" secondItem="MFx-Ph-enr" secondAttribute="topMargin" constant="13" id="DTn-Wd-BBb"/>
+                                                <constraint firstItem="e93-lh-lii" firstAttribute="leading" secondItem="6Mf-9m-aAe" secondAttribute="trailing" constant="16" id="Ok7-1x-RYr"/>
+                                                <constraint firstItem="6Mf-9m-aAe" firstAttribute="leading" secondItem="MFx-Ph-enr" secondAttribute="leadingMargin" id="Opr-wV-DJ5"/>
+                                                <constraint firstItem="6Mf-9m-aAe" firstAttribute="top" secondItem="MFx-Ph-enr" secondAttribute="topMargin" id="exC-4M-vBG"/>
+                                                <constraint firstAttribute="trailingMargin" secondItem="e93-lh-lii" secondAttribute="trailing" id="uXd-NH-PNk"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
                                 </cells>
                             </tableViewSection>
                         </sections>
@@ -501,8 +537,8 @@
                         </connections>
                     </tableView>
                     <connections>
-                        <outlet property="allowCellularDataLabel" destination="92b-I9-J8d" id="VTM-jc-BaX"/>
                         <outlet property="allowCellularDataSwitch" destination="y48-aR-0On" id="A7V-p8-rKe"/>
+                        <outlet property="enableAutoDownloadSwitch" destination="e93-lh-lii" id="cAT-YB-L3H"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="duw-Dm-Kd4" userLabel="First Responder" sceneMemberID="firstResponder"/>

@@ -74,6 +74,8 @@ let kUserId = "userId"
 
 let kAllowCellularDataDownloads = "allowCellularDataDownloads"
 
+let kEnableAutoDownloadByDefault = "enableAutodownloadByDefault"
+
 let kAskedToAllowCellularDataDownloads = "askedToAllowCellularDataDownloads"
 
 let kAutoDownloadingFeedUrls = "autoDownloadingFeedUrls"

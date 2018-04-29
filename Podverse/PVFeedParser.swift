@@ -71,7 +71,7 @@ class PVFeedParser {
             }
             
             // If subscribing to a podcast, then get the latest episode and begin downloading
-            if self.subscribeToPodcast == true {
+            if self.subscribeToPodcast == true && UserDefaults.standard.bool(forKey: kEnableAutoDownloadByDefault) {
                 if let podcast = Podcast.podcastForFeedUrl(feedUrlString: feedUrlString, managedObjectContext: self.privateMoc) {
                     let podcastPredicate = NSPredicate(format: "podcast == %@", podcast)
                     if let latestEpisode = CoreDataHelper.fetchEntityWithMostRecentPubDate(className:"Episode", predicate: podcastPredicate, moc: self.privateMoc) as? Episode {
