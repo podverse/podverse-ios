@@ -26,7 +26,6 @@ class SettingsTableViewController: UITableViewController {
         UserDefaults.standard.set(allowCellularDataSwitch.isOn, forKey: kAllowCellularDataDownloads)
     }
     
-    
     @IBAction func enableAutoDownloadAction(_ sender: Any) {
         UserDefaults.standard.set(enableAutoDownloadSwitch.isOn, forKey: kEnableAutoDownloadByDefault)
     }
