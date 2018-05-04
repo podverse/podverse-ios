@@ -247,9 +247,7 @@ class Podcast: NSManagedObject {
             let task = URLSession.shared.dataTask(with: request) { userData, response, error in
                 
                 guard error == nil else {
-                    DispatchQueue.main.async {
-                        completion([])
-                    }
+                    completion([])
                     return
                 }
                 
@@ -278,15 +276,12 @@ class Podcast: NSManagedObject {
                             
                         }
                         
-                        DispatchQueue.main.async {
-                            completion(syncPodcasts)
-                        }
+
+                        completion(syncPodcasts)
                         
                     } catch {
                         print("Error: " + error.localizedDescription)
-                        DispatchQueue.main.async {
-                            completion([])
-                        }
+                        completion([])
                     }
                 }
                 

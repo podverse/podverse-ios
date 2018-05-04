@@ -28,12 +28,13 @@ class PVViewController: UIViewController {
         super.viewDidLoad()
         self.navigationItem.backBarButtonItem = UIBarButtonItem(title:"", style:.plain, target:nil, action:nil)
         addObservers()
-        PVViewController.delegate = self
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         pvMediaPlayer.delegate = self.tabBarController?.playerView
+        PVViewController.delegate = self
         toggleNowPlayingBar()
     }
     
@@ -113,7 +114,6 @@ extension PVViewController {
             }
         }
     }
-    
 }
 
 extension PVViewController:TableViewHeightProtocol {
@@ -122,7 +122,7 @@ extension PVViewController:TableViewHeightProtocol {
            let tabbarVC = self.tabBarController {
             self.view.constraints[index].constant = tabbarVC.playerView.isHidden ? 0.0 : tabbarVC.playerView.frame.height - 0.5
         } else if let index = self.view.constraints.index(where: {$0.secondItem is UITableView && $0.secondAttribute == NSLayoutAttribute.bottom }) {
-            self.view.constraints[index].constant = 0.0
+            self.view.constraints[index].constant = self.tabBarController?.tabBar.frame.height ?? 0.0
         }
     }
 }
