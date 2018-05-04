@@ -34,7 +34,7 @@ enum SharePermission:String {
 let LOCAL_DEV_URL = "http://localhost:8080/"
 let DEV_URL = "http://kc01.vince.fyi:38294/"
 let PROD_URL = "https://podverse.fm/"
-let BASE_URL = PROD_URL
+let BASE_URL = DEV_URL
 
 let kNowPlayingTag = 100
 
