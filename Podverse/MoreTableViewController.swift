@@ -97,7 +97,7 @@ extension MoreTableViewController:UITableViewDelegate, UITableViewDataSource {
 
         case 3:
             if let webKitVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "WebKitVC") as? WebKitViewController {
-                webKitVC.urlString = "https://goo.gl/forms/NydjLeMcPWHUw4yx1"
+                webKitVC.urlString = kFormContactUrl
                 self.navigationController?.pushViewController(webKitVC, animated: true)
             }
         case 4:

@@ -96,6 +96,10 @@ let kEpisodeTableFilterType = "EpisodeTableFilterType"
 
 let kEpisodeTableSortingType = "EpisodeTableSortingType"
 
+let kFormRequestPodcastUrl = "https://goo.gl/forms/aSGk03HR9hvSFWlJ2"
+
+let kFormContactUrl = "https://goo.gl/forms/NydjLeMcPWHUw4yx1"
+
 let kMakeClipVisibilityType = "MakeClipVisibilityType"
 
 let kInternetIsUnreachable = "internetIsUnreachable"
