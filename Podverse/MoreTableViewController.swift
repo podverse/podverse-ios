@@ -41,7 +41,7 @@ class MoreTableViewController: PVViewController {
 extension MoreTableViewController:UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 4
+        return 5
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -51,14 +51,16 @@ extension MoreTableViewController:UITableViewDelegate, UITableViewDataSource {
         case 0:
             cell.textLabel?.text = "Playlists"
         case 1:
-            cell.textLabel?.text = "About"
-        case 2:
             if let _ = UserDefaults.standard.string(forKey: "idToken") {
                 cell.textLabel?.text = "Log out"
             } else {
                 cell.textLabel?.text = "Log in"
             }
+        case 2:
+            cell.textLabel?.text = "About"
         case 3:
+            cell.textLabel?.text = "Contact"
+        case 4:
             cell.textLabel?.text = "Settings"
         default: break
         }
@@ -72,10 +74,6 @@ extension MoreTableViewController:UITableViewDelegate, UITableViewDataSource {
         case 0:
             performSegue(withIdentifier: "Show Playlists", sender: nil)
         case 1:
-            if let url = URL(string: BASE_URL + "about") {
-                UIApplication.shared.open(url)
-            }
-        case 2:
             if let _ = UserDefaults.standard.string(forKey: "idToken") {
                 
                 let logoutAlert = UIAlertController(title: "Log out", message: "Are you sure?", preferredStyle: .alert)
@@ -92,7 +90,17 @@ extension MoreTableViewController:UITableViewDelegate, UITableViewDataSource {
             } else {
                 pvAuth.showAuth0Lock(vc: self)
             }
+        case 2:
+            if let url = URL(string: BASE_URL + "about") {
+                UIApplication.shared.open(url)
+            }
+
         case 3:
+            if let webKitVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "WebKitVC") as? WebKitViewController {
+                webKitVC.urlString = kFormContactUrl
+                self.navigationController?.pushViewController(webKitVC, animated: true)
+            }
+        case 4:
             performSegue(withIdentifier: "Show Settings", sender: nil)
         default: break
         }

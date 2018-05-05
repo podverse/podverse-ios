@@ -32,23 +32,25 @@ class FindSearchTableViewController: PVViewController {
         loadSearchForPodcastsMessage()
     }
     
+    @IBAction func requestPodcast(_ sender: Any) {
+        segueToRequestPodcastForm()
+    }
+    
+    @objc func segueToRequestPodcastForm() {
+        if let webKitVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "WebKitVC") as? WebKitViewController {
+            webKitVC.urlString = kFormRequestPodcastUrl
+            self.navigationController?.pushViewController(webKitVC, animated: true)
+        }
+    }
+    
     func loadNoDataView(message: String, buttonTitle: String?, buttonPressed: Selector?) {
         
         if let noDataView = self.view.subviews.first(where: { $0.tag == kNoDataViewTag}) {
-            
-            if let messageView = noDataView.subviews.first(where: {$0 is UILabel}), let messageLabel = messageView as? UILabel {
-                messageLabel.text = message
-            }
-            
-            if let buttonView = noDataView.subviews.first(where: {$0 is UIButton}), let button = buttonView as? UIButton {
-                button.setTitle(buttonTitle, for: .normal)
-                button.setTitleColor(.blue, for: .normal)
-            }
+            noDataView.removeFromSuperview()
         }
-        else {
-            self.addNoDataViewWithMessage(message, buttonTitle: buttonTitle, buttonImage: nil, retryPressed: buttonPressed)
-        }
-        
+
+        self.addNoDataViewWithMessage(message, buttonTitle: buttonTitle, buttonImage: nil, retryPressed: buttonPressed)
+
         showNoDataView()
         
     }
@@ -58,7 +60,7 @@ class FindSearchTableViewController: PVViewController {
     }
     
     func loadNoResultsMessage() {
-        loadNoDataView(message: Strings.Errors.noSearchResultsFound, buttonTitle: nil, buttonPressed: nil)
+        loadNoDataView(message: Strings.Errors.noSearchResultsFound, buttonTitle: "Request a podcast", buttonPressed: #selector(segueToRequestPodcastForm))
     }
     
     func loadSearchForPodcastsMessage() {
