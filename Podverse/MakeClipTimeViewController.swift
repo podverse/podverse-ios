@@ -45,11 +45,14 @@ class MakeClipTimeViewController: UIViewController, UITextFieldDelegate {
         populatePlayerInfo()
         
         self.navigationItem.backBarButtonItem = UIBarButtonItem(title:"Back", style:.plain, target:nil, action:nil)
+        
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Save", style: .plain, target: self, action: #selector(save))
+        
         self.activityIndicator.startAnimating()
         self.progress.setThumbImage(#imageLiteral(resourceName: "SliderCurrentPosition"), for: .normal)
         self.startTimeLabel.text = PVTimeHelper.convertIntToHMSString(time: self.startTime)
         self.clearEndTimeButton.isHidden = true
-        self.endTimeLabel.text = "(Optional)"
+        self.endTimeLabel.text = "optional"
         self.endTimeLabel.textColor = UIColor.lightGray        
         self.titleInput.leftView = UIView(frame: CGRect(x:0, y:0, width:10, height:35))
         self.titleInput.leftViewMode = UITextFieldViewMode.always
@@ -158,7 +161,7 @@ class MakeClipTimeViewController: UIViewController, UITextFieldDelegate {
     
     @IBAction func clearEndTime(_ sender: Any) {
         self.endTime = nil
-        self.endTimeLabel.text = "(Optional)"
+        self.endTimeLabel.text = "optional"
         self.endTimeLabel.textColor = UIColor.lightGray
         self.clearEndTimeButton.isHidden = true
     }
@@ -186,8 +189,7 @@ class MakeClipTimeViewController: UIViewController, UITextFieldDelegate {
         self.present(visibilityActions, animated: true, completion: nil)
     }
     
-    @IBAction func save(_ sender: Any) {
-        
+    @objc func save() {
         self.view.endEditing(true)
         
         guard let startTime = self.startTime else {
