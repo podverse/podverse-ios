@@ -2,17 +2,17 @@
   "images" : [
     {
       "idiom" : "universal",
-      "filename" : "pause.png",
+      "filename" : "60-pause-circle.png",
       "scale" : "1x"
     },
     {
       "idiom" : "universal",
-      "filename" : "pause@2x.png",
+      "filename" : "90-pause-circle.png",
       "scale" : "2x"
     },
     {
       "idiom" : "universal",
-      "filename" : "pause@3x.png",
+      "filename" : "120-pause-circle.png",
       "scale" : "3x"
     }
   ],
