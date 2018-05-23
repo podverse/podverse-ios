@@ -31,14 +31,15 @@ class PVAuth: NSObject {
                 $0.closable = true
                 $0.oidcConformant = false
                 $0.customSignupFields = [
-                    CustomTextField(name: "Name", placeholder: "your name (optional)")
+                    CustomTextField(name: "Name", placeholder: "Nickname")
                 ]
                 $0.usernameStyle = [.Email]
             }
             .withStyle {
-                $0.title = "Podverse Login"
+                $0.title = "Podverse"
+                $0.headerColor = UIColor(red: 0.15, green: 0.41, blue: 0.70, alpha: 1.0)
                 $0.primaryColor = UIColor(red: 0.15, green: 0.41, blue: 0.70, alpha: 1.0)
-                $0.hideTitle = true
+                $0.titleColor = UIColor.white
             }
             .onAuth {
                 
