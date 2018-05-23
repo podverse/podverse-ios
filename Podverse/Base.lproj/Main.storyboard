@@ -52,7 +52,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="No login needed to: " textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lFt-wE-jQO">
-                                <rect key="frame" x="30" y="316" width="315" height="21"/>
+                                <rect key="frame" x="30" y="314" width="315" height="21"/>
                                 <fontDescription key="fontDescription" type="system" weight="black" pointSize="17"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <nil key="highlightedColor"/>
@@ -75,12 +75,12 @@
                                 </connections>
                             </button>
                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="xcI-2y-uVJ">
-                                <rect key="frame" x="30" y="170" width="315" height="138"/>
+                                <rect key="frame" x="30" y="170" width="315" height="120"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="138" id="xL5-am-EgF"/>
+                                    <constraint firstAttribute="height" constant="120" id="MVh-Rs-0xl"/>
                                 </constraints>
-                                <string key="text">- Automatically save clips you create to a playlist
+                                <string key="text">- Automatically save your clips
 
 - Create and share playlists
 
@@ -104,7 +104,7 @@
                                 </connections>
                             </button>
                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="UtR-w4-IBh">
-                                <rect key="frame" x="30" y="345" width="315" height="181"/>
+                                <rect key="frame" x="30" y="343" width="315" height="183"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <string key="text">- Listen to podcasts and clips
 
@@ -135,7 +135,7 @@
                             <constraint firstItem="lxb-Cg-2OU" firstAttribute="trailing" secondItem="gdK-Yq-0tE" secondAttribute="trailing" id="hZp-da-t4e"/>
                             <constraint firstItem="GmD-v1-Ans" firstAttribute="leading" secondItem="opR-qw-myW" secondAttribute="leadingMargin" id="iXm-7q-qyU"/>
                             <constraint firstItem="lxb-Cg-2OU" firstAttribute="top" secondItem="gdK-Yq-0tE" secondAttribute="bottom" constant="30" id="qgJ-yb-2C0"/>
-                            <constraint firstItem="lFt-wE-jQO" firstAttribute="top" secondItem="xcI-2y-uVJ" secondAttribute="bottom" constant="8" id="tM5-E1-UVt"/>
+                            <constraint firstItem="lFt-wE-jQO" firstAttribute="top" secondItem="xcI-2y-uVJ" secondAttribute="bottom" constant="24" id="tM5-E1-UVt"/>
                             <constraint firstAttribute="trailingMargin" secondItem="lFt-wE-jQO" secondAttribute="trailing" constant="14" id="y4H-Lk-pXC"/>
                             <constraint firstAttribute="trailingMargin" secondItem="UtR-w4-IBh" secondAttribute="trailing" constant="14" id="z0u-If-AyB"/>
                         </constraints>
