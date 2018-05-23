@@ -27,12 +27,16 @@ class MoreTableViewController: PVViewController {
     }
     
     fileprivate func addObservers() {
+        NotificationCenter.default.addObserver(self, selector: #selector(self.loggingIn(_:)), name: .loggingIn, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(self.loggedInSuccessfully(_:)), name: .loggedInSuccessfully, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.loginFailed(_:)), name: .loginFailed, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(self.loggedOutSuccessfully(_:)), name: .loggedOutSuccessfully, object: nil)
     }
     
     fileprivate func removeObservers() {
+        NotificationCenter.default.removeObserver(self, name: .loggingIn, object: nil)
         NotificationCenter.default.removeObserver(self, name: .loggedInSuccessfully, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .loginFailed, object: nil)
         NotificationCenter.default.removeObserver(self, name: .loggedOutSuccessfully, object: nil)
     }
     
@@ -111,9 +115,38 @@ extension MoreTableViewController:UITableViewDelegate, UITableViewDataSource {
 }
 
 extension MoreTableViewController {
+    @objc func loggingIn(_ notification:Notification) {
+        let indexPath = IndexPath(row: 1, section: 0)
+        guard let cell = self.tableView.cellForRow(at: indexPath) else {
+            return
+        }
+        
+        DispatchQueue.main.async {
+            cell.textLabel?.text = nil
+            let activityIndicator = UIActivityIndicatorView()
+            activityIndicator.color = UIColor.black
+            cell.addSubview(activityIndicator)
+            activityIndicator.startAnimating()
+        }
+    }
     @objc func loggedInSuccessfully(_ notification:Notification) {
         DispatchQueue.main.async {
             self.tableView.reloadData()
+        }
+    }
+    @objc func loginFailed(_ notification:Notification) {
+        let indexPath = IndexPath(row: 1, section: 0)
+        guard let cell = self.tableView.cellForRow(at: indexPath) else {
+            return
+        }
+        
+        DispatchQueue.main.async {
+            for view in cell.subviews {
+                if let activityIndicator = view as? UIActivityIndicatorView {
+                    activityIndicator.removeFromSuperview()
+                }
+            }
+            cell.textLabel?.text = "Login"
         }
     }
     @objc func loggedOutSuccessfully(_ notification:Notification) {

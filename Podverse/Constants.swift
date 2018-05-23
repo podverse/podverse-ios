@@ -48,6 +48,10 @@ let kLoggedInSuccessfully = "loggedInSuccessfully"
 
 let kLoggedOutSuccessfully = "loggedOutSuccessfully"
 
+let kLoggingIn = "loggingIn"
+
+let kLoginFailed = "loginFailed"
+
 let kLastPlayingEpisodeURL = "lastPlayingEpisodeURL"
 
 let kUnfollowPodcast = "unfollowPodcast"

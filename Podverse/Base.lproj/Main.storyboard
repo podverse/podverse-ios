@@ -113,18 +113,31 @@
                                 <fontDescription key="fontDescription" type="system" pointSize="16"/>
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                             </textView>
+                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="AKf-HP-ih2">
+                                <rect key="frame" x="169" y="315" width="37" height="37"/>
+                            </activityIndicatorView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Logging in..." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="drS-g6-ubC">
+                                <rect key="frame" x="30" y="278" width="315" height="21"/>
+                                <fontDescription key="fontDescription" type="italicSystem" pointSize="17"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" red="0.14509803921568626" green="0.41176470588235292" blue="0.69803921568627447" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="xcI-2y-uVJ" firstAttribute="top" secondItem="lxb-Cg-2OU" secondAttribute="bottom" constant="8" id="1QL-Sw-SYS"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="drS-g6-ubC" secondAttribute="trailing" constant="14" id="9DF-jv-Yhr"/>
                             <constraint firstItem="GmD-v1-Ans" firstAttribute="top" secondItem="JM6-tc-ZhY" secondAttribute="bottom" constant="8" id="Alw-8E-Xjk"/>
+                            <constraint firstItem="drS-g6-ubC" firstAttribute="leading" secondItem="opR-qw-myW" secondAttribute="leadingMargin" constant="14" id="Bfr-Ww-a2Y"/>
                             <constraint firstAttribute="trailing" secondItem="gdK-Yq-0tE" secondAttribute="trailing" constant="30" id="DFP-Qg-vui"/>
                             <constraint firstItem="UtR-w4-IBh" firstAttribute="top" secondItem="lFt-wE-jQO" secondAttribute="bottom" constant="8" id="Grg-y3-89V"/>
                             <constraint firstItem="xcI-2y-uVJ" firstAttribute="leading" secondItem="opR-qw-myW" secondAttribute="leadingMargin" constant="14" id="GzN-ue-Xm0"/>
                             <constraint firstAttribute="trailingMargin" secondItem="xcI-2y-uVJ" secondAttribute="trailing" constant="14" id="HD8-bb-zvT"/>
                             <constraint firstItem="UtR-w4-IBh" firstAttribute="leading" secondItem="opR-qw-myW" secondAttribute="leadingMargin" constant="14" id="JT2-RF-L5q"/>
                             <constraint firstItem="JM6-tc-ZhY" firstAttribute="leading" secondItem="opR-qw-myW" secondAttribute="leadingMargin" id="Js3-VN-wSA"/>
+                            <constraint firstItem="AKf-HP-ih2" firstAttribute="centerY" secondItem="opR-qw-myW" secondAttribute="centerY" id="LL6-cr-kfg"/>
                             <constraint firstItem="gdK-Yq-0tE" firstAttribute="top" secondItem="oey-SX-fuF" secondAttribute="bottom" constant="30" id="Llb-Vg-335"/>
+                            <constraint firstItem="AKf-HP-ih2" firstAttribute="top" secondItem="drS-g6-ubC" secondAttribute="bottom" constant="16" id="Oks-vA-fZB"/>
                             <constraint firstItem="lxb-Cg-2OU" firstAttribute="leading" secondItem="gdK-Yq-0tE" secondAttribute="leading" id="RjH-21-YpV"/>
                             <constraint firstItem="8b5-4S-7XS" firstAttribute="top" secondItem="GmD-v1-Ans" secondAttribute="bottom" constant="20" id="Rs9-TZ-53s"/>
                             <constraint firstItem="lFt-wE-jQO" firstAttribute="leading" secondItem="opR-qw-myW" secondAttribute="leadingMargin" constant="14" id="VKf-OX-9ik"/>
@@ -134,6 +147,7 @@
                             <constraint firstItem="JM6-tc-ZhY" firstAttribute="trailing" secondItem="opR-qw-myW" secondAttribute="trailingMargin" id="e9f-W8-Uml"/>
                             <constraint firstItem="lxb-Cg-2OU" firstAttribute="trailing" secondItem="gdK-Yq-0tE" secondAttribute="trailing" id="hZp-da-t4e"/>
                             <constraint firstItem="GmD-v1-Ans" firstAttribute="leading" secondItem="opR-qw-myW" secondAttribute="leadingMargin" id="iXm-7q-qyU"/>
+                            <constraint firstItem="AKf-HP-ih2" firstAttribute="centerX" secondItem="opR-qw-myW" secondAttribute="centerX" id="ln8-QX-nsL"/>
                             <constraint firstItem="lxb-Cg-2OU" firstAttribute="top" secondItem="gdK-Yq-0tE" secondAttribute="bottom" constant="30" id="qgJ-yb-2C0"/>
                             <constraint firstItem="lFt-wE-jQO" firstAttribute="top" secondItem="xcI-2y-uVJ" secondAttribute="bottom" constant="24" id="tM5-E1-UVt"/>
                             <constraint firstAttribute="trailingMargin" secondItem="lFt-wE-jQO" secondAttribute="trailing" constant="14" id="y4H-Lk-pXC"/>
@@ -141,7 +155,14 @@
                         </constraints>
                     </view>
                     <connections>
-                        <outlet property="textView" destination="xcI-2y-uVJ" id="WV8-Ju-IN8"/>
+                        <outlet property="activityIndicator" destination="AKf-HP-ih2" id="zik-dQ-PrU"/>
+                        <outlet property="loggingInLabel" destination="drS-g6-ubC" id="8VZ-lV-PzG"/>
+                        <outlet property="loginButton" destination="JM6-tc-ZhY" id="VfF-zC-cn9"/>
+                        <outlet property="loginToLabel" destination="lxb-Cg-2OU" id="Wxn-8c-6ak"/>
+                        <outlet property="loginToText" destination="xcI-2y-uVJ" id="NFF-m9-nze"/>
+                        <outlet property="noLoginNeededToLabel" destination="lFt-wE-jQO" id="bei-L0-b1P"/>
+                        <outlet property="noLoginNeededToText" destination="UtR-w4-IBh" id="g7N-Sj-s7C"/>
+                        <outlet property="noThanksButton" destination="GmD-v1-Ans" id="3yK-pc-d4V"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="GUo-RZ-m04" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -2479,7 +2500,7 @@
                                         <rect key="frame" x="16" y="180" width="343" height="54"/>
                                         <subviews>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fsy-Ly-WmT">
-                                                <rect key="frame" x="0.0" y="9.5" width="46" height="36"/>
+                                                <rect key="frame" x="0.0" y="15" width="35" height="25"/>
                                                 <inset key="contentEdgeInsets" minX="10" minY="0.0" maxX="0.0" maxY="0.0"/>
                                                 <state key="normal" image="back15"/>
                                                 <connections>
@@ -2487,7 +2508,7 @@
                                                 </connections>
                                             </button>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8IJ-FW-ChJ">
-                                                <rect key="frame" x="297" y="9.5" width="46" height="36"/>
+                                                <rect key="frame" x="308" y="15" width="35" height="25"/>
                                                 <inset key="contentEdgeInsets" minX="0.0" minY="0.0" maxX="10" maxY="0.0"/>
                                                 <state key="normal" image="forward15"/>
                                                 <connections>
@@ -2499,7 +2520,7 @@
                                                 <color key="color" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                                             </activityIndicatorView>
                                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="play" translatesAutoresizingMaskIntoConstraints="NO" id="ax8-dI-fRx">
-                                                <rect key="frame" x="153.5" y="9.5" width="36" height="36"/>
+                                                <rect key="frame" x="149" y="5" width="45" height="45"/>
                                             </imageView>
                                             <imageView contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="icon_grab" translatesAutoresizingMaskIntoConstraints="NO" id="JMf-Mz-csa">
                                                 <rect key="frame" x="0.0" y="0.0" width="343" height="54"/>

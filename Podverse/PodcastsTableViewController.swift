@@ -249,11 +249,11 @@ extension PodcastsTableViewController:UITableViewDelegate, UITableViewDataSource
             self.subscribedPodcastsArray.remove(at: indexPath.row)
             tableView.deleteRows(at: [indexPath], with: .fade)
             
-            PVSubscriber.unsubscribeFromPodcast(podcastId: podcastToEditId, feedUrl: podcastToEditFeedUrl)
-            
             if !checkForResults(results: self.subscribedPodcastsArray) {
                 self.loadNoPodcastsSubscribedMessage()
             }
+            
+            PVSubscriber.unsubscribeFromPodcast(podcastId: podcastToEditId, feedUrl: podcastToEditFeedUrl)
         })
         
         return [deleteAction]
