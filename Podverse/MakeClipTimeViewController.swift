@@ -37,6 +37,7 @@ class MakeClipTimeViewController: UIViewController, UITextFieldDelegate {
     @IBOutlet weak var endTimeInputView: UIView!
     
     @IBOutlet weak var grabHintImage: UIImageView!
+    @IBOutlet weak var podcastImage: UIImageView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -57,6 +58,9 @@ class MakeClipTimeViewController: UIViewController, UITextFieldDelegate {
         self.titleInput.leftView = UIView(frame: CGRect(x:0, y:0, width:10, height:35))
         self.titleInput.leftViewMode = UITextFieldViewMode.always
         self.titleInput.returnKeyType = .done
+        self.podcastImage.image = Podcast.retrievePodcastImage(fullSized: true, podcastImageURLString: self.pvMediaPlayer.nowPlayingItem?.podcastImageUrl, feedURLString: nil, completion: { (image) in
+            self.podcastImage.image = image
+        })
         
         if let savedVisibilityType = UserDefaults.standard.value(forKey: kMakeClipVisibilityType) as? String, let visibilityType = VisibilityOptions(rawValue: savedVisibilityType) {
             self.visibilityButton.setTitle(visibilityType.text + " ▼", for: .normal)

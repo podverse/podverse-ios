@@ -91,10 +91,10 @@ extension MoreTableViewController:UITableViewDelegate, UITableViewDataSource {
                 pvAuth.showAuth0Lock(vc: self)
             }
         case 2:
-            if let url = URL(string: BASE_URL + "about") {
-                UIApplication.shared.open(url)
+            if let url = URL(string: BASE_URL + "about"), let webVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "AboutVC") as? AboutViewController {
+                webVC.requestUrl = url
+                self.navigationController?.pushViewController(webVC, animated: true)
             }
-
         case 3:
             if let webKitVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "WebKitVC") as? WebKitViewController {
                 webKitVC.urlString = kFormContactUrl
