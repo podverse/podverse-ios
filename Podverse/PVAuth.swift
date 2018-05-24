@@ -86,7 +86,7 @@ class PVAuth: NSObject {
         
         if let url = URL(string: BASE_URL + "users/"), let profile = profile {
             
-            var request = URLRequest(url: url, cachePolicy: NSURLRequest.CachePolicy.reloadIgnoringLocalAndRemoteCacheData, timeoutInterval: 30)
+            var request = URLRequest(url: url, cachePolicy: NSURLRequest.CachePolicy.reloadIgnoringLocalAndRemoteCacheData, timeoutInterval: 20)
             request.httpMethod = "POST"
             
             request.setValue(idToken, forHTTPHeaderField: "Authorization")
