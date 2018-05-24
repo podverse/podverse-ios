@@ -231,7 +231,7 @@ class PlayerHistoryItem: NSObject, NSCoding {
         
         if let url = URL(string: BASE_URL + "clips/") {
             
-            var request = URLRequest(url: url, cachePolicy: NSURLRequest.CachePolicy.reloadIgnoringLocalAndRemoteCacheData, timeoutInterval: 60)
+            var request = URLRequest(url: url, cachePolicy: NSURLRequest.CachePolicy.reloadIgnoringLocalAndRemoteCacheData, timeoutInterval: 20)
             request.httpMethod = "POST"
             
             if let idToken = UserDefaults.standard.string(forKey: "idToken") {

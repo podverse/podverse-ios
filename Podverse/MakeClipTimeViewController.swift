@@ -246,6 +246,8 @@ class MakeClipTimeViewController: UIViewController, UITextFieldDelegate {
                 self.hideLoadingOverlay()
                 if let id = mediaRef?.id {
                     self.displayClipCreatedAlert(mediaRefId: id)
+                } else {
+                    self.displayFailedToCreateClipAlert()
                 }
             }
         }
@@ -284,6 +286,19 @@ class MakeClipTimeViewController: UIViewController, UITextFieldDelegate {
         }))
         
         actions.addAction(UIAlertAction(title: "Done", style: .cancel, handler: { action in
+            self.navigationController?.popViewController(animated: true)
+        }))
+        
+        self.present(actions, animated: true, completion: nil)
+    }
+    
+    private func displayFailedToCreateClipAlert() {
+        
+        let actions = UIAlertController(title: "Failed to create clip",
+                                        message: "Please check your internet connection and try again.",
+                                        preferredStyle: .alert)
+        
+        actions.addAction(UIAlertAction(title: "Ok", style: .cancel, handler: { action in
             self.navigationController?.popViewController(animated: true)
         }))
         
