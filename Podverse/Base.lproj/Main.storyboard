@@ -2580,18 +2580,43 @@
                             <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="4Zc-Kr-hC7">
                                 <rect key="frame" x="16" y="153.5" width="343" height="223.5"/>
                             </imageView>
+                            <view alpha="0.84999999999999998" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="cls-rQ-4hj">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                                <subviews>
+                                    <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="dvE-af-IQJ">
+                                        <rect key="frame" x="169" y="315" width="37" height="37"/>
+                                    </activityIndicatorView>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Saving clip..." textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9CR-Xw-ICL">
+                                        <rect key="frame" x="137" y="278" width="101.5" height="21.5"/>
+                                        <fontDescription key="fontDescription" type="italicSystem" pointSize="18"/>
+                                        <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
+                                <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstItem="9CR-Xw-ICL" firstAttribute="centerX" secondItem="cls-rQ-4hj" secondAttribute="centerX" id="2sK-wb-aKl"/>
+                                    <constraint firstItem="dvE-af-IQJ" firstAttribute="centerX" secondItem="cls-rQ-4hj" secondAttribute="centerX" id="EMf-9N-yGs"/>
+                                    <constraint firstItem="dvE-af-IQJ" firstAttribute="centerY" secondItem="cls-rQ-4hj" secondAttribute="centerY" id="Tl9-Jk-391"/>
+                                    <constraint firstItem="dvE-af-IQJ" firstAttribute="top" secondItem="9CR-Xw-ICL" secondAttribute="bottom" constant="16" id="lpV-U3-yfE"/>
+                                </constraints>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstAttribute="trailing" secondItem="5f6-BD-aje" secondAttribute="trailing" id="0EA-6v-3cY"/>
+                            <constraint firstItem="Jx6-LK-9Q5" firstAttribute="top" secondItem="cls-rQ-4hj" secondAttribute="bottom" id="0tp-nD-A3U"/>
                             <constraint firstItem="d5f-bN-slc" firstAttribute="trailing" secondItem="6F4-Jc-Wbp" secondAttribute="trailingMargin" id="2VT-x4-zDX"/>
                             <constraint firstItem="5f6-BD-aje" firstAttribute="leading" secondItem="6F4-Jc-Wbp" secondAttribute="leading" id="7dt-cR-Ux1"/>
+                            <constraint firstItem="cls-rQ-4hj" firstAttribute="top" secondItem="6F4-Jc-Wbp" secondAttribute="top" id="9Nd-8F-gvN"/>
                             <constraint firstItem="Jx6-LK-9Q5" firstAttribute="top" secondItem="5f6-BD-aje" secondAttribute="bottom" id="EAe-Lz-psZ"/>
                             <constraint firstItem="4Zc-Kr-hC7" firstAttribute="trailing" secondItem="yw9-eu-uHT" secondAttribute="trailing" id="I89-MY-yae"/>
                             <constraint firstItem="d5f-bN-slc" firstAttribute="top" secondItem="uaL-Re-c23" secondAttribute="bottom" constant="24" id="RI8-j7-VYv"/>
                             <constraint firstItem="5f6-BD-aje" firstAttribute="top" secondItem="4Zc-Kr-hC7" secondAttribute="bottom" constant="10" id="Trr-ap-KWm"/>
+                            <constraint firstItem="cls-rQ-4hj" firstAttribute="leading" secondItem="6F4-Jc-Wbp" secondAttribute="leading" id="hl0-xx-j9V"/>
                             <constraint firstItem="4Zc-Kr-hC7" firstAttribute="leading" secondItem="yw9-eu-uHT" secondAttribute="leading" id="rnb-Yg-IPc"/>
                             <constraint firstItem="4Zc-Kr-hC7" firstAttribute="top" secondItem="d5f-bN-slc" secondAttribute="bottom" constant="30" id="vf5-a4-fjD"/>
+                            <constraint firstAttribute="trailing" secondItem="cls-rQ-4hj" secondAttribute="trailing" id="vju-yu-k7X"/>
                             <constraint firstItem="d5f-bN-slc" firstAttribute="leading" secondItem="6F4-Jc-Wbp" secondAttribute="leadingMargin" id="wkt-Pc-b1Y"/>
                         </constraints>
                     </view>
@@ -2604,6 +2629,8 @@
                         <outlet property="endTimeInputView" destination="i58-Vl-hs5" id="k9B-uB-fGD"/>
                         <outlet property="endTimeLabel" destination="w7M-2E-j55" id="t7A-bY-2eu"/>
                         <outlet property="grabHintImage" destination="JMf-Mz-csa" id="U7h-Dc-HHV"/>
+                        <outlet property="loadingActivityInidicator" destination="dvE-af-IQJ" id="RmD-5q-tFu"/>
+                        <outlet property="loadingOverlay" destination="cls-rQ-4hj" id="hwN-rB-00v"/>
                         <outlet property="play" destination="ax8-dI-fRx" id="kNR-Se-zoV"/>
                         <outlet property="playbackControlView" destination="fJ9-Dt-F7s" id="t9Q-oG-J4E"/>
                         <outlet property="podcastImage" destination="4Zc-Kr-hC7" id="aMu-nv-bqK"/>

@@ -35,7 +35,8 @@ class MakeClipTimeViewController: UIViewController, UITextFieldDelegate {
     @IBOutlet weak var endTimeLabel: UILabel!
     @IBOutlet weak var startTimeInputView: UIView!
     @IBOutlet weak var endTimeInputView: UIView!
-    
+    @IBOutlet weak var loadingOverlay: UIView!
+    @IBOutlet weak var loadingActivityInidicator: UIActivityIndicatorView!
     @IBOutlet weak var grabHintImage: UIImageView!
     @IBOutlet weak var podcastImage: UIImageView!
     
@@ -46,7 +47,6 @@ class MakeClipTimeViewController: UIViewController, UITextFieldDelegate {
         populatePlayerInfo()
         
         self.navigationItem.backBarButtonItem = UIBarButtonItem(title:"Back", style:.plain, target:nil, action:nil)
-        
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Save", style: .plain, target: self, action: #selector(save))
         
         self.activityIndicator.startAnimating()
@@ -61,6 +61,9 @@ class MakeClipTimeViewController: UIViewController, UITextFieldDelegate {
         self.podcastImage.image = Podcast.retrievePodcastImage(fullSized: true, podcastImageURLString: self.pvMediaPlayer.nowPlayingItem?.podcastImageUrl, feedURLString: nil, completion: { (image) in
             self.podcastImage.image = image
         })
+        
+        self.loadingOverlay.isHidden = true
+        self.loadingActivityInidicator.hidesWhenStopped = true
         
         if let savedVisibilityType = UserDefaults.standard.value(forKey: kMakeClipVisibilityType) as? String, let visibilityType = VisibilityOptions(rawValue: savedVisibilityType) {
             self.visibilityButton.setTitle(visibilityType.text + " ▼", for: .normal)
@@ -223,6 +226,8 @@ class MakeClipTimeViewController: UIViewController, UITextFieldDelegate {
         
         if let mediaRefItem = self.playerHistoryItem?.copyPlayerHistoryItem() {
             
+            showLoadingOverlay()
+            
             if let startTime = self.startTime {
                 mediaRefItem.startTime = Int64(startTime)
             }
@@ -238,11 +243,22 @@ class MakeClipTimeViewController: UIViewController, UITextFieldDelegate {
             mediaRefItem.isPublic = self.isPublic
             
             mediaRefItem.saveToServerAsMediaRef() { mediaRef in
+                self.hideLoadingOverlay()
                 if let id = mediaRef?.id {
                     self.displayClipCreatedAlert(mediaRefId: id)
                 }
             }
         }
+    }
+    
+    private func showLoadingOverlay() {
+        self.loadingOverlay.isHidden = false
+        self.loadingActivityInidicator.startAnimating()
+    }
+    
+    private func hideLoadingOverlay() {
+        self.loadingOverlay.isHidden = true
+        self.loadingActivityInidicator.stopAnimating()
     }
     
     private func displayClipCreatedAlert(mediaRefId: String) {
