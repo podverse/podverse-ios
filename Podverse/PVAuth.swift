@@ -107,8 +107,7 @@ class PVAuth: NSObject {
                 
                 guard error == nil else {
                     self.notifyLoginFailed()
-                    
-                        {
+                    DispatchQueue.main.async {
                         completion(false)
                     }
                     return
