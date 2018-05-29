@@ -107,7 +107,8 @@ class PVAuth: NSObject {
                 
                 guard error == nil else {
                     self.notifyLoginFailed()
-                    DispatchQueue.main.async {
+                    
+                        {
                         completion(false)
                     }
                     return
@@ -174,11 +175,15 @@ class PVAuth: NSObject {
     }
     
     fileprivate func notifyLoggingIn() {
-        NotificationCenter.default.post(name:NSNotification.Name(rawValue: kLoggingIn), object: self, userInfo: nil)
+        DispatchQueue.main.async {
+            NotificationCenter.default.post(name:NSNotification.Name(rawValue: kLoggingIn), object: self, userInfo: nil)
+        }
     }
     
     fileprivate func notifyLoginFailed() {
-        NotificationCenter.default.post(name:NSNotification.Name(rawValue: kLoginFailed), object: self, userInfo: nil)
+        DispatchQueue.main.async {
+            NotificationCenter.default.post(name:NSNotification.Name(rawValue: kLoginFailed), object: self, userInfo: nil)
+        }
     }
     
     func handleLoginFailure(profile:UserInfo?, idToken:String?, vc:UIViewController) {

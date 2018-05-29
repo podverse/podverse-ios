@@ -162,19 +162,15 @@ extension MoreTableViewController {
             return
         }
         
-        DispatchQueue.main.async {
-            cell.textLabel?.text = nil
-            let activityIndicator = UIActivityIndicatorView()
-            activityIndicator.color = UIColor.black
-            cell.addSubview(activityIndicator)
-            activityIndicator.startAnimating()
-        }
+        cell.textLabel?.text = nil
+        let activityIndicator = UIActivityIndicatorView()
+        activityIndicator.color = UIColor.black
+        cell.addSubview(activityIndicator)
+        activityIndicator.startAnimating()
     }
     
     @objc func loggedInSuccessfully(_ notification:Notification) {
-        DispatchQueue.main.async {
-            self.tableView.reloadData()
-        }
+        self.tableView.reloadData()
     }
     
     @objc func loginFailed(_ notification:Notification) {
@@ -183,20 +179,15 @@ extension MoreTableViewController {
             return
         }
         
-        DispatchQueue.main.async {
-            for view in cell.subviews {
-                if let activityIndicator = view as? UIActivityIndicatorView {
-                    activityIndicator.removeFromSuperview()
-                }
+        for view in cell.subviews {
+            if let activityIndicator = view as? UIActivityIndicatorView {
+                activityIndicator.removeFromSuperview()
             }
-            cell.textLabel?.text = "Login"
         }
+        cell.textLabel?.text = "Login"
     }
     
-    @objc func loggedOutSuccessfully(_ notification:Notification) {
-        DispatchQueue.main.async {
-            self.tableView.reloadData()
-        }
+    @objc func loggedOutSuccessfully(_ notification:Notification) {            self.tableView.reloadData()
     }
     
     @objc func finishedSyncing(_ notification:Notification) {

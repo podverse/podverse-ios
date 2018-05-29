@@ -57,35 +57,29 @@ class LoginViewController: PVViewController {
 
 extension LoginViewController {
     @objc func loggingIn(_ notification:Notification) {
-        DispatchQueue.main.async {
-            self.loginToLabel.isHidden = true
-            self.loginToText.isHidden = true
-            self.noLoginNeededToLabel.isHidden = true
-            self.noLoginNeededToText.isHidden = true
-            self.loginButton.isHidden = true
-            self.noThanksButton.isHidden = true
-            self.loggingInLabel.isHidden = false
-            self.activityIndicator.startAnimating()
-        }
+        self.loginToLabel.isHidden = true
+        self.loginToText.isHidden = true
+        self.noLoginNeededToLabel.isHidden = true
+        self.noLoginNeededToText.isHidden = true
+        self.loginButton.isHidden = true
+        self.noThanksButton.isHidden = true
+        self.loggingInLabel.isHidden = false
+        self.activityIndicator.startAnimating()
     }
 
     @objc func loggedInSuccessfully(_ notification:Notification) {
-        DispatchQueue.main.async {
-            self.activityIndicator.stopAnimating()
-            self.dismiss(animated: true, completion: nil)
-        }
+        self.activityIndicator.stopAnimating()
+        self.dismiss(animated: true, completion: nil)
     }
     
     @objc func loginFailed(_ notification:Notification) {
-        DispatchQueue.main.async {
-            self.loginToLabel.isHidden = false
-            self.loginToText.isHidden = false
-            self.noLoginNeededToLabel.isHidden = false
-            self.noLoginNeededToText.isHidden = false
-            self.loginButton.isHidden = false
-            self.noThanksButton.isHidden = false
-            self.loggingInLabel.isHidden = true
-            self.activityIndicator.stopAnimating()
-        }
+        self.loginToLabel.isHidden = false
+        self.loginToText.isHidden = false
+        self.noLoginNeededToLabel.isHidden = false
+        self.noLoginNeededToText.isHidden = false
+        self.loginButton.isHidden = false
+        self.noThanksButton.isHidden = false
+        self.loggingInLabel.isHidden = true
+        self.activityIndicator.stopAnimating()
     }
 }
