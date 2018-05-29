@@ -313,7 +313,9 @@ class MediaPlayerViewController: PVViewController {
     }
     
     func updateSpeedLabel() {
-        speed.setTitle(pvMediaPlayer.playerSpeedRate.speedText, for: .normal)
+        DispatchQueue.main.async {
+            self.speed.setImage(self.pvMediaPlayer.playerSpeedRate.speedImage, for: .normal)
+        }
     }
     
     @objc func showAddToPlaylist() {

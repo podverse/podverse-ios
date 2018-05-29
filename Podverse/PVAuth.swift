@@ -13,6 +13,8 @@ import CoreData
 extension Notification.Name {
     static let loggedInSuccessfully = Notification.Name(kLoggedInSuccessfully)
     static let loggedOutSuccessfully = Notification.Name(kLoggedOutSuccessfully)
+    static let loggingIn = Notification.Name(kLoggingIn)
+    static let loginFailed = Notification.Name(kLoginFailed)
 }
 
 class PVAuth: NSObject {
@@ -43,6 +45,8 @@ class PVAuth: NSObject {
             }
             .onAuth {
                 
+                self.notifyLoggingIn()
+                
                 guard let accessToken = $0.accessToken, let idToken = $0.idToken else {
                     return
                 }
@@ -61,10 +65,6 @@ class PVAuth: NSObject {
                                 } else {
                                     self.populateUserInfoWith(idToken: idToken, userId: profile.sub, userName: profile.nickname)
                                     self.notifyLoggedInSuccessfully()
-                                    
-                                    DispatchQueue.main.async {
-                                        vc.dismiss(animated: true, completion: nil)
-                                    }
                                 }
                             }
                             
@@ -77,6 +77,7 @@ class PVAuth: NSObject {
             }
             .onError {
                 print("Failed with \($0)")
+                self.handleLoginFailure(profile: nil, idToken: nil, vc: vc)
             }
             .present(from: vc)
     }
@@ -85,7 +86,7 @@ class PVAuth: NSObject {
         
         if let url = URL(string: BASE_URL + "users/"), let profile = profile {
             
-            var request = URLRequest(url: url, cachePolicy: NSURLRequest.CachePolicy.reloadIgnoringLocalAndRemoteCacheData, timeoutInterval: 60)
+            var request = URLRequest(url: url, cachePolicy: NSURLRequest.CachePolicy.reloadIgnoringLocalAndRemoteCacheData, timeoutInterval: 20)
             request.httpMethod = "POST"
             
             request.setValue(idToken, forHTTPHeaderField: "Authorization")
@@ -105,6 +106,7 @@ class PVAuth: NSObject {
             let task = URLSession.shared.dataTask(with: request) { data, response, error in
                 
                 guard error == nil else {
+                    self.notifyLoginFailed()
                     DispatchQueue.main.async {
                         completion(false)
                     }
@@ -118,6 +120,7 @@ class PVAuth: NSObject {
             task.resume()
             
         } else {
+            self.notifyLoginFailed()
             DispatchQueue.main.async {
                 completion(false)
             }
@@ -170,8 +173,21 @@ class PVAuth: NSObject {
         }
     }
     
+    fileprivate func notifyLoggingIn() {
+        DispatchQueue.main.async {
+            NotificationCenter.default.post(name:NSNotification.Name(rawValue: kLoggingIn), object: self, userInfo: nil)
+        }
+    }
+    
+    fileprivate func notifyLoginFailed() {
+        DispatchQueue.main.async {
+            NotificationCenter.default.post(name:NSNotification.Name(rawValue: kLoginFailed), object: self, userInfo: nil)
+        }
+    }
+    
     func handleLoginFailure(profile:UserInfo?, idToken:String?, vc:UIViewController) {
         removeUserInfo()
+        notifyLoginFailed()
         
         DispatchQueue.main.async {
             
@@ -179,6 +195,7 @@ class PVAuth: NSObject {
                 let actions = UIAlertController(title: "Login Failed", message: "Please check your internet connection and try again.", preferredStyle: .alert)
                 
                 actions.addAction(UIAlertAction(title: "Retry", style: .default, handler: { action in
+                    self.notifyLoggingIn()
                     self.findOrCreateUserOnServer(profile: profile, idToken: idToken) { wasSuccessful in
                         if (!wasSuccessful) {
                             self.handleLoginFailure(profile: profile, idToken: idToken, vc: vc)
@@ -186,10 +203,6 @@ class PVAuth: NSObject {
                             self.populateUserInfoWith(idToken: idToken, userId: profile.sub, userName: profile.nickname)
                             
                             self.notifyLoggedInSuccessfully()
-                            
-                            DispatchQueue.main.async {
-                                vc.dismiss(animated: true, completion: nil)
-                            }
                         }
                     }
                 }))

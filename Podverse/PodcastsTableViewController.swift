@@ -83,6 +83,7 @@ class PodcastsTableViewController: PVViewController, AutoDownloadProtocol {
     
     fileprivate func addObservers() {
         NotificationCenter.default.addObserver(self, selector: #selector(self.loggedInSuccessfully), name: .loggedInSuccessfully, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.loggedOutSuccessfully), name: .loggedOutSuccessfully, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(self.feedParsingComplete(_:)), name: .feedParsingComplete, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(self.downloadFinished(_:)), name: .downloadFinished, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(self.refreshParsingStatus(_:)), name: NSNotification.Name(rawValue: kBeginParsingPodcast), object: nil)
@@ -92,6 +93,7 @@ class PodcastsTableViewController: PVViewController, AutoDownloadProtocol {
     
     fileprivate func removeObservers() {
         NotificationCenter.default.removeObserver(self, name: .loggedInSuccessfully, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .loggedOutSuccessfully, object: nil)
         NotificationCenter.default.removeObserver(self, name: .feedParsingComplete, object: nil)
         NotificationCenter.default.removeObserver(self, name: .downloadFinished, object: nil)
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name(rawValue: kBeginParsingPodcast), object: nil)
@@ -249,11 +251,11 @@ extension PodcastsTableViewController:UITableViewDelegate, UITableViewDataSource
             self.subscribedPodcastsArray.remove(at: indexPath.row)
             tableView.deleteRows(at: [indexPath], with: .fade)
             
-            PVSubscriber.unsubscribeFromPodcast(podcastId: podcastToEditId, feedUrl: podcastToEditFeedUrl)
-            
             if !checkForResults(results: self.subscribedPodcastsArray) {
                 self.loadNoPodcastsSubscribedMessage()
             }
+            
+            PVSubscriber.unsubscribeFromPodcast(podcastId: podcastToEditId, feedUrl: podcastToEditFeedUrl)
         })
         
         return [deleteAction]
@@ -319,6 +321,11 @@ extension PodcastsTableViewController {
         }
         self.parseStatus.text = "Syncing with server"
         self.parseActivityIndicator.startAnimating()
+    }
+    
+    @objc func loggedOutSuccessfully() {
+        self.parseStatus.text = ""
+        self.parseActivityIndicator.stopAnimating()
     }
     
     override func podcastDeleted(_ notification:Notification) {

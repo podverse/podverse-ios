@@ -21,21 +21,21 @@ extension Notification.Name {
 enum PlayingSpeed {
     case half, threeQuarts, regular, timeAndQuarter, timeAndHalf, double
     
-    var speedText:String {
+    var speedImage:UIImage? {
         get {
             switch self {
             case .half:
-                return ".5x"
+                return UIImage(named: "speed05x")
             case .threeQuarts:
-                return ".75x"
+                return UIImage(named: "speed075x")
             case .regular:
-                return "1x"
+                return UIImage(named: "speed1x")
             case .timeAndQuarter:
-                return "1.25x"
+                return UIImage(named: "speed125x")
             case .timeAndHalf:
-                return "1.5x"
+                return UIImage(named: "speed15x")
             case .double:
-                return "2x"
+                return UIImage(named: "speed2x")
             }
         }
     }
