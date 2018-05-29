@@ -39,6 +39,7 @@ class MakeClipTimeViewController: UIViewController, UITextFieldDelegate {
     @IBOutlet weak var loadingActivityInidicator: UIActivityIndicatorView!
     @IBOutlet weak var grabHintImage: UIImageView!
     @IBOutlet weak var podcastImage: UIImageView!
+    @IBOutlet weak var speed: UIButton!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -72,6 +73,8 @@ class MakeClipTimeViewController: UIViewController, UITextFieldDelegate {
             self.visibilityButton.setTitle(VisibilityOptions.isPublic.text + " ▼", for: .normal)
             self.isPublic = true
         }
+        
+        updateSpeedLabel()
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -253,6 +256,30 @@ class MakeClipTimeViewController: UIViewController, UITextFieldDelegate {
         }
     }
     
+    @IBAction func changeSpeed(_ sender: Any) {
+        switch self.pvMediaPlayer.playerSpeedRate {
+        case .regular:
+            self.pvMediaPlayer.playerSpeedRate = .timeAndQuarter
+            break
+        case .timeAndQuarter:
+            self.pvMediaPlayer.playerSpeedRate = .timeAndHalf
+            break
+        case .timeAndHalf:
+            self.pvMediaPlayer.playerSpeedRate = .double
+            break
+        case .double:
+            self.pvMediaPlayer.playerSpeedRate = .half
+        case .half:
+            self.pvMediaPlayer.playerSpeedRate = .threeQuarts
+            break
+        case .threeQuarts:
+            self.pvMediaPlayer.playerSpeedRate = .regular
+            break
+        }
+        
+        updateSpeedLabel()
+    }
+    
     private func showLoadingOverlay() {
         self.loadingOverlay.isHidden = false
         self.loadingActivityInidicator.startAnimating()
@@ -411,6 +438,13 @@ class MakeClipTimeViewController: UIViewController, UITextFieldDelegate {
             
         }
     }
+    
+    func updateSpeedLabel() {
+        DispatchQueue.main.async {
+            self.speed.setImage(self.pvMediaPlayer.playerSpeedRate.speedImage, for: .normal)
+        }
+    }
+    
 }
 
 extension MakeClipTimeViewController:PVMediaPlayerUIDelegate {
