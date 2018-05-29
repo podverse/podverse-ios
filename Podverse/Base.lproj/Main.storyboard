@@ -2500,7 +2500,7 @@
                                         <rect key="frame" x="16" y="180" width="343" height="54"/>
                                         <subviews>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fsy-Ly-WmT">
-                                                <rect key="frame" x="0.0" y="15" width="35" height="25"/>
+                                                <rect key="frame" x="0.0" y="9.5" width="46" height="36"/>
                                                 <inset key="contentEdgeInsets" minX="10" minY="0.0" maxX="0.0" maxY="0.0"/>
                                                 <state key="normal" image="back15"/>
                                                 <connections>
@@ -2508,7 +2508,7 @@
                                                 </connections>
                                             </button>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8IJ-FW-ChJ">
-                                                <rect key="frame" x="308" y="15" width="35" height="25"/>
+                                                <rect key="frame" x="297" y="9.5" width="46" height="36"/>
                                                 <inset key="contentEdgeInsets" minX="0.0" minY="0.0" maxX="10" maxY="0.0"/>
                                                 <state key="normal" image="forward15"/>
                                                 <connections>
@@ -2520,7 +2520,7 @@
                                                 <color key="color" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                                             </activityIndicatorView>
                                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="play" translatesAutoresizingMaskIntoConstraints="NO" id="ax8-dI-fRx">
-                                                <rect key="frame" x="149" y="5" width="45" height="45"/>
+                                                <rect key="frame" x="153.5" y="9.5" width="36" height="36"/>
                                             </imageView>
                                             <imageView contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="icon_grab" translatesAutoresizingMaskIntoConstraints="NO" id="JMf-Mz-csa">
                                                 <rect key="frame" x="0.0" y="0.0" width="343" height="54"/>
@@ -2712,13 +2712,16 @@
                                             <action selector="play:" destination="fGh-hH-QQS" eventType="touchUpInside" id="L4I-Ay-bWb"/>
                                         </connections>
                                     </button>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7Cr-KC-kdT">
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" adjustsImageSizeForAccessibilityContentSizeCategory="YES" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7Cr-KC-kdT">
                                         <rect key="frame" x="16" y="68" width="44" height="30"/>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="30" id="TnN-40-hGm"/>
                                             <constraint firstAttribute="width" constant="44" id="ksg-RH-WPP"/>
                                         </constraints>
-                                        <state key="normal" title="1x"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                        <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <state key="normal" image="speed1x"/>
                                         <connections>
                                             <action selector="changeSpeed:" destination="fGh-hH-QQS" eventType="touchUpInside" id="4bk-ss-WXb"/>
                                         </connections>
@@ -3504,12 +3507,13 @@
         <image name="Tab-Downloads" width="25" height="25"/>
         <image name="Tab-Find" width="25" height="25"/>
         <image name="Tab-Podcasts" width="25" height="25"/>
-        <image name="back15" width="25" height="25"/>
+        <image name="back15" width="36" height="36"/>
         <image name="banner" width="337" height="61"/>
         <image name="clear" width="128" height="128"/>
-        <image name="forward15" width="25" height="25"/>
+        <image name="forward15" width="36" height="36"/>
         <image name="icon_grab" width="150" height="50"/>
-        <image name="play" width="45" height="45"/>
+        <image name="play" width="36" height="36"/>
+        <image name="speed1x" width="36" height="36"/>
         <image name="tab-clips" width="25" height="25"/>
         <image name="tab-more" width="25" height="25"/>
     </resources>
