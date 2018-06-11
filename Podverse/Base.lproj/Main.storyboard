@@ -2556,7 +2556,7 @@
                                             <action selector="sliderAction:forEvent:" destination="sZL-lu-ysp" eventType="valueChanged" id="bXU-P7-QPU"/>
                                         </connections>
                                     </slider>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" adjustsImageSizeForAccessibilityContentSizeCategory="YES" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8jD-Pu-kow">
+                                    <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" adjustsImageSizeForAccessibilityContentSizeCategory="YES" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8jD-Pu-kow">
                                         <rect key="frame" x="16" y="242" width="44" height="30"/>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <constraints>
@@ -2593,6 +2593,11 @@
                                     <constraint firstItem="Dh2-u6-8zp" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="5f6-BD-aje" secondAttribute="leading" constant="20" symbolic="YES" id="vOl-xE-588"/>
                                     <constraint firstItem="8jD-Pu-kow" firstAttribute="leading" secondItem="5f6-BD-aje" secondAttribute="leading" constant="16" id="wSF-vU-c1O"/>
                                 </constraints>
+                                <variation key="default">
+                                    <mask key="subviews">
+                                        <exclude reference="8jD-Pu-kow"/>
+                                    </mask>
+                                </variation>
                             </view>
                             <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="4Zc-Kr-hC7">
                                 <rect key="frame" x="16" y="147.5" width="343" height="229.5"/>
@@ -2800,6 +2805,12 @@
                                     <constraint firstItem="Ytt-PW-XUF" firstAttribute="centerX" secondItem="xgo-aW-bmE" secondAttribute="centerX" id="gj5-1j-qlk"/>
                                     <constraint firstItem="Ytt-PW-XUF" firstAttribute="top" secondItem="xgo-aW-bmE" secondAttribute="top" constant="4" id="wKa-Fu-wu7"/>
                                 </constraints>
+                                <variation key="default">
+                                    <mask key="subviews">
+                                        <exclude reference="7Cr-KC-kdT"/>
+                                        <exclude reference="qsu-6Y-Pz9"/>
+                                    </mask>
+                                </variation>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="i1e-q4-aop">
                                 <rect key="frame" x="0.0" y="20" width="375" height="96"/>
