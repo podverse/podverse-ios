@@ -29,7 +29,7 @@ final class ParsingPodcasts {
             DispatchQueue.main.async {
                 NotificationCenter.default.post(name:NSNotification.Name(rawValue: kBeginParsingPodcast), object: self, userInfo: nil)
             }
-        } else if let feedUrl = feedUrl, self.podcastKeys.filter({$0 == feedUrl}).count < 1 {
+        } else if let feedUrl = feedUrl, self.podcastKeys.filter({$0 == feedUrl}).count < 1, podcastId == nil {
             self.podcastKeys.append(feedUrl)
             DispatchQueue.main.async {
                 NotificationCenter.default.post(name:NSNotification.Name(rawValue: kBeginParsingPodcast), object: self, userInfo: nil)

@@ -57,6 +57,13 @@ class PVFeedParser {
         
         let parser = FeedParser(URL: url)
         
+        var mostRecentEpisode:Episode? = nil
+        if let podcast = Podcast.podcastForFeedUrl(feedUrlString: feedUrlString, managedObjectContext: self.privateMoc) {
+            let podcastPredicate = NSPredicate(format: "podcast == %@", podcast)
+            
+            mostRecentEpisode = CoreDataHelper.fetchEntityWithMostRecentPubDate(className: "Episode", predicate: podcastPredicate, moc: self.privateMoc) as? Episode
+        }
+        
         parser?.parseAsync(queue: DispatchQueue.global(qos: .background)) { (result) in
             
             switch result {
@@ -85,10 +92,6 @@ class PVFeedParser {
             
             // If the parser is only returning the latest episode, then if the podcast's latest episode returned is not the same as the latest episode saved locally, parse the entire feed again, then download and save the latest episode
             if let latestEpisodePubDate = self.latestEpisodePubDate, self.onlyGetMostRecentEpisode == true, let feedUrl = self.feedUrl {
-                if let podcast = Podcast.podcastForFeedUrl(feedUrlString: feedUrlString, managedObjectContext: self.privateMoc) {
-                    let podcastPredicate = NSPredicate(format: "podcast == %@", podcast)
-                    let mostRecentEpisode = CoreDataHelper.fetchEntityWithMostRecentPubDate(className: "Episode", predicate: podcastPredicate, moc: self.privateMoc) as? Episode
-                    
                     if mostRecentEpisode == nil {
                         self.parseAndDownloadMostRecentEpisode(feedUrl: feedUrl)
                     } else if let mostRecentEpisode = mostRecentEpisode, let mostRecentPubDate = mostRecentEpisode.pubDate, latestEpisodePubDate != mostRecentPubDate {
@@ -100,7 +103,6 @@ class PVFeedParser {
                             UserDefaults.standard.set(Date(), forKey: kLastParsedDate)
                         }
                     }
-                }
             } else {
                 self.parsingPodcasts.podcastFinishedParsing()
                 DispatchQueue.main.async {

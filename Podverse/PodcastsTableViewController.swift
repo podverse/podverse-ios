@@ -47,13 +47,14 @@ class PodcastsTableViewController: PVViewController, AutoDownloadProtocol {
         
         self.parseActivityIndicator.hidesWhenStopped = true
         
-        
         if let lastParsedDate = UserDefaults.standard.object(forKey: kLastParsedDate) as? Date {
             if let diff = Calendar.current.dateComponents([.hour], from: lastParsedDate, to: Date()).hour, diff > 1 {
                 if PVAuth.userIsLoggedIn {
                     DispatchQueue.global().async {
                         Podcast.syncSubscribedPodcastsWithServer()
                     }
+                    self.parseStatus.text = "Syncing with server"
+                    self.parseActivityIndicator.startAnimating()
                 } else {
                     refreshPodcastFeeds()
                 }
