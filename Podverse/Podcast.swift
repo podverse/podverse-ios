@@ -232,7 +232,7 @@ class Podcast: NSManagedObject {
         
         if let url = URL(string: BASE_URL + "api/user/podcasts") {
             // NOTE: this request currently takes a long time, so the timeoutInterval is extra high
-            var request = URLRequest(url: url, cachePolicy: NSURLRequest.CachePolicy.reloadIgnoringLocalAndRemoteCacheData, timeoutInterval: 120)
+            var request = URLRequest(url: url, cachePolicy: NSURLRequest.CachePolicy.reloadIgnoringLocalAndRemoteCacheData, timeoutInterval: 180)
             request.httpMethod = "POST"
             
             guard let idToken = UserDefaults.standard.string(forKey: "idToken") else {
