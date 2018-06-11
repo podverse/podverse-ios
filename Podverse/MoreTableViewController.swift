@@ -137,14 +137,16 @@ extension MoreTableViewController:UITableViewDelegate, UITableViewDataSource {
             }
         } else {
             if row == 0 {
-                if let url = URL(string: BASE_URL + "about"), let webVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "AboutVC") as? AboutViewController {
-                    webVC.requestUrl = url
-                    self.navigationController?.pushViewController(webVC, animated: true)
-                }
-            } else {
                 if let webKitVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "WebKitVC") as? WebKitViewController {
                     webKitVC.urlString = kFormContactUrl
                     self.navigationController?.pushViewController(webKitVC, animated: true)
+                    self.tabBarController?.hidePlayerView()
+                }
+            } else {
+                if let url = URL(string: BASE_URL + "about"), let webVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "AboutVC") as? AboutViewController {
+                    webVC.requestUrl = url
+                    self.navigationController?.pushViewController(webVC, animated: true)
+                    self.tabBarController?.hidePlayerView()
                 }
             }
         }
