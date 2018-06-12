@@ -36,8 +36,13 @@ extension UITabBarController:PlayerViewProtocol {
     }
     
     func setupPlayerBar() {
+        var extraIphoneXSpace:CGFloat = 0.0
+        if (UIScreen.main.nativeBounds.height == 2436.0) {
+            extraIphoneXSpace = 33.0
+        }
+        
         self.playerView.frame = CGRect(x: self.tabBar.frame.minX, 
-                                       y: self.tabBar.frame.minY - NowPlayingBar.playerHeight, 
+                                       y: self.tabBar.frame.minY - NowPlayingBar.playerHeight - extraIphoneXSpace, 
                                        width: self.tabBar.frame.width, 
                                        height: NowPlayingBar.playerHeight)
         

@@ -332,7 +332,7 @@ class MediaPlayerViewController: PVViewController {
             return
         }
         
-        let addToPlaylistActions = UIAlertController(title: nil, message: nil, preferredStyle: UIAlertControllerStyle.actionSheet)
+        let addToPlaylistActions = UIAlertController(title: "Add to a Playlist", message: nil, preferredStyle: UIAlertControllerStyle.actionSheet)
         
         addToPlaylistActions.addAction(UIAlertAction(title: "Full Episode", style: .default, handler: { action in
             self.performSegue(withIdentifier: "Show Add to Playlist", sender: "Full Episode")

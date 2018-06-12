@@ -184,11 +184,14 @@ class PodcastsTableViewController: PVViewController, AutoDownloadProtocol {
         self.tableView.isHidden = true
         
         showNoDataView()
-        
     }
     
     func loadNoPodcastsSubscribedMessage() {
-        loadNoDataView(message: Strings.Errors.noPodcastsSubscribed, buttonTitle: nil, buttonPressed: nil)
+        loadNoDataView(message: Strings.Errors.noPodcastsSubscribed, buttonTitle: "Find Podcasts", buttonPressed: #selector(PodcastsTableViewController.goToSearchPodcasts))
+    }
+    
+    @objc fileprivate func goToSearchPodcasts() {
+        self.tabBarController?.selectedIndex = 2
     }
     
 }
