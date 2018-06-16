@@ -34,7 +34,7 @@ enum SharePermission:String {
 let LOCAL_DEV_URL = "http://localhost:8080/"
 let DEV_URL = "http://kc01.vince.fyi:38294/"
 let PROD_URL = "https://podverse.fm/"
-let BASE_URL = DEV_URL
+let BASE_URL = PROD_URL
 
 let kNowPlayingTag = 100
 
@@ -370,8 +370,8 @@ struct Strings {
         static let noPlaylistsNotLoggedIn = "Login to view your playlists"
         static let noPodcastClipsAvailable = "No clips available for this podcast"
         static let noPodcastEpisodesAvailable = "No episodes available for this podcast"
-        static let noPodcastsSubscribed = "Subscribe to podcasts to add them here"
-        static let noSearchResultsFound = "No search results found"
+        static let noPodcastsSubscribed = "Subscribe to some podcasts to see them appear here"
+        static let noSearchResultsFound = "No search results"
     }
     
 }
