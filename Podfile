@@ -15,7 +15,6 @@ target 'Podverse' do
   pod 'StreamingKit', :git => 'https://github.com/podverse/StreamingKit.git', :branch => 'master'
   pod 'SDWebImage', '~> 4.0'
   pod 'FeedKit', '~> 6.0'
-  pod 'HanekeSwift', :git => 'https://github.com/Haneke/HanekeSwift.git', :tag => 'v0.11.1'
 
   target 'PodverseTests' do
     inherit! :search_paths
