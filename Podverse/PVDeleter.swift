@@ -77,17 +77,6 @@ class PVDeleter: NSObject {
                 }
                 
                 DownloadingEpisodeList.removeAllEpisodesForPodcast(feedUrl: p.feedUrl)
-                
-                let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Episode")
-                fetchRequest.predicate = NSPredicate(format: "podcast.objectID == %@", p.objectID)
-                let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
-                do {
-                    try privateMoc.execute(batchDeleteRequest)
-                }
-                catch {
-                    let updateError = error as NSError
-                    print("Some episodes were not succesfully deleted: \(updateError.localizedDescription)::\(updateError.userInfo)")
-                }
             }
             
             completion()

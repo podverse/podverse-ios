@@ -583,6 +583,12 @@ extension EpisodesTableViewController: UITableViewDataSource, UITableViewDelegat
         
     }
     
+    func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+        let episode = episodesArray[indexPath.row]
+        
+        return episode.fileName != nil
+    }
+    
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         // Bottom Refresh
         if scrollView == self.tableView && self.filterTypeSelected == .clips {
