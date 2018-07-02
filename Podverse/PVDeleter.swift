@@ -71,16 +71,55 @@ class PVDeleter: NSObject {
                 podcast = Podcast.podcastForFeedUrl(feedUrlString: feedUrl, managedObjectContext: privateMoc)
             }
             
-            if let p = podcast {
-                let episodes = p.episodes
-                for episode in episodes {
-                    PVDeleter.deleteEpisode(mediaUrl: episode.mediaUrl)
+            if let p = podcast{
+                for episode in p.episodes {
+                    PVDeleter.deleteEpisodeMetaData(mediaUrl: episode.mediaUrl, fileName:episode.fileName)
+                }
+                
+                DownloadingEpisodeList.removeAllEpisodesForPodcast(feedUrl: p.feedUrl)
+                
+                let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Episode")
+                fetchRequest.predicate = NSPredicate(format: "podcast.objectID == %@", p.objectID)
+                let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
+                do {
+                    try privateMoc.execute(batchDeleteRequest)
+                }
+                catch {
+                    let updateError = error as NSError
+                    print("Some episodes were not succesfully deleted: \(updateError.localizedDescription)::\(updateError.userInfo)")
                 }
             }
             
             completion()
         }
         
+    }
+    
+    fileprivate static func deleteEpisodeMetaData(mediaUrl: String?, fileName: String?) {
+        DispatchQueue.global().async {
+            if let mediaUrl = mediaUrl {
+                let pvMediaPlayer = PVMediaPlayer.shared
+                let downloadSession = PVDownloader.shared.downloadSession
+                downloadSession?.getTasksWithCompletionHandler { dataTasks, uploadTasks, downloadTasks in
+                    for downloadTask in downloadTasks {
+                        if let _ = DownloadingEpisodeList.shared.downloadingEpisodes.first(where:{ $0.taskIdentifier == downloadTask.taskIdentifier && $0.mediaUrl == mediaUrl}) {
+                            downloadTask.cancel()
+                            PVDownloader.shared.decrementBadge()
+                            break
+                        }
+                    }
+                }
+                
+                if let nowPlayingItem = pvMediaPlayer.nowPlayingItem, mediaUrl == nowPlayingItem.episodeMediaUrl {
+                    pvMediaPlayer.audioPlayer.pause()
+                    pvMediaPlayer.nowPlayingItem = nil
+                }
+            }
+            
+            if let fileName = fileName {
+                PVDeleter.deleteEpisodeFromDiskWithName(fileName: fileName)
+            }
+        }
     }
     
     static func deleteEpisode(mediaUrl: String?, fileOnly: Bool = false, shouldCallNotificationMethod: Bool = false) {

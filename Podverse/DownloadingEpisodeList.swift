@@ -19,8 +19,13 @@ final class DownloadingEpisodeList {
         
         if let mediaUrl = mediaUrl, let index = downloadingEpisodes.index(where: { $0.mediaUrl == mediaUrl }), index < downloadingEpisodes.count {
             downloadingEpisodes[index].removeFromDownloadHistory()
-            DownloadingEpisodeList.shared.downloadingEpisodes.remove(at: index)
+            downloadingEpisodes.remove(at: index)
             PVDownloader.shared.decrementBadge()
+            DownloadingEpisodeList.shared.downloadingEpisodes = downloadingEpisodes
         }
+    }
+    
+    static func removeAllEpisodesForPodcast(feedUrl: String) {
+        DownloadingEpisodeList.shared.downloadingEpisodes = DownloadingEpisodeList.shared.downloadingEpisodes.filter({$0.podcastFeedUrl != feedUrl})
     }
 }
