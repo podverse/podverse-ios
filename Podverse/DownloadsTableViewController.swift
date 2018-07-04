@@ -104,12 +104,7 @@ extension DownloadsTableViewController:UITableViewDelegate, UITableViewDataSourc
         
         let downloadingEpisode = DownloadingEpisodeList.shared.downloadingEpisodes[indexPath.row]
         
-        if downloadingEpisode.taskResumeData != nil {
-            if !PVDownloader.shared.shouldDownload() {
-                self.showAllowCellularDataAlert()
-            }
-            pvDownloader.resumeDownloadingEpisode(downloadingEpisode: downloadingEpisode)
-        } else if downloadingEpisode.downloadComplete == true {
+        if downloadingEpisode.downloadComplete == true {
             let moc = CoreDataHelper.createMOCForThread(threadType: .mainThread)
             if let mediaUrl = downloadingEpisode.mediaUrl {
                 let episode = CoreDataHelper.retrieveExistingOrCreateNewEpisode(mediaUrlString: mediaUrl, moc: moc)
@@ -117,6 +112,13 @@ extension DownloadsTableViewController:UITableViewDelegate, UITableViewDataSourc
                 goToNowPlaying()
                 pvMediaPlayer.loadPlayerHistoryItem(item: playerHistoryItem)
             }
+        } else if downloadingEpisode.taskResumeData != nil {
+            if !PVDownloader.shared.shouldDownload() {
+                self.showAllowCellularDataAlert()
+            }
+            pvDownloader.resumeDownloadingEpisode(downloadingEpisode: downloadingEpisode)
+        } else if downloadingEpisode.totalBytesWritten == nil && downloadingEpisode.taskIdentifier == nil {
+            pvDownloader.restartDownloadingEpisode(downloadingEpisode)
         } else {
             pvDownloader.pauseDownloadingEpisode(downloadingEpisode: downloadingEpisode)
         }

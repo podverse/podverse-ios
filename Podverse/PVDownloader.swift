@@ -46,11 +46,12 @@ class PVDownloader:NSObject {
             for episodeDownloadTask in downloadTasks {
                 if episodeDownloadTask.taskIdentifier == downloadingEpisode.taskIdentifier {
                     episodeDownloadTask.cancel(byProducingResumeData: { (resumeData) in
+                        downloadingEpisode.taskIdentifier = nil
                         if resumeData != nil {
                             downloadingEpisode.taskResumeData = resumeData
-                            DispatchQueue.main.async {
-                                NotificationCenter.default.post(name: .downloadPaused, object: nil, userInfo: [Episode.episodeKey:downloadingEpisode])
-                            }
+                        }
+                        DispatchQueue.main.async {
+                            NotificationCenter.default.post(name: .downloadPaused, object: nil, userInfo: [Episode.episodeKey:downloadingEpisode])
                         }
                     })
                 }
@@ -91,6 +92,25 @@ class PVDownloader:NSObject {
             
             guard shouldDownload() else {
                 return
+            }
+            
+            downloadTask.resume()
+        }
+    }
+    
+    func restartDownloadingEpisode(_ downloadingEpisode: DownloadingEpisode) {
+        if let downloadSourceStringURL = downloadingEpisode.mediaUrl, let downloadSourceURL = URL(string: downloadSourceStringURL) {
+            
+            let downloadTask = self.downloadSession.downloadTask(with: downloadSourceURL)
+            
+            downloadingEpisode.taskIdentifier = downloadTask.taskIdentifier
+            
+            guard shouldDownload() else {
+                return
+            }
+            
+            DispatchQueue.main.async {
+                NotificationCenter.default.post(name: .downloadStarted, object: nil, userInfo: [Episode.episodeKey:downloadingEpisode])
             }
             
             downloadTask.resume()
