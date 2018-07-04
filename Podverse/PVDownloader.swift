@@ -38,11 +38,11 @@ class PVDownloader:NSObject {
         sessionConfiguration.httpMaximumConnectionsPerHost = 3
         sessionConfiguration.allowsCellularAccess = UserDefaults.standard.bool(forKey: kAllowCellularDataDownloads)
         
-        downloadSession = URLSession(configuration: sessionConfiguration, delegate: self, delegateQueue: nil)
+        self.downloadSession = URLSession(configuration: sessionConfiguration, delegate: self, delegateQueue: nil)
     }
 
     func pauseDownloadingEpisode(downloadingEpisode: DownloadingEpisode) {
-        downloadSession.getTasksWithCompletionHandler( { dataTasks, uploadTasks, downloadTasks in
+        self.downloadSession.getTasksWithCompletionHandler( { dataTasks, uploadTasks, downloadTasks in
             for episodeDownloadTask in downloadTasks {
                 if episodeDownloadTask.taskIdentifier == downloadingEpisode.taskIdentifier {
                     episodeDownloadTask.cancel(byProducingResumeData: { (resumeData) in
@@ -62,7 +62,7 @@ class PVDownloader:NSObject {
         
         DownloadingEpisodeList.removeDownloadingEpisodeWithMediaURL(mediaUrl: downloadingEpisode.mediaUrl)
         
-        downloadSession.getTasksWithCompletionHandler( { dataTasks, uploadTasks, downloadTasks in
+        self.downloadSession.getTasksWithCompletionHandler( { dataTasks, uploadTasks, downloadTasks in
             for episodeDownloadTask in downloadTasks {
                 if episodeDownloadTask.taskIdentifier == downloadingEpisode.taskIdentifier {
                     episodeDownloadTask.cancel()
@@ -93,10 +93,7 @@ class PVDownloader:NSObject {
                 return
             }
             
-            let taskID = beginBackgroundTask()
             downloadTask.resume()
-            endBackgroundTask(taskID)
-            
         }
     }
     
@@ -104,7 +101,7 @@ class PVDownloader:NSObject {
         
         if let downloadSourceStringURL = episode.mediaUrl, let downloadSourceURL = URL(string: downloadSourceStringURL) {
             
-            let downloadTask = downloadSession.downloadTask(with: downloadSourceURL)
+            let downloadTask = self.downloadSession.downloadTask(with: downloadSourceURL)
             
             let downloadingEpisode = DownloadingEpisode(episode:episode)
             
@@ -118,18 +115,15 @@ class PVDownloader:NSObject {
                 return
             }
             
-            DispatchQueue.main.async {
-                NotificationCenter.default.post(name: .downloadStarted, object: nil, userInfo: [Episode.episodeKey:downloadingEpisode])
-            }
-            
             guard shouldDownload() else {
                 return
             }
             
-            let taskID = beginBackgroundTask()
-            downloadTask.resume()
-            endBackgroundTask(taskID)
+            DispatchQueue.main.async {
+                NotificationCenter.default.post(name: .downloadStarted, object: nil, userInfo: [Episode.episodeKey:downloadingEpisode])
+            }
             
+            downloadTask.resume()
         }
     }
     
@@ -170,14 +164,6 @@ class PVDownloader:NSObject {
                 }
             }
         }
-    }
-    
-    fileprivate func beginBackgroundTask() -> UIBackgroundTaskIdentifier {
-        return UIApplication.shared.beginBackgroundTask(expirationHandler: {})
-    }
-    
-    fileprivate func endBackgroundTask(_ taskID: UIBackgroundTaskIdentifier) {
-        UIApplication.shared.endBackgroundTask(taskID)
     }
     
     func shouldDownload() -> Bool {

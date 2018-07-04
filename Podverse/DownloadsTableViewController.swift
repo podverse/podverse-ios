@@ -87,8 +87,10 @@ extension DownloadsTableViewController:UITableViewDelegate, UITableViewDataSourc
             cell.status.text = "Finished"
         } else if episode.taskResumeData != nil {
             cell.status.text = "Paused"
-        } else {
+        } else if episode.totalBytesWritten != nil {
             cell.status.text = "Downloading"
+        } else {
+            cell.status.text = "Pending"
         }
         
         cell.progress.setProgress(episode.progress, animated: false)
