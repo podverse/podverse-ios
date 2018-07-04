@@ -49,7 +49,7 @@ class EpisodesTableViewController: PVViewController {
     var clipQueryEndOfResultsReached:Bool = false
     
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
-
+    @IBOutlet weak var activityView: UIView!
     @IBOutlet weak var autoDownloadLabel: UILabel!
     @IBOutlet weak var autoDownloadSwitch: UISwitch!
     @IBOutlet weak var headerImageView: UIImageView!
@@ -387,6 +387,7 @@ class EpisodesTableViewController: PVViewController {
     func showAbout() {
         DispatchQueue.main.async {
             self.hideNoDataView()
+            self.activityView.isHidden = true
             self.tableView.isHidden = true
             self.webView.isHidden = false
         }
@@ -438,12 +439,14 @@ class EpisodesTableViewController: PVViewController {
     
     func showActivityIndicator() {
         self.activityIndicator.startAnimating()
+        self.activityView.isHidden = false
         self.tableView.isHidden = true
         self.webView.isHidden = true
     }
     
     func hideActivityIndicator() {
         self.activityIndicator.stopAnimating()
+        self.activityView.isHidden = true
     }
 
     override func goToNowPlaying () {
@@ -518,13 +521,16 @@ extension EpisodesTableViewController: UITableViewDataSource, UITableViewDelegat
             
             if episode.fileName != nil {
                 cell.activityIndicator.stopAnimating()
+                self.activityView.isHidden = true
                 let playImage = UIImage(named: "play")
                 cell.button.setImage(playImage, for: .normal)
             } else if (DownloadingEpisodeList.shared.downloadingEpisodes.contains(where: {$0.mediaUrl == episode.mediaUrl})) {
                 cell.activityIndicator.startAnimating()
+                self.activityView.isHidden = false
                 cell.button.setImage(nil, for: .normal)
             } else {
                 cell.activityIndicator.stopAnimating()
+                self.activityView.isHidden = true
                 let downloadImage = UIImage(named: "cloud")
                 cell.button.setImage(downloadImage, for: .normal)
             }
