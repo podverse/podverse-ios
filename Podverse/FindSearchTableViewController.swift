@@ -78,7 +78,7 @@ class FindSearchTableViewController: PVViewController {
         self.activityView.isHidden = true
     }
     
-    func searchPodcasts(_ text:String) {
+    @objc fileprivate func searchPodcasts(_ text:String) {
         self.podcasts.removeAll()
         
         guard checkForConnectivity() else {
@@ -163,8 +163,9 @@ extension FindSearchTableViewController: UISearchBarDelegate {
     }
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        if let text = searchBar.text, text.count > 2 {
-            searchPodcasts(text)
+        if let text = searchBar.text, text.count > 3 {
+            NSObject.cancelPreviousPerformRequests(withTarget: self) 
+            perform(#selector(searchPodcasts(_:)), with: text, afterDelay: 0.4)
         }
     }
 
