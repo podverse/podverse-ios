@@ -11,16 +11,7 @@ import UIKit
 final class DownloadingEpisodeList {
     static var shared = DownloadingEpisodeList()
     
-    var downloadingEpisodes = [DownloadingEpisode]() {
-        didSet {
-            hideNetworkActivityIndicator()
-            downloadingEpisodes.forEach { (episode) in
-                if !episode.downloadComplete && episode.taskResumeData == nil {
-                    showNetworkActivityIndicator()
-                }
-            }
-        }
-    }
+    var downloadingEpisodes = [DownloadingEpisode]()
     
     static func removeDownloadingEpisodeWithMediaURL(mediaUrl:String?) {
         var downloadingEpisodes = DownloadingEpisodeList.shared.downloadingEpisodes

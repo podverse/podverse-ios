@@ -20,6 +20,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     var timer: DispatchSource!
     let pvMediaPlayer = PVMediaPlayer.shared
     let playerHistoryManager = PlayerHistory.manager
+    var networkCounter = 0 {
+        didSet {
+            if (networkCounter > 0) {
+                DispatchQueue.main.async {
+                    UIApplication.shared.isNetworkActivityIndicatorVisible = true
+                }
+            }
+            else {
+                DispatchQueue.main.async {
+                    UIApplication.shared.isNetworkActivityIndicatorVisible = false
+                }
+            }
+        }
+    }
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         

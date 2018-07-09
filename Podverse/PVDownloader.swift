@@ -93,6 +93,7 @@ class PVDownloader:NSObject {
                 return
             }
             
+            showNetworkActivityIndicator()
             downloadTask.resume()
         }
     }
@@ -112,6 +113,7 @@ class PVDownloader:NSObject {
                 NotificationCenter.default.post(name: .downloadStarted, object: nil, userInfo: [Episode.episodeKey:downloadingEpisode])
             }
             
+            showNetworkActivityIndicator()
             downloadTask.resume()
         }
     }
@@ -142,6 +144,7 @@ class PVDownloader:NSObject {
                 NotificationCenter.default.post(name: .downloadStarted, object: nil, userInfo: [Episode.episodeKey:downloadingEpisode])
             }
             
+            showNetworkActivityIndicator()
             downloadTask.resume()
         }
     }
@@ -166,6 +169,7 @@ class PVDownloader:NSObject {
                     tabBarCntrl.tabBar.items?[TabItems.Downloads.index].badgeValue = "\(badgeInt - 1)"
                     if tabBarCntrl.tabBar.items?[TabItems.Downloads.index].badgeValue == "0" {
                         tabBarCntrl.tabBar.items?[TabItems.Downloads.index].badgeValue = nil
+                        hideNetworkActivityIndicator()
                     }
                 }
             }
@@ -174,6 +178,7 @@ class PVDownloader:NSObject {
     
     fileprivate func incrementBadge() {
         DispatchQueue.main.async {
+            showNetworkActivityIndicator()
             if let tabBarCntrl = (UIApplication.shared.delegate as! AppDelegate).window?.rootViewController as? UITabBarController {
                 if let badgeValue = tabBarCntrl.tabBar.items?[TabItems.Downloads.index].badgeValue, let badgeInt = Int(badgeValue) {
                     tabBarCntrl.tabBar.items?[TabItems.Downloads.index].badgeValue = "\(badgeInt + 1)"
@@ -191,7 +196,6 @@ class PVDownloader:NSObject {
 }
 
 extension PVDownloader:URLSessionDelegate, URLSessionDownloadDelegate {
-    
     func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didWriteData bytesWritten: Int64, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) {
         if totalBytesExpectedToWrite != NSURLSessionTransferSizeUnknown, let episodeDownloadIndex = DownloadingEpisodeList.shared.downloadingEpisodes.index(where: {$0.taskIdentifier == downloadTask.taskIdentifier}) {
             let downloadingEpisode = DownloadingEpisodeList.shared.downloadingEpisodes[episodeDownloadIndex]
@@ -206,6 +210,7 @@ extension PVDownloader:URLSessionDelegate, URLSessionDownloadDelegate {
     func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didFinishDownloadingTo location: URL) {
         let fileManager = FileManager()
         print("did finish downloading")
+        hideNetworkActivityIndicator()
         
         let moc = CoreDataHelper.createMOCForThread(threadType: .privateThread)
         
@@ -304,5 +309,6 @@ extension PVDownloader:URLSessionDelegate, URLSessionDownloadDelegate {
         //                episode.taskResumeData = resumeData
         //            }
         //        }
+        hideNetworkActivityIndicator()
     }
 }

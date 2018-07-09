@@ -163,7 +163,7 @@ extension FindSearchTableViewController: UISearchBarDelegate {
     }
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        if let text = searchBar.text, text.count > 3 {
+        if let text = searchBar.text, text.count > 2 {
             NSObject.cancelPreviousPerformRequests(withTarget: self) 
             perform(#selector(searchPodcasts(_:)), with: text, afterDelay: 0.4)
         }

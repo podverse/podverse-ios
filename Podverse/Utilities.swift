@@ -31,13 +31,13 @@ func checkForResults(results: [Any]?) -> Bool {
 
 func showNetworkActivityIndicator() {
     DispatchQueue.main.async {
-        UIApplication.shared.isNetworkActivityIndicatorVisible = true
+        (UIApplication.shared.delegate as? AppDelegate)?.networkCounter += 1
     }
 }
 
 func hideNetworkActivityIndicator() {
     DispatchQueue.main.async {
-        UIApplication.shared.isNetworkActivityIndicatorVisible = false
+        (UIApplication.shared.delegate as? AppDelegate)?.networkCounter -= 1
     }
 }
 
