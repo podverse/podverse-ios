@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import UIKit
 
 func checkForConnectivity() -> Bool {
     
@@ -27,3 +28,16 @@ func checkForResults(results: [Any]?) -> Bool {
     return true
     
 }
+
+func showNetworkActivityIndicator() {
+    DispatchQueue.main.async {
+        UIApplication.shared.isNetworkActivityIndicatorVisible = true
+    }
+}
+
+func hideNetworkActivityIndicator() {
+    DispatchQueue.main.async {
+        UIApplication.shared.isNetworkActivityIndicatorVisible = false
+    }
+}
+

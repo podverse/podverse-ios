@@ -10,7 +10,7 @@ import Foundation
 import CoreData
 
 final class DownloadingEpisode:Equatable {
-    var downloadComplete:Bool?
+    var downloadComplete: Bool = false
     var mediaUrl: String?
     var podcastFeedUrl:String?
     var podcastImageUrl: String?

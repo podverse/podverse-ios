@@ -11,7 +11,6 @@ import UIKit
 class MoreTableViewController: PVViewController {
     
     let pvAuth = PVAuth.shared
-    let syncLabelText = "Sync podcasts"
     
     @IBOutlet weak var tableView: UITableView!
     
@@ -32,7 +31,6 @@ class MoreTableViewController: PVViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(self.loggedInSuccessfully(_:)), name: .loggedInSuccessfully, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(self.loginFailed(_:)), name: .loginFailed, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(self.loggedOutSuccessfully(_:)), name: .loggedOutSuccessfully, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(self.finishedSyncing(_:)), name: NSNotification.Name(rawValue: kFinishedAllParsingPodcasts), object: nil)
     }
     
     fileprivate func removeObservers() {
@@ -40,7 +38,6 @@ class MoreTableViewController: PVViewController {
         NotificationCenter.default.removeObserver(self, name: .loggedInSuccessfully, object: nil)
         NotificationCenter.default.removeObserver(self, name: .loginFailed, object: nil)
         NotificationCenter.default.removeObserver(self, name: .loggedOutSuccessfully, object: nil)
-        NotificationCenter.default.removeObserver(self, name: NSNotification.Name(rawValue: kFinishedAllParsingPodcasts), object: nil)
     }
     
 }
@@ -61,11 +58,7 @@ extension MoreTableViewController:UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if section == 0 {
-            if let _ = UserDefaults.standard.string(forKey: "idToken") {
-                return 4
-            } else {
-                return 3
-            }
+            return 3
         } else {
             return 2
         }
@@ -87,8 +80,6 @@ extension MoreTableViewController:UITableViewDelegate, UITableViewDataSource {
                 } else {
                     cell.textLabel?.text = "Log in"
                 }
-            } else {
-                cell.textLabel?.text = self.syncLabelText
             }
         } else {
             if row == 0 {
@@ -128,12 +119,6 @@ extension MoreTableViewController:UITableViewDelegate, UITableViewDataSource {
                 } else {
                     pvAuth.showAuth0Lock(vc: self)
                 }
-            } else {
-                guard let cell = self.tableView.cellForRow(at: indexPath) else {
-                    return
-                }
-                Podcast.syncSubscribedPodcastsWithServer()
-                cell.textLabel?.text = "Syncing with server..."
             }
         } else {
             if row == 0 {
@@ -189,17 +174,7 @@ extension MoreTableViewController {
         cell.textLabel?.text = "Login"
     }
     
-    @objc func loggedOutSuccessfully(_ notification:Notification) {            self.tableView.reloadData()
-    }
-    
-    @objc func finishedSyncing(_ notification:Notification) {
-        let indexPath = IndexPath(row: 5, section: 0)
-        guard let cell = self.tableView.cellForRow(at: indexPath) else {
-            return
-        }
-        
-        DispatchQueue.main.async {
-            cell.textLabel?.text = self.syncLabelText
-        }
+    @objc func loggedOutSuccessfully(_ notification:Notification) {            
+        self.tableView.reloadData()
     }
 }

@@ -75,8 +75,7 @@ class PVDownloader:NSObject {
             }
         })
         
-        PVDownloader.shared.decrementBadge()
-        
+        PVDownloader.shared.decrementBadge()        
     }
     
     func resumeDownloadingEpisode(downloadingEpisode: DownloadingEpisode) {

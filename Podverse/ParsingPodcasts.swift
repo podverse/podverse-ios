@@ -7,10 +7,17 @@
 //
 
 import Foundation
+import UIKit
 
 final class ParsingPodcasts {
     static let shared = ParsingPodcasts()
-    var podcastKeys = [String]()
+    var podcastKeys = [String]() {
+        didSet {
+            DispatchQueue.main.async {
+                UIApplication.shared.isNetworkActivityIndicatorVisible = (self.podcastKeys.count > 0)
+            }
+        }
+    }
     var currentlyParsingItem = 0
     
     func clearParsingPodcastsIfFinished() {

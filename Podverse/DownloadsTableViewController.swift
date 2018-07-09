@@ -142,7 +142,7 @@ extension DownloadsTableViewController:UITableViewDelegate, UITableViewDataSourc
         
         let action:UITableViewRowAction
         
-        if let downloadComplete = episodeToEdit.downloadComplete, downloadComplete == true {
+        if episodeToEdit.downloadComplete {
             action = UITableViewRowAction(style: .default, title: "Hide", handler: {action, indexpath in
                 DownloadingEpisodeList.removeDownloadingEpisodeWithMediaURL(mediaUrl: episodeToEdit.mediaUrl)
                 self.tableView.deleteRows(at: [indexPath], with: .fade)

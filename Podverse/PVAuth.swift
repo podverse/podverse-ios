@@ -51,10 +51,12 @@ class PVAuth: NSObject {
                     return
                 }
                 
+                showNetworkActivityIndicator()
                 Auth0
                     .authentication()
                     .userInfo(withAccessToken: accessToken)
                     .start { result in
+                        hideNetworkActivityIndicator()
                         switch result {
                         // Attempt to access the user profile object
                         case .success(let profile):
@@ -103,7 +105,11 @@ class PVAuth: NSObject {
 
             request.httpBody = postString.data(using: .utf8)
 
+            showNetworkActivityIndicator()
+            
             let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                
+                hideNetworkActivityIndicator()
                 
                 guard error == nil else {
                     self.notifyLoginFailed()
@@ -130,10 +136,12 @@ class PVAuth: NSObject {
     
     func syncUserInfoWithServer () {
         if let idToken = UserDefaults.standard.string(forKey: "idToken"), let userId = UserDefaults.standard.string(forKey: "userId") {
+            showNetworkActivityIndicator()
             Auth0
                 .users(token: idToken)
                 .get(userId, fields: ["nickname"], include: true)
                 .start { result in
+                    hideNetworkActivityIndicator()
                     switch result {
                     case .success(let user):
                         let nickname = user["nickname"] as? String

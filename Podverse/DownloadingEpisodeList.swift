@@ -6,13 +6,21 @@
 //  Copyright © 2016 Podverse LLC. All rights reserved.
 //
 
-import Foundation
-
+import UIKit
 
 final class DownloadingEpisodeList {
     static var shared = DownloadingEpisodeList()
     
-    var downloadingEpisodes = [DownloadingEpisode]()
+    var downloadingEpisodes = [DownloadingEpisode]() {
+        didSet {
+            hideNetworkActivityIndicator()
+            downloadingEpisodes.forEach { (episode) in
+                if !episode.downloadComplete && episode.taskResumeData == nil {
+                    showNetworkActivityIndicator()
+                }
+            }
+        }
+    }
     
     static func removeDownloadingEpisodeWithMediaURL(mediaUrl:String?) {
         var downloadingEpisodes = DownloadingEpisodeList.shared.downloadingEpisodes
