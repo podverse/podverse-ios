@@ -6,7 +6,7 @@
 //  Copyright © 2017 Podverse LLC. All rights reserved.
 //
 
-import Foundation
+import UIKit
 
 class MediaRef {
     
@@ -53,7 +53,7 @@ class MediaRef {
     }
     
     static func retrieveMediaRefsFromServer(episodeMediaUrl: String? = nil, podcastIds: [String] = [], podcastFeedUrls: [String] = [], onlySubscribed: Bool? = nil, sortingType: ClipSorting? = nil, page: Int? = 1, completion: @escaping (_ mediaRefs:[MediaRef]?) -> Void) {
-        
+        showNetworkActivityIndicator()
         if let url = URL(string: BASE_URL + "api/clips") {
             
             let request = NSMutableURLRequest(url: url, cachePolicy: NSURLRequest.CachePolicy.reloadIgnoringLocalAndRemoteCacheData, timeoutInterval: 60)
@@ -88,6 +88,7 @@ class MediaRef {
             
             let task = URLSession.shared.dataTask(with: request as URLRequest) { data, response, error in
 
+                hideNetworkActivityIndicator()
                 guard error == nil else {
                     print("Error: \(error?.localizedDescription ?? "Unknown Error")")
                     DispatchQueue.main.async {

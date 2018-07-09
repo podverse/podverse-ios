@@ -87,8 +87,10 @@ extension DownloadsTableViewController:UITableViewDelegate, UITableViewDataSourc
             cell.status.text = "Finished"
         } else if episode.taskResumeData != nil {
             cell.status.text = "Paused"
-        } else {
+        } else if episode.totalBytesWritten != nil {
             cell.status.text = "Downloading"
+        } else {
+            cell.status.text = "Pending"
         }
         
         cell.progress.setProgress(episode.progress, animated: false)
@@ -102,12 +104,7 @@ extension DownloadsTableViewController:UITableViewDelegate, UITableViewDataSourc
         
         let downloadingEpisode = DownloadingEpisodeList.shared.downloadingEpisodes[indexPath.row]
         
-        if downloadingEpisode.taskResumeData != nil {
-            if !PVDownloader.shared.shouldDownload() {
-                self.showAllowCellularDataAlert()
-            }
-            pvDownloader.resumeDownloadingEpisode(downloadingEpisode: downloadingEpisode)
-        } else if downloadingEpisode.downloadComplete == true {
+        if downloadingEpisode.downloadComplete == true {
             let moc = CoreDataHelper.createMOCForThread(threadType: .mainThread)
             if let mediaUrl = downloadingEpisode.mediaUrl {
                 let episode = CoreDataHelper.retrieveExistingOrCreateNewEpisode(mediaUrlString: mediaUrl, moc: moc)
@@ -115,6 +112,19 @@ extension DownloadsTableViewController:UITableViewDelegate, UITableViewDataSourc
                 goToNowPlaying()
                 pvMediaPlayer.loadPlayerHistoryItem(item: playerHistoryItem)
             }
+        } else if downloadingEpisode.taskResumeData != nil {
+            if !PVDownloader.shared.shouldDownload() {
+                self.showAllowCellularDataAlert { (allowed) in
+                    if allowed {
+                        self.pvDownloader.resumeDownloadingEpisode(downloadingEpisode: downloadingEpisode)
+                    }
+                }
+            }
+            else {
+                self.pvDownloader.resumeDownloadingEpisode(downloadingEpisode: downloadingEpisode)
+            }
+        } else if downloadingEpisode.totalBytesWritten == nil && downloadingEpisode.taskIdentifier == nil {
+            pvDownloader.restartDownloadingEpisode(downloadingEpisode)
         } else {
             pvDownloader.pauseDownloadingEpisode(downloadingEpisode: downloadingEpisode)
         }
@@ -132,7 +142,7 @@ extension DownloadsTableViewController:UITableViewDelegate, UITableViewDataSourc
         
         let action:UITableViewRowAction
         
-        if let downloadComplete = episodeToEdit.downloadComplete, downloadComplete == true {
+        if episodeToEdit.downloadComplete {
             action = UITableViewRowAction(style: .default, title: "Hide", handler: {action, indexpath in
                 DownloadingEpisodeList.removeDownloadingEpisodeWithMediaURL(mediaUrl: episodeToEdit.mediaUrl)
                 self.tableView.deleteRows(at: [indexPath], with: .fade)

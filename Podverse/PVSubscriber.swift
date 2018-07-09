@@ -72,7 +72,11 @@ class PVSubscriber {
             let postString = "podcastId=" + podcastId
             request.httpBody = postString.data(using: .utf8)
             
+            showNetworkActivityIndicator()
+            
             let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                
+                hideNetworkActivityIndicator()
                 
                 guard error == nil else {
                     DispatchQueue.main.async {

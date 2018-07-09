@@ -78,6 +78,35 @@ class FindSearchTableViewController: PVViewController {
         self.activityView.isHidden = true
     }
     
+    @objc fileprivate func searchPodcasts(_ text:String) {
+        self.podcasts.removeAll()
+        
+        guard checkForConnectivity() else {
+            loadNoInternetMessage()
+            return
+        }
+        
+        showActivityIndicator()
+        
+        SearchPodcast.searchPodcastsByTitle(title: text) { searchPodcasts in
+            if let searchPodcasts = searchPodcasts {
+                self.podcasts = searchPodcasts
+            }
+            
+            DispatchQueue.main.async {
+                self.hideActivityIndicator()
+                
+                if self.podcasts.isEmpty {
+                    self.loadNoResultsMessage()
+                } else {
+                    self.tableView.reloadData()
+                    self.tableView.isHidden = false
+                }
+                
+            }
+        }
+    }
+    
 }
 
 extension FindSearchTableViewController: UITableViewDataSource, UITableViewDelegate {
@@ -132,40 +161,19 @@ extension FindSearchTableViewController: UISearchBarDelegate {
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
         searchBar.resignFirstResponder()
     }
+    
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        if let text = searchBar.text, text.count > 2 {
+            NSObject.cancelPreviousPerformRequests(withTarget: self) 
+            perform(#selector(searchPodcasts(_:)), with: text, afterDelay: 0.4)
+        }
+    }
 
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         searchBar.resignFirstResponder()
         
-        self.podcasts.removeAll()
-        
         if let text = searchBar.text {
-            
-            guard checkForConnectivity() else {
-                loadNoInternetMessage()
-                return
-            }
-            
-            showActivityIndicator()
-            
-            SearchPodcast.searchPodcastsByTitle(title: text) { searchPodcasts in
-                if let searchPodcasts = searchPodcasts {
-                    self.podcasts = searchPodcasts
-                }
-                
-                DispatchQueue.main.async {
-                    self.hideActivityIndicator()
-
-                    if self.podcasts.isEmpty {
-                        self.loadNoResultsMessage()
-                    } else {
-                        self.tableView.reloadData()
-                        self.tableView.isHidden = false
-                    }
-
-                }
-            }
-            
+            searchPodcasts(text)
         }
-        
     }
 }

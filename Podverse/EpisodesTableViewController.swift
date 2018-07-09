@@ -137,7 +137,7 @@ class EpisodesTableViewController: PVViewController {
     }
     
     @objc func downloadPlay(sender: UIButton) {
-        if let cell = sender.superview?.superview as? EpisodeTableViewCell,
+        if let cell = sender.superview?.superview?.superview as? EpisodeTableViewCell,
             let indexRow = self.tableView.indexPath(for: cell)?.row {
             
             let episode = episodesArray[indexRow]
@@ -159,9 +159,14 @@ class EpisodesTableViewController: PVViewController {
                 
             } else {
                 if !PVDownloader.shared.shouldDownload() {
-                    self.showAllowCellularDataAlert()
+                    self.showAllowCellularDataAlert { (allowed) in
+                        if allowed {
+                            PVDownloader.shared.startDownloadingEpisode(episode: episode)
+                        }
+                    }
+                } else {
+                    PVDownloader.shared.startDownloadingEpisode(episode: episode)
                 }
-                PVDownloader.shared.startDownloadingEpisode(episode: episode)
             }
         }
     }
@@ -468,6 +473,8 @@ class EpisodesTableViewController: PVViewController {
 
 extension EpisodesTableViewController: UITableViewDataSource, UITableViewDelegate {
     
+    
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
         if self.filterTypeSelected == .clips {
@@ -486,7 +493,7 @@ extension EpisodesTableViewController: UITableViewDataSource, UITableViewDelegat
             
             let clip = clipsArray[indexPath.row]
             
-            cell.episodeTitle.text = clip.episodeTitle
+            cell.episodeTitle.text = clip.episodeTitle?.trimmingCharacters(in: .whitespacesAndNewlines)
             cell.clipTitle.text = clip.readableClipTitle()
             cell.time.text = clip.readableStartAndEndTime()
             cell.episodePubDate.text = clip.episodePubDate?.toShortFormatString()
@@ -499,7 +506,7 @@ extension EpisodesTableViewController: UITableViewDataSource, UITableViewDelegat
             
             let episode = episodesArray[indexPath.row]
             
-            cell.title?.text = episode.title
+            cell.title?.text = episode.title?.trimmingCharacters(in: .whitespacesAndNewlines)
             
             if let summary = episode.summary {
                 
@@ -519,16 +526,16 @@ extension EpisodesTableViewController: UITableViewDataSource, UITableViewDelegat
             
             if episode.fileName != nil {
                 cell.activityIndicator.stopAnimating()
-                cell.activityView.isHidden = true
+                self.activityView.isHidden = true
                 let playImage = UIImage(named: "play")
                 cell.button.setImage(playImage, for: .normal)
             } else if (DownloadingEpisodeList.shared.downloadingEpisodes.contains(where: {$0.mediaUrl == episode.mediaUrl})) {
                 cell.activityIndicator.startAnimating()
-                cell.activityView.isHidden = false
+                self.activityView.isHidden = false
                 cell.button.setImage(nil, for: .normal)
             } else {
                 cell.activityIndicator.stopAnimating()
-                cell.activityView.isHidden = true
+                self.activityView.isHidden = true
                 let downloadImage = UIImage(named: "cloud")
                 cell.button.setImage(downloadImage, for: .normal)
             }
@@ -584,9 +591,12 @@ extension EpisodesTableViewController: UITableViewDataSource, UITableViewDelegat
     }
     
     func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-        let episode = episodesArray[indexPath.row]
-        
-        return episode.fileName != nil
+        if filterTypeSelected == .allEpisodes || filterTypeSelected == .downloaded {
+            let episode = episodesArray[indexPath.row]
+            
+            return episode.fileName != nil
+        }
+        return false
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {

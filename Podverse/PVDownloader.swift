@@ -38,19 +38,20 @@ class PVDownloader:NSObject {
         sessionConfiguration.httpMaximumConnectionsPerHost = 3
         sessionConfiguration.allowsCellularAccess = UserDefaults.standard.bool(forKey: kAllowCellularDataDownloads)
         
-        downloadSession = URLSession(configuration: sessionConfiguration, delegate: self, delegateQueue: nil)
+        self.downloadSession = URLSession(configuration: sessionConfiguration, delegate: self, delegateQueue: nil)
     }
 
     func pauseDownloadingEpisode(downloadingEpisode: DownloadingEpisode) {
-        downloadSession.getTasksWithCompletionHandler( { dataTasks, uploadTasks, downloadTasks in
+        self.downloadSession.getTasksWithCompletionHandler( { dataTasks, uploadTasks, downloadTasks in
             for episodeDownloadTask in downloadTasks {
                 if episodeDownloadTask.taskIdentifier == downloadingEpisode.taskIdentifier {
                     episodeDownloadTask.cancel(byProducingResumeData: { (resumeData) in
+                        downloadingEpisode.taskIdentifier = nil
                         if resumeData != nil {
                             downloadingEpisode.taskResumeData = resumeData
-                            DispatchQueue.main.async {
-                                NotificationCenter.default.post(name: .downloadPaused, object: nil, userInfo: [Episode.episodeKey:downloadingEpisode])
-                            }
+                        }
+                        DispatchQueue.main.async {
+                            NotificationCenter.default.post(name: .downloadPaused, object: nil, userInfo: [Episode.episodeKey:downloadingEpisode])
                         }
                     })
                 }
@@ -62,7 +63,7 @@ class PVDownloader:NSObject {
         
         DownloadingEpisodeList.removeDownloadingEpisodeWithMediaURL(mediaUrl: downloadingEpisode.mediaUrl)
         
-        downloadSession.getTasksWithCompletionHandler( { dataTasks, uploadTasks, downloadTasks in
+        self.downloadSession.getTasksWithCompletionHandler( { dataTasks, uploadTasks, downloadTasks in
             for episodeDownloadTask in downloadTasks {
                 if episodeDownloadTask.taskIdentifier == downloadingEpisode.taskIdentifier {
                     episodeDownloadTask.cancel()
@@ -74,8 +75,7 @@ class PVDownloader:NSObject {
             }
         })
         
-        PVDownloader.shared.decrementBadge()
-        
+        PVDownloader.shared.decrementBadge()        
     }
     
     func resumeDownloadingEpisode(downloadingEpisode: DownloadingEpisode) {
@@ -93,10 +93,28 @@ class PVDownloader:NSObject {
                 return
             }
             
-            let taskID = beginBackgroundTask()
+            showNetworkActivityIndicator()
             downloadTask.resume()
-            endBackgroundTask(taskID)
+        }
+    }
+    
+    func restartDownloadingEpisode(_ downloadingEpisode: DownloadingEpisode) {
+        if let downloadSourceStringURL = downloadingEpisode.mediaUrl, let downloadSourceURL = URL(string: downloadSourceStringURL) {
             
+            let downloadTask = self.downloadSession.downloadTask(with: downloadSourceURL)
+            
+            downloadingEpisode.taskIdentifier = downloadTask.taskIdentifier
+            
+            guard shouldDownload() else {
+                return
+            }
+            
+            DispatchQueue.main.async {
+                NotificationCenter.default.post(name: .downloadStarted, object: nil, userInfo: [Episode.episodeKey:downloadingEpisode])
+            }
+            
+            showNetworkActivityIndicator()
+            downloadTask.resume()
         }
     }
     
@@ -104,7 +122,7 @@ class PVDownloader:NSObject {
         
         if let downloadSourceStringURL = episode.mediaUrl, let downloadSourceURL = URL(string: downloadSourceStringURL) {
             
-            let downloadTask = downloadSession.downloadTask(with: downloadSourceURL)
+            let downloadTask = self.downloadSession.downloadTask(with: downloadSourceURL)
             
             let downloadingEpisode = DownloadingEpisode(episode:episode)
             
@@ -118,18 +136,16 @@ class PVDownloader:NSObject {
                 return
             }
             
-            DispatchQueue.main.async {
-                NotificationCenter.default.post(name: .downloadStarted, object: nil, userInfo: [Episode.episodeKey:downloadingEpisode])
-            }
-            
             guard shouldDownload() else {
                 return
             }
             
-            let taskID = beginBackgroundTask()
-            downloadTask.resume()
-            endBackgroundTask(taskID)
+            DispatchQueue.main.async {
+                NotificationCenter.default.post(name: .downloadStarted, object: nil, userInfo: [Episode.episodeKey:downloadingEpisode])
+            }
             
+            showNetworkActivityIndicator()
+            downloadTask.resume()
         }
     }
     
@@ -153,6 +169,7 @@ class PVDownloader:NSObject {
                     tabBarCntrl.tabBar.items?[TabItems.Downloads.index].badgeValue = "\(badgeInt - 1)"
                     if tabBarCntrl.tabBar.items?[TabItems.Downloads.index].badgeValue == "0" {
                         tabBarCntrl.tabBar.items?[TabItems.Downloads.index].badgeValue = nil
+                        hideNetworkActivityIndicator()
                     }
                 }
             }
@@ -161,6 +178,7 @@ class PVDownloader:NSObject {
     
     fileprivate func incrementBadge() {
         DispatchQueue.main.async {
+            showNetworkActivityIndicator()
             if let tabBarCntrl = (UIApplication.shared.delegate as! AppDelegate).window?.rootViewController as? UITabBarController {
                 if let badgeValue = tabBarCntrl.tabBar.items?[TabItems.Downloads.index].badgeValue, let badgeInt = Int(badgeValue) {
                     tabBarCntrl.tabBar.items?[TabItems.Downloads.index].badgeValue = "\(badgeInt + 1)"
@@ -172,21 +190,12 @@ class PVDownloader:NSObject {
         }
     }
     
-    fileprivate func beginBackgroundTask() -> UIBackgroundTaskIdentifier {
-        return UIApplication.shared.beginBackgroundTask(expirationHandler: {})
-    }
-    
-    fileprivate func endBackgroundTask(_ taskID: UIBackgroundTaskIdentifier) {
-        UIApplication.shared.endBackgroundTask(taskID)
-    }
-    
     func shouldDownload() -> Bool {
         return (reachability.hasWiFiConnection()) || (!reachability.hasWiFiConnection() && UserDefaults.standard.bool(forKey: kAllowCellularDataDownloads))
     }
 }
 
 extension PVDownloader:URLSessionDelegate, URLSessionDownloadDelegate {
-    
     func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didWriteData bytesWritten: Int64, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) {
         if totalBytesExpectedToWrite != NSURLSessionTransferSizeUnknown, let episodeDownloadIndex = DownloadingEpisodeList.shared.downloadingEpisodes.index(where: {$0.taskIdentifier == downloadTask.taskIdentifier}) {
             let downloadingEpisode = DownloadingEpisodeList.shared.downloadingEpisodes[episodeDownloadIndex]
@@ -201,6 +210,7 @@ extension PVDownloader:URLSessionDelegate, URLSessionDownloadDelegate {
     func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didFinishDownloadingTo location: URL) {
         let fileManager = FileManager()
         print("did finish downloading")
+        hideNetworkActivityIndicator()
         
         let moc = CoreDataHelper.createMOCForThread(threadType: .privateThread)
         
@@ -299,5 +309,6 @@ extension PVDownloader:URLSessionDelegate, URLSessionDownloadDelegate {
         //                episode.taskResumeData = resumeData
         //            }
         //        }
+        hideNetworkActivityIndicator()
     }
 }

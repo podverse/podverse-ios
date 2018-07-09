@@ -26,7 +26,7 @@ class WebKitViewController: UIViewController, WKUIDelegate, WKNavigationDelegate
         self.activityIndicatorView.hidesWhenStopped = true
         
         if let urlString = urlString, let url = URL(string: urlString) {
-            UIApplication.shared.isNetworkActivityIndicatorVisible = true
+            showNetworkActivityIndicator()
             self.activityIndicatorView.startAnimating()
             let request = URLRequest(url: url)
             webView.load(request)
@@ -34,18 +34,18 @@ class WebKitViewController: UIViewController, WKUIDelegate, WKNavigationDelegate
     }
 
 //    func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
-//        UIApplication.shared.isNetworkActivityIndicatorVisible = true
+//        showNetworkActivityIndicator()
 //        self.activityIndicatorView.startAnimating()
 //    }
     
     
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
-        UIApplication.shared.isNetworkActivityIndicatorVisible = false
+        hideNetworkActivityIndicator()
         self.activityIndicatorView.stopAnimating()
     }
     
     func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
-        UIApplication.shared.isNetworkActivityIndicatorVisible = false
+        hideNetworkActivityIndicator()
         self.activityIndicatorView.stopAnimating()
     }
 

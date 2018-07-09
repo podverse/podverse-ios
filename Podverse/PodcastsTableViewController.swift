@@ -51,7 +51,9 @@ class PodcastsTableViewController: PVViewController, AutoDownloadProtocol {
             if let diff = Calendar.current.dateComponents([.hour], from: lastParsedDate, to: Date()).hour, diff > 1 {
                 if PVAuth.userIsLoggedIn {
                     DispatchQueue.global().async {
-                        Podcast.syncSubscribedPodcastsWithServer()
+                        Podcast.syncSubscribedPodcastsWithServer(completionBlock: { 
+                            self.refreshPodcastFeeds()
+                        })
                     }
                     self.parseStatus.text = "Syncing with server"
                     self.parseActivityIndicator.startAnimating()
@@ -65,7 +67,9 @@ class PodcastsTableViewController: PVViewController, AutoDownloadProtocol {
         // Else if it is the first time a user has logged in before anything has been parsed
         else if PVAuth.userIsLoggedIn {
             DispatchQueue.global().async {
-                Podcast.syncSubscribedPodcastsWithServer()
+                Podcast.syncSubscribedPodcastsWithServer(completionBlock: { 
+                    self.refreshPodcastFeeds()
+                })
             }
             
             self.parseStatus.text = "Syncing with server"

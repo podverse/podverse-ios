@@ -6,8 +6,7 @@
 //  Copyright © 2016 Podverse LLC. All rights reserved.
 //
 
-import Foundation
-
+import UIKit
 
 final class DownloadingEpisodeList {
     static var shared = DownloadingEpisodeList()

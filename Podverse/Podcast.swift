@@ -196,16 +196,17 @@ class Podcast: NSManagedObject {
         }
     }
     
-    static func syncSubscribedPodcastsWithServer() {
+    static func syncSubscribedPodcastsWithServer(completionBlock: (() -> ())? = nil) {
         
         // Only podcasts that have an id will sync with the server. If a user manually adds a podcast by RSS feed locally to the app, it will not be saved to the server.
+        showNetworkActivityIndicator()
         retrieveSubscribedPodcastsFromServer() { syncPodcasts in
+            
+            hideNetworkActivityIndicator()
             
             guard let syncPodcasts = syncPodcasts, syncPodcasts.count > 0 else {
                 UserDefaults.standard.set(Date(), forKey: kLastParsedDate)
-                DispatchQueue.main.async {
-                    NotificationCenter.default.post(name: NSNotification.Name(rawValue: kFinishedAllParsingPodcasts), object: nil, userInfo: nil)
-                }
+                completionBlock?()
                 return
             }
             

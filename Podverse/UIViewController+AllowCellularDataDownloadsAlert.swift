@@ -9,7 +9,7 @@
 import UIKit
 
 extension UIViewController {
-    func showAllowCellularDataAlert() {
+    func showAllowCellularDataAlert(completion: ((Bool) -> ())? = nil) {
         if !UserDefaults.standard.bool(forKey: kAskedToAllowCellularDataDownloads) {
             
             UserDefaults.standard.set(true, forKey: kAskedToAllowCellularDataDownloads)
@@ -18,10 +18,12 @@ extension UIViewController {
             
             allowCellularDataAlert.addAction(UIAlertAction(title: "Yes", style: .default) { (_) -> Void in
                 UserDefaults.standard.set(true, forKey: kAllowCellularDataDownloads)
+                completion?(true)
             })
             
             allowCellularDataAlert.addAction(UIAlertAction(title: "No", style: .cancel) { (_) -> Void in
                 UserDefaults.standard.set(false, forKey: kAllowCellularDataDownloads)
+                completion?(false)
             })
             
             DispatchQueue.main.async {

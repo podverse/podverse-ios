@@ -6,7 +6,7 @@
 //  Copyright © 2016 Podverse LLC. All rights reserved.
 //
 
-import Foundation
+import UIKit
 import CoreData
 
 class Playlist {
@@ -65,7 +65,10 @@ class Playlist {
             
             request.httpBody = postString.data(using: .utf8)
             
+            showNetworkActivityIndicator()
+            
             let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                hideNetworkActivityIndicator()
                 
                 guard error == nil else {
                     DispatchQueue.main.async {
@@ -109,8 +112,10 @@ class Playlist {
                 request.setValue(idToken, forHTTPHeaderField: "Authorization")
             }
             
-            
+            showNetworkActivityIndicator()
             let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                
+                hideNetworkActivityIndicator()
                 
                 guard error == nil else {
                     DispatchQueue.main.async {
@@ -179,7 +184,11 @@ class Playlist {
             
             request.httpBody = postString.data(using: .utf8)
             
+            showNetworkActivityIndicator()
+            
             let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                
+                hideNetworkActivityIndicator()
                 
                 guard error == nil else {
                     DispatchQueue.main.async {
@@ -231,7 +240,11 @@ class Playlist {
             
             request.httpBody = postString.data(using: .utf8)
             
+            showNetworkActivityIndicator()
+            
             let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                
+                showNetworkActivityIndicator()
                 
                 guard error == nil else {
                     DispatchQueue.main.async {
@@ -280,7 +293,11 @@ class Playlist {
             
             request.httpBody = postString.data(using: .utf8)
             
+            showNetworkActivityIndicator()
+            
             let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                
+                hideNetworkActivityIndicator()
                 
                 guard error == nil else {
                     DispatchQueue.main.async {
