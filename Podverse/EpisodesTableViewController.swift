@@ -159,9 +159,14 @@ class EpisodesTableViewController: PVViewController {
                 
             } else {
                 if !PVDownloader.shared.shouldDownload() {
-                    self.showAllowCellularDataAlert()
+                    self.showAllowCellularDataAlert { (allowed) in
+                        if allowed {
+                            PVDownloader.shared.startDownloadingEpisode(episode: episode)
+                        }
+                    }
+                } else {
+                    PVDownloader.shared.startDownloadingEpisode(episode: episode)
                 }
-                PVDownloader.shared.startDownloadingEpisode(episode: episode)
             }
         }
     }

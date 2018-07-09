@@ -114,9 +114,15 @@ extension DownloadsTableViewController:UITableViewDelegate, UITableViewDataSourc
             }
         } else if downloadingEpisode.taskResumeData != nil {
             if !PVDownloader.shared.shouldDownload() {
-                self.showAllowCellularDataAlert()
+                self.showAllowCellularDataAlert { (allowed) in
+                    if allowed {
+                        self.pvDownloader.resumeDownloadingEpisode(downloadingEpisode: downloadingEpisode)
+                    }
+                }
             }
-            pvDownloader.resumeDownloadingEpisode(downloadingEpisode: downloadingEpisode)
+            else {
+                self.pvDownloader.resumeDownloadingEpisode(downloadingEpisode: downloadingEpisode)
+            }
         } else if downloadingEpisode.totalBytesWritten == nil && downloadingEpisode.taskIdentifier == nil {
             pvDownloader.restartDownloadingEpisode(downloadingEpisode)
         } else {
