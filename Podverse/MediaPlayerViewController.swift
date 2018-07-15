@@ -348,6 +348,13 @@ class MediaPlayerViewController: PVViewController {
         
     }
     
+    func segueToRequestPodcastForm() {
+        if let webKitVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "WebKitVC") as? WebKitViewController {
+            webKitVC.urlString = kFormRequestPodcastUrl
+            self.navigationController?.pushViewController(webKitVC, animated: true)
+        }
+    }
+    
     @objc func showMakeClip() {
         
         if !checkForConnectivity() {
@@ -355,8 +362,24 @@ class MediaPlayerViewController: PVViewController {
             return
         }
         
-        self.navigationItem.backBarButtonItem = UIBarButtonItem(title:"Player", style:.plain, target:nil, action:nil)
-        self.performSegue(withIdentifier: "Show Make Clip Time", sender: self)
+        if let item = self.playerHistoryManager.historyItems.first {
+            
+            if item.podcastId == nil {
+                let message = "This podcast was added by RSS feed. Please request to add it to podverse.fm to enable clip making."
+                let cantMakeClipActions = UIAlertController(title: "Can't Make Clip", message: message, preferredStyle: .alert)
+                
+                cantMakeClipActions.addAction(UIAlertAction(title: "Request", style: .default, handler: { action in
+                    self.segueToRequestPodcastForm()
+                }))
+                
+                cantMakeClipActions.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+                
+                self.present(cantMakeClipActions, animated: true, completion: nil)
+            }
+            
+            self.navigationItem.backBarButtonItem = UIBarButtonItem(title:"Player", style:.plain, target:nil, action:nil)
+            self.performSegue(withIdentifier: "Show Make Clip Time", sender: self)
+        }
         
     }
     

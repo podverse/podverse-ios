@@ -68,7 +68,7 @@ extension FindTableViewController:UITableViewDelegate, UITableViewDataSource {
                 showInternetNeededAlertWithDescription(message: "Connect to WiFi or cellular data to add podcast by RSS URL.")
                 return
             }
-            let addByRSSAlert = UIAlertController(title: "Add Podcast by RSS Feed", message: "Type the RSS feed URL below.", preferredStyle: UIAlertControllerStyle.alert)
+            let addByRSSAlert = UIAlertController(title: "Add Podcast by RSS Feed", message: "Type the RSS feed URL below. NOTE: Creating clips is not supported for podcast's added by RSS Feed.", preferredStyle: UIAlertControllerStyle.alert)
             
             addByRSSAlert.addTextField(configurationHandler: {(textField: UITextField!) in
                 textField.placeholder = "https://rssfeed.example.com/"
