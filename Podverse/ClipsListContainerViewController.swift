@@ -87,6 +87,10 @@ class ClipsListContainerViewController: UIViewController {
     
     @objc func retrieveClips() {
         
+        if !pvMediaPlayer.isDataAvailable {
+            return
+        }
+        
         guard checkForConnectivity() else {
             loadNoInternetMessage()
             return

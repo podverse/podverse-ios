@@ -39,16 +39,12 @@ class MediaPlayerViewController: PVViewController {
     @IBOutlet weak var endTimeLeadingConstraint: NSLayoutConstraint!
         
     override func viewDidLoad() {
-        setupContainerView()
-        
         let share = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.action, target: self, action: #selector(showShareMenu))
         let makeClip = UIBarButtonItem(image: UIImage(named:"clip"), style: .plain, target: self, action: #selector(showMakeClip))
         let addToPlaylist = UIBarButtonItem(image: UIImage(named:"add"), style: .plain, target: self, action: #selector(showAddToPlaylist))
         navigationItem.rightBarButtonItems = [share, addToPlaylist, makeClip]
 
         self.progress.setThumbImage(#imageLiteral(resourceName: "SliderCurrentPosition"), for: .normal)
-        
-        populatePlayerInfo()
         
         self.tabBarController?.hidePlayerView()
         
@@ -68,6 +64,13 @@ class MediaPlayerViewController: PVViewController {
             setupClipFlags()
         }
         
+        if (self.pvMediaPlayer.isDataAvailable) {
+            populatePlayerInfo()
+        } else {
+            clearPlayerData()
+        }
+        
+        setupContainerView() // Must be called after clearPlayerData()
     }
     
     deinit {
@@ -230,7 +233,10 @@ class MediaPlayerViewController: PVViewController {
         let audioPlayer = PVMediaPlayer.shared.audioPlayer
         
         DispatchQueue.main.async {
-            if audioPlayer.state == .stopped || audioPlayer.state == .paused {
+            if !self.pvMediaPlayer.isDataAvailable {
+                self.activityIndicator.isHidden = false
+                self.play.isHidden = true
+            } else if audioPlayer.state == .stopped || audioPlayer.state == .paused {
                 self.activityIndicator.isHidden = true
                 self.play.setImage(UIImage(named:"play"), for: .normal)
                 self.play.tintColor = UIColor.white
@@ -278,6 +284,19 @@ class MediaPlayerViewController: PVViewController {
         }
     }
     
+    func clearPlayerData() {
+        self.podcastTitle.text = nil
+        self.episodeTitle.text = nil
+        self.episodePubDate.text = nil
+        self.image.image = nil
+        self.duration.text = nil
+        self.pvMediaPlayer.audioPlayer.stop()
+        self.pvMediaPlayer.clearPlayingItem()
+        self.pageControl.currentPage = 0
+        clearTime()
+        togglePlayIcon()
+    }
+    
     @objc func updateTime () {
         DispatchQueue.main.async {
             var playbackPosition = 0.0
@@ -287,13 +306,23 @@ class MediaPlayerViewController: PVViewController {
                 playbackPosition = Double(self.progress.value) * dur
             }
             
-            self.currentTime.text = Int64(playbackPosition).toMediaPlayerString()
+            if (!self.pvMediaPlayer.isDataAvailable) {
+                self.currentTime.text = "--:--"
+            } else {
+                self.currentTime.text = Int64(playbackPosition).toMediaPlayerString()
+            }
             
             if let dur = self.pvMediaPlayer.duration {
                 self.duration.text = Int64(dur).toMediaPlayerString()
                 self.progress.value = Float(playbackPosition / dur)
             }
         }
+    }
+    
+    func clearTime () {
+        self.progress.value = 0.0
+        self.duration.text = "--:--"
+        self.currentTime.text = "--:--"
     }
     
     func showPendingTime() {
@@ -319,6 +348,10 @@ class MediaPlayerViewController: PVViewController {
     }
     
     @objc func showAddToPlaylist() {
+        
+        if !self.pvMediaPlayer.isDataAvailable {
+            return
+        }
         
         if !checkForConnectivity() {
             self.showInternetNeededAlertWithDescription(message: "You must be connected to the internet to add to playlists.")
@@ -357,6 +390,10 @@ class MediaPlayerViewController: PVViewController {
     
     @objc func showMakeClip() {
         
+        if !self.pvMediaPlayer.isDataAvailable {
+            return
+        }
+        
         if !checkForConnectivity() {
             self.showInternetNeededAlertWithDescription(message: "You must be connected to the internet to make clips.")
             return
@@ -384,6 +421,10 @@ class MediaPlayerViewController: PVViewController {
     }
     
     @objc func showShareMenu() {
+        
+        if !self.pvMediaPlayer.isDataAvailable {
+            return
+        }
         
         if let item = self.playerHistoryManager.historyItems.first {
             
