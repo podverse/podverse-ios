@@ -270,7 +270,8 @@ extension PVDownloader:URLSessionDelegate, URLSessionDownloadDelegate {
                     
                     let podcastTitle = episode.podcast.title
                     if let podcast = CoreDataHelper.fetchEntityWithID(objectId: episode.podcast.objectID, moc: moc) as? Podcast {
-                        podcast.downloadedEpisodes += 1
+                        let episodesArray = Array(episode.podcast.episodes.filter { $0.fileName != nil } )
+                        podcast.downloadedEpisodes = episodesArray.count
                     }
                     // Save the downloadedMediaFileDestination with the object
                     moc.saveData {                        
