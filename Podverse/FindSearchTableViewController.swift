@@ -38,6 +38,7 @@ class FindSearchTableViewController: PVViewController {
     @objc func segueToRequestPodcastForm() {
         if let webKitVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "WebKitVC") as? WebKitViewController {
             webKitVC.urlString = kFormRequestPodcastUrl
+            self.hideNowPlayingBar()
             self.navigationController?.pushViewController(webKitVC, animated: true)
         }
     }
