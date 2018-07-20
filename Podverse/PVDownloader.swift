@@ -80,6 +80,10 @@ class PVDownloader:NSObject {
     
     func resumeDownloadingEpisode(downloadingEpisode: DownloadingEpisode) {
         
+        guard shouldDownload() else {
+            return
+        }
+        
         if let downloadTaskResumeData = downloadingEpisode.taskResumeData {
             let downloadTask = downloadSession.downloadTask(withResumeData: downloadTaskResumeData)
             downloadingEpisode.taskIdentifier = downloadTask.taskIdentifier
@@ -99,15 +103,16 @@ class PVDownloader:NSObject {
     }
     
     func restartDownloadingEpisode(_ downloadingEpisode: DownloadingEpisode) {
+        
+        guard shouldDownload() else {
+            return
+        }
+        
         if let downloadSourceStringURL = downloadingEpisode.mediaUrl, let downloadSourceURL = URL(string: downloadSourceStringURL) {
             
             let downloadTask = self.downloadSession.downloadTask(with: downloadSourceURL)
             
             downloadingEpisode.taskIdentifier = downloadTask.taskIdentifier
-            
-            guard shouldDownload() else {
-                return
-            }
             
             DispatchQueue.main.async {
                 NotificationCenter.default.post(name: .downloadStarted, object: nil, userInfo: [Episode.episodeKey:downloadingEpisode])
