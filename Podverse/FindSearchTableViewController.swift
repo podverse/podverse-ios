@@ -29,11 +29,10 @@ class FindSearchTableViewController: PVViewController {
         
         self.tableView.isHidden = true
         
+        let requestPodcast = UIBarButtonItem(title: "Request", style: .plain, target: self, action: #selector(segueToRequestPodcastForm))
+        self.navigationItem.rightBarButtonItems = [requestPodcast]
+        
         loadSearchForPodcastsMessage()
-    }
-    
-    @IBAction func requestPodcast(_ sender: Any) {
-        segueToRequestPodcastForm()
     }
     
     @objc func segueToRequestPodcastForm() {
