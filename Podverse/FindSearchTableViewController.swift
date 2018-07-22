@@ -23,6 +23,7 @@ class FindSearchTableViewController: PVViewController {
         self.title = "Search"
         
         self.searchBar.delegate = self
+        self.searchBar.returnKeyType = .done
         
         self.activityIndicator.hidesWhenStopped = true
         hideActivityIndicator()
