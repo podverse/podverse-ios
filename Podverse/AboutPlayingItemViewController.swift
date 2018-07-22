@@ -59,8 +59,8 @@ class AboutPlayingItemViewController: UIViewController, UIWebViewDelegate {
                 text += "<hr><br>"
             }
             
-            if let summary = item.episodeSummary, summary.trimmingCharacters(in: .whitespacesAndNewlines).count >= 1 {
-                text += summary
+            if let summary = item.episodeSummary, summary.trimmingCharacters(in: .whitespacesAndNewlines).count >= 1, let enrichedSummary = summary.convertPlaybackTimesToUrlSchemeElements() {
+                text += enrichedSummary
             } else {
                 text += kNoShowNotesMessage
             }
@@ -73,11 +73,14 @@ class AboutPlayingItemViewController: UIViewController, UIWebViewDelegate {
     
     func webView(_ webView: UIWebView, shouldStartLoadWith request: URLRequest, navigationType: UIWebViewNavigationType) -> Bool {
         if navigationType == UIWebViewNavigationType.linkClicked {
-            if let url = request.url {
+            if let url = request.url, url.scheme == "podverse", let playbackTime = url.query?.mediaPlayerTimeToSeconds() {
+                pvMediaPlayer.seek(toTime: Double(playbackTime))
+            } else if let url = request.url {
                 UIApplication.shared.open(url)
             }
             return false
         }
         return true
     }
+    
 }
