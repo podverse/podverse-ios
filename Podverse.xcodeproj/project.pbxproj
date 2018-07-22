@@ -23,6 +23,8 @@
 		3048E88A1EDD1B1A001AADCE /* Int64+MediaPlayerString.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3048E8891EDD1B1A001AADCE /* Int64+MediaPlayerString.swift */; };
 		3051488B1ED27251009BC839 /* PlayerHistoryItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3051488A1ED27251009BC839 /* PlayerHistoryItem.swift */; };
 		3051488D1ED27534009BC839 /* PVPlayerHistoryManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3051488C1ED27534009BC839 /* PVPlayerHistoryManager.swift */; };
+		306370BA210522FC009B4FEC /* String+ConvertPlaybackTimeToUrlSchemeElements.swift in Sources */ = {isa = PBXBuildFile; fileRef = 306370B9210522FC009B4FEC /* String+ConvertPlaybackTimeToUrlSchemeElements.swift */; };
+		306370BC21053772009B4FEC /* String+MediaPlayerTimeToSeconds.swift in Sources */ = {isa = PBXBuildFile; fileRef = 306370BB21053772009B4FEC /* String+MediaPlayerTimeToSeconds.swift */; };
 		307EDB381F72244C009B230A /* ParsingPodcasts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 307EDB371F72244C009B230A /* ParsingPodcasts.swift */; };
 		307F2BB11F81DDF800A0BD21 /* EpisodeTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 307F2BB01F81DDF800A0BD21 /* EpisodeTableViewController.swift */; };
 		30934B581F9ED4A300B51CB4 /* SearchCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30934B571F9ED4A300B51CB4 /* SearchCategory.swift */; };
@@ -133,6 +135,8 @@
 		3048E8891EDD1B1A001AADCE /* Int64+MediaPlayerString.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Int64+MediaPlayerString.swift"; sourceTree = "<group>"; };
 		3051488A1ED27251009BC839 /* PlayerHistoryItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerHistoryItem.swift; sourceTree = "<group>"; };
 		3051488C1ED27534009BC839 /* PVPlayerHistoryManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PVPlayerHistoryManager.swift; sourceTree = "<group>"; };
+		306370B9210522FC009B4FEC /* String+ConvertPlaybackTimeToUrlSchemeElements.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+ConvertPlaybackTimeToUrlSchemeElements.swift"; sourceTree = "<group>"; };
+		306370BB21053772009B4FEC /* String+MediaPlayerTimeToSeconds.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+MediaPlayerTimeToSeconds.swift"; sourceTree = "<group>"; };
 		307EDB371F72244C009B230A /* ParsingPodcasts.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParsingPodcasts.swift; sourceTree = "<group>"; };
 		307F2BB01F81DDF800A0BD21 /* EpisodeTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EpisodeTableViewController.swift; sourceTree = "<group>"; };
 		30934B571F9ED4A300B51CB4 /* SearchCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchCategory.swift; sourceTree = "<group>"; };
@@ -468,14 +472,16 @@
 			children = (
 				309BFE151F0A04F8008D101B /* Array+rearrange.swift */,
 				30CD6AD92079670000D5C9C5 /* Date+FeedsDate.swift */,
-				E73AAFC81F7218FC0029EA77 /* UITableView+NotAvailableView.swift */,
 				E7D25BD31E0F23DB00B60368 /* Data+ResizeImageData.swift */,
 				E7B2A5A91E162AE400AAE036 /* Date+Formatters.swift */,
 				3048E8891EDD1B1A001AADCE /* Int64+MediaPlayerString.swift */,
 				E7B2A5A51E12D38200AAE036 /* String+CharacterManipulation.swift */,
+				306370B9210522FC009B4FEC /* String+ConvertPlaybackTimeToUrlSchemeElements.swift */,
 				E7B2A5AB1E162B8500AAE036 /* String+Formatters.swift */,
+				306370BB21053772009B4FEC /* String+MediaPlayerTimeToSeconds.swift */,
 				30CD6ADB2079673200D5C9C5 /* String+RemoveHTMLCharacters.swift */,
 				30CD6ADD2079689000D5C9C5 /* String+Utilities.swift */,
+				E73AAFC81F7218FC0029EA77 /* UITableView+NotAvailableView.swift */,
 				E7B2A59C1E123A4400AAE036 /* UIViewController+InternetRequiredAlert.swift */,
 				30A2E570203B1A4F001713E3 /* UIViewController+AllowCellularDataDownloadsAlert.swift */,
 				3011B7161FC41E9D000EAE10 /* UIViewController+ShowToast.swift */,
@@ -816,6 +822,7 @@
 				E7B2A59B1E12111500AAE036 /* URL+RemoteSize.swift in Sources */,
 				E79515DD1E03853500382BF8 /* AppDelegate.swift in Sources */,
 				3093DC281FC275BB0060DDC0 /* DeletingPodcasts.swift in Sources */,
+				306370BC21053772009B4FEC /* String+MediaPlayerTimeToSeconds.swift in Sources */,
 				E76C49C61E0F8DFE00F81217 /* PVDownloader.swift in Sources */,
 				307EDB381F72244C009B230A /* ParsingPodcasts.swift in Sources */,
 				E70E4A1D1E038FC6003CEC64 /* PlaylistsTableViewController.swift in Sources */,
@@ -830,6 +837,7 @@
 				E76C49C81E0F94BF00F81217 /* DownloadingEpisodeList.swift in Sources */,
 				30CD6ADA2079670000D5C9C5 /* Date+FeedsDate.swift in Sources */,
 				E7D25BCA1E0F16B700B60368 /* Playlist.swift in Sources */,
+				306370BA210522FC009B4FEC /* String+ConvertPlaybackTimeToUrlSchemeElements.swift in Sources */,
 				30A575681EBED8360088CCA6 /* EpisodeTableViewCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
