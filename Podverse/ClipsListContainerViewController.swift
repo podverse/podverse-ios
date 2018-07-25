@@ -106,13 +106,13 @@ class ClipsListContainerViewController: UIViewController {
         
         if self.filterTypeSelected == .episode, let item = pvMediaPlayer.nowPlayingItem, let mediaUrl = item.episodeMediaUrl {
             
-            MediaRef.retrieveMediaRefsFromServer(episodeMediaUrl: mediaUrl, sortingType: self.sortingTypeSelected, page: self.clipQueryPage) { (mediaRefs) -> Void in
+            MediaRef.retrieveMediaRefsFromServer(episodeMediaUrl: mediaUrl, sortingTypeRequestParam: self.sortingTypeSelected.requestParam, page: self.clipQueryPage) { (mediaRefs) -> Void in
                 self.reloadClipData(mediaRefs)
             }
             
         } else if self.filterTypeSelected == .podcast, let item = pvMediaPlayer.nowPlayingItem, let feedUrl = item.podcastFeedUrl {
             
-            MediaRef.retrieveMediaRefsFromServer(podcastFeedUrls: [feedUrl], sortingType: self.sortingTypeSelected, page: self.clipQueryPage) { (mediaRefs) -> Void in
+            MediaRef.retrieveMediaRefsFromServer(podcastFeedUrls: [feedUrl], sortingTypeRequestParam: self.sortingTypeSelected.requestParam, page: self.clipQueryPage) { (mediaRefs) -> Void in
                 self.reloadClipData(mediaRefs)
             }
             
@@ -125,13 +125,13 @@ class ClipsListContainerViewController: UIViewController {
                 return
             }
             
-            MediaRef.retrieveMediaRefsFromServer(episodeMediaUrl: nil, podcastFeedUrls: subscribedPodcastFeedUrls, sortingType: self.sortingTypeSelected, page: self.clipQueryPage) { (mediaRefs) -> Void in
+            MediaRef.retrieveMediaRefsFromServer(episodeMediaUrl: nil, podcastFeedUrls: subscribedPodcastFeedUrls, sortingTypeRequestParam: self.sortingTypeSelected.requestParam, page: self.clipQueryPage) { (mediaRefs) -> Void in
                 self.reloadClipData(mediaRefs)
             }
             
         } else {
             
-            MediaRef.retrieveMediaRefsFromServer(sortingType: self.sortingTypeSelected, page: self.clipQueryPage) { (mediaRefs) -> Void in
+            MediaRef.retrieveMediaRefsFromServer(sortingTypeRequestParam: self.sortingTypeSelected.requestParam, page: self.clipQueryPage) { (mediaRefs) -> Void in
                 self.reloadClipData(mediaRefs)
             }
             
