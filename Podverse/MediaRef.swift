@@ -126,7 +126,7 @@ class MediaRef {
         }
     }
     
-    static func retrieveMediaRefsFromServer(episodeMediaUrl: String? = nil, podcastIds: [String] = [], podcastFeedUrls: [String] = [], onlySubscribed: Bool? = nil, sortingType: ClipSorting? = nil, page: Int? = 1, completion: @escaping (_ mediaRefs:[MediaRef]?) -> Void) {
+    static func retrieveMediaRefsFromServer(episodeMediaUrl: String? = nil, podcastIds: [String] = [], podcastFeedUrls: [String] = [], userId:String? = nil, onlySubscribed: Bool? = nil, sortingTypeRequestParam: String?, page: Int? = 1, completion: @escaping (_ mediaRefs:[MediaRef]?) -> Void) {
         showNetworkActivityIndicator()
         if let url = URL(string: BASE_URL + "api/clips") {
             
@@ -144,10 +144,12 @@ class MediaRef {
                 values["podcastIds"] = podcastIds
             } else if podcastFeedUrls.count > 0 {
                 values["podcastFeedUrls"] = podcastFeedUrls
+            } else if let userId = userId {
+                values["userId"] = userId
             }
             
-            if let sortingType = sortingType {
-                values["filterType"] = sortingType.requestParam
+            if let sortingTypeRequestParam = sortingTypeRequestParam {
+                values["sortType"] = sortingTypeRequestParam
             }
             
             if let page = page {

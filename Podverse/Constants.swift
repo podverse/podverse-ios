@@ -242,6 +242,7 @@ enum ClipFilter: String {
     case episode = "Episode"
     case podcast = "Podcast"
     case subscribed = "Subscribed"
+    case myClips = "My Clips"
     
     var text:String {
         get {
@@ -254,6 +255,8 @@ enum ClipFilter: String {
                 return "Podcast"
             case .subscribed:
                 return "Subscribed"
+            case .myClips:
+                return "My Clips"
             }
         }
     }

@@ -55,6 +55,13 @@ class ClipsTableViewController: PVViewController {
         self.clipQueryMessage.isHidden = true
 
         if let savedFilterType = UserDefaults.standard.value(forKey: kClipsTableFilterType) as? String, let clipFilterType = ClipFilter(rawValue: savedFilterType) {
+            if clipFilterType == .myClips {
+                guard let _ = UserDefaults.standard.string(forKey: "userId") else {
+                    self.filterTypeSelected = .allPodcasts
+                    return
+                }
+            }
+
             self.filterTypeSelected = clipFilterType
         } else {
             self.filterTypeSelected = .allPodcasts
@@ -103,17 +110,29 @@ class ClipsTableViewController: PVViewController {
             let subscribedPodcastFeedUrls = Podcast.retrieveSubscribedUrls()
 
             if subscribedPodcastFeedUrls.count < 1 {
-                self.reloadClipData()
+                DispatchQueue.main.async {
+                    self.reloadClipData()
+                }
                 return
             }
 
-            MediaRef.retrieveMediaRefsFromServer(podcastFeedUrls: subscribedPodcastFeedUrls, sortingType: self.sortingTypeSelected, page: self.clipQueryPage) { (mediaRefs) -> Void in
-                self.reloadClipData(mediaRefs)
+            MediaRef.retrieveMediaRefsFromServer(podcastFeedUrls: subscribedPodcastFeedUrls, sortingTypeRequestParam: self.sortingTypeSelected.requestParam, page: self.clipQueryPage) { (mediaRefs) -> Void in
+                DispatchQueue.main.async {
+                    self.reloadClipData(mediaRefs)
+                }
             }
 
+        } else if self.filterTypeSelected == .myClips {
+            if let userId = UserDefaults.standard.string(forKey: "userId") {
+                MediaRef.retrieveMediaRefsFromServer(userId: userId, sortingTypeRequestParam: self.sortingTypeSelected.requestParam, page: self.clipQueryPage) { (mediaRefs) -> Void in
+                    DispatchQueue.main.async {
+                        self.reloadClipData(mediaRefs)
+                    }
+                }
+            }
         } else {
 
-            MediaRef.retrieveMediaRefsFromServer(sortingType: self.sortingTypeSelected, page: self.clipQueryPage) { (mediaRefs) -> Void in
+            MediaRef.retrieveMediaRefsFromServer(sortingTypeRequestParam: self.sortingTypeSelected.requestParam, page: self.clipQueryPage) { (mediaRefs) -> Void in
                 self.reloadClipData(mediaRefs)
             }
 
@@ -258,15 +277,29 @@ extension ClipsTableViewController:FilterSelectionProtocol {
         
         let alert = UIAlertController(title: "Clips From", message: nil, preferredStyle: .actionSheet)
         
+        alert.addAction(UIAlertAction(title: ClipFilter.allPodcasts.text, style: .default, handler: { action in
+            self.filterTypeSelected = .allPodcasts
+            self.retrieveClips()
+        }))
+        
         alert.addAction(UIAlertAction(title: ClipFilter.subscribed.text, style: .default, handler: { action in
             self.filterTypeSelected = .subscribed
             self.retrieveClips()
         }))
         
-        alert.addAction(UIAlertAction(title: ClipFilter.allPodcasts.text, style: .default, handler: { action in
-            self.filterTypeSelected = .allPodcasts
+        alert.addAction(UIAlertAction(title: ClipFilter.myClips.text, style: .default, handler: { action in
+            guard let _ = UserDefaults.standard.string(forKey: "userId") else {
+                let alert = UIAlertController(title: "My Clips", message: "Login to browse a list of clips you created.", preferredStyle: .actionSheet)
+                alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+                self.present(alert, animated: true, completion: nil)
+                return
+            }
+            
+            self.filterTypeSelected = .myClips
             self.retrieveClips()
+
         }))
+        
         
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
         

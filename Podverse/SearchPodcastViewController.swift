@@ -256,7 +256,7 @@ class SearchPodcastViewController: PVViewController {
         self.clipQueryPage += 1
         
         if let podcast = self.searchPodcast, let id = podcast.id {
-            MediaRef.retrieveMediaRefsFromServer(podcastIds: [id], sortingType: self.sortingTypeSelected, page: self.clipQueryPage) { (mediaRefs) -> Void in
+            MediaRef.retrieveMediaRefsFromServer(podcastIds: [id], sortingTypeRequestParam: self.sortingTypeSelected.requestParam, page: self.clipQueryPage) { (mediaRefs) -> Void in
                 self.reloadClipData(mediaRefs)
             }
         }
