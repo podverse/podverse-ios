@@ -3498,6 +3498,7 @@
                     </view>
                     <connections>
                         <outlet property="webView" destination="jZW-FP-4Vu" id="j83-e8-xYw"/>
+                        <segue destination="sZL-lu-ysp" kind="show" identifier="Show Make Clip Time" id="pNd-Xe-Cvn"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="UME-eU-Cea" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -3520,6 +3521,7 @@
         <image name="tab-more" width="25" height="25"/>
     </resources>
     <inferredMetricsTieBreakers>
+        <segue reference="pNd-Xe-Cvn"/>
         <segue reference="UX7-d9-2wT"/>
     </inferredMetricsTieBreakers>
 </document>

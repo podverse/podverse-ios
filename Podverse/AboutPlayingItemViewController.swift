@@ -11,6 +11,7 @@ import UIKit
 class AboutPlayingItemViewController: UIViewController, UIWebViewDelegate {
 
     let pvMediaPlayer = PVMediaPlayer.shared
+    let playerHistoryManager = PlayerHistory.manager
     
     @IBOutlet weak var webView: UIWebView!
     
@@ -53,10 +54,14 @@ class AboutPlayingItemViewController: UIViewController, UIWebViewDelegate {
                 }
                 
                 if let time = item.readableStartAndEndTime() {
-                    text += "<span class=\"lightGray\">" + time + "</span>" + "<br><br>"
+                    text += "<span class=\"lightGray\">" + time + "</span>"
                 }
                 
-                text += "<hr><br>"
+                if let userId = UserDefaults.standard.string(forKey: "userId"), userId == item.ownerId {
+                    text += "<a class=\"pull-right\" href=\"podverse://podverse.fm?editClip\">Edit Clip</a>"
+                }
+                
+                text += "<br><br><hr><br>"
             }
             
             if let summary = item.episodeSummary, summary.trimmingCharacters(in: .whitespacesAndNewlines).count >= 1, let enrichedSummary = summary.convertPlaybackTimesToUrlSchemeElements() {
@@ -71,16 +76,47 @@ class AboutPlayingItemViewController: UIViewController, UIWebViewDelegate {
         
     }
     
+    func showEditClip() {
+        if !self.pvMediaPlayer.isDataAvailable {
+            return
+        }
+        
+        if !checkForConnectivity() {
+            self.showInternetNeededAlertWithDescription(message: "You must be connected to the internet to edit clips.")
+            return
+        }
+        
+        if let item = self.playerHistoryManager.historyItems.first {
+            self.navigationItem.backBarButtonItem = UIBarButtonItem(title:"Player", style:.plain, target:nil, action:nil)
+            self.performSegue(withIdentifier: "Show Make Clip Time", sender: item)
+        }
+    }
+    
     func webView(_ webView: UIWebView, shouldStartLoadWith request: URLRequest, navigationType: UIWebViewNavigationType) -> Bool {
         if navigationType == UIWebViewNavigationType.linkClicked {
-            if let url = request.url, url.scheme == "podverse", let playbackTime = url.query?.mediaPlayerTimeToSeconds() {
-                pvMediaPlayer.seek(toTime: Double(playbackTime))
+            if let url = request.url, url.scheme == "podverse", let query = url.query {
+                if query == "editClip" {
+                    DispatchQueue.main.async {
+                        self.showEditClip()
+                    }
+                } else {
+                    let playbackTime = query.mediaPlayerTimeToSeconds()
+                    pvMediaPlayer.seek(toTime: Double(playbackTime))
+                }
             } else if let url = request.url {
                 UIApplication.shared.open(url)
             }
             return false
         }
         return true
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "Show Make Clip Time" {
+            if let sender = sender as? PlayerHistoryItem, let makeClipTimeViewController = segue.destination as? MakeClipTimeViewController {
+                makeClipTimeViewController.editingItem = sender
+            }
+        }
     }
     
 }

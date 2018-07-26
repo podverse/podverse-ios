@@ -227,11 +227,85 @@ class PlayerHistoryItem: NSObject, NSCoding {
         return postString
     }
     
+    func convertToMediaRefUpdateBody() -> [String: Any] {
+        var body:[String: Any] = [:]
+        
+        if let mediaRefId = self.mediaRefId {
+            body["id"] = mediaRefId
+        }
+        
+        if let startTime = self.startTime {
+            body["startTime"] = String(startTime)
+        }
+        
+        if let endTime = self.endTime {
+            body["endTime"] = String(endTime)
+        }
+        
+        if let clipTitle = self.clipTitle {
+            body["title"] = clipTitle
+        }
+        
+        if let isPublic = self.isPublic {
+            body["isPublic"] = isPublic.description
+        }
+        
+        return body
+    }
+    
+    func updateMediaRefOnServer(completion: @escaping (Bool) -> Void) {
+        if let url = URL(string: BASE_URL + "clips") {
+            
+            var request = URLRequest(url: url, cachePolicy: NSURLRequest.CachePolicy.reloadIgnoringLocalAndRemoteCacheData, timeoutInterval: 20)
+            
+            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+            
+            request.httpMethod = "PUT"
+            
+            if let idToken = UserDefaults.standard.string(forKey: "idToken") {
+                request.setValue(idToken, forHTTPHeaderField: "Authorization")
+            }
+            
+            let putBody = self.convertToMediaRefUpdateBody()
+            
+            
+            do {
+                request.httpBody = try JSONSerialization.data(withJSONObject: putBody, options: JSONSerialization.WritingOptions())
+                
+                showNetworkActivityIndicator()
+                
+                let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                    hideNetworkActivityIndicator()
+                    
+                    guard error == nil else {
+                        DispatchQueue.main.async {
+                            completion(false)
+                        }
+                        return
+                    }
+                    
+                    DispatchQueue.main.async {
+                        completion(true)
+                    }
+                }
+                
+                task.resume()
+                
+            } catch {
+                print(error)
+            }
+            
+        }
+    }
+    
     func saveToServerAsMediaRef(completion: @escaping (_ mediaRef: MediaRef?) -> Void) {
         
         if let url = URL(string: BASE_URL + "clips/") {
             
             var request = URLRequest(url: url, cachePolicy: NSURLRequest.CachePolicy.reloadIgnoringLocalAndRemoteCacheData, timeoutInterval: 20)
+            
+            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+            
             request.httpMethod = "POST"
             
             if let idToken = UserDefaults.standard.string(forKey: "idToken") {

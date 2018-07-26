@@ -22,6 +22,8 @@ class MediaRef {
     var podcastFeedUrl:String?
     var podcastImageUrl:String?
     var podcastTitle:String?
+    var ownerId:String?
+    var ownerName:String?
     var isPublic:Bool? = false
     
     static func jsonToMediaRef(item: [String:Any]) -> MediaRef {
@@ -40,6 +42,9 @@ class MediaRef {
         mediaRef.podcastId = item["podcastId"] as? String
         mediaRef.podcastFeedUrl = item["podcastFeedUrl"] as? String
         mediaRef.podcastImageUrl = item["podcastImageUrl"] as? String
+        
+        mediaRef.ownerId = item["ownerId"] as? String
+        mediaRef.ownerName = item["ownerName"] as? String
         
         if let episodePubDate = item["episodePubDate"] as? String {
             mediaRef.episodePubDate = episodePubDate.toServerDate()

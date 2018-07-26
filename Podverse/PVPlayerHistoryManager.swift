@@ -133,6 +133,8 @@ class PlayerHistory {
             startTime: mediaRef.startTime,
             endTime: mediaRef.endTime,
             clipTitle: mediaRef.title,
+            ownerName: mediaRef.ownerName,
+            ownerId: mediaRef.ownerId,
             hasReachedEnd: false,
             lastPlaybackPosition: 0)
         
