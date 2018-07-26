@@ -200,6 +200,34 @@ class MediaRef {
             
         }
     }
+    
+    static func deleteMediaRefFromServer(id:String, completion: @escaping (Bool) -> Void) {
+        if let url = URL(string: BASE_URL + "clips/" + id), let idToken = UserDefaults.standard.string(forKey: "idToken") {
+            showNetworkActivityIndicator()
+            
+            let request = NSMutableURLRequest(url: url, cachePolicy: NSURLRequest.CachePolicy.reloadIgnoringLocalAndRemoteCacheData, timeoutInterval: 60)
+            
+            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+            request.setValue(idToken, forHTTPHeaderField: "Authorization")
+            
+            request.httpMethod = "DELETE"
+            
+            let task = URLSession.shared.dataTask(with: request as URLRequest) { data, response, error in
+                hideNetworkActivityIndicator()
+                guard error == nil else {
+                    print("Error: \(error?.localizedDescription ?? "Unknown Error")")
+                    DispatchQueue.main.async {
+                        completion(false)
+                    }
+                    return
+                }
+                
+                completion(true)
+            }
+            
+            task.resume()
+        }
+    }
         
     func isClip() -> Bool {
         

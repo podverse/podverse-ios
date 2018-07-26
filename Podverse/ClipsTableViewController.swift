@@ -259,6 +259,38 @@ extension ClipsTableViewController:UITableViewDelegate, UITableViewDataSource {
         self.pvMediaPlayer.loadPlayerHistoryItem(item: playerHistoryItem)
     }
     
+    func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
+        if filterTypeSelected == .myClips {
+            let row = indexPath.row
+            if let clipToDeleteId = self.clipsArray[row].id {
+                let deleteAction = UITableViewRowAction(style: .default, title: "Delete", handler: {action, indexpath in
+                    MediaRef.deleteMediaRefFromServer(id: clipToDeleteId) { wasSuccessful in
+                        DispatchQueue.main.async {
+                            if (wasSuccessful) {
+                                self.clipsArray.remove(at: row)
+                                self.tableView.deleteRows(at: [indexPath], with: .fade)
+                            } else {
+                                let actions = UIAlertController(title: "Failed to delete clip",
+                                                                message: "Please check your internet connection and try again.",
+                                                                preferredStyle: .alert)
+                                
+                                actions.addAction(UIAlertAction(title: "Ok", style: .cancel, handler: { action in
+                                    self.navigationController?.popViewController(animated: true)
+                                }))
+                                
+                                self.present(actions, animated: true, completion: nil)
+                            }
+                        }
+                    }
+                })
+                
+                return [deleteAction]
+            }
+        }
+        
+        return []
+    }
+    
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         // Bottom Refresh
         if scrollView == self.tableView {
