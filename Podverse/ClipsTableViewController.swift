@@ -12,6 +12,7 @@ class ClipsTableViewController: PVViewController {
 
     var clipsArray = [MediaRef]()
     let reachability = PVReachability.shared
+    let refreshControl = UIRefreshControl()
     
     var filterTypeSelected: ClipFilter = .allPodcasts {
         didSet {
@@ -51,6 +52,10 @@ class ClipsTableViewController: PVViewController {
         self.tableViewHeader.delegate = self
         self.tableViewHeader.setupViews()
         
+        self.refreshControl.attributedTitle = NSAttributedString(string: "Pull to refresh clips")
+        self.refreshControl.addTarget(self, action: #selector(resetAndRetrieveClips), for: UIControlEvents.valueChanged)
+        self.tableView.addSubview(refreshControl)
+        
         self.clipQueryActivityIndicator.hidesWhenStopped = true
         self.clipQueryMessage.isHidden = true
 
@@ -78,6 +83,7 @@ class ClipsTableViewController: PVViewController {
     }
     
     @objc func resetAndRetrieveClips() {
+        showActivityIndicator()
         resetClipQuery()
         retrieveClips()
     }
@@ -94,6 +100,7 @@ class ClipsTableViewController: PVViewController {
         
         guard checkForConnectivity() else {
             loadNoInternetMessage()
+            self.refreshControl.endRefreshing()
             return
         }
         
@@ -143,6 +150,7 @@ class ClipsTableViewController: PVViewController {
     func reloadClipData(_ mediaRefs: [MediaRef]? = nil) {
         
         hideActivityIndicator()
+        self.refreshControl.endRefreshing()
         self.clipQueryIsLoading = false
         self.clipQueryActivityIndicator.stopAnimating()
         
