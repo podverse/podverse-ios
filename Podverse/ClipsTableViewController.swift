@@ -237,6 +237,7 @@ extension ClipsTableViewController:UITableViewDelegate, UITableViewDataSource {
     }
         
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        // TODO: THIS INDEX IS CRASHING SOMETIMES :( :( :(
         let clip = clipsArray[indexPath.row]
         
         let cell = tableView.dequeueReusableCell(withIdentifier: "clipCell", for: indexPath) as! ClipTableViewCell
@@ -282,9 +283,7 @@ extension ClipsTableViewController:UITableViewDelegate, UITableViewDataSource {
                                                                 message: "Please check your internet connection and try again.",
                                                                 preferredStyle: .alert)
                                 
-                                actions.addAction(UIAlertAction(title: "Ok", style: .cancel, handler: { action in
-                                    self.navigationController?.popViewController(animated: true)
-                                }))
+                                actions.addAction(UIAlertAction(title: "Ok", style: .cancel, handler: nil))
                                 
                                 self.present(actions, animated: true, completion: nil)
                             }
