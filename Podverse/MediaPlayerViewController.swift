@@ -93,11 +93,13 @@ class MediaPlayerViewController: PVViewController {
     fileprivate func addObservers() {
         NotificationCenter.default.addObserver(self, selector: #selector(hideClipData), name: .hideClipData, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(handleDidFinishPlaying), name: .playerHasFinished, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(setupClipFlags), name: .clipUpdated, object: nil)
     }
     
     fileprivate func removeObservers() {
         NotificationCenter.default.removeObserver(self, name: .hideClipData, object: nil)
         NotificationCenter.default.removeObserver(self, name: .playerHasFinished, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .clipUpdated, object: nil)
     }
     
     @IBAction func pageControlAction(_ sender: Any) {
@@ -574,7 +576,7 @@ class MediaPlayerViewController: PVViewController {
         
     }
     
-    fileprivate func setupClipFlags() {        
+    @objc fileprivate func setupClipFlags() {
         self.startTimeLeadingConstraint.constant = 0
         self.endTimeLeadingConstraint.constant = 0
         let sliderThumbWidthAdjustment:CGFloat = 2.0

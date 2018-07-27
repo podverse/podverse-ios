@@ -37,10 +37,12 @@ class AboutPlayingItemViewController: UIViewController, UIWebViewDelegate {
     
     fileprivate func addObservers() {
         NotificationCenter.default.addObserver(self, selector: #selector(loadWebView), name: .hideClipData, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(loadWebView), name: .clipUpdated, object: nil)
     }
     
     fileprivate func removeObservers() {
         NotificationCenter.default.removeObserver(self, name: .hideClipData, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .clipUpdated, object: nil)
     }
     
     @objc fileprivate func loadWebView() {

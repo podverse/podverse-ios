@@ -320,9 +320,9 @@ class MakeClipTimeViewController: UIViewController, UITextFieldDelegate {
                 item.updateMediaRefOnServer() { wasSuccessful in
                     self.hideLoadingOverlay()
                     if wasSuccessful {
-                        //                        self.displayClipUpdatedAlert()
+                        self.displayClipUpdatedAlert(item: item)
                     } else {
-                        //                        self.displayFailedToCreateClipAlert()
+                        self.displayFailedToCreateClipAlert()
                     }
                 }
             }
@@ -399,45 +399,71 @@ class MakeClipTimeViewController: UIViewController, UITextFieldDelegate {
     }
     
     private func displayClipCreatedAlert(mediaRefId: String) {
-        
-        let actions = UIAlertController(title: "Clip Created", 
-                                        message: BASE_URL + "clips/" + mediaRefId, 
-                                        preferredStyle: .alert)
-        
-        actions.addAction(UIAlertAction(title: "Share", style: .default, handler: { action in
-            let clipUrlItem = [BASE_URL + "clips/" + mediaRefId]
-            let activityVC = UIActivityViewController(activityItems: clipUrlItem, applicationActivities: nil)
-            activityVC.popoverPresentationController?.sourceView = self.view
+        DispatchQueue.main.async {
+            let actions = UIAlertController(title: "Clip Created",
+                                            message: BASE_URL + "clips/" + mediaRefId, 
+                                            preferredStyle: .alert)
             
-            activityVC.completionWithItemsHandler = { activityType, success, items, error in
-                if activityType == UIActivityType.copyToPasteboard {
-                    self.showToast(message: kLinkCopiedToast)
+            actions.addAction(UIAlertAction(title: "Share", style: .default, handler: { action in
+                let clipUrlItem = [BASE_URL + "clips/" + mediaRefId]
+                let activityVC = UIActivityViewController(activityItems: clipUrlItem, applicationActivities: nil)
+                activityVC.popoverPresentationController?.sourceView = self.view
+                
+                activityVC.completionWithItemsHandler = { activityType, success, items, error in
+                    if activityType == UIActivityType.copyToPasteboard {
+                        self.showToast(message: kLinkCopiedToast)
+                    }
+                    
+                    self.navigationController?.popViewController(animated: true)
                 }
                 
-                self.navigationController?.popViewController(animated: true)
-            }
+                self.present(activityVC, animated: true, completion: nil)
+            }))
             
-            self.present(activityVC, animated: true, completion: nil)
-        }))
-        
-        actions.addAction(UIAlertAction(title: "Done", style: .cancel, handler: { action in
-            self.navigationController?.popViewController(animated: true)
-        }))
-        
-        self.present(actions, animated: true, completion: nil)
+            actions.addAction(UIAlertAction(title: "Done", style: .cancel, handler: { action in
+                self.navigationController?.popViewController(animated: true)
+            }))
+            
+            self.present(actions, animated: true, completion: nil)
+        }
     }
     
     private func displayFailedToCreateClipAlert() {
-        
-        let actions = UIAlertController(title: "Failed to create clip",
-                                        message: "Please check your internet connection and try again.",
-                                        preferredStyle: .alert)
-        
-        actions.addAction(UIAlertAction(title: "Ok", style: .cancel, handler: { action in
-            self.navigationController?.popViewController(animated: true)
-        }))
-        
-        self.present(actions, animated: true, completion: nil)
+        DispatchQueue.main.async {
+            let actions = UIAlertController(title: "Failed to create clip",
+                                            message: "Please check your internet connection and try again.",
+                                            preferredStyle: .alert)
+            
+            actions.addAction(UIAlertAction(title: "Ok", style: .cancel))
+            
+            self.present(actions, animated: true, completion: nil)
+        }
+    }
+    
+    private func displayClipUpdatedAlert(item: PlayerHistoryItem) {
+        DispatchQueue.main.async {
+            let actions = UIAlertController(title: "Clip successfully updated",
+                                            message: nil,
+                                            preferredStyle: .alert)
+            
+            actions.addAction(UIAlertAction(title: "Ok", style: .default, handler: { action in
+                self.navigationController?.popViewController(animated: true)
+            }))
+            
+            self.present(actions, animated: true, completion: nil)
+        }
+    }
+    
+    private func displayFailedToUpdateClipAlert() {
+        DispatchQueue.main.async {
+            let actions = UIAlertController(title: "Failed to update clip",
+                                            message: "Please check your internet connection and try again.",
+                                            preferredStyle: .alert)
+            
+            actions.addAction(UIAlertAction(title: "Ok", style: .cancel))
+            
+            self.present(actions, animated: true, completion: nil)
+        }
     }
     
     private func setupTimer() {

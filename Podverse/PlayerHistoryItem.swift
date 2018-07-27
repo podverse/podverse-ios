@@ -8,6 +8,10 @@
 
 import UIKit
 
+extension Notification.Name {
+    static let clipUpdated = Notification.Name("clipUpdated")
+}
+
 class PlayerHistoryItem: NSObject, NSCoding {
     
     var mediaRefId:String?
@@ -283,6 +287,8 @@ class PlayerHistoryItem: NSObject, NSCoding {
                         }
                         return
                     }
+                    
+                    PVMediaPlayer.shared.loadPlayerHistoryItem(item: self)
                     
                     DispatchQueue.main.async {
                         completion(true)

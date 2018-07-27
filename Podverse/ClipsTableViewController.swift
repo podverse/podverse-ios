@@ -237,26 +237,27 @@ extension ClipsTableViewController:UITableViewDelegate, UITableViewDataSource {
     }
         
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        // TODO: THIS INDEX IS CRASHING SOMETIMES :( :( :(
-        let clip = clipsArray[indexPath.row]
-        
         let cell = tableView.dequeueReusableCell(withIdentifier: "clipCell", for: indexPath) as! ClipTableViewCell
+        let row = indexPath.row
         
-        cell.podcastTitle?.text = clip.podcastTitle
-        cell.episodeTitle?.text = clip.episodeTitle
-        cell.clipTitle?.text = clip.title
-        
-        if let time = clip.readableStartAndEndTime() {
-            cell.time?.text = time
+        if clipsArray.count >= row - 1 {
+            let clip = clipsArray[indexPath.row]
+            cell.podcastTitle?.text = clip.podcastTitle
+            cell.episodeTitle?.text = clip.episodeTitle
+            cell.clipTitle?.text = clip.title
+            
+            if let time = clip.readableStartAndEndTime() {
+                cell.time?.text = time
+            }
+            
+            if let episodePubDate = clip.episodePubDate {
+                cell.episodePubDate?.text = episodePubDate.toShortFormatString()
+            }
+            
+            cell.podcastImage.image = Podcast.retrievePodcastImage(podcastImageURLString: clip.podcastImageUrl, feedURLString: clip.podcastFeedUrl, completion: { image in
+                cell.podcastImage.image = image
+            })
         }
-        
-        if let episodePubDate = clip.episodePubDate {
-            cell.episodePubDate?.text = episodePubDate.toShortFormatString()
-        }
-        
-        cell.podcastImage.image = Podcast.retrievePodcastImage(podcastImageURLString: clip.podcastImageUrl, feedURLString: clip.podcastFeedUrl, completion: { image in
-            cell.podcastImage.image = image
-        })
         
         return cell
     }
