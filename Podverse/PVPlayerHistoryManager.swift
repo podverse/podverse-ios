@@ -136,7 +136,8 @@ class PlayerHistory {
             ownerName: mediaRef.ownerName,
             ownerId: mediaRef.ownerId,
             hasReachedEnd: false,
-            lastPlaybackPosition: 0)
+            lastPlaybackPosition: 0,
+            isPublic: mediaRef.isPublic)
         
         return playerHistoryItem
     }

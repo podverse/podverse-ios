@@ -58,6 +58,8 @@ let kUnfollowPodcast = "unfollowPodcast"
 
 let kUpdateDownloadsTable = "updateDownloadTable"
 
+let kClipUpdated = "clipUpdated"
+
 let kNowPlayingTimeHasChanged = "nowPlayingTimeHasChanged"
 
 let kPlayerHasNoItem = "playerHasNoItem"

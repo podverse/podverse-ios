@@ -80,6 +80,8 @@ class MakeClipTimeViewController: UIViewController, UITextFieldDelegate {
             
             if let isPublic = editingItem.isPublic {
                 self.isPublic = isPublic
+                let visibilityText = self.isPublic ? VisibilityOptions.isPublic.text : VisibilityOptions.isOnlyWithLink.text
+                self.visibilityButton.setTitle(visibilityText + " ▼", for: .normal)
             }
         }
     }
@@ -120,6 +122,8 @@ class MakeClipTimeViewController: UIViewController, UITextFieldDelegate {
             self.title = "Make Clip"
             self.navigationItem.rightBarButtonItems = [saveBtn]
         } else {
+            // Make a copy in case the current PlayerHistoryItem reference disappears while on the edit view
+            self.editingItem = self.editingItem?.copyPlayerHistoryItem()
             loadEditClipInputs()
             self.title = "Edit Clip"
             self.navigationItem.rightBarButtonItems = [saveBtn, deleteBtn]
@@ -284,7 +288,7 @@ class MakeClipTimeViewController: UIViewController, UITextFieldDelegate {
         }
         
         var mediaRefItem:PlayerHistoryItem? = nil
-        if let editingItem = self.editingItem?.copyPlayerHistoryItem() {
+        if let editingItem = self.editingItem {
             mediaRefItem = editingItem
         } else if let nowPlayingItem = self.playerHistoryItem?.copyPlayerHistoryItem() {
             mediaRefItem = nowPlayingItem
@@ -322,7 +326,7 @@ class MakeClipTimeViewController: UIViewController, UITextFieldDelegate {
                     if wasSuccessful {
                         self.displayClipUpdatedAlert(item: item)
                     } else {
-                        self.displayFailedToCreateClipAlert()
+                        self.displayFailedToUpdateClipAlert()
                     }
                 }
             }
