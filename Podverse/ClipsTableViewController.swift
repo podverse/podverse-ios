@@ -12,6 +12,7 @@ class ClipsTableViewController: PVViewController {
 
     var clipsArray = [MediaRef]()
     let reachability = PVReachability.shared
+    let refreshControl = UIRefreshControl()
     
     var filterTypeSelected: ClipFilter = .allPodcasts {
         didSet {
@@ -51,10 +52,21 @@ class ClipsTableViewController: PVViewController {
         self.tableViewHeader.delegate = self
         self.tableViewHeader.setupViews()
         
+        self.refreshControl.attributedTitle = NSAttributedString(string: "Pull to refresh clips")
+        self.refreshControl.addTarget(self, action: #selector(resetAndRetrieveClips), for: UIControlEvents.valueChanged)
+        self.tableView.addSubview(refreshControl)
+        
         self.clipQueryActivityIndicator.hidesWhenStopped = true
         self.clipQueryMessage.isHidden = true
 
         if let savedFilterType = UserDefaults.standard.value(forKey: kClipsTableFilterType) as? String, let clipFilterType = ClipFilter(rawValue: savedFilterType) {
+            if clipFilterType == .myClips {
+                guard let _ = UserDefaults.standard.string(forKey: "userId") else {
+                    self.filterTypeSelected = .allPodcasts
+                    return
+                }
+            }
+
             self.filterTypeSelected = clipFilterType
         } else {
             self.filterTypeSelected = .allPodcasts
@@ -71,6 +83,7 @@ class ClipsTableViewController: PVViewController {
     }
     
     @objc func resetAndRetrieveClips() {
+        showActivityIndicator()
         resetClipQuery()
         retrieveClips()
     }
@@ -87,6 +100,7 @@ class ClipsTableViewController: PVViewController {
         
         guard checkForConnectivity() else {
             loadNoInternetMessage()
+            self.refreshControl.endRefreshing()
             return
         }
         
@@ -103,17 +117,29 @@ class ClipsTableViewController: PVViewController {
             let subscribedPodcastFeedUrls = Podcast.retrieveSubscribedUrls()
 
             if subscribedPodcastFeedUrls.count < 1 {
-                self.reloadClipData()
+                DispatchQueue.main.async {
+                    self.reloadClipData()
+                }
                 return
             }
 
-            MediaRef.retrieveMediaRefsFromServer(podcastFeedUrls: subscribedPodcastFeedUrls, sortingType: self.sortingTypeSelected, page: self.clipQueryPage) { (mediaRefs) -> Void in
-                self.reloadClipData(mediaRefs)
+            MediaRef.retrieveMediaRefsFromServer(podcastFeedUrls: subscribedPodcastFeedUrls, sortingTypeRequestParam: self.sortingTypeSelected.requestParam, page: self.clipQueryPage) { (mediaRefs) -> Void in
+                DispatchQueue.main.async {
+                    self.reloadClipData(mediaRefs)
+                }
             }
 
+        } else if self.filterTypeSelected == .myClips {
+            if let userId = UserDefaults.standard.string(forKey: "userId") {
+                MediaRef.retrieveMediaRefsFromServer(userId: userId, sortingTypeRequestParam: self.sortingTypeSelected.requestParam, page: self.clipQueryPage) { (mediaRefs) -> Void in
+                    DispatchQueue.main.async {
+                        self.reloadClipData(mediaRefs)
+                    }
+                }
+            }
         } else {
 
-            MediaRef.retrieveMediaRefsFromServer(sortingType: self.sortingTypeSelected, page: self.clipQueryPage) { (mediaRefs) -> Void in
+            MediaRef.retrieveMediaRefsFromServer(sortingTypeRequestParam: self.sortingTypeSelected.requestParam, page: self.clipQueryPage) { (mediaRefs) -> Void in
                 self.reloadClipData(mediaRefs)
             }
 
@@ -124,6 +150,7 @@ class ClipsTableViewController: PVViewController {
     func reloadClipData(_ mediaRefs: [MediaRef]? = nil) {
         
         hideActivityIndicator()
+        self.refreshControl.endRefreshing()
         self.clipQueryIsLoading = false
         self.clipQueryActivityIndicator.stopAnimating()
         
@@ -210,25 +237,27 @@ extension ClipsTableViewController:UITableViewDelegate, UITableViewDataSource {
     }
         
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let clip = clipsArray[indexPath.row]
-        
         let cell = tableView.dequeueReusableCell(withIdentifier: "clipCell", for: indexPath) as! ClipTableViewCell
+        let row = indexPath.row
         
-        cell.podcastTitle?.text = clip.podcastTitle
-        cell.episodeTitle?.text = clip.episodeTitle
-        cell.clipTitle?.text = clip.title
-        
-        if let time = clip.readableStartAndEndTime() {
-            cell.time?.text = time
+        if clipsArray.count >= row - 1 {
+            let clip = clipsArray[indexPath.row]
+            cell.podcastTitle?.text = clip.podcastTitle
+            cell.episodeTitle?.text = clip.episodeTitle
+            cell.clipTitle?.text = clip.title
+            
+            if let time = clip.readableStartAndEndTime() {
+                cell.time?.text = time
+            }
+            
+            if let episodePubDate = clip.episodePubDate {
+                cell.episodePubDate?.text = episodePubDate.toShortFormatString()
+            }
+            
+            cell.podcastImage.image = Podcast.retrievePodcastImage(podcastImageURLString: clip.podcastImageUrl, feedURLString: clip.podcastFeedUrl, completion: { image in
+                cell.podcastImage.image = image
+            })
         }
-        
-        if let episodePubDate = clip.episodePubDate {
-            cell.episodePubDate?.text = episodePubDate.toShortFormatString()
-        }
-        
-        cell.podcastImage.image = Podcast.retrievePodcastImage(podcastImageURLString: clip.podcastImageUrl, feedURLString: clip.podcastFeedUrl, completion: { image in
-            cell.podcastImage.image = image
-        })
         
         return cell
     }
@@ -238,6 +267,36 @@ extension ClipsTableViewController:UITableViewDelegate, UITableViewDataSource {
         let playerHistoryItem = self.playerHistoryManager.convertMediaRefToPlayerHistoryItem(mediaRef: clip)
         self.goToNowPlaying()
         self.pvMediaPlayer.loadPlayerHistoryItem(item: playerHistoryItem)
+    }
+    
+    func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
+        if filterTypeSelected == .myClips {
+            let row = indexPath.row
+            if let clipToDeleteId = self.clipsArray[row].id {
+                let deleteAction = UITableViewRowAction(style: .default, title: "Delete", handler: {action, indexpath in
+                    MediaRef.deleteMediaRefFromServer(id: clipToDeleteId) { wasSuccessful in
+                        DispatchQueue.main.async {
+                            if (wasSuccessful) {
+                                self.clipsArray.remove(at: row)
+                                self.tableView.deleteRows(at: [indexPath], with: .fade)
+                            } else {
+                                let actions = UIAlertController(title: "Failed to delete clip",
+                                                                message: "Please check your internet connection and try again.",
+                                                                preferredStyle: .alert)
+                                
+                                actions.addAction(UIAlertAction(title: "Ok", style: .cancel, handler: nil))
+                                
+                                self.present(actions, animated: true, completion: nil)
+                            }
+                        }
+                    }
+                })
+                
+                return [deleteAction]
+            }
+        }
+        
+        return []
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
@@ -258,15 +317,29 @@ extension ClipsTableViewController:FilterSelectionProtocol {
         
         let alert = UIAlertController(title: "Clips From", message: nil, preferredStyle: .actionSheet)
         
+        alert.addAction(UIAlertAction(title: ClipFilter.allPodcasts.text, style: .default, handler: { action in
+            self.filterTypeSelected = .allPodcasts
+            self.retrieveClips()
+        }))
+        
         alert.addAction(UIAlertAction(title: ClipFilter.subscribed.text, style: .default, handler: { action in
             self.filterTypeSelected = .subscribed
             self.retrieveClips()
         }))
         
-        alert.addAction(UIAlertAction(title: ClipFilter.allPodcasts.text, style: .default, handler: { action in
-            self.filterTypeSelected = .allPodcasts
+        alert.addAction(UIAlertAction(title: ClipFilter.myClips.text, style: .default, handler: { action in
+            guard let _ = UserDefaults.standard.string(forKey: "userId") else {
+                let alert = UIAlertController(title: "My Clips", message: "Login to browse a list of clips you created.", preferredStyle: .actionSheet)
+                alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+                self.present(alert, animated: true, completion: nil)
+                return
+            }
+            
+            self.filterTypeSelected = .myClips
             self.retrieveClips()
+
         }))
+        
         
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
         

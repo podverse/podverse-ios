@@ -22,6 +22,8 @@ class MediaRef {
     var podcastFeedUrl:String?
     var podcastImageUrl:String?
     var podcastTitle:String?
+    var ownerId:String?
+    var ownerName:String?
     var isPublic:Bool? = false
     
     static func jsonToMediaRef(item: [String:Any]) -> MediaRef {
@@ -40,6 +42,9 @@ class MediaRef {
         mediaRef.podcastId = item["podcastId"] as? String
         mediaRef.podcastFeedUrl = item["podcastFeedUrl"] as? String
         mediaRef.podcastImageUrl = item["podcastImageUrl"] as? String
+        
+        mediaRef.ownerId = item["ownerId"] as? String
+        mediaRef.ownerName = item["ownerName"] as? String
         
         if let episodePubDate = item["episodePubDate"] as? String {
             mediaRef.episodePubDate = episodePubDate.toServerDate()
@@ -126,7 +131,7 @@ class MediaRef {
         }
     }
     
-    static func retrieveMediaRefsFromServer(episodeMediaUrl: String? = nil, podcastIds: [String] = [], podcastFeedUrls: [String] = [], onlySubscribed: Bool? = nil, sortingType: ClipSorting? = nil, page: Int? = 1, completion: @escaping (_ mediaRefs:[MediaRef]?) -> Void) {
+    static func retrieveMediaRefsFromServer(episodeMediaUrl: String? = nil, podcastIds: [String] = [], podcastFeedUrls: [String] = [], userId:String? = nil, onlySubscribed: Bool? = nil, sortingTypeRequestParam: String?, page: Int? = 1, completion: @escaping (_ mediaRefs:[MediaRef]?) -> Void) {
         showNetworkActivityIndicator()
         if let url = URL(string: BASE_URL + "api/clips") {
             
@@ -144,10 +149,12 @@ class MediaRef {
                 values["podcastIds"] = podcastIds
             } else if podcastFeedUrls.count > 0 {
                 values["podcastFeedUrls"] = podcastFeedUrls
+            } else if let userId = userId {
+                values["userId"] = userId
             }
             
-            if let sortingType = sortingType {
-                values["filterType"] = sortingType.requestParam
+            if let sortingTypeRequestParam = sortingTypeRequestParam {
+                values["sortType"] = sortingTypeRequestParam
             }
             
             if let page = page {
@@ -196,6 +203,34 @@ class MediaRef {
             
             task.resume()
             
+        }
+    }
+    
+    static func deleteMediaRefFromServer(id:String, completion: @escaping (Bool) -> Void) {
+        if let url = URL(string: BASE_URL + "clips/" + id), let idToken = UserDefaults.standard.string(forKey: "idToken") {
+            showNetworkActivityIndicator()
+            
+            let request = NSMutableURLRequest(url: url, cachePolicy: NSURLRequest.CachePolicy.reloadIgnoringLocalAndRemoteCacheData, timeoutInterval: 60)
+            
+            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+            request.setValue(idToken, forHTTPHeaderField: "Authorization")
+            
+            request.httpMethod = "DELETE"
+            
+            let task = URLSession.shared.dataTask(with: request as URLRequest) { data, response, error in
+                hideNetworkActivityIndicator()
+                guard error == nil else {
+                    print("Error: \(error?.localizedDescription ?? "Unknown Error")")
+                    DispatchQueue.main.async {
+                        completion(false)
+                    }
+                    return
+                }
+                
+                completion(true)
+            }
+            
+            task.resume()
         }
     }
         

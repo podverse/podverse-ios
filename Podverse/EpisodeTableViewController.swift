@@ -250,7 +250,7 @@ class EpisodeTableViewController: PVViewController {
         self.clipQueryPage += 1
         
         if let mediaUrl = self.mediaUrl {
-            MediaRef.retrieveMediaRefsFromServer(episodeMediaUrl: mediaUrl, sortingType: self.sortingTypeSelected, page: self.clipQueryPage) { (mediaRefs) -> Void in
+            MediaRef.retrieveMediaRefsFromServer(episodeMediaUrl: mediaUrl, sortingTypeRequestParam: self.sortingTypeSelected.requestParam, page: self.clipQueryPage) { (mediaRefs) -> Void in
                 self.reloadClipData(mediaRefs)
             }
         }

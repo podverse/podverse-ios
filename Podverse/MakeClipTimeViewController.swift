@@ -19,6 +19,7 @@ class MakeClipTimeViewController: UIViewController, UITextFieldDelegate {
     var startTime: Int?
     var timer: Timer?
     var isPublic = false
+    var editingItem: PlayerHistoryItem?
 
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     @IBOutlet weak var currentTime: UILabel!
@@ -41,6 +42,50 @@ class MakeClipTimeViewController: UIViewController, UITextFieldDelegate {
     @IBOutlet weak var podcastImage: UIImageView!
     @IBOutlet weak var speed: UIButton!
     
+    func loadMakeClipInputs() {
+        self.startTimeLabel.text = PVTimeHelper.convertIntToHMSString(time: self.startTime)
+        self.clearEndTimeButton.isHidden = true
+        self.endTimeLabel.text = "optional"
+        self.endTimeLabel.textColor = UIColor.lightGray
+        self.titleInput.leftView = UIView(frame: CGRect(x:0, y:0, width:10, height:35))
+        self.titleInput.leftViewMode = UITextFieldViewMode.always
+        self.titleInput.returnKeyType = .done
+    }
+    
+    func loadEditClipInputs() {
+        if let editingItem = self.editingItem {
+            if let startTime = editingItem.startTime, let startTimeInt = Int(exactly: Float(startTime)) {
+                self.startTimeLabel.text = PVTimeHelper.convertIntToHMSString(time: startTimeInt)
+                self.startTime = startTimeInt
+            }
+            
+            if let endTime = editingItem.endTime, let endTimeInt = Int(exactly: Float(endTime)) {
+                self.clearEndTimeButton.isHidden = false
+                self.endTimeLabel.text = PVTimeHelper.convertIntToHMSString(time: endTimeInt)
+                self.endTimeLabel.textColor = UIColor.black
+                self.endTime = endTimeInt
+            } else {
+                self.clearEndTimeButton.isHidden = true
+                self.endTimeLabel.text = "optional"
+                self.endTimeLabel.textColor = UIColor.lightGray
+            }
+            
+            self.titleInput.leftView = UIView(frame: CGRect(x:0, y:0, width:10, height:35))
+            self.titleInput.leftViewMode = UITextFieldViewMode.always
+            self.titleInput.returnKeyType = .done
+            
+            if let title = editingItem.clipTitle {
+                self.titleInput.text = title
+            }
+            
+            if let isPublic = editingItem.isPublic {
+                self.isPublic = isPublic
+                let visibilityText = self.isPublic ? VisibilityOptions.isPublic.text : VisibilityOptions.isOnlyWithLink.text
+                self.visibilityButton.setTitle(visibilityText + " ▼", for: .normal)
+            }
+        }
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -48,17 +93,10 @@ class MakeClipTimeViewController: UIViewController, UITextFieldDelegate {
         populatePlayerInfo()
         
         self.navigationItem.backBarButtonItem = UIBarButtonItem(title:"Back", style:.plain, target:nil, action:nil)
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Save", style: .plain, target: self, action: #selector(save))
         
         self.activityIndicator.startAnimating()
         self.progress.setThumbImage(#imageLiteral(resourceName: "SliderCurrentPosition"), for: .normal)
-        self.startTimeLabel.text = PVTimeHelper.convertIntToHMSString(time: self.startTime)
-        self.clearEndTimeButton.isHidden = true
-        self.endTimeLabel.text = "optional"
-        self.endTimeLabel.textColor = UIColor.lightGray        
-        self.titleInput.leftView = UIView(frame: CGRect(x:0, y:0, width:10, height:35))
-        self.titleInput.leftViewMode = UITextFieldViewMode.always
-        self.titleInput.returnKeyType = .done
+
         self.podcastImage.image = Podcast.retrievePodcastImage(fullSized: true, podcastImageURLString: self.pvMediaPlayer.nowPlayingItem?.podcastImageUrl, feedURLString: nil, completion: { (image) in
             self.podcastImage.image = image
         })
@@ -75,6 +113,21 @@ class MakeClipTimeViewController: UIViewController, UITextFieldDelegate {
         }
         
         updateSpeedLabel()
+        
+        let saveBtn = UIBarButtonItem(title: "Save", style: .plain, target: self, action: #selector(save))
+        let deleteBtn = UIBarButtonItem(title: "Delete", style: .plain, target: self, action: #selector(deleteClip))
+        
+        if self.editingItem == nil {
+            loadMakeClipInputs()
+            self.title = "Make Clip"
+            self.navigationItem.rightBarButtonItems = [saveBtn]
+        } else {
+            // Make a copy in case the current PlayerHistoryItem reference disappears while on the edit view
+            self.editingItem = self.editingItem?.copyPlayerHistoryItem()
+            loadEditClipInputs()
+            self.title = "Edit Clip"
+            self.navigationItem.rightBarButtonItems = [saveBtn, deleteBtn]
+        }
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -199,15 +252,13 @@ class MakeClipTimeViewController: UIViewController, UITextFieldDelegate {
         self.present(visibilityActions, animated: true, completion: nil)
     }
     
-    @objc func save() {
-        self.view.endEditing(true)
-        
+    func validateInputs() -> Bool {
         guard let startTime = self.startTime else {
             let alertController = UIAlertController(title: "Invalid Clip Time", message: "Start time must be provided.", preferredStyle: .alert)
             let action = UIAlertAction(title: "OK", style: .default, handler: nil)
             alertController.addAction(action)
             self.present(alertController, animated: true, completion: nil)
-            return
+            return false
         }
         
         if let endTime = self.endTime {
@@ -222,35 +273,96 @@ class MakeClipTimeViewController: UIViewController, UITextFieldDelegate {
                 let action = UIAlertAction(title: "OK", style: .default, handler: nil)
                 alertController.addAction(action)
                 self.present(alertController, animated: true, completion: nil)
-                return
+                return false
             }
-            
         }
         
-        if let mediaRefItem = self.playerHistoryItem?.copyPlayerHistoryItem() {
-            
+        return true
+    }
+    
+    @objc func save() {
+        self.view.endEditing(true)
+        
+        guard validateInputs() else {
+            return
+        }
+        
+        var mediaRefItem:PlayerHistoryItem? = nil
+        if let editingItem = self.editingItem {
+            mediaRefItem = editingItem
+        } else if let nowPlayingItem = self.playerHistoryItem?.copyPlayerHistoryItem() {
+            mediaRefItem = nowPlayingItem
+        }
+        
+        if let item = mediaRefItem {
             showLoadingOverlay()
             
             if let startTime = self.startTime {
-                mediaRefItem.startTime = Int64(startTime)
+                item.startTime = Int64(startTime)
             }
             
             if let endTime = self.endTime {
-                mediaRefItem.endTime = Int64(endTime)
+                item.endTime = Int64(endTime)
             }
             
             if let title = self.titleInput.text {
-                mediaRefItem.clipTitle = title
+                item.clipTitle = title
             }
             
-            mediaRefItem.isPublic = self.isPublic
+            item.isPublic = self.isPublic
             
-            mediaRefItem.saveToServerAsMediaRef() { mediaRef in
+            if editingItem == nil {
+                item.saveToServerAsMediaRef() { mediaRef in
+                    self.hideLoadingOverlay()
+                    if let id = mediaRef?.id {
+                        self.displayClipCreatedAlert(mediaRefId: id)
+                    } else {
+                        self.displayFailedToCreateClipAlert()
+                    }
+                }
+            } else {
+                item.updateMediaRefOnServer() { wasSuccessful in
+                    self.hideLoadingOverlay()
+                    if wasSuccessful {
+                        self.displayClipUpdatedAlert(item: item)
+                    } else {
+                        self.displayFailedToUpdateClipAlert()
+                    }
+                }
+            }
+        }
+        
+    }
+    
+    @objc func deleteClip() {
+        self.view.endEditing(true)
+        
+        if let item = self.editingItem, let id = item.mediaRefId {
+            showLoadingOverlay()
+            
+            MediaRef.deleteMediaRefFromServer(id: id) { wasSuccessful in
                 self.hideLoadingOverlay()
-                if let id = mediaRef?.id {
-                    self.displayClipCreatedAlert(mediaRefId: id)
-                } else {
-                    self.displayFailedToCreateClipAlert()
+                
+                DispatchQueue.main.async {
+                    if (wasSuccessful) {
+                        let actions = UIAlertController(title: "Delete successful",
+                                                        message: "The clip was successfully deleted.",
+                                                        preferredStyle: .alert)
+                        
+                        actions.addAction(UIAlertAction(title: "Ok", style: .cancel, handler: { action in
+                            self.navigationController?.popViewController(animated: true)
+                        }))
+                        
+                        self.present(actions, animated: true, completion: nil)
+                    } else {
+                        let actions = UIAlertController(title: "Failed to delete clip",
+                                                        message: "Please check your internet connection and try again.",
+                                                        preferredStyle: .alert)
+                        
+                        actions.addAction(UIAlertAction(title: "Ok", style: .cancel, handler: nil))
+                        
+                        self.present(actions, animated: true, completion: nil)
+                    }
                 }
             }
         }
@@ -291,45 +403,71 @@ class MakeClipTimeViewController: UIViewController, UITextFieldDelegate {
     }
     
     private func displayClipCreatedAlert(mediaRefId: String) {
-        
-        let actions = UIAlertController(title: "Clip Created", 
-                                        message: BASE_URL + "clips/" + mediaRefId, 
-                                        preferredStyle: .alert)
-        
-        actions.addAction(UIAlertAction(title: "Share", style: .default, handler: { action in
-            let clipUrlItem = [BASE_URL + "clips/" + mediaRefId]
-            let activityVC = UIActivityViewController(activityItems: clipUrlItem, applicationActivities: nil)
-            activityVC.popoverPresentationController?.sourceView = self.view
+        DispatchQueue.main.async {
+            let actions = UIAlertController(title: "Clip Created",
+                                            message: BASE_URL + "clips/" + mediaRefId, 
+                                            preferredStyle: .alert)
             
-            activityVC.completionWithItemsHandler = { activityType, success, items, error in
-                if activityType == UIActivityType.copyToPasteboard {
-                    self.showToast(message: kLinkCopiedToast)
+            actions.addAction(UIAlertAction(title: "Share", style: .default, handler: { action in
+                let clipUrlItem = [BASE_URL + "clips/" + mediaRefId]
+                let activityVC = UIActivityViewController(activityItems: clipUrlItem, applicationActivities: nil)
+                activityVC.popoverPresentationController?.sourceView = self.view
+                
+                activityVC.completionWithItemsHandler = { activityType, success, items, error in
+                    if activityType == UIActivityType.copyToPasteboard {
+                        self.showToast(message: kLinkCopiedToast)
+                    }
+                    
+                    self.navigationController?.popViewController(animated: true)
                 }
                 
-                self.navigationController?.popViewController(animated: true)
-            }
+                self.present(activityVC, animated: true, completion: nil)
+            }))
             
-            self.present(activityVC, animated: true, completion: nil)
-        }))
-        
-        actions.addAction(UIAlertAction(title: "Done", style: .cancel, handler: { action in
-            self.navigationController?.popViewController(animated: true)
-        }))
-        
-        self.present(actions, animated: true, completion: nil)
+            actions.addAction(UIAlertAction(title: "Done", style: .cancel, handler: { action in
+                self.navigationController?.popViewController(animated: true)
+            }))
+            
+            self.present(actions, animated: true, completion: nil)
+        }
     }
     
     private func displayFailedToCreateClipAlert() {
-        
-        let actions = UIAlertController(title: "Failed to create clip",
-                                        message: "Please check your internet connection and try again.",
-                                        preferredStyle: .alert)
-        
-        actions.addAction(UIAlertAction(title: "Ok", style: .cancel, handler: { action in
-            self.navigationController?.popViewController(animated: true)
-        }))
-        
-        self.present(actions, animated: true, completion: nil)
+        DispatchQueue.main.async {
+            let actions = UIAlertController(title: "Failed to create clip",
+                                            message: "Please check your internet connection and try again.",
+                                            preferredStyle: .alert)
+            
+            actions.addAction(UIAlertAction(title: "Ok", style: .cancel))
+            
+            self.present(actions, animated: true, completion: nil)
+        }
+    }
+    
+    private func displayClipUpdatedAlert(item: PlayerHistoryItem) {
+        DispatchQueue.main.async {
+            let actions = UIAlertController(title: "Clip successfully updated",
+                                            message: nil,
+                                            preferredStyle: .alert)
+            
+            actions.addAction(UIAlertAction(title: "Ok", style: .default, handler: { action in
+                self.navigationController?.popViewController(animated: true)
+            }))
+            
+            self.present(actions, animated: true, completion: nil)
+        }
+    }
+    
+    private func displayFailedToUpdateClipAlert() {
+        DispatchQueue.main.async {
+            let actions = UIAlertController(title: "Failed to update clip",
+                                            message: "Please check your internet connection and try again.",
+                                            preferredStyle: .alert)
+            
+            actions.addAction(UIAlertAction(title: "Ok", style: .cancel))
+            
+            self.present(actions, animated: true, completion: nil)
+        }
     }
     
     private func setupTimer() {

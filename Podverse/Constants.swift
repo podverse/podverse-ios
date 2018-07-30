@@ -32,7 +32,7 @@ enum SharePermission:String {
 }
 
 let LOCAL_DEV_URL = "http://localhost:8080/"
-let DEV_URL = "http://kc01.vince.fyi:38294/"
+let DEV_URL = ""
 let PROD_URL = "https://podverse.fm/"
 let BASE_URL = PROD_URL
 
@@ -57,6 +57,8 @@ let kLastPlayingEpisodeURL = "lastPlayingEpisodeURL"
 let kUnfollowPodcast = "unfollowPodcast"
 
 let kUpdateDownloadsTable = "updateDownloadTable"
+
+let kClipUpdated = "clipUpdated"
 
 let kNowPlayingTimeHasChanged = "nowPlayingTimeHasChanged"
 
@@ -242,6 +244,7 @@ enum ClipFilter: String {
     case episode = "Episode"
     case podcast = "Podcast"
     case subscribed = "Subscribed"
+    case myClips = "My Clips"
     
     var text:String {
         get {
@@ -254,6 +257,8 @@ enum ClipFilter: String {
                 return "Podcast"
             case .subscribed:
                 return "Subscribed"
+            case .myClips:
+                return "My Clips"
             }
         }
     }
