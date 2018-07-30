@@ -26,19 +26,40 @@ class PVFeedParser {
     
     let privateMoc = CoreDataHelper.createMOCForThread(threadType: .privateThread)
     
+    var backgroundParsingTasks:[UIBackgroundTaskIdentifier] = []
+    
     init(shouldOnlyGetMostRecentEpisode:Bool, shouldSubscribe:Bool, podcastId:String?) {
         self.onlyGetMostRecentEpisode = shouldOnlyGetMostRecentEpisode
         self.subscribeToPodcast = shouldSubscribe
         self.podcastId = podcastId
     }
     
+    func beginBackgroundParsing() -> UIBackgroundTaskIdentifier {
+        var backgroundParsingTask:UIBackgroundTaskIdentifier = 0
+        backgroundParsingTask = UIApplication.shared.beginBackgroundTask() {
+            self.endBackgroundParsing(backgroundParsingTask)
+        }
+        
+        self.backgroundParsingTasks.append(backgroundParsingTask)
+        return backgroundParsingTask
+    }
+    
+    func endBackgroundParsing(_ backgroundParsingTask:UIBackgroundTaskIdentifier) {
+        if let index = self.backgroundParsingTasks.index(of: backgroundParsingTask) {
+            self.backgroundParsingTasks.remove(at: index)
+        }
+    }
+    
     func parsePodcastFeed(feedUrlString:String) {
+        
+        let backgroundParsingTask = beginBackgroundParsing()
 
         guard feedUrlString.count > 0, let url = URL(string: feedUrlString) else {
             self.parsingPodcasts.podcastFinishedParsing()
             DispatchQueue.main.async {
                 NotificationCenter.default.post(name: .feedParsingComplete, object: nil, userInfo: ["feedUrl": feedUrlString])
             }
+            endBackgroundParsing(backgroundParsingTask)
             return
         }
 
@@ -48,6 +69,7 @@ class PVFeedParser {
             DispatchQueue.main.async {
                 NotificationCenter.default.post(name: .feedParsingComplete, object: nil, userInfo: ["feedUrl": feedUrlString])
             }
+            endBackgroundParsing(backgroundParsingTask)
             return
         }
 
@@ -112,6 +134,8 @@ class PVFeedParser {
                     }
                 }
             }
+            
+            self.endBackgroundParsing(backgroundParsingTask)
         }
         
     }

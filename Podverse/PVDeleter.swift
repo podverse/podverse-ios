@@ -147,7 +147,8 @@ class PVDeleter: NSObject {
                     
                     if (fileOnly) {
                         if let podcast = CoreDataHelper.fetchEntityWithID(objectId: episode.podcast.objectID, moc: privateMoc) as? Podcast {
-                            podcast.downloadedEpisodes -= 1
+                            let episodesArray = Array(episode.podcast.episodes.filter { $0.fileName != nil } )
+                            podcast.downloadedEpisodes = episodesArray.count
                         }
                     }
                     

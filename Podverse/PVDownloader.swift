@@ -80,6 +80,10 @@ class PVDownloader:NSObject {
     
     func resumeDownloadingEpisode(downloadingEpisode: DownloadingEpisode) {
         
+        guard shouldDownload() else {
+            return
+        }
+        
         if let downloadTaskResumeData = downloadingEpisode.taskResumeData {
             let downloadTask = downloadSession.downloadTask(withResumeData: downloadTaskResumeData)
             downloadingEpisode.taskIdentifier = downloadTask.taskIdentifier
@@ -99,15 +103,16 @@ class PVDownloader:NSObject {
     }
     
     func restartDownloadingEpisode(_ downloadingEpisode: DownloadingEpisode) {
+        
+        guard shouldDownload() else {
+            return
+        }
+        
         if let downloadSourceStringURL = downloadingEpisode.mediaUrl, let downloadSourceURL = URL(string: downloadSourceStringURL) {
             
             let downloadTask = self.downloadSession.downloadTask(with: downloadSourceURL)
             
             downloadingEpisode.taskIdentifier = downloadTask.taskIdentifier
-            
-            guard shouldDownload() else {
-                return
-            }
             
             DispatchQueue.main.async {
                 NotificationCenter.default.post(name: .downloadStarted, object: nil, userInfo: [Episode.episodeKey:downloadingEpisode])
@@ -270,7 +275,8 @@ extension PVDownloader:URLSessionDelegate, URLSessionDownloadDelegate {
                     
                     let podcastTitle = episode.podcast.title
                     if let podcast = CoreDataHelper.fetchEntityWithID(objectId: episode.podcast.objectID, moc: moc) as? Podcast {
-                        podcast.downloadedEpisodes += 1
+                        let episodesArray = Array(episode.podcast.episodes.filter { $0.fileName != nil } )
+                        podcast.downloadedEpisodes = episodesArray.count
                     }
                     // Save the downloadedMediaFileDestination with the object
                     moc.saveData {                        

@@ -25,7 +25,6 @@ class MediaRef {
     var isPublic:Bool? = false
     
     static func jsonToMediaRef(item: [String:Any]) -> MediaRef {
-
         let mediaRef = MediaRef()
         
         mediaRef.id = item["id"] as? String
@@ -49,7 +48,82 @@ class MediaRef {
         mediaRef.isPublic = item["isPublic"] as? Bool
         
         return mediaRef
+    }
+    
+    static func jsonToPlayerHistoryItem(json: [String:Any]) -> PlayerHistoryItem? {
+        if let isPublic = json["isPublic"] as? Bool {
+            let mediaRefId = json["id"] as? String
+            let podcastId = json["podcastId"] as? String
+            let podcastFeedUrl = json["podcastFeedUrl"] as? String
+            let podcastTitle = json["podcastTitle"] as? String
+            let podcastImageUrl = json["podcastImageUrl"] as? String
+            let episodeDuration = json["episodeDuration"] as? Int64
+            let episodeMediaUrl = json["episodeMediaUrl"] as? String
+            let episodeTitle = json["episodeTitle"] as? String
+            let episodeImageUrl = json["episodeImageUrl"] as? String
+            let episodeSummary = json["episodeSummary"] as? String
+            let episodePubDate = (json["episodePubDate"] as? String)?.toServerDate()
+            let lastUpdated = (json["lastUpdated"] as? String)?.toServerDate()
+            let startTime = json["startTime"] as? Int64
+            let endTime = json["endTime"] as? Int64
+            let title = json["title"] as? String
+            let ownerName = json["ownerName"] as? String
+            let ownerId = json["ownerId"] as? String
+            
+            let item = PlayerHistoryItem(mediaRefId: mediaRefId, podcastId: podcastId, podcastFeedUrl: podcastFeedUrl, podcastTitle: podcastTitle, podcastImageUrl: podcastImageUrl, episodeDuration: episodeDuration, episodeMediaUrl: episodeMediaUrl, episodeTitle: episodeTitle, episodeImageUrl: episodeImageUrl, episodeSummary: episodeSummary, episodePubDate: episodePubDate, startTime: startTime, endTime: endTime, clipTitle: title, ownerName: ownerName, ownerId: ownerId, hasReachedEnd: false, lastPlaybackPosition: nil, lastUpdated: lastUpdated, isPublic: isPublic)
+            
+            return item
+        }
         
+        return nil
+    }
+    
+    static func retrieveMediaRefFromServer(id:String, completion: @escaping (_ item:PlayerHistoryItem?) -> Void) {
+        if let url = URL(string: BASE_URL + "api/clips") {
+            
+            let request = NSMutableURLRequest(url: url, cachePolicy: NSURLRequest.CachePolicy.reloadIgnoringLocalAndRemoteCacheData, timeoutInterval: 60)
+            
+            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+            
+            request.httpMethod = "POST"
+            
+            var values: [String: Any] = [:]
+            values["id"] = id
+            
+            do {
+                request.httpBody = try JSONSerialization.data(withJSONObject: values, options: [])
+            } catch {
+                print("Error: \(error.localizedDescription)")
+            }
+            
+            let task = URLSession.shared.dataTask(with: request as URLRequest) { data, response, error in
+                
+                hideNetworkActivityIndicator()
+                guard error == nil else {
+                    print("Error: \(error?.localizedDescription ?? "Unknown Error")")
+                    DispatchQueue.main.async {
+                        completion(nil)
+                    }
+                    return
+                }
+                
+                if let data = data {
+                    do {
+                        if let responseJSON = try JSONSerialization.jsonObject(with: data, options: []) as? [String:Any] {
+                            let item = jsonToPlayerHistoryItem(json: responseJSON)
+                            DispatchQueue.main.async {
+                                completion(item)
+                            }
+                        }
+                    } catch {
+                        print("Error: " + error.localizedDescription)
+                    }
+                }
+            }
+            
+            task.resume()
+            
+        }
     }
     
     static func retrieveMediaRefsFromServer(episodeMediaUrl: String? = nil, podcastIds: [String] = [], podcastFeedUrls: [String] = [], onlySubscribed: Bool? = nil, sortingType: ClipSorting? = nil, page: Int? = 1, completion: @escaping (_ mediaRefs:[MediaRef]?) -> Void) {

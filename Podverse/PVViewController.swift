@@ -61,6 +61,10 @@ class PVViewController: UIViewController {
             }
         }
     }
+    
+    func hideNowPlayingBar() {
+        self.tabBarController?.hidePlayerView()
+    }
 
     func updateNowPlayingBarData(completion: @escaping (_ shouldShow: Bool) -> Void) {
         DispatchQueue.main.async {

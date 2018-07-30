@@ -39,16 +39,12 @@ class MediaPlayerViewController: PVViewController {
     @IBOutlet weak var endTimeLeadingConstraint: NSLayoutConstraint!
         
     override func viewDidLoad() {
-        setupContainerView()
-        
         let share = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.action, target: self, action: #selector(showShareMenu))
         let makeClip = UIBarButtonItem(image: UIImage(named:"clip"), style: .plain, target: self, action: #selector(showMakeClip))
         let addToPlaylist = UIBarButtonItem(image: UIImage(named:"add"), style: .plain, target: self, action: #selector(showAddToPlaylist))
         navigationItem.rightBarButtonItems = [share, addToPlaylist, makeClip]
 
         self.progress.setThumbImage(#imageLiteral(resourceName: "SliderCurrentPosition"), for: .normal)
-        
-        populatePlayerInfo()
         
         self.tabBarController?.hidePlayerView()
         
@@ -68,6 +64,11 @@ class MediaPlayerViewController: PVViewController {
             setupClipFlags()
         }
         
+        if (self.pvMediaPlayer.isDataAvailable) {
+            populatePlayerInfo()
+        }
+        
+        setupContainerView()
     }
     
     deinit {
@@ -196,6 +197,13 @@ class MediaPlayerViewController: PVViewController {
     }
     
     fileprivate func setupContainerView() {
+        self.childViewControllers.forEach({ 
+            $0.willMove(toParentViewController: nil)
+            $0.view.removeFromSuperview()
+            $0.removeFromParentViewController()
+        })
+        self.currentChildViewController = nil
+        
         if let currentVC = self.storyboard?.instantiateViewController(withIdentifier: self.aboutClipsStoryboardId) {
             self.currentChildViewController = currentVC
             self.currentChildViewController?.view.translatesAutoresizingMaskIntoConstraints = false
@@ -230,7 +238,10 @@ class MediaPlayerViewController: PVViewController {
         let audioPlayer = PVMediaPlayer.shared.audioPlayer
         
         DispatchQueue.main.async {
-            if audioPlayer.state == .stopped || audioPlayer.state == .paused {
+            if !self.pvMediaPlayer.isDataAvailable {
+                self.activityIndicator.isHidden = false
+                self.play.isHidden = true
+            } else if audioPlayer.state == .stopped || audioPlayer.state == .paused {
                 self.activityIndicator.isHidden = true
                 self.play.setImage(UIImage(named:"play"), for: .normal)
                 self.play.tintColor = UIColor.white
@@ -278,6 +289,19 @@ class MediaPlayerViewController: PVViewController {
         }
     }
     
+    func clearPlayerData() {
+        self.podcastTitle.text = nil
+        self.episodeTitle.text = nil
+        self.episodePubDate.text = nil
+        self.image.image = nil
+        self.duration.text = nil
+        self.pvMediaPlayer.audioPlayer.stop()
+        self.pvMediaPlayer.clearPlayingItem()
+        self.pageControl.currentPage = 0
+        clearTime()
+        togglePlayIcon()
+    }
+    
     @objc func updateTime () {
         DispatchQueue.main.async {
             var playbackPosition = 0.0
@@ -287,13 +311,23 @@ class MediaPlayerViewController: PVViewController {
                 playbackPosition = Double(self.progress.value) * dur
             }
             
-            self.currentTime.text = Int64(playbackPosition).toMediaPlayerString()
+            if (!self.pvMediaPlayer.isDataAvailable) {
+                self.currentTime.text = "--:--"
+            } else {
+                self.currentTime.text = Int64(playbackPosition).toMediaPlayerString()
+            }
             
             if let dur = self.pvMediaPlayer.duration {
                 self.duration.text = Int64(dur).toMediaPlayerString()
                 self.progress.value = Float(playbackPosition / dur)
             }
         }
+    }
+    
+    func clearTime () {
+        self.progress.value = 0.0
+        self.duration.text = "--:--"
+        self.currentTime.text = "--:--"
     }
     
     func showPendingTime() {
@@ -319,6 +353,10 @@ class MediaPlayerViewController: PVViewController {
     }
     
     @objc func showAddToPlaylist() {
+        
+        if !self.pvMediaPlayer.isDataAvailable {
+            return
+        }
         
         if !checkForConnectivity() {
             self.showInternetNeededAlertWithDescription(message: "You must be connected to the internet to add to playlists.")
@@ -348,19 +386,50 @@ class MediaPlayerViewController: PVViewController {
         
     }
     
+    func segueToRequestPodcastForm() {
+        if let webKitVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "WebKitVC") as? WebKitViewController {
+            webKitVC.urlString = kFormRequestPodcastUrl
+            self.navigationController?.pushViewController(webKitVC, animated: true)
+        }
+    }
+    
     @objc func showMakeClip() {
+        
+        if !self.pvMediaPlayer.isDataAvailable {
+            return
+        }
         
         if !checkForConnectivity() {
             self.showInternetNeededAlertWithDescription(message: "You must be connected to the internet to make clips.")
             return
         }
         
-        self.navigationItem.backBarButtonItem = UIBarButtonItem(title:"Player", style:.plain, target:nil, action:nil)
-        self.performSegue(withIdentifier: "Show Make Clip Time", sender: self)
+        if let item = self.playerHistoryManager.historyItems.first {
+            
+            if item.podcastId == nil {
+                let message = "This podcast was added by RSS feed. Please request to add it to podverse.fm to enable clip making."
+                let cantMakeClipActions = UIAlertController(title: "Can't Make Clip", message: message, preferredStyle: .alert)
+                
+                cantMakeClipActions.addAction(UIAlertAction(title: "Request", style: .default, handler: { action in
+                    self.segueToRequestPodcastForm()
+                }))
+                
+                cantMakeClipActions.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+                
+                self.present(cantMakeClipActions, animated: true, completion: nil)
+            }
+            
+            self.navigationItem.backBarButtonItem = UIBarButtonItem(title:"Player", style:.plain, target:nil, action:nil)
+            self.performSegue(withIdentifier: "Show Make Clip Time", sender: self)
+        }
         
     }
     
     @objc func showShareMenu() {
+        
+        if !self.pvMediaPlayer.isDataAvailable {
+            return
+        }
         
         if let item = self.playerHistoryManager.historyItems.first {
             
@@ -570,6 +639,7 @@ extension MediaPlayerViewController:PVMediaPlayerUIDelegate {
             self.populatePlayerInfo()
             self.showPendingTime()
             self.togglePlayIcon()
+            self.setupContainerView()
         }
     }
     

@@ -107,6 +107,46 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     func application(_ app: UIApplication, open url: URL, options: [UIApplicationOpenURLOptionsKey : Any] = [:]) -> Bool {
         return Lock.resumeAuth(url, options: options)
     }
+
+    func application(_ application: UIApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([Any]?) -> Void) -> Bool {
+        guard userActivity.activityType == NSUserActivityTypeBrowsingWeb, let url = userActivity.webpageURL, let components = URLComponents(url: url, resolvingAgainstBaseURL: true) else {
+            return false
+        }
+        
+        let pathValues = components.path.components(separatedBy: "/")
+        
+        if pathValues.count > 2 {
+            if pathValues[1] == "clips" {
+                if let tabBar = self.window?.rootViewController as? UITabBarController {
+                    DispatchQueue.main.async {
+                        tabBar.goToNowPlaying(isDataAvailable:false)
+                    }
+                }
+                
+                let id = pathValues[2]
+                MediaRef.retrieveMediaRefFromServer(id: id) { item in
+                    if let item = item {
+                        self.pvMediaPlayer.loadPlayerHistoryItem(item: item)
+                    }
+                }
+            } else if pathValues[1] == "episodes" {
+                if let tabBar = self.window?.rootViewController as? UITabBarController {
+                    DispatchQueue.main.async {
+                        tabBar.goToNowPlaying(isDataAvailable:false)
+                    }
+                }
+                
+                let id = pathValues[2]
+                Episode.retrieveEpisodeFromServer(id: id) { item in
+                    if let item = item {
+                        self.pvMediaPlayer.loadPlayerHistoryItem(item: item)
+                    }
+                }
+            }
+        }
+        
+        return true
+    }
     
     fileprivate func setupUI() {
         UINavigationBar.appearance().isTranslucent = false

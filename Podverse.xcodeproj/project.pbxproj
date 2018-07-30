@@ -164,6 +164,7 @@
 		30EA456C1F68B48900573554 /* ClipEpisodeTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClipEpisodeTableViewCell.swift; sourceTree = "<group>"; };
 		30EA456E1F68B49700573554 /* ClipPodcastTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClipPodcastTableViewCell.swift; sourceTree = "<group>"; };
 		30EB67771ECCAB2800C5AB80 /* MediaPlayerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MediaPlayerViewController.swift; sourceTree = "<group>"; };
+		30EF307E20FB028C0040D438 /* Podverse.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Podverse.entitlements; sourceTree = "<group>"; };
 		30F559E01F45361F0080CD90 /* podverse-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "podverse-Bridging-Header.h"; sourceTree = "<group>"; };
 		3DFC5776ED8A1D348AD0DD0F /* Pods_PodverseTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PodverseTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4B29D6346E600E88926FE2B2 /* Pods_Podverse.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Podverse.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -378,6 +379,7 @@
 		E79515DB1E03853500382BF8 /* Podverse */ = {
 			isa = PBXGroup;
 			children = (
+				30EF307E20FB028C0040D438 /* Podverse.entitlements */,
 				E79515DC1E03853500382BF8 /* AppDelegate.swift */,
 				E7D25BCF1E0F1C9F00B60368 /* Custom Helpers */,
 				E7B2A5A21E12CBFF00AAE036 /* Custom UI Classes */,
@@ -570,6 +572,9 @@
 						ProvisioningStyle = Automatic;
 						SystemCapabilities = {
 							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
+							com.apple.SafariKeychain = {
 								enabled = 1;
 							};
 						};
@@ -991,6 +996,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_ENTITLEMENTS = Podverse/Podverse.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
@@ -1012,6 +1018,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_ENTITLEMENTS = Podverse/Podverse.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;

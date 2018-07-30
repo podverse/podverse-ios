@@ -15,6 +15,7 @@ import StreamingKit
 
 extension Notification.Name {
     static let hideClipData = Notification.Name("hideClipData")
+    static let playerHasData = Notification.Name("playerHasData")
     static let playerHasFinished = Notification.Name("playerHasFinished")
 }
 
@@ -91,6 +92,8 @@ class PVMediaPlayer:NSObject {
     var shouldStartFromTime: Int64 = 0
     var shouldStopAtEndTime: Int64 = 0
     var hasErrored: Bool = false
+    
+    var isDataAvailable = true // Set to false when no properties of the NowPlayingItem will be ready, such as when retrieving an individual episode or clip from the server
     
     var playerSpeedRate:PlayingSpeed = .regular {
         didSet {
@@ -374,6 +377,17 @@ class PVMediaPlayer:NSObject {
         }
     }
     
+    func clearPlayingItem() {
+        self.audioPlayer = STKAudioPlayer()
+        self.duration = nil
+        self.isItemLoaded = false
+        self.nowPlayingItem = nil
+        self.shouldSetupClip = false
+        self.shouldStartFromTime = 0
+        self.shouldStopAtEndTime = 0
+        self.hasErrored = false
+    }
+    
     func loadPlayerHistoryItem(item: PlayerHistoryItem, startFromLastPlaybackPosition: Bool = false) {
         
         self.audioPlayer.dispose()
@@ -387,6 +401,7 @@ class PVMediaPlayer:NSObject {
         self.playerHistoryManager.addOrUpdateItem(item: nowPlayingItem)
         
         self.isItemLoaded = false
+        self.isDataAvailable = true
         self.delegate?.playerHistoryItemLoadingBegan()
         
         // Pausing before attempting to play seems to help with playback issues.
