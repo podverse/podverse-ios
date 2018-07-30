@@ -61,14 +61,28 @@ extension UITabBarController:PlayerViewProtocol {
     }
     
     func goToNowPlaying(isDataAvailable:Bool = true) {
-        if let mediaPlayerVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "MediaPlayerVC") as? MediaPlayerViewController, let currentNavVC = self.selectedViewController?.childViewControllers.first?.navigationController {
-            PVMediaPlayer.shared.isDataAvailable = isDataAvailable
-            if !isDataAvailable {
-                PVMediaPlayer.shared.shouldAutoplayOnce = true
+        if let currentNavVC = self.selectedViewController?.childViewControllers.first?.navigationController {
+            
+            var optionalMediaPlayerVC: MediaPlayerViewController?
+            
+            for controller in currentNavVC.viewControllers {
+                if controller.isKind(of: MediaPlayerViewController.self) {
+                    optionalMediaPlayerVC = controller as? MediaPlayerViewController
+                    break
+                }
             }
-            currentNavVC.pushViewController(mediaPlayerVC, animated: true)
-        }
+            
+            if let mediaPlayerVC = optionalMediaPlayerVC {
+                currentNavVC.popToViewController(mediaPlayerVC, animated: false)
+            } else if let mediaPlayerVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "MediaPlayerVC") as? MediaPlayerViewController {
+                PVMediaPlayer.shared.isDataAvailable = isDataAvailable
+                if !isDataAvailable {
+                    PVMediaPlayer.shared.shouldAutoplayOnce = true
+                }
 
+                currentNavVC.pushViewController(mediaPlayerVC, animated: true)
+            }
+        }
     }
 }
 
