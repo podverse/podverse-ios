@@ -66,11 +66,9 @@ class MediaPlayerViewController: PVViewController {
         
         if (self.pvMediaPlayer.isDataAvailable) {
             populatePlayerInfo()
-        } else {
-            clearPlayerData()
         }
         
-        setupContainerView() // Must be called after clearPlayerData()
+        setupContainerView()
     }
     
     deinit {
@@ -199,6 +197,13 @@ class MediaPlayerViewController: PVViewController {
     }
     
     fileprivate func setupContainerView() {
+        self.childViewControllers.forEach({ 
+            $0.willMove(toParentViewController: nil)
+            $0.view.removeFromSuperview()
+            $0.removeFromParentViewController()
+        })
+        self.currentChildViewController = nil
+        
         if let currentVC = self.storyboard?.instantiateViewController(withIdentifier: self.aboutClipsStoryboardId) {
             self.currentChildViewController = currentVC
             self.currentChildViewController?.view.translatesAutoresizingMaskIntoConstraints = false
@@ -634,6 +639,7 @@ extension MediaPlayerViewController:PVMediaPlayerUIDelegate {
             self.populatePlayerInfo()
             self.showPendingTime()
             self.togglePlayIcon()
+            self.setupContainerView()
         }
     }
     
