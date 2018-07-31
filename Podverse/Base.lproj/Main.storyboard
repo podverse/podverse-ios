@@ -748,7 +748,7 @@
         <!--Clips Table View Controller-->
         <scene sceneID="Shd-at-6ID">
             <objects>
-                <viewController automaticallyAdjustsScrollViewInsets="NO" id="ARB-bz-Rwv" customClass="ClipsTableViewController" customModule="Podverse" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="ClipsTVC" automaticallyAdjustsScrollViewInsets="NO" id="ARB-bz-Rwv" customClass="ClipsTableViewController" customModule="Podverse" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="vOH-XF-B6x"/>
                         <viewControllerLayoutGuide type="bottom" id="teL-qA-mOZ"/>
@@ -3521,7 +3521,7 @@
         <image name="tab-more" width="25" height="25"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="pNd-Xe-Cvn"/>
+        <segue reference="j4f-Dl-Bob"/>
         <segue reference="UX7-d9-2wT"/>
     </inferredMetricsTieBreakers>
 </document>

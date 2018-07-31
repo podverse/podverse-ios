@@ -143,6 +143,30 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
                     }
                 }
             }
+        } else if let queryItems = components.queryItems, queryItems.count > 0 {
+            var filterType:ClipFilter? = nil
+            var sortingType:ClipSorting? = nil
+            
+            if let filter = url.getQueryParamValue("filter") {
+                filterType = ClipFilter(rawValue: filter)
+            }
+            
+            if let sort = url.getQueryParamValue("sort") {
+                sortingType = ClipSorting(rawValue: sort)
+            }
+            
+            if let tabBar = self.window?.rootViewController as? UITabBarController {
+                DispatchQueue.main.async {
+                    tabBar.goToClips(filterType, sortingType)
+                }
+            }
+            
+        } else if pathValues.count == 2 {
+            if let tabBar = self.window?.rootViewController as? UITabBarController {
+                DispatchQueue.main.async {
+                    tabBar.goToClips()
+                }
+            }
         }
         
         return true
