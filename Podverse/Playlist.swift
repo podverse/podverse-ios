@@ -250,6 +250,67 @@ class Playlist {
         }
     }
     
+    static func convertToPlaylistUpdateBody(title:String?, itemOrder:[String]? = []) -> [String: Any] {
+        var body:[String: Any] = [:]
+        
+        if let title = title {
+            body["title"] = title
+        }
+        
+        if let itemOrder = itemOrder {
+            body["itemOrder"] = itemOrder
+        }
+        
+        return body
+    }
+    
+    static func updatePlaylistOnServer(id: String, title:String?, itemOrder:[String]? = [], completion: @escaping (Bool) -> Void) {
+        if let url = URL(string: BASE_URL + "playlists/" + id) {
+            
+            var request = URLRequest(url: url, cachePolicy: NSURLRequest.CachePolicy.reloadIgnoringLocalAndRemoteCacheData, timeoutInterval: 20)
+            
+            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+            
+            request.httpMethod = "PUT"
+            
+            if let idToken = UserDefaults.standard.string(forKey: "idToken") {
+                request.setValue(idToken, forHTTPHeaderField: "Authorization")
+            }
+            
+            let putBody = self.convertToPlaylistUpdateBody(title: title, itemOrder: itemOrder)
+            
+            do {
+                request.httpBody = try JSONSerialization.data(withJSONObject: putBody, options: JSONSerialization.WritingOptions())
+                
+                showNetworkActivityIndicator()
+                
+                let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                    hideNetworkActivityIndicator()
+                    
+                    guard error == nil else {
+                        DispatchQueue.main.async {
+                            completion(false)
+                        }
+                        return
+                    }
+                    
+                    DispatchQueue.main.async {
+                        completion(true)
+                    }
+                }
+                
+                task.resume()
+                
+            } catch {
+                print(error)
+                DispatchQueue.main.async {
+                    completion(false)
+                }
+            }
+            
+        }
+    }
+    
     static func subscribeToPlaylistOnServer(id:String, completion: @escaping (Bool) -> Void) {
         if let url = URL(string: BASE_URL + "playlists/subscribe/" + id), let idToken = UserDefaults.standard.string(forKey: "idToken") {
             showNetworkActivityIndicator()

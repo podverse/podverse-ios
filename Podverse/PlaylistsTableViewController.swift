@@ -189,9 +189,7 @@ extension PlaylistsTableViewController:UITableViewDelegate, UITableViewDataSourc
                                     self.playlistsArray.remove(at: row)
                                     self.tableView.deleteRows(at: [indexPath], with: .fade)
                                 } else {
-                                    let actions = UIAlertController(title: "Failed to delete playlist",
-                                                                    message: "Please check your internet connection and try again.",
-                                                                    preferredStyle: .alert)
+                                    let actions = UIAlertController(title: "Failed to delete playlist", message: "Please check your internet connection and try again.",preferredStyle: .alert)
                                     
                                     actions.addAction(UIAlertAction(title: "Ok", style: .cancel, handler: nil))
                                     
@@ -211,9 +209,7 @@ extension PlaylistsTableViewController:UITableViewDelegate, UITableViewDataSourc
                                     self.playlistsArray.remove(at: row)
                                     self.tableView.deleteRows(at: [indexPath], with: .fade)
                                 } else {
-                                    let actions = UIAlertController(title: "Failed to unsubscribe from playlist",
-                                                                    message: "Please check your internet connection and try again.",
-                                                                    preferredStyle: .alert)
+                                    let actions = UIAlertController(title: "Failed to unsubscribe from playlist", message: "Please check your internet connection and try again.", preferredStyle: .alert)
                                     
                                     actions.addAction(UIAlertAction(title: "Ok", style: .cancel, handler: nil))
                                     
@@ -236,6 +232,7 @@ extension PlaylistsTableViewController:UITableViewDelegate, UITableViewDataSourc
             if segue.identifier == "Show Playlist" {
                 let playlistDetailTableViewController = segue.destination as! PlaylistDetailTableViewController
                 playlistDetailTableViewController.playlistId = self.playlistsArray[index.row].id
+                playlistDetailTableViewController.ownerId = self.playlistsArray[index.row].ownerId
             }
         }
     }

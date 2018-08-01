@@ -3174,16 +3174,41 @@
                                     <constraint firstAttribute="trailing" secondItem="9kC-YH-fni" secondAttribute="trailing" constant="8" id="s9x-sr-Me2"/>
                                 </constraints>
                             </view>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Fcx-S9-UJ5">
+                                <rect key="frame" x="0.0" y="88" width="375" height="58"/>
+                                <subviews>
+                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="type playlist title" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="o41-zA-VH2">
+                                        <rect key="frame" x="8" y="9" width="359" height="40"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="40" id="a0r-TE-tI2"/>
+                                        </constraints>
+                                        <nil key="textColor"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <textInputTraits key="textInputTraits"/>
+                                    </textField>
+                                </subviews>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstItem="o41-zA-VH2" firstAttribute="leading" secondItem="Fcx-S9-UJ5" secondAttribute="leading" constant="8" id="5kU-Uh-Sma"/>
+                                    <constraint firstItem="o41-zA-VH2" firstAttribute="centerY" secondItem="Fcx-S9-UJ5" secondAttribute="centerY" id="CFb-aV-wsa"/>
+                                    <constraint firstAttribute="height" constant="58" id="JKR-93-sDA"/>
+                                    <constraint firstAttribute="trailing" secondItem="o41-zA-VH2" secondAttribute="trailing" constant="8" id="KHs-Cs-yBe"/>
+                                </constraints>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstItem="nXr-ME-Lul" firstAttribute="top" secondItem="Fcx-S9-UJ5" secondAttribute="bottom" id="0kX-h8-zih"/>
                             <constraint firstAttribute="trailing" secondItem="Q9V-fy-GMA" secondAttribute="trailing" id="4O0-jQ-gPt"/>
                             <constraint firstItem="tQ2-Q5-Tl2" firstAttribute="top" secondItem="QyI-Lc-3yM" secondAttribute="bottom" id="4cH-Se-959"/>
                             <constraint firstItem="nXr-ME-Lul" firstAttribute="leading" secondItem="Pcd-hV-MSr" secondAttribute="leading" id="8mW-Pz-7ef"/>
                             <constraint firstItem="Q9V-fy-GMA" firstAttribute="leading" secondItem="Pcd-hV-MSr" secondAttribute="leading" id="NaW-0j-BeX"/>
                             <constraint firstAttribute="trailing" secondItem="QyI-Lc-3yM" secondAttribute="trailing" id="Z5V-m9-zfS"/>
+                            <constraint firstItem="Fcx-S9-UJ5" firstAttribute="leading" secondItem="Pcd-hV-MSr" secondAttribute="leading" id="caU-OT-zCd"/>
+                            <constraint firstAttribute="trailing" secondItem="Fcx-S9-UJ5" secondAttribute="trailing" id="feM-72-t56"/>
                             <constraint firstItem="QyI-Lc-3yM" firstAttribute="leading" secondItem="Pcd-hV-MSr" secondAttribute="leading" id="fl5-Ig-QK6"/>
                             <constraint firstItem="QyI-Lc-3yM" firstAttribute="top" secondItem="Q9V-fy-GMA" secondAttribute="bottom" id="h32-lq-GWm"/>
+                            <constraint firstItem="Fcx-S9-UJ5" firstAttribute="top" secondItem="Nbh-VK-ZQp" secondAttribute="bottom" id="oAp-7Q-Pf7"/>
                             <constraint firstAttribute="trailing" secondItem="nXr-ME-Lul" secondAttribute="trailing" id="q9f-gU-mKR"/>
                             <constraint firstItem="tQ2-Q5-Tl2" firstAttribute="top" secondItem="nXr-ME-Lul" secondAttribute="bottom" id="tLn-T9-gb0"/>
                             <constraint firstItem="Q9V-fy-GMA" firstAttribute="top" secondItem="Nbh-VK-ZQp" secondAttribute="bottom" id="w5L-1f-a6N"/>
@@ -3193,15 +3218,18 @@
                     <connections>
                         <outlet property="activityIndicator" destination="RH0-hK-rX7" id="Jcz-X1-oI7"/>
                         <outlet property="activityIndicatorView" destination="nXr-ME-Lul" id="5R5-iY-H8Q"/>
+                        <outlet property="headerView" destination="Q9V-fy-GMA" id="hC9-8r-bxd"/>
                         <outlet property="itemCount" destination="cj1-b5-FTU" id="b1E-vO-77O"/>
                         <outlet property="lastUpdated" destination="yK5-NK-vTb" id="hmK-pR-us8"/>
                         <outlet property="playlistTitle" destination="9kC-YH-fni" id="42A-rJ-4yN"/>
                         <outlet property="tableView" destination="QyI-Lc-3yM" id="gf0-pv-cty"/>
+                        <outlet property="titleEditTextField" destination="o41-zA-VH2" id="Fwp-cy-S5K"/>
+                        <outlet property="titleEditView" destination="Fcx-S9-UJ5" id="K12-LQ-aFv"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="GWx-j9-urR" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2613.5999999999999" y="1307.4962518740631"/>
+            <point key="canvasLocation" x="2613.5999999999999" y="1306.4039408866995"/>
         </scene>
         <!--Clips List Container View Controller-->
         <scene sceneID="RCj-Wg-8mW">
