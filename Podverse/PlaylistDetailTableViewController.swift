@@ -15,6 +15,7 @@ class PlaylistDetailTableViewController: PVViewController {
     var ownerId: String?
     var mediaRefsArray = [MediaRef]()
     let reachability = PVReachability.shared
+    var isDataAvailable = true
     
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     @IBOutlet weak var activityIndicatorView: UIView!
@@ -44,13 +45,13 @@ class PlaylistDetailTableViewController: PVViewController {
     func setupNavigationItems() {
         let share = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.action, target: self, action: #selector(showShareMenu))
         
-        if let userId = UserDefaults.standard.string(forKey: "userId"), self.ownerId == userId {
+        if let userId = UserDefaults.standard.string(forKey: "userId"), userId == self.ownerId || userId == self.playlist?.ownerId {
             let edit = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.edit, target: self, action: #selector(self.showEditTitle))
             self.navigationItem.rightBarButtonItems = [share, edit]
-        } else if let _ = UserDefaults.standard.string(forKey: "userId") {
+        } else if isDataAvailable, let _ = UserDefaults.standard.string(forKey: "userId") {
             let subscribe = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.bookmarks, target: self, action: #selector(self.subscribeToPlaylist))
             self.navigationItem.rightBarButtonItems = [share, subscribe]
-        } else {
+        } else if isDataAvailable {
             self.navigationItem.rightBarButtonItems = [share]
         }
     }
@@ -100,9 +101,7 @@ class PlaylistDetailTableViewController: PVViewController {
                         actions.addAction(UIAlertAction(title: "Ok", style: .cancel, handler: nil))
                         self.present(actions, animated: true, completion: nil)
                     } else {
-                        let actions = UIAlertController(title: "Failed to subscribe to playlist",
-                                                        message: "Please check your internet connection and try again.",
-                                                        preferredStyle: .alert)
+                        let actions = UIAlertController(title: "Failed to subscribe to playlist", message: "Please check your internet connection and try again.", preferredStyle: .alert)
                         actions.addAction(UIAlertAction(title: "Ok", style: .cancel, handler: nil))
                         self.present(actions, animated: true, completion: nil)
                     }
@@ -112,7 +111,6 @@ class PlaylistDetailTableViewController: PVViewController {
     }
     
     func retrievePlaylist() {
-        
         guard checkConnectivity() else {
             return
         }
@@ -124,7 +122,9 @@ class PlaylistDetailTableViewController: PVViewController {
         if let id = self.playlistId {
             Playlist.retrievePlaylistFromServer(id: id) { (playlist) -> Void in
                 self.playlist = playlist
-                self.reloadPlaylistData(playlist: playlist)
+                DispatchQueue.main.async {
+                    self.reloadPlaylistData(playlist: playlist)                    
+                }
             }
         }
     }
@@ -202,9 +202,13 @@ class PlaylistDetailTableViewController: PVViewController {
         
         hideActivityIndicator()
         
-        checkForResults(playlist: playlist)
+        self.isDataAvailable = true
+        self.setupNavigationItems()
+
+        let hasResults = checkForResults(playlist: playlist)
         
-        guard let playlist = playlist else {
+        
+        guard hasResults, let playlist = playlist else {
             return
         }
         

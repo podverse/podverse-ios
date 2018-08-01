@@ -3021,7 +3021,7 @@
         <!--Playlist Detail Table View Controller-->
         <scene sceneID="wn5-G0-Efr">
             <objects>
-                <viewController automaticallyAdjustsScrollViewInsets="NO" id="5wc-DY-Nr3" customClass="PlaylistDetailTableViewController" customModule="Podverse" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="PlaylistDetailVC" automaticallyAdjustsScrollViewInsets="NO" id="5wc-DY-Nr3" customClass="PlaylistDetailTableViewController" customModule="Podverse" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="Nbh-VK-ZQp"/>
                         <viewControllerLayoutGuide type="bottom" id="tQ2-Q5-Tl2"/>
