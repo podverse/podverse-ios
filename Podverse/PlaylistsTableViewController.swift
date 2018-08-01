@@ -158,11 +158,7 @@ extension PlaylistsTableViewController:UITableViewDelegate, UITableViewDataSourc
             cell.lastUpdated?.text = lastUpdated.toShortFormatString()
         }
         
-        if let itemCount = playlist.itemCount {
-            cell.itemCount.text = "Items: " + itemCount
-        } else {
-            cell.itemCount.text = "Items: 0"
-        }
+        cell.itemCount.text = "Items: " + String(playlist.mediaRefs.count)
         
         return cell
     }
@@ -170,6 +166,69 @@ extension PlaylistsTableViewController:UITableViewDelegate, UITableViewDataSourc
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         self.performSegue(withIdentifier: "Show Playlist", sender: nil)
         self.tableView.deselectRow(at: indexPath, animated: true)
+    }
+    
+    func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
+
+        let row = indexPath.row
+        
+        if self.playlistsArray.count > row {
+            let playlist = self.playlistsArray[row]
+            
+            if let id = playlist.id {
+                var actionTitle = "Unfollow"
+                
+                if let userId = UserDefaults.standard.string(forKey: "userId"), userId == playlist.ownerId {
+                    actionTitle = "Delete"
+                    
+                    let deleteAction = UITableViewRowAction(style: .default, title: actionTitle, handler: {action, indexPath in
+
+                        Playlist.deletePlaylistFromServer(id: id) { wasSuccessful in
+                            DispatchQueue.main.async {
+                                if (wasSuccessful) {
+                                    self.playlistsArray.remove(at: row)
+                                    self.tableView.deleteRows(at: [indexPath], with: .fade)
+                                } else {
+                                    let actions = UIAlertController(title: "Failed to delete playlist",
+                                                                    message: "Please check your internet connection and try again.",
+                                                                    preferredStyle: .alert)
+                                    
+                                    actions.addAction(UIAlertAction(title: "Ok", style: .cancel, handler: nil))
+                                    
+                                    self.present(actions, animated: true, completion: nil)
+                                }
+                            }
+                        }
+                    })
+                    
+                    return [deleteAction]
+                } else {
+                    let unsubscribeAction = UITableViewRowAction(style: .default, title: actionTitle, handler: {action, indexPath in
+                        
+                        Playlist.unsubscribeFromPlaylistOnServer(id: id) { wasSuccessful in
+                            DispatchQueue.main.async {
+                                if (wasSuccessful) {
+                                    self.playlistsArray.remove(at: row)
+                                    self.tableView.deleteRows(at: [indexPath], with: .fade)
+                                } else {
+                                    let actions = UIAlertController(title: "Failed to unsubscribe from playlist",
+                                                                    message: "Please check your internet connection and try again.",
+                                                                    preferredStyle: .alert)
+                                    
+                                    actions.addAction(UIAlertAction(title: "Ok", style: .cancel, handler: nil))
+                                    
+                                    self.present(actions, animated: true, completion: nil)
+                                }
+                            }
+                        }
+                    })
+                    
+                    return [unsubscribeAction]
+                }
+            }
+        }
+            
+        return []
     }
         
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {

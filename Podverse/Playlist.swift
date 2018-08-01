@@ -222,6 +222,90 @@ class Playlist {
 
     }
     
+    static func deletePlaylistFromServer(id:String, completion: @escaping (Bool) -> Void) {
+        if let url = URL(string: BASE_URL + "playlists/" + id), let idToken = UserDefaults.standard.string(forKey: "idToken") {
+            showNetworkActivityIndicator()
+            
+            let request = NSMutableURLRequest(url: url, cachePolicy: NSURLRequest.CachePolicy.reloadIgnoringLocalAndRemoteCacheData, timeoutInterval: 60)
+            
+            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+            request.setValue(idToken, forHTTPHeaderField: "Authorization")
+            
+            request.httpMethod = "DELETE"
+            
+            let task = URLSession.shared.dataTask(with: request as URLRequest) { data, response, error in
+                hideNetworkActivityIndicator()
+                guard error == nil else {
+                    print("Error: \(error?.localizedDescription ?? "Unknown Error")")
+                    DispatchQueue.main.async {
+                        completion(false)
+                    }
+                    return
+                }
+                
+                completion(true)
+            }
+            
+            task.resume()
+        }
+    }
+    
+    static func subscribeToPlaylistOnServer(id:String, completion: @escaping (Bool) -> Void) {
+        if let url = URL(string: BASE_URL + "playlists/subscribe/" + id), let idToken = UserDefaults.standard.string(forKey: "idToken") {
+            showNetworkActivityIndicator()
+            
+            let request = NSMutableURLRequest(url: url, cachePolicy: NSURLRequest.CachePolicy.reloadIgnoringLocalAndRemoteCacheData, timeoutInterval: 60)
+            
+            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+            request.setValue(idToken, forHTTPHeaderField: "Authorization")
+            
+            request.httpMethod = "POST"
+            
+            let task = URLSession.shared.dataTask(with: request as URLRequest) { data, response, error in
+                hideNetworkActivityIndicator()
+                guard error == nil else {
+                    print("Error: \(error?.localizedDescription ?? "Unknown Error")")
+                    DispatchQueue.main.async {
+                        completion(false)
+                    }
+                    return
+                }
+                
+                completion(true)
+            }
+            
+            task.resume()
+        }
+    }
+    
+    static func unsubscribeFromPlaylistOnServer(id:String, completion: @escaping (Bool) -> Void) {
+        if let url = URL(string: BASE_URL + "playlists/unsubscribe/" + id), let idToken = UserDefaults.standard.string(forKey: "idToken") {
+            showNetworkActivityIndicator()
+            
+            let request = NSMutableURLRequest(url: url, cachePolicy: NSURLRequest.CachePolicy.reloadIgnoringLocalAndRemoteCacheData, timeoutInterval: 60)
+            
+            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+            request.setValue(idToken, forHTTPHeaderField: "Authorization")
+            
+            request.httpMethod = "POST"
+            
+            let task = URLSession.shared.dataTask(with: request as URLRequest) { data, response, error in
+                hideNetworkActivityIndicator()
+                guard error == nil else {
+                    print("Error: \(error?.localizedDescription ?? "Unknown Error")")
+                    DispatchQueue.main.async {
+                        completion(false)
+                    }
+                    return
+                }
+                
+                completion(true)
+            }
+            
+            task.resume()
+        }
+    }
+    
     // TODO: addToPlaylist and removeFromPlaylist are identical except the urlString. How can we rewrite/consolidate them?
     static func addToPlaylist(playlistId: String, item: PlayerHistoryItem, shouldSaveFullEpisode: Bool = false, completion: @escaping (_ itemCount: Int?) -> Void) {
         
