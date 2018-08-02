@@ -20,6 +20,8 @@ class MakeClipTimeViewController: UIViewController, UITextFieldDelegate {
     var timer: Timer?
     var isPublic = false
     var editingItem: PlayerHistoryItem?
+    let hasSeenHint = UserDefaults.standard.bool(forKey: "HAS_SEEN_CLIP_HINT")
+    var shouldAnimate = true
 
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     @IBOutlet weak var currentTime: UILabel!
@@ -38,9 +40,11 @@ class MakeClipTimeViewController: UIViewController, UITextFieldDelegate {
     @IBOutlet weak var endTimeInputView: UIView!
     @IBOutlet weak var loadingOverlay: UIView!
     @IBOutlet weak var loadingActivityInidicator: UIActivityIndicatorView!
-    @IBOutlet weak var grabHintImage: UIImageView!
     @IBOutlet weak var podcastImage: UIImageView!
     @IBOutlet weak var speed: UIButton!
+    @IBOutlet weak var hintView: UIView!
+    @IBOutlet weak var hintViewImage: UIImageView!
+    @IBOutlet weak var hintImageHorizontalConstraint: NSLayoutConstraint!
     
     func loadMakeClipInputs() {
         self.startTimeLabel.text = PVTimeHelper.convertIntToHMSString(time: self.startTime)
@@ -113,27 +117,61 @@ class MakeClipTimeViewController: UIViewController, UITextFieldDelegate {
         }
         
         updateSpeedLabel()
+        loadMakeClipInputs()
+
+        if self.editingItem == nil {
+            self.title = "Make Clip"
+        } else {
+            self.title = "Edit Clip"
+        }
         
+        if (!hasSeenHint) {
+            animateHelper()
+        } else {
+            setupBarButtonItems()
+        }
+    }
+    
+    func animateHelper() {
+        if(self.shouldAnimate) {
+            if self.hintImageHorizontalConstraint != nil {
+                self.hintImageHorizontalConstraint.constant += 200
+                UIView.animate(withDuration: 1, animations: { 
+                   self.view.layoutIfNeeded()
+                }) { (_) in
+                    if self.hintImageHorizontalConstraint != nil {
+                        self.hintImageHorizontalConstraint.constant -= 200
+                        UIView.animate(withDuration: 1, animations: { 
+                            self.view.layoutIfNeeded()
+                        }) { (_) in
+                            self.animateHelper()
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    func setupBarButtonItems() {
         let saveBtn = UIBarButtonItem(title: "Save", style: .plain, target: self, action: #selector(save))
         let deleteBtn = UIBarButtonItem(title: "Delete", style: .plain, target: self, action: #selector(deleteClip))
         
         if self.editingItem == nil {
-            loadMakeClipInputs()
-            self.title = "Make Clip"
             self.navigationItem.rightBarButtonItems = [saveBtn]
         } else {
             // Make a copy in case the current PlayerHistoryItem reference disappears while on the edit view
             self.editingItem = self.editingItem?.copyPlayerHistoryItem()
-            loadEditClipInputs()
-            self.title = "Edit Clip"
             self.navigationItem.rightBarButtonItems = [saveBtn, deleteBtn]
         }
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         let touch:UITouch = touches.first!
-        if touch.view == self.grabHintImage {
-            self.grabHintImage.isHidden = true
+        if touch.view == self.hintView || touch.view == self.hintViewImage {
+            self.shouldAnimate = false
+            self.hintView.removeFromSuperview()
+            setupBarButtonItems()
+            UserDefaults.standard.set(true, forKey: "HAS_SEEN_CLIP_HINT")
         }
     }
     
