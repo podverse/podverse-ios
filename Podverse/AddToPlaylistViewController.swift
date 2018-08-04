@@ -64,9 +64,14 @@ class AddToPlaylistViewController: UIViewController {
         self.navigationItem.rightBarButtonItem = new
         
         Playlist.retrievePlaylistsFromServer() { (playlists) -> Void in
-            if let playlists = playlists {
-                self.playlistsArray = playlists
+            var filteredPlaylists:[Playlist] = []
+            
+            for playlist in playlists {
+                if playlist.ownerId == UserDefaults.standard.string(forKey: "userId") {
+                    filteredPlaylists.append(playlist)
+                }
             }
+            
             self.reloadPlaylistData()
         }
         

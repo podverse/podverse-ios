@@ -2939,8 +2939,22 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="qdj-xb-QLu">
+                                <rect key="frame" x="0.0" y="132" width="375" height="597"/>
+                                <subviews>
+                                    <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="04T-jm-gw0">
+                                        <rect key="frame" x="169" y="280" width="37" height="37"/>
+                                        <color key="color" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                    </activityIndicatorView>
+                                </subviews>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstItem="04T-jm-gw0" firstAttribute="centerY" secondItem="qdj-xb-QLu" secondAttribute="centerY" id="KqU-2Q-7Wd"/>
+                                    <constraint firstItem="04T-jm-gw0" firstAttribute="centerX" secondItem="qdj-xb-QLu" secondAttribute="centerX" id="bY4-m4-N2Y"/>
+                                </constraints>
+                            </view>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="69" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="XS3-BK-jNT">
-                                <rect key="frame" x="0.0" y="88" width="375" height="641"/>
+                                <rect key="frame" x="0.0" y="132" width="375" height="597"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <color key="separatorColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <prototypes>
@@ -2992,31 +3006,41 @@
                                     <outlet property="delegate" destination="5eV-gs-MqJ" id="w89-YB-126"/>
                                 </connections>
                             </tableView>
-                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="04T-jm-gw0">
-                                <rect key="frame" x="169" y="387.66666666666669" width="37" height="37"/>
-                                <color key="color" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                            </activityIndicatorView>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="v02-vC-DMw" customClass="FiltersTableHeaderView" customModule="Podverse" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="88" width="375" height="44"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="44" id="TO0-Lw-hgk"/>
+                                </constraints>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="dn5-lp-b6B" firstAttribute="top" secondItem="XS3-BK-jNT" secondAttribute="bottom" id="2ea-gi-dQg"/>
-                            <constraint firstItem="XS3-BK-jNT" firstAttribute="top" secondItem="Z12-hX-iCg" secondAttribute="bottom" id="a6E-IR-9z8"/>
-                            <constraint firstAttribute="trailing" secondItem="XS3-BK-jNT" secondAttribute="trailing" id="dzb-kh-Vp4"/>
-                            <constraint firstItem="XS3-BK-jNT" firstAttribute="leading" secondItem="Yfo-hY-mxU" secondAttribute="leading" id="fw3-aQ-mWm"/>
-                            <constraint firstItem="04T-jm-gw0" firstAttribute="centerX" secondItem="Yfo-hY-mxU" secondAttribute="centerX" id="gt7-dN-iXP"/>
-                            <constraint firstItem="04T-jm-gw0" firstAttribute="centerY" secondItem="Yfo-hY-mxU" secondAttribute="centerY" id="uz1-kX-0HM"/>
+                            <constraint firstItem="qdj-xb-QLu" firstAttribute="leading" secondItem="Yfo-hY-mxU" secondAttribute="leading" id="6NR-YZ-kcc"/>
+                            <constraint firstItem="XS3-BK-jNT" firstAttribute="leading" secondItem="Yfo-hY-mxU" secondAttribute="leading" id="JHN-DE-svX"/>
+                            <constraint firstItem="v02-vC-DMw" firstAttribute="leading" secondItem="Yfo-hY-mxU" secondAttribute="leading" id="Xgi-eE-9W8"/>
+                            <constraint firstAttribute="trailing" secondItem="v02-vC-DMw" secondAttribute="trailing" id="Xro-tw-c78"/>
+                            <constraint firstItem="dn5-lp-b6B" firstAttribute="top" secondItem="XS3-BK-jNT" secondAttribute="bottom" id="ZtX-M9-Sic"/>
+                            <constraint firstAttribute="trailing" secondItem="qdj-xb-QLu" secondAttribute="trailing" id="giF-pM-L4z"/>
+                            <constraint firstItem="dn5-lp-b6B" firstAttribute="top" secondItem="qdj-xb-QLu" secondAttribute="bottom" id="i75-Sw-61V"/>
+                            <constraint firstItem="qdj-xb-QLu" firstAttribute="top" secondItem="v02-vC-DMw" secondAttribute="bottom" id="tGY-ph-MQY"/>
+                            <constraint firstItem="XS3-BK-jNT" firstAttribute="top" secondItem="v02-vC-DMw" secondAttribute="bottom" id="xqZ-hk-Bp0"/>
+                            <constraint firstItem="v02-vC-DMw" firstAttribute="top" secondItem="Z12-hX-iCg" secondAttribute="bottom" id="xwH-HQ-5px"/>
+                            <constraint firstAttribute="trailing" secondItem="XS3-BK-jNT" secondAttribute="trailing" id="zaG-EJ-9cd"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="gll-NB-RZL"/>
                     <connections>
                         <outlet property="activityIndicator" destination="04T-jm-gw0" id="HEV-xC-tLQ"/>
+                        <outlet property="activityIndicatorView" destination="qdj-xb-QLu" id="fSJ-EU-M9t"/>
                         <outlet property="tableView" destination="XS3-BK-jNT" id="zTe-KK-Qrb"/>
+                        <outlet property="tableViewHeader" destination="v02-vC-DMw" id="9AC-tA-qFS"/>
                         <segue destination="5wc-DY-Nr3" kind="show" identifier="Show Playlist" id="ZVj-f0-Old"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="I2t-g2-vF9" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1681" y="1309"/>
+            <point key="canvasLocation" x="1680.8" y="1308.6206896551726"/>
         </scene>
         <!--Playlist Detail Table View Controller-->
         <scene sceneID="wn5-G0-Efr">

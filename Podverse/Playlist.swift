@@ -102,7 +102,7 @@ class Playlist {
         
     }
     
-    static func retrievePlaylistsFromServer(completion: @escaping (_ playlists: [Playlist]?) -> Void) {
+    static func retrievePlaylistsFromServer(completion: @escaping (_ playlists: [Playlist]) -> Void) {
         
         if let url = URL(string: BASE_URL + "api/user/playlists") {
             var request = URLRequest(url: url, cachePolicy: NSURLRequest.CachePolicy.reloadIgnoringLocalAndRemoteCacheData, timeoutInterval: 60)
