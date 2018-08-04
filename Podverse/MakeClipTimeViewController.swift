@@ -128,6 +128,7 @@ class MakeClipTimeViewController: UIViewController, UITextFieldDelegate {
         if (!hasSeenHint) {
             animateHelper()
         } else {
+            self.hintView.removeFromSuperview()
             setupBarButtonItems()
         }
     }
@@ -136,12 +137,12 @@ class MakeClipTimeViewController: UIViewController, UITextFieldDelegate {
         if(self.shouldAnimate) {
             if self.hintImageHorizontalConstraint != nil {
                 self.hintImageHorizontalConstraint.constant += 200
-                UIView.animate(withDuration: 1, animations: { 
+                UIView.animate(withDuration: 1.5, animations: {
                    self.view.layoutIfNeeded()
                 }) { (_) in
                     if self.hintImageHorizontalConstraint != nil {
                         self.hintImageHorizontalConstraint.constant -= 200
-                        UIView.animate(withDuration: 1, animations: { 
+                        UIView.animate(withDuration: 1.5, animations: {
                             self.view.layoutIfNeeded()
                         }) { (_) in
                             self.animateHelper()
