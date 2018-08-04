@@ -21,6 +21,7 @@ class Playlist {
     var isMyClips: Bool = false
     var mediaRefs = [MediaRef]()
     var itemCount: String?
+    var itemsOrder:[String] = []
     
     static func jsonToPlaylist(item: [String:Any]) -> Playlist {
     
@@ -49,7 +50,11 @@ class Playlist {
         }
         
         playlist.itemCount = item["itemCount"] as? String
-    
+
+        if let itemsOrder = item["itemsOrder"] as? [String] {
+            playlist.itemsOrder = itemsOrder
+        }
+        
         return playlist
     
     }
@@ -250,21 +255,21 @@ class Playlist {
         }
     }
     
-    static func convertToPlaylistUpdateBody(title:String?, itemOrder:[String]? = []) -> [String: Any] {
+    static func convertToPlaylistUpdateBody(title:String?, itemsOrder:[String]? = []) -> [String: Any] {
         var body:[String: Any] = [:]
         
         if let title = title {
             body["title"] = title
         }
         
-        if let itemOrder = itemOrder {
-            body["itemOrder"] = itemOrder
+        if let itemsOrder = itemsOrder {
+            body["itemsOrder"] = itemsOrder
         }
         
         return body
     }
     
-    static func updatePlaylistOnServer(id: String, title:String?, itemOrder:[String]? = [], completion: @escaping (Bool) -> Void) {
+    static func updatePlaylistOnServer(id: String, title:String?, itemsOrder:[String]? = [], completion: @escaping (Bool) -> Void) {
         if let url = URL(string: BASE_URL + "playlists/" + id) {
             
             var request = URLRequest(url: url, cachePolicy: NSURLRequest.CachePolicy.reloadIgnoringLocalAndRemoteCacheData, timeoutInterval: 20)
@@ -277,7 +282,7 @@ class Playlist {
                 request.setValue(idToken, forHTTPHeaderField: "Authorization")
             }
             
-            let putBody = self.convertToPlaylistUpdateBody(title: title, itemOrder: itemOrder)
+            let putBody = self.convertToPlaylistUpdateBody(title: title, itemsOrder: itemsOrder)
             
             do {
                 request.httpBody = try JSONSerialization.data(withJSONObject: putBody, options: JSONSerialization.WritingOptions())

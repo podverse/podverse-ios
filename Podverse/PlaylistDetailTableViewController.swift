@@ -46,7 +46,7 @@ class PlaylistDetailTableViewController: PVViewController {
         let share = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.action, target: self, action: #selector(showShareMenu))
         
         if let userId = UserDefaults.standard.string(forKey: "userId"), userId == self.ownerId || userId == self.playlist?.ownerId {
-            let edit = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.edit, target: self, action: #selector(self.showEditTitle))
+            let edit = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.edit, target: self, action: #selector(self.startEditPlaylist))
             self.navigationItem.rightBarButtonItems = [share, edit]
         } else if isDataAvailable, let _ = UserDefaults.standard.string(forKey: "userId") {
             let subscribe = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.bookmarks, target: self, action: #selector(self.subscribeToPlaylist))
@@ -56,30 +56,42 @@ class PlaylistDetailTableViewController: PVViewController {
         }
     }
     
-    @objc func showEditTitle() {
+    @objc func startEditPlaylist() {
         self.titleEditTextField.text = self.playlist?.title
         self.headerView.isHidden = true
         self.titleEditView.isHidden = false
+        self.tableView.isEditing = true
         
-        let cancel = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.cancel, target: self, action: #selector(self.cancelEditPlaylist))
+        let cancel = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.cancel, target: self, action: #selector(self.stopEditPlaylist))
         let save = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.save, target: self, action: #selector(self.savePlaylist))
         self.navigationItem.rightBarButtonItems = [save, cancel]
     }
     
-    @objc func cancelEditPlaylist() {
+    @objc func stopEditPlaylist() {
         self.headerView.isHidden = false
         self.titleEditView.isHidden = true
+        self.tableView.isEditing = false
         setupNavigationItems()
     }
     
     @objc func savePlaylist() {
         if let playlist = self.playlist, let id = playlist.id {
-            Playlist.updatePlaylistOnServer(id: id, title: self.titleEditTextField.text, itemOrder: []) { wasSuccessful in
+            
+            var itemsOrder:[String] = []
+            
+            for mediaRef in self.mediaRefsArray {
+                if let id = mediaRef.id {
+                    itemsOrder.append(id)
+                }
+            }
+            
+            Playlist.updatePlaylistOnServer(id: id, title: self.titleEditTextField.text, itemsOrder: itemsOrder) { wasSuccessful in
                 DispatchQueue.main.async {
                     if wasSuccessful {
                         let actions = UIAlertController(title: "Playlist updated successfully", message: nil, preferredStyle: .alert)
                         actions.addAction(UIAlertAction(title: "Ok", style: .cancel, handler: nil))
                         self.present(actions, animated: true, completion: nil)
+                        self.stopEditPlaylist()
                     } else {
                         let actions = UIAlertController(title: "Failed to update playlist", message: "Please check your internet connection and try again.", preferredStyle: .alert)
                         actions.addAction(UIAlertAction(title: "Ok", style: .cancel, handler: nil))
@@ -214,13 +226,37 @@ class PlaylistDetailTableViewController: PVViewController {
         
         loadPlaylistHeader(playlist: playlist)
         
-        self.mediaRefsArray = playlist.mediaRefs
+        let sortedMediaRefs = sortMediaRefs(playlist: playlist)
+        
+        self.mediaRefsArray = sortedMediaRefs
         
         self.tableView.isHidden = false
         
         DispatchQueue.main.async {
             self.tableView.reloadData()
         }
+    }
+    
+    func sortMediaRefs(playlist: Playlist?) -> [MediaRef] {
+        var sortedMediaRefs:[MediaRef] = []
+
+        if let playlist = playlist {
+            var unsortedMediaRefs = playlist.mediaRefs
+            
+            if playlist.itemsOrder.count > 0 {
+                for itemId in playlist.itemsOrder {
+                    guard let mediaRef = unsortedMediaRefs.first(where: { $0.id == itemId }) else {
+                        continue
+                    }
+                    sortedMediaRefs.append(mediaRef)
+                    unsortedMediaRefs = unsortedMediaRefs.filter { $0.id != itemId }
+                }
+            }
+            
+            sortedMediaRefs.append(contentsOf: unsortedMediaRefs)
+        }
+        
+        return sortedMediaRefs
     }
     
     @objc func showShareMenu() {
@@ -326,6 +362,12 @@ extension PlaylistDetailTableViewController:UITableViewDelegate, UITableViewData
         })
         
         return [deleteAction]
+    }
+    
+    func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
+        let movedObject = self.mediaRefsArray[sourceIndexPath.row]
+        self.mediaRefsArray.remove(at: sourceIndexPath.row)
+        self.mediaRefsArray.insert(movedObject, at: destinationIndexPath.row)
     }
     
 }
