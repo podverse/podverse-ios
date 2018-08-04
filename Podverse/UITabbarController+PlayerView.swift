@@ -85,6 +85,40 @@ extension UITabBarController:PlayerViewProtocol {
         }
     }
     
+    func goToClips(_ clipFilter:ClipFilter? = nil, _ clipSorting:ClipSorting? = nil) {
+        if let currentNavVC = self.selectedViewController?.childViewControllers.first?.navigationController {
+            
+            var optionalClipsTVC: ClipsTableViewController?
+            
+            for controller in currentNavVC.viewControllers {
+                if controller.isKind(of: ClipsTableViewController.self) {
+                    optionalClipsTVC = controller as? ClipsTableViewController
+                    break
+                }
+            }
+            
+            if let clipFilter = clipFilter {
+                UserDefaults.standard.set(clipFilter.rawValue, forKey: kClipsTableFilterType)
+            } else {
+                UserDefaults.standard.set(ClipFilter.allPodcasts.rawValue, forKey: kClipsTableFilterType)
+            }
+            
+            if let clipSorting = clipSorting {
+                UserDefaults.standard.set(clipSorting.rawValue, forKey: kClipsTableSortingType)
+            } else {
+                UserDefaults.standard.set(ClipSorting.topWeek.rawValue, forKey: kClipsTableFilterType)
+            }
+            
+            if let clipsTVC = optionalClipsTVC {
+                clipsTVC.shouldOverrideQuery = true
+                currentNavVC.popToViewController(clipsTVC, animated: false)
+            } else if let clipsTVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "ClipsTVC") as? ClipsTableViewController {
+                currentNavVC.pushViewController(clipsTVC, animated: false)
+            }
+        }
+    }
+    
+    
     func goToPlaylistDetail(id:String) {
         if let currentNavVC = self.selectedViewController?.childViewControllers.first?.navigationController {
             

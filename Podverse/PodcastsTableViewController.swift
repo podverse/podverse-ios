@@ -225,8 +225,6 @@ extension PodcastsTableViewController:UITableViewDelegate, UITableViewDataSource
             cell.autoDownloadIndicator?.text = "Auto DL OFF"
         }
         
-        // TODO: this slows down scrolling too much. How can we have this info without blocking the main thread?
-        
         cell.totalEpisodes?.text = "\(podcast.downloadedEpisodes) downloaded"
         
         cell.lastPublishedDate?.text = ""

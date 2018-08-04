@@ -190,12 +190,12 @@ enum SortingTimeRange: String {
 
 enum ClipSorting: String {
     case recent = "recent"
-    case topHour = "top - past hour"
-    case topDay = "top - past day"
-    case topWeek = "top - past week"
-    case topMonth = "top - past month"
-    case topYear = "top - past year"
-    case topAllTime = "top - all time"
+    case topHour = "pastHour"
+    case topDay = "pastDay"
+    case topWeek = "pastWeek"
+    case topMonth = "pastMonth"
+    case topYear = "pastYear"
+    case topAllTime = "allTime"
     
     var text: String {
         get {
@@ -242,11 +242,11 @@ enum ClipSorting: String {
 }
 
 enum ClipFilter: String {
-    case allPodcasts = "All Podcasts"
-    case episode = "Episode"
-    case podcast = "Podcast"
-    case subscribed = "Subscribed"
-    case myClips = "My Clips"
+    case allPodcasts = "allPodcasts"
+    case episode = "episode"
+    case podcast = "podcast"
+    case subscribed = "subscribed"
+    case myClips = "myClips"
     
     var text:String {
         get {
