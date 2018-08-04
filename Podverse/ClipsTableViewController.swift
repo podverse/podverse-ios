@@ -18,16 +18,18 @@ class ClipsTableViewController: PVViewController {
         didSet {
             self.resetClipQuery()
             self.tableViewHeader.filterTitle = self.filterTypeSelected.text
-            UserDefaults.standard.set(filterTypeSelected.text, forKey: kClipsTableFilterType)
+            UserDefaults.standard.set(filterTypeSelected.rawValue, forKey: kClipsTableFilterType)
         }
     }
     var sortingTypeSelected: ClipSorting = .topWeek {
         didSet {
             self.resetClipQuery()
             self.tableViewHeader.sortingTitle = sortingTypeSelected.text
-            UserDefaults.standard.set(sortingTypeSelected.text, forKey: kClipsTableSortingType)
+            UserDefaults.standard.set(sortingTypeSelected.rawValue, forKey: kClipsTableSortingType)
         }
     }
+    
+    var shouldOverrideQuery:Bool = false
     
     var clipQueryPage: Int = 0
     var clipQueryIsLoading: Bool = false
@@ -46,6 +48,8 @@ class ClipsTableViewController: PVViewController {
         super.viewDidLoad()
         
         self.title = "Clips"
+
+        addObservers()
         
         activityIndicator.hidesWhenStopped = true
         
@@ -58,7 +62,33 @@ class ClipsTableViewController: PVViewController {
         
         self.clipQueryActivityIndicator.hidesWhenStopped = true
         self.clipQueryMessage.isHidden = true
-
+        
+        setupFilterAndSortingType()
+        
+        retrieveClips()
+    }
+    
+    deinit {
+        removeObservers()
+    }
+    
+    fileprivate func addObservers() {
+        NotificationCenter.default.addObserver(self, selector: #selector(self.reloadAfterDeepLink), name: .UIApplicationDidBecomeActive, object: nil)
+    }
+    
+    fileprivate func removeObservers() {
+        NotificationCenter.default.removeObserver(self, name: .UIApplicationDidBecomeActive, object: nil)
+    }
+    
+    @objc func reloadAfterDeepLink() {
+        if self.shouldOverrideQuery {
+            self.shouldOverrideQuery = false
+            setupFilterAndSortingType()
+            resetAndRetrieveClips()
+        }
+    }
+    
+    func setupFilterAndSortingType() {
         if let savedFilterType = UserDefaults.standard.value(forKey: kClipsTableFilterType) as? String, let clipFilterType = ClipFilter(rawValue: savedFilterType) {
             if clipFilterType == .myClips {
                 guard let _ = UserDefaults.standard.string(forKey: "userId") else {
@@ -66,7 +96,7 @@ class ClipsTableViewController: PVViewController {
                     return
                 }
             }
-
+            
             self.filterTypeSelected = clipFilterType
         } else {
             self.filterTypeSelected = .allPodcasts
@@ -77,9 +107,6 @@ class ClipsTableViewController: PVViewController {
         } else {
             self.sortingTypeSelected = .topWeek
         }
-        
-        retrieveClips()
-        
     }
     
     @objc func resetAndRetrieveClips() {
