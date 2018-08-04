@@ -117,12 +117,13 @@ class MakeClipTimeViewController: UIViewController, UITextFieldDelegate {
         }
         
         updateSpeedLabel()
-        loadMakeClipInputs()
-
+        
         if self.editingItem == nil {
             self.title = "Make Clip"
+            loadMakeClipInputs()
         } else {
             self.title = "Edit Clip"
+            loadEditClipInputs()
         }
         
         if (!hasSeenHint) {
