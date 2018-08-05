@@ -36,17 +36,11 @@ extension UITabBarController:PlayerViewProtocol {
     }
     
     func setupPlayerBar() {
-        var extraIphoneXSpace:CGFloat = 0.0
-        if (UIScreen.main.nativeBounds.height == 2436.0) {
-            extraIphoneXSpace = 33.0
-        }
+        self.playerView.frame = CGRect(x: self.tabBar.frame.minX,
+                                       y: self.tabBar.frame.minY - NowPlayingBar.playerHeight,
+                                       width: self.tabBar.frame.width,
+                                       height: 0)
         
-        self.playerView.frame = CGRect(x: self.tabBar.frame.minX, 
-                                       y: self.tabBar.frame.minY - NowPlayingBar.playerHeight - extraIphoneXSpace, 
-                                       width: self.tabBar.frame.width, 
-                                       height: NowPlayingBar.playerHeight)
-        
-        self.view.addSubview(self.playerView)
         self.playerView.delegate = self
     }
     
@@ -57,6 +51,16 @@ extension UITabBarController:PlayerViewProtocol {
     
     func showPlayerView() {
         self.playerView.isHidden = false
+        
+        UIView.animate(withDuration: 0.7, delay: 0.1, options: .curveEaseOut, animations: {
+            self.playerView.frame = CGRect(x: self.tabBar.frame.minX,
+                                           y: self.tabBar.frame.minY - NowPlayingBar.playerHeight,
+                                           width: self.tabBar.frame.width,
+                                           height: NowPlayingBar.playerHeight)
+        })
+        
+        self.view.addSubview(self.playerView)
+        
         PVViewController.delegate?.adjustTableView()
     }
     
