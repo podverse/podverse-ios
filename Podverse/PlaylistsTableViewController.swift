@@ -64,10 +64,12 @@ class PlaylistsTableViewController: PVViewController {
     
     fileprivate func addObservers() {
         NotificationCenter.default.addObserver(self, selector: #selector(self.loggedInSuccessfully(_:)), name: .loggedInSuccessfully, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.decrementPlaylistItemCount(_:)), name: .removedPlaylistItem, object: nil)
     }
     
     fileprivate func removeObservers() {
         NotificationCenter.default.removeObserver(self, name: .loggedInSuccessfully, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .removedPlaylistItem, object: nil)
     }
     
     @objc func retrievePlaylists() {
@@ -191,6 +193,21 @@ class PlaylistsTableViewController: PVViewController {
         }
     }
     
+    @objc func decrementPlaylistItemCount(_ notification:Notification) {
+        if let obj = notification.object as? [String], obj.count > 1 {
+            let playlistId = obj[0]
+            let mediaRefId = obj[1]
+            if let allPlaylist = self.allPlaylistsArray.first(where: {$0.id == playlistId}) {
+                allPlaylist.mediaRefs = allPlaylist.mediaRefs.filter { $0.id != mediaRefId}
+            }
+            
+            if let filteredPlaylist = self.filteredPlaylistsArray.first(where: {$0.id == playlistId}), let index = self.filteredPlaylistsArray.index(where: {$0.id == playlistId}) {
+                filteredPlaylist.mediaRefs = filteredPlaylist.mediaRefs.filter { $0.id != mediaRefId}
+                self.tableView.reloadRows(at: [IndexPath(row: index, section: 0)], with: .none)
+            }
+        }
+    }
+    
 }
 
 extension PlaylistsTableViewController:UITableViewDelegate, UITableViewDataSource {
@@ -302,6 +319,10 @@ extension PlaylistsTableViewController {
     
     @objc func loggedInSuccessfully(_ notification:Notification) {
         retrievePlaylists()
+    }
+    
+    @objc func removedPlaylistItem(_ notification:Notification) {
+        
     }
     
 }

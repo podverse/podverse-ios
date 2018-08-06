@@ -355,8 +355,11 @@ extension PlaylistDetailTableViewController:UITableViewDelegate, UITableViewData
                 
                 self.loadPlaylistHeader(playlist: self.playlist)
                 
-                // TODO: how do we make the completion block optional?
-                Playlist.removeFromPlaylist(playlistId: playlistId, mediaRefId: mediaRefId) {_ in }
+                Playlist.removeFromPlaylist(playlistId: playlistId, mediaRefId: mediaRefId) {_ in
+                    DispatchQueue.main.async {
+                        self.itemCount.text = "Items: " + String(self.mediaRefsArray.count)
+                    }
+                }
             }
             
         })

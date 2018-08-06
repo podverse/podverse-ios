@@ -9,6 +9,10 @@
 import UIKit
 import CoreData
 
+extension Notification.Name {
+    static let removedPlaylistItem = Notification.Name("removedPlaylistItem")
+}
+
 class Playlist {
     
     var id: String?
@@ -458,9 +462,10 @@ class Playlist {
                 
                 if let data = data {
                     do {
-                        if let itemCount = try JSONSerialization.jsonObject(with: data, options: []) as? Int {
+                        if let itemCount = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as? Int {
                             DispatchQueue.main.async {
                                 completion(itemCount)
+                                NotificationCenter.default.post(name: .removedPlaylistItem, object: [playlistId, mediaRefId], userInfo: nil)
                             }
                         }
                     } catch {
