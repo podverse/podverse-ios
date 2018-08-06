@@ -21,7 +21,7 @@ class PVSubscriber {
             }
             
             let feedParser = PVFeedParser(shouldOnlyGetMostRecentEpisode: false, shouldSubscribe: true, podcastId: podcastId)
-            feedParser.parsePodcastFeed(feedUrlString: feedUrl)
+            feedParser.addToParsingQueue(feedUrlString: feedUrl)
             
         }
         

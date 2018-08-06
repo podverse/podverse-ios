@@ -8,6 +8,7 @@
 
 import Foundation
 import UIKit
+import TaskQueue
 
 final class ParsingPodcasts {
     static let shared = ParsingPodcasts()
@@ -19,6 +20,8 @@ final class ParsingPodcasts {
         }
     }
     var currentlyParsingItem = 0
+    
+    let queue = TaskQueue()
     
     func clearParsingPodcastsIfFinished() {
         if currentlyParsingItem == podcastKeys.count {

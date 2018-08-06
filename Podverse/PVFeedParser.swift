@@ -9,6 +9,7 @@
 import Foundation
 import CoreData
 import FeedKit
+import TaskQueue
 
 extension Notification.Name {
     static let feedParsingComplete = Notification.Name("feedParsingComplete")
@@ -16,6 +17,7 @@ extension Notification.Name {
 }
 
 class PVFeedParser {
+    
     var feedUrl:String?
     var onlyGetMostRecentEpisode: Bool
     var subscribeToPodcast: Bool
@@ -50,10 +52,9 @@ class PVFeedParser {
         }
     }
     
-    func parsePodcastFeed(feedUrlString:String) {
-        
+    func addToParsingQueue(feedUrlString:String) {
         let backgroundParsingTask = beginBackgroundParsing()
-
+        
         guard feedUrlString.count > 0, let url = URL(string: feedUrlString) else {
             self.parsingPodcasts.podcastFinishedParsing()
             DispatchQueue.main.async {
@@ -62,7 +63,7 @@ class PVFeedParser {
             endBackgroundParsing(backgroundParsingTask)
             return
         }
-
+        
         // If the podcast is already in the parsing list AND should not be reparsed to download the latest episode, then do not add it again.
         if (self.parsingPodcasts.hasMatchingUrl(feedUrl: feedUrlString) || self.parsingPodcasts.hasMatchingId(podcastId: podcastId)) && !self.downloadMostRecentEpisode {
             self.parsingPodcasts.podcastFinishedParsing()
@@ -72,21 +73,34 @@ class PVFeedParser {
             endBackgroundParsing(backgroundParsingTask)
             return
         }
-
+        
         self.parsingPodcasts.addPodcast(podcastId: self.podcastId, feedUrl: feedUrlString)
         
         self.feedUrl = feedUrlString
         
-        let parser = FeedParser(URL: url)
-        
-        var mostRecentEpisode:Episode? = nil
-        if let podcast = Podcast.podcastForFeedUrl(feedUrlString: feedUrlString, managedObjectContext: self.privateMoc) {
-            let podcastPredicate = NSPredicate(format: "podcast == %@", podcast)
+        if let parser = FeedParser(URL: url) {
+            var mostRecentEpisode:Episode? = nil
+            if let podcast = Podcast.podcastForFeedUrl(feedUrlString: feedUrlString, managedObjectContext: self.privateMoc) {
+                let podcastPredicate = NSPredicate(format: "podcast == %@", podcast)
+                
+                mostRecentEpisode = CoreDataHelper.fetchEntityWithMostRecentPubDate(className: "Episode", predicate: podcastPredicate, moc: self.privateMoc) as? Episode
+            }
             
-            mostRecentEpisode = CoreDataHelper.fetchEntityWithMostRecentPubDate(className: "Episode", predicate: podcastPredicate, moc: self.privateMoc) as? Episode
+            self.parsingPodcasts.queue.tasks +=~ { _, next in
+                self.parsePodcastFeed(parser: parser, feedUrlString: feedUrlString, mostRecentEpisode: mostRecentEpisode) {
+                    self.endBackgroundParsing(backgroundParsingTask)
+                    next(nil)
+                }
+            }
+            
+            self.parsingPodcasts.queue.run()
         }
         
-        parser?.parseAsync(queue: DispatchQueue.global(qos: .background)) { (result) in
+    }
+    
+    func parsePodcastFeed(parser:FeedParser, feedUrlString:String, mostRecentEpisode:Episode?, _ completion:@escaping (() -> Void)) {
+        
+        parser.parseAsync(queue: DispatchQueue.global(qos: .background)) { (result) in
             
             switch result {
             case let .atom(feed):
@@ -114,17 +128,17 @@ class PVFeedParser {
             
             // If the parser is only returning the latest episode, then if the podcast's latest episode returned is not the same as the latest episode saved locally, parse the entire feed again, then download and save the latest episode
             if let latestEpisodePubDate = self.latestEpisodePubDate, self.onlyGetMostRecentEpisode == true, let feedUrl = self.feedUrl {
-                    if mostRecentEpisode == nil {
-                        self.parseAndDownloadMostRecentEpisode(feedUrl: feedUrl)
-                    } else if let mostRecentEpisode = mostRecentEpisode, let mostRecentPubDate = mostRecentEpisode.pubDate, latestEpisodePubDate != mostRecentPubDate {
-                        self.parseAndDownloadMostRecentEpisode(feedUrl: feedUrl)
-                    } else {
-                        self.parsingPodcasts.podcastFinishedParsing()
-                        DispatchQueue.main.async {
-                            NotificationCenter.default.post(name: .feedParsingComplete, object: nil, userInfo: ["feedUrl": feedUrl])
-                            UserDefaults.standard.set(Date(), forKey: kLastParsedDate)
-                        }
+                if mostRecentEpisode == nil {
+                    self.parseAndDownloadMostRecentEpisode(feedUrl: feedUrl)
+                } else if let mostRecentEpisode = mostRecentEpisode, let mostRecentPubDate = mostRecentEpisode.pubDate, latestEpisodePubDate != mostRecentPubDate {
+                    self.parseAndDownloadMostRecentEpisode(feedUrl: feedUrl)
+                } else {
+                    self.parsingPodcasts.podcastFinishedParsing()
+                    DispatchQueue.main.async {
+                        NotificationCenter.default.post(name: .feedParsingComplete, object: nil, userInfo: ["feedUrl": feedUrl])
+                        UserDefaults.standard.set(Date(), forKey: kLastParsedDate)
                     }
+                }
             } else {
                 self.parsingPodcasts.podcastFinishedParsing()
                 DispatchQueue.main.async {
@@ -135,15 +149,15 @@ class PVFeedParser {
                 }
             }
             
-            self.endBackgroundParsing(backgroundParsingTask)
+            completion()
         }
-        
+
     }
     
     func parseAndDownloadMostRecentEpisode (feedUrl: String) {
         self.onlyGetMostRecentEpisode = false
         self.downloadMostRecentEpisode = true
-        self.parsePodcastFeed(feedUrlString: feedUrl)
+        self.addToParsingQueue(feedUrlString: feedUrl)
     }
     
     func parseResultAtom(feed:AtomFeed) {

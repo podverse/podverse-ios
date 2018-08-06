@@ -220,10 +220,10 @@ class Podcast: NSManagedObject {
                     }
                     
                     let pvFeedParser = PVFeedParser(shouldOnlyGetMostRecentEpisode: true, shouldSubscribe: shouldSubscribe, podcastId: syncPodcast.id)
-                    pvFeedParser.parsePodcastFeed(feedUrlString: feedUrl)
+                    pvFeedParser.addToParsingQueue(feedUrlString: feedUrl)
                 }
             }
-
+            
         }
         
     }
