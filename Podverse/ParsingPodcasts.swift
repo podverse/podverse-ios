@@ -23,6 +23,10 @@ final class ParsingPodcasts {
     
     let queue = TaskQueue()
     
+    init() {
+        self.queue.maximumNumberOfActiveTasks = 4
+    }
+    
     func clearParsingPodcastsIfFinished() {
         if currentlyParsingItem == podcastKeys.count {
             currentlyParsingItem = 0

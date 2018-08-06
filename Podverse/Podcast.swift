@@ -223,6 +223,8 @@ class Podcast: NSManagedObject {
                     pvFeedParser.addToParsingQueue(feedUrlString: feedUrl)
                 }
             }
+                        
+            completionBlock?()
             
         }
         
