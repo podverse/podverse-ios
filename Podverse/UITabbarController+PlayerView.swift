@@ -45,7 +45,7 @@ extension UITabBarController:PlayerViewProtocol {
                                        y: self.tabBar.frame.minY - NowPlayingBar.playerHeight - extraIphoneXSpace, 
                                        width: self.tabBar.frame.width, 
                                        height: NowPlayingBar.playerHeight)
-        
+        self.playerView.isHidden = true
         self.view.addSubview(self.playerView)
         self.playerView.delegate = self
     }
