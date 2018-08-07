@@ -30,9 +30,8 @@ class AddToPlaylistViewController: UIViewController {
         
         if let item = playerHistoryItem {
             
-            self.podcastTitle.text = item.podcastTitle
-            
-            self.episodeTitle.text = item.episodeTitle
+            self.podcastTitle.text = item.podcastTitle?.stringByDecodingHTMLEntities()
+            self.episodeTitle.text = item.episodeTitle?.stringByDecodingHTMLEntities()
             
             if shouldSaveFullEpisode {
                 self.clipTitle.text = "Full Episode"
