@@ -21,6 +21,7 @@ class ClipsTableViewController: PVViewController {
             UserDefaults.standard.set(filterTypeSelected.rawValue, forKey: kClipsTableFilterType)
         }
     }
+    
     var sortingTypeSelected: ClipSorting = .topWeek {
         didSet {
             self.resetClipQuery()

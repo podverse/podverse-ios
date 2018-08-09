@@ -104,6 +104,8 @@ let kEpisodeTableFilterType = "EpisodeTableFilterType"
 
 let kEpisodeTableSortingType = "EpisodeTableSortingType"
 
+let kPlaylistsTableFilterType = "PlaylistsTableFilterType"
+
 let kFormRequestPodcastUrl = "https://goo.gl/forms/aSGk03HR9hvSFWlJ2"
 
 let kFormContactUrl = "https://goo.gl/forms/NydjLeMcPWHUw4yx1"
@@ -322,6 +324,22 @@ enum EpisodeActions: String {
             }
         }
         
+    }
+}
+
+enum PlaylistFilter: String {
+    case myPlaylists = "My Playlists"
+    case following = "Following"
+    
+    var text:String {
+        get {
+            switch self {
+            case .myPlaylists:
+                return "My Playlists"
+            case .following:
+                return "Following"
+            }
+        }
     }
 }
 

@@ -118,6 +118,17 @@ extension UITabBarController:PlayerViewProtocol {
         }
     }
     
+    
+    func goToPlaylistDetail(id:String) {
+        if let currentNavVC = self.selectedViewController?.childViewControllers.first?.navigationController {
+            
+            if let playlistDetailVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "PlaylistDetailVC") as? PlaylistDetailTableViewController {
+                playlistDetailVC.playlistId = id
+                playlistDetailVC.isDataAvailable = false
+                currentNavVC.pushViewController(playlistDetailVC, animated: true)
+            }
+        }
+    }
 }
 
 extension UITabBarController:NowPlayingBarDelegate {

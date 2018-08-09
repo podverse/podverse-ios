@@ -10,8 +10,9 @@ import UIKit
 
 class AddToPlaylistViewController: UIViewController {
 
+    var allPlaylistsArray = [Playlist]()
+    var filteredPlaylistsArray = [Playlist]()
     var playerHistoryItem: PlayerHistoryItem?
-    var playlistsArray = [Playlist]()
     let reachability = PVReachability.shared
     var shouldSaveFullEpisode = false
     
@@ -63,13 +64,34 @@ class AddToPlaylistViewController: UIViewController {
         let new = UIBarButtonItem(title: "New", style: .plain, target: self, action: #selector(showCreatePlaylist))
         self.navigationItem.rightBarButtonItem = new
         
+        retrievePlaylists()
+    }
+    
+    @objc func retrievePlaylists() {
+        
+        guard checkConnectivity(), checkForAuthorization() else {
+            return
+        }
+        
+        self.hideNoDataView()
+        
+        showActivityIndicator()
+        
         Playlist.retrievePlaylistsFromServer() { (playlists) -> Void in
-            if let playlists = playlists {
-                self.playlistsArray = playlists
-            }
+            self.allPlaylistsArray = playlists
             self.reloadPlaylistData()
         }
         
+    }
+    
+    func filterPlaylists() {
+        self.filteredPlaylistsArray.removeAll()
+        
+        for playlist in self.allPlaylistsArray {
+            if playlist.ownerId == UserDefaults.standard.string(forKey: "userId") {
+                self.filteredPlaylistsArray.append(playlist)
+            }
+        }
     }
     
     @objc func showCreatePlaylist() {
@@ -91,7 +113,7 @@ class AddToPlaylistViewController: UIViewController {
             if let textField = createPlaylist.textFields?[0], let text = textField.text {
                 Playlist.createPlaylist(title: text) { playlist in
                     if let playlist = playlist {
-                        self.playlistsArray.append(playlist)
+                        self.filteredPlaylistsArray.append(playlist)
                         self.tableView.reloadData()
                         self.tableView.isHidden = false
                     }
@@ -104,22 +126,39 @@ class AddToPlaylistViewController: UIViewController {
     }
     
     @objc func reloadPlaylistData() {
-        
+        self.filterPlaylists()
         hideActivityIndicator()
-        
-        if !checkForConnectivity() {
-            loadNoInternetMessage()
-            return
-        }
-        
-        guard playlistsArray.count > 0 else {
-            loadNoPlaylistsMessage()
-            return
-        }
-        
-        self.tableView.reloadData()
-        
         self.tableView.isHidden = false
+        self.tableView.reloadData()
+    }
+    
+    func checkConnectivity() -> Bool {
+        
+        let message = Strings.Errors.noPlaylistsInternet
+        let buttonTitle = "Retry"
+        let selector:Selector = #selector(PlaylistsTableViewController.retrievePlaylists)
+        
+        guard checkForConnectivity() else {
+            loadNoDataView(message: message, buttonTitle: buttonTitle, buttonPressed: selector)
+            return false
+        }
+        
+        return true
+        
+    }
+    
+    func checkForAuthorization() -> Bool {
+        
+        let message = Strings.Errors.noPlaylistsNotLoggedIn
+        let buttonTitle = "Login"
+        let selector = #selector(PlaylistsTableViewController.presentLogin)
+        
+        guard PVAuth.userIsLoggedIn else {
+            loadNoDataView(message: message, buttonTitle: buttonTitle, buttonPressed: selector)
+            return false
+        }
+        
+        return true
         
     }
     
@@ -176,11 +215,11 @@ extension AddToPlaylistViewController:UITableViewDelegate, UITableViewDataSource
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return self.playlistsArray.count
+        return self.filteredPlaylistsArray.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let playlist = self.playlistsArray[indexPath.row]
+        let playlist = self.filteredPlaylistsArray[indexPath.row]
         let cell = self.tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! PlaylistTableViewCell
         
         cell.title?.text = playlist.title
@@ -198,7 +237,7 @@ extension AddToPlaylistViewController:UITableViewDelegate, UITableViewDataSource
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
-        let playlist = self.playlistsArray[indexPath.row]
+        let playlist = self.filteredPlaylistsArray[indexPath.row]
         
         if let item = self.playerHistoryItem {
             
@@ -223,7 +262,7 @@ extension AddToPlaylistViewController:UITableViewDelegate, UITableViewDataSource
         if let index = self.tableView.indexPathForSelectedRow {
             if segue.identifier == "Show Playlist" {
                 let playlistDetailTableViewController = segue.destination as! PlaylistDetailTableViewController
-                playlistDetailTableViewController.playlistId = self.playlistsArray[index.row].id
+                playlistDetailTableViewController.playlistId = self.filteredPlaylistsArray[index.row].id
             }
         }
     }

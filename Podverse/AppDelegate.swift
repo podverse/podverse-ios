@@ -142,6 +142,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
                         self.pvMediaPlayer.loadPlayerHistoryItem(item: item)
                     }
                 }
+            } else if pathValues[1] == "playlists" {
+                let id = pathValues[2]
+                if let tabBar = self.window?.rootViewController as? UITabBarController {
+                    DispatchQueue.main.async {
+                        tabBar.goToPlaylistDetail(id: id)
+                    }
+                }
             }
         } else if let queryItems = components.queryItems, queryItems.count > 0 {
             var filterType:ClipFilter? = nil
