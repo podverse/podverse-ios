@@ -16,6 +16,8 @@ target 'Podverse' do
   pod 'SDWebImage', '~> 4.0'
   pod 'FeedKit', '~> 6.0'
   pod 'TaskQueue'
+  pod 'Fabric'
+  pod 'Crashlytics'
 
   target 'PodverseTests' do
     inherit! :search_paths

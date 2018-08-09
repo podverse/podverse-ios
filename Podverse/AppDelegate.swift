@@ -11,6 +11,8 @@ import AVFoundation
 import MediaPlayer
 import Lock
 import UserNotifications
+import Fabric
+import Crashlytics
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterDelegate {
@@ -36,6 +38,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     }
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
+        
+        Fabric.with([Crashlytics.self])
         
         // Enable the media player to continue playing in the background and on the lock screen
         // Enable the media player to use remote control events
