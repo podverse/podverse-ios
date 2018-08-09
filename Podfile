@@ -15,6 +15,7 @@ target 'Podverse' do
   pod 'StreamingKit', :git => 'https://github.com/podverse/StreamingKit.git', :branch => 'master'
   pod 'SDWebImage', '~> 4.0'
   pod 'FeedKit', '~> 6.0'
+  pod 'TaskQueue'
   pod 'Fabric'
   pod 'Crashlytics'
 

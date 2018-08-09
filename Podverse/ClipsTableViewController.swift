@@ -21,6 +21,7 @@ class ClipsTableViewController: PVViewController {
             UserDefaults.standard.set(filterTypeSelected.rawValue, forKey: kClipsTableFilterType)
         }
     }
+    
     var sortingTypeSelected: ClipSorting = .topWeek {
         didSet {
             self.resetClipQuery()
@@ -269,9 +270,9 @@ extension ClipsTableViewController:UITableViewDelegate, UITableViewDataSource {
         
         if clipsArray.count >= row - 1 {
             let clip = clipsArray[indexPath.row]
-            cell.podcastTitle?.text = clip.podcastTitle
-            cell.episodeTitle?.text = clip.episodeTitle
-            cell.clipTitle?.text = clip.title
+            cell.podcastTitle?.text = clip.podcastTitle?.stringByDecodingHTMLEntities()
+            cell.episodeTitle?.text = clip.episodeTitle?.stringByDecodingHTMLEntities()
+            cell.clipTitle?.text = clip.title?.stringByDecodingHTMLEntities()
             
             if let time = clip.readableStartAndEndTime() {
                 cell.time?.text = time

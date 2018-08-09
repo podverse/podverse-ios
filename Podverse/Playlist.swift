@@ -9,6 +9,10 @@
 import UIKit
 import CoreData
 
+extension Notification.Name {
+    static let removedPlaylistItem = Notification.Name("removedPlaylistItem")
+}
+
 class Playlist {
     
     var id: String?
@@ -21,6 +25,7 @@ class Playlist {
     var isMyClips: Bool = false
     var mediaRefs = [MediaRef]()
     var itemCount: String?
+    var itemsOrder:[String] = []
     
     static func jsonToPlaylist(item: [String:Any]) -> Playlist {
     
@@ -49,7 +54,11 @@ class Playlist {
         }
         
         playlist.itemCount = item["itemCount"] as? String
-    
+
+        if let itemsOrder = item["itemsOrder"] as? [String] {
+            playlist.itemsOrder = itemsOrder
+        }
+        
         return playlist
     
     }
@@ -102,7 +111,7 @@ class Playlist {
         
     }
     
-    static func retrievePlaylistsFromServer(completion: @escaping (_ playlists: [Playlist]?) -> Void) {
+    static func retrievePlaylistsFromServer(completion: @escaping (_ playlists: [Playlist]) -> Void) {
         
         if let url = URL(string: BASE_URL + "api/user/playlists") {
             var request = URLRequest(url: url, cachePolicy: NSURLRequest.CachePolicy.reloadIgnoringLocalAndRemoteCacheData, timeoutInterval: 60)
@@ -222,6 +231,151 @@ class Playlist {
 
     }
     
+    static func deletePlaylistFromServer(id:String, completion: @escaping (Bool) -> Void) {
+        if let url = URL(string: BASE_URL + "playlists/" + id), let idToken = UserDefaults.standard.string(forKey: "idToken") {
+            showNetworkActivityIndicator()
+            
+            let request = NSMutableURLRequest(url: url, cachePolicy: NSURLRequest.CachePolicy.reloadIgnoringLocalAndRemoteCacheData, timeoutInterval: 60)
+            
+            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+            request.setValue(idToken, forHTTPHeaderField: "Authorization")
+            
+            request.httpMethod = "DELETE"
+            
+            let task = URLSession.shared.dataTask(with: request as URLRequest) { data, response, error in
+                hideNetworkActivityIndicator()
+                guard error == nil else {
+                    print("Error: \(error?.localizedDescription ?? "Unknown Error")")
+                    DispatchQueue.main.async {
+                        completion(false)
+                    }
+                    return
+                }
+                
+                completion(true)
+            }
+            
+            task.resume()
+        }
+    }
+    
+    static func convertToPlaylistUpdateBody(title:String?, itemsOrder:[String]? = []) -> [String: Any] {
+        var body:[String: Any] = [:]
+        
+        if let title = title {
+            body["title"] = title
+        }
+        
+        if let itemsOrder = itemsOrder {
+            body["itemsOrder"] = itemsOrder
+        }
+        
+        return body
+    }
+    
+    static func updatePlaylistOnServer(id: String, title:String?, itemsOrder:[String]? = [], completion: @escaping (Bool) -> Void) {
+        if let url = URL(string: BASE_URL + "playlists/" + id) {
+            
+            var request = URLRequest(url: url, cachePolicy: NSURLRequest.CachePolicy.reloadIgnoringLocalAndRemoteCacheData, timeoutInterval: 20)
+            
+            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+            
+            request.httpMethod = "PUT"
+            
+            if let idToken = UserDefaults.standard.string(forKey: "idToken") {
+                request.setValue(idToken, forHTTPHeaderField: "Authorization")
+            }
+            
+            let putBody = self.convertToPlaylistUpdateBody(title: title, itemsOrder: itemsOrder)
+            
+            do {
+                request.httpBody = try JSONSerialization.data(withJSONObject: putBody, options: JSONSerialization.WritingOptions())
+                
+                showNetworkActivityIndicator()
+                
+                let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                    hideNetworkActivityIndicator()
+                    
+                    guard error == nil else {
+                        DispatchQueue.main.async {
+                            completion(false)
+                        }
+                        return
+                    }
+                    
+                    DispatchQueue.main.async {
+                        completion(true)
+                    }
+                }
+                
+                task.resume()
+                
+            } catch {
+                print(error)
+                DispatchQueue.main.async {
+                    completion(false)
+                }
+            }
+            
+        }
+    }
+    
+    static func subscribeToPlaylistOnServer(id:String, completion: @escaping (Bool) -> Void) {
+        if let url = URL(string: BASE_URL + "playlists/subscribe/" + id), let idToken = UserDefaults.standard.string(forKey: "idToken") {
+            showNetworkActivityIndicator()
+            
+            let request = NSMutableURLRequest(url: url, cachePolicy: NSURLRequest.CachePolicy.reloadIgnoringLocalAndRemoteCacheData, timeoutInterval: 60)
+            
+            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+            request.setValue(idToken, forHTTPHeaderField: "Authorization")
+            
+            request.httpMethod = "POST"
+            
+            let task = URLSession.shared.dataTask(with: request as URLRequest) { data, response, error in
+                hideNetworkActivityIndicator()
+                guard error == nil else {
+                    print("Error: \(error?.localizedDescription ?? "Unknown Error")")
+                    DispatchQueue.main.async {
+                        completion(false)
+                    }
+                    return
+                }
+                
+                completion(true)
+            }
+            
+            task.resume()
+        }
+    }
+    
+    static func unsubscribeFromPlaylistOnServer(id:String, completion: @escaping (Bool) -> Void) {
+        if let url = URL(string: BASE_URL + "playlists/unsubscribe/" + id), let idToken = UserDefaults.standard.string(forKey: "idToken") {
+            showNetworkActivityIndicator()
+            
+            let request = NSMutableURLRequest(url: url, cachePolicy: NSURLRequest.CachePolicy.reloadIgnoringLocalAndRemoteCacheData, timeoutInterval: 60)
+            
+            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+            request.setValue(idToken, forHTTPHeaderField: "Authorization")
+            
+            request.httpMethod = "POST"
+            
+            let task = URLSession.shared.dataTask(with: request as URLRequest) { data, response, error in
+                hideNetworkActivityIndicator()
+                guard error == nil else {
+                    print("Error: \(error?.localizedDescription ?? "Unknown Error")")
+                    DispatchQueue.main.async {
+                        completion(false)
+                    }
+                    return
+                }
+                
+                completion(true)
+            }
+            
+            task.resume()
+        }
+    }
+    
     // TODO: addToPlaylist and removeFromPlaylist are identical except the urlString. How can we rewrite/consolidate them?
     static func addToPlaylist(playlistId: String, item: PlayerHistoryItem, shouldSaveFullEpisode: Bool = false, completion: @escaping (_ itemCount: Int?) -> Void) {
         
@@ -308,9 +462,10 @@ class Playlist {
                 
                 if let data = data {
                     do {
-                        if let itemCount = try JSONSerialization.jsonObject(with: data, options: []) as? Int {
+                        if let itemCount = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as? Int {
                             DispatchQueue.main.async {
                                 completion(itemCount)
+                                NotificationCenter.default.post(name: .removedPlaylistItem, object: [playlistId, mediaRefId], userInfo: nil)
                             }
                         }
                     } catch {

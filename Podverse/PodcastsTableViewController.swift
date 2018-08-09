@@ -129,9 +129,10 @@ class PodcastsTableViewController: PVViewController, AutoDownloadProtocol {
                 
                 let pvFeedParser = PVFeedParser(shouldOnlyGetMostRecentEpisode: true, shouldSubscribe:false, podcastId: podcastId)
                 if let feedUrlString = feedUrl?.absoluteString {
-                    pvFeedParser.parsePodcastFeed(feedUrlString: feedUrlString)
+                    pvFeedParser.addToParsingQueue(feedUrlString: feedUrlString)
                 }
             }
+            
         }
 
         self.refreshControl.endRefreshing()
@@ -322,11 +323,18 @@ extension PodcastsTableViewController {
     }
     
     @objc func loggedInSuccessfully() {
-        DispatchQueue.global().async {
-            Podcast.syncSubscribedPodcastsWithServer()
-        }
         self.parseStatus.text = "Syncing with server"
         self.parseActivityIndicator.startAnimating()
+        
+        DispatchQueue.global().async {
+            Podcast.syncSubscribedPodcastsWithServer() {
+                // In case 0 results are found, call refreshParsingStatus status in the completion block so "syncing with server" text is removed.
+                DispatchQueue.main.async {
+                    self.refreshParsingStatus()
+                }
+            }
+        }
+
     }
     
     @objc func loggedOutSuccessfully() {
@@ -353,7 +361,7 @@ extension PodcastsTableViewController {
         }
     }
     
-    @objc func refreshParsingStatus(_ notification:Notification) {
+    @objc func refreshParsingStatus(_ notification:Notification? = nil) {
         let total = self.parsingPodcasts.podcastKeys.count
         let currentItem = self.parsingPodcasts.currentlyParsingItem
         

@@ -12,32 +12,117 @@ class PlaylistDetailTableViewController: PVViewController {
     
     var playlist: Playlist?
     var playlistId: String?
+    var ownerId: String?
     var mediaRefsArray = [MediaRef]()
     let reachability = PVReachability.shared
+    var isDataAvailable = true
     
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     @IBOutlet weak var activityIndicatorView: UIView!
+    @IBOutlet weak var headerView: UIView!
     @IBOutlet weak var itemCount: UILabel!
     @IBOutlet weak var lastUpdated: UILabel!
     @IBOutlet weak var playlistTitle: UILabel!
     @IBOutlet weak var tableView: UITableView!
+    @IBOutlet weak var titleEditTextField: UITextField!
+    @IBOutlet weak var titleEditView: UIView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         self.title = "Playlist"
         
-        let share = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.action, target: self, action: #selector(showShareMenu))
-        navigationItem.rightBarButtonItems = [share]
-        
         self.activityIndicator.hidesWhenStopped = true
         
-        retrievePlaylist()
+        setupNavigationItems()
         
+        self.headerView.isHidden = true
+        self.titleEditView.isHidden = true
+
+        retrievePlaylist()
+    }
+    
+    func setupNavigationItems() {
+        let share = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.action, target: self, action: #selector(showShareMenu))
+        
+        if let userId = UserDefaults.standard.string(forKey: "userId"), userId == self.ownerId || userId == self.playlist?.ownerId {
+            let edit = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.edit, target: self, action: #selector(self.startEditPlaylist))
+            self.navigationItem.rightBarButtonItems = [share, edit]
+        } else if isDataAvailable, let _ = UserDefaults.standard.string(forKey: "userId") {
+            let subscribe = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.bookmarks, target: self, action: #selector(self.subscribeToPlaylist))
+            self.navigationItem.rightBarButtonItems = [share, subscribe]
+        } else if isDataAvailable {
+            self.navigationItem.rightBarButtonItems = [share]
+        }
+    }
+    
+    @objc func startEditPlaylist() {
+        self.titleEditTextField.text = self.playlist?.title
+        self.headerView.isHidden = true
+        self.titleEditView.isHidden = false
+        self.tableView.isEditing = true
+        
+        let cancel = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.cancel, target: self, action: #selector(self.stopEditPlaylist))
+        let save = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.save, target: self, action: #selector(self.savePlaylist))
+        self.navigationItem.rightBarButtonItems = [save, cancel]
+    }
+    
+    @objc func stopEditPlaylist() {
+        self.headerView.isHidden = false
+        self.titleEditView.isHidden = true
+        self.tableView.isEditing = false
+        setupNavigationItems()
+    }
+    
+    @objc func savePlaylist() {
+        if let playlist = self.playlist, let id = playlist.id {
+            
+            var itemsOrder:[String] = []
+            
+            for mediaRef in self.mediaRefsArray {
+                if let id = mediaRef.id {
+                    itemsOrder.append(id)
+                }
+            }
+            
+            Playlist.updatePlaylistOnServer(id: id, title: self.titleEditTextField.text, itemsOrder: itemsOrder) { wasSuccessful in
+                DispatchQueue.main.async {
+                    if wasSuccessful {
+                        let actions = UIAlertController(title: "Playlist updated successfully", message: nil, preferredStyle: .alert)
+                        actions.addAction(UIAlertAction(title: "Ok", style: .cancel, handler: nil))
+                        self.present(actions, animated: true, completion: nil)
+                        self.stopEditPlaylist()
+                    } else {
+                        let actions = UIAlertController(title: "Failed to update playlist", message: "Please check your internet connection and try again.", preferredStyle: .alert)
+                        actions.addAction(UIAlertAction(title: "Ok", style: .cancel, handler: nil))
+                        self.present(actions, animated: true, completion: nil)
+                    }
+                }
+            }
+        }
+    }
+    
+    @objc func subscribeToPlaylist() {
+        if let playlist = self.playlist, let id = playlist.id {
+            Playlist.subscribeToPlaylistOnServer(id: id) { wasSuccessful in
+                DispatchQueue.main.async {
+                    if wasSuccessful {
+                        let actions = UIAlertController(title: "Subscribed to playlist",
+                                                        message: nil,
+                                                        preferredStyle: .alert)
+                        actions.addAction(UIAlertAction(title: "Ok", style: .cancel, handler: nil))
+                        self.present(actions, animated: true, completion: nil)
+                    } else {
+                        let actions = UIAlertController(title: "Failed to subscribe to playlist", message: "Please check your internet connection and try again.", preferredStyle: .alert)
+                        actions.addAction(UIAlertAction(title: "Ok", style: .cancel, handler: nil))
+                        self.present(actions, animated: true, completion: nil)
+                    }
+                }
+            }
+        }
     }
     
     func retrievePlaylist() {
-        
         guard checkConnectivity() else {
             return
         }
@@ -49,7 +134,9 @@ class PlaylistDetailTableViewController: PVViewController {
         if let id = self.playlistId {
             Playlist.retrievePlaylistFromServer(id: id) { (playlist) -> Void in
                 self.playlist = playlist
-                self.reloadPlaylistData(playlist: playlist)
+                DispatchQueue.main.async {
+                    self.reloadPlaylistData(playlist: playlist)                    
+                }
             }
         }
     }
@@ -119,28 +206,57 @@ class PlaylistDetailTableViewController: PVViewController {
             self.playlistTitle.text = playlist.title
             self.itemCount.text = "Items: " + String(playlist.mediaRefs.count)
             self.lastUpdated.text = playlist.lastUpdated?.toShortFormatString()
+            self.headerView.isHidden = false
         }
     }
     
     func reloadPlaylistData(playlist: Playlist?) {
         
         hideActivityIndicator()
-
-        checkForResults(playlist: playlist)
         
-        guard let playlist = playlist else {
+        self.isDataAvailable = true
+        self.setupNavigationItems()
+
+        let hasResults = checkForResults(playlist: playlist)
+        
+        
+        guard hasResults, let playlist = playlist else {
             return
         }
         
         loadPlaylistHeader(playlist: playlist)
         
-        self.mediaRefsArray = playlist.mediaRefs
+        let sortedMediaRefs = sortMediaRefs(playlist: playlist)
+        
+        self.mediaRefsArray = sortedMediaRefs
         
         self.tableView.isHidden = false
         
         DispatchQueue.main.async {
             self.tableView.reloadData()
         }
+    }
+    
+    func sortMediaRefs(playlist: Playlist?) -> [MediaRef] {
+        var sortedMediaRefs:[MediaRef] = []
+
+        if let playlist = playlist {
+            var unsortedMediaRefs = playlist.mediaRefs
+            
+            if playlist.itemsOrder.count > 0 {
+                for itemId in playlist.itemsOrder {
+                    guard let mediaRef = unsortedMediaRefs.first(where: { $0.id == itemId }) else {
+                        continue
+                    }
+                    sortedMediaRefs.append(mediaRef)
+                    unsortedMediaRefs = unsortedMediaRefs.filter { $0.id != itemId }
+                }
+            }
+            
+            sortedMediaRefs.append(contentsOf: unsortedMediaRefs)
+        }
+        
+        return sortedMediaRefs
     }
     
     @objc func showShareMenu() {
@@ -239,13 +355,22 @@ extension PlaylistDetailTableViewController:UITableViewDelegate, UITableViewData
                 
                 self.loadPlaylistHeader(playlist: self.playlist)
                 
-                // TODO: how do we make the completion block optional?
-                Playlist.removeFromPlaylist(playlistId: playlistId, mediaRefId: mediaRefId) {_ in }
+                Playlist.removeFromPlaylist(playlistId: playlistId, mediaRefId: mediaRefId) {_ in
+                    DispatchQueue.main.async {
+                        self.itemCount.text = "Items: " + String(self.mediaRefsArray.count)
+                    }
+                }
             }
             
         })
         
         return [deleteAction]
+    }
+    
+    func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
+        let movedObject = self.mediaRefsArray[sourceIndexPath.row]
+        self.mediaRefsArray.remove(at: sourceIndexPath.row)
+        self.mediaRefsArray.insert(movedObject, at: destinationIndexPath.row)
     }
     
 }

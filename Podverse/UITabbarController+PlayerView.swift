@@ -45,7 +45,7 @@ extension UITabBarController:PlayerViewProtocol {
                                        y: self.tabBar.frame.minY - NowPlayingBar.playerHeight - extraIphoneXSpace, 
                                        width: self.tabBar.frame.width, 
                                        height: NowPlayingBar.playerHeight)
-        
+        self.playerView.isHidden = true
         self.view.addSubview(self.playerView)
         self.playerView.delegate = self
     }
@@ -118,6 +118,17 @@ extension UITabBarController:PlayerViewProtocol {
         }
     }
     
+    
+    func goToPlaylistDetail(id:String) {
+        if let currentNavVC = self.selectedViewController?.childViewControllers.first?.navigationController {
+            
+            if let playlistDetailVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "PlaylistDetailVC") as? PlaylistDetailTableViewController {
+                playlistDetailVC.playlistId = id
+                playlistDetailVC.isDataAvailable = false
+                currentNavVC.pushViewController(playlistDetailVC, animated: true)
+            }
+        }
+    }
 }
 
 extension UITabBarController:NowPlayingBarDelegate {

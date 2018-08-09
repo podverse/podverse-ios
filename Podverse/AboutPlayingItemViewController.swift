@@ -56,7 +56,7 @@ class AboutPlayingItemViewController: UIViewController, UIWebViewDelegate {
                 }
                 
                 if let time = item.readableStartAndEndTime() {
-                    text += "<span class=\"lightGray\">" + time + "</span>"
+                    text += "<a class=\"lightGray\" href=\"podverse://podverse.fm?restartClip\">" + time + "</a>"
                 }
                 
                 if let userId = UserDefaults.standard.string(forKey: "userId"), userId == item.ownerId {
@@ -101,9 +101,13 @@ class AboutPlayingItemViewController: UIViewController, UIWebViewDelegate {
                     DispatchQueue.main.async {
                         self.showEditClip()
                     }
+                } else if query == "restartClip" {
+                    if let startTime = self.pvMediaPlayer.nowPlayingItem?.startTime {
+                        self.pvMediaPlayer.seek(toTime: Double(startTime))
+                    }
                 } else {
                     let playbackTime = query.mediaPlayerTimeToSeconds()
-                    pvMediaPlayer.seek(toTime: Double(playbackTime))
+                    self.pvMediaPlayer.seek(toTime: Double(playbackTime))
                 }
             } else if let url = request.url {
                 UIApplication.shared.open(url)
