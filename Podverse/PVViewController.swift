@@ -73,8 +73,8 @@ class PVViewController: UIViewController {
                 return
             }
             
-            tabbarVC.playerView.podcastTitleLabel.text = currentItem.podcastTitle
-            tabbarVC.playerView.episodeTitle.text = currentItem.episodeTitle
+            tabbarVC.playerView.podcastTitleLabel.text = currentItem.podcastTitle?.stringByDecodingHTMLEntities()
+            tabbarVC.playerView.episodeTitle.text = currentItem.episodeTitle?.stringByDecodingHTMLEntities()
             
             tabbarVC.playerView.podcastImageView.image = Podcast.retrievePodcastImage(podcastImageURLString: currentItem.podcastImageUrl, feedURLString: currentItem.podcastFeedUrl, completion: { image in
                 tabbarVC.playerView.podcastImageView.image = image

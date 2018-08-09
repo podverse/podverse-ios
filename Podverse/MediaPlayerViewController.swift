@@ -272,8 +272,8 @@ class MediaPlayerViewController: PVViewController {
     
     func populatePlayerInfo() {
         if let item = self.pvMediaPlayer.nowPlayingItem {
-            self.podcastTitle.text = item.podcastTitle
-            self.episodeTitle.text = item.episodeTitle
+            self.podcastTitle.text = item.podcastTitle?.stringByDecodingHTMLEntities()
+            self.episodeTitle.text = item.episodeTitle?.stringByDecodingHTMLEntities()
             
             if let pubDate = item.episodePubDate {
                 self.episodePubDate.text = pubDate.toShortFormatString()
