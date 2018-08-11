@@ -24,7 +24,7 @@ final class ParsingPodcasts {
     let queue = TaskQueue()
     
     init() {
-        self.queue.maximumNumberOfActiveTasks = 4
+        self.queue.maximumNumberOfActiveTasks = 3
     }
     
     func clearParsingPodcastsIfFinished() {
