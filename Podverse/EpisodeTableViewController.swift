@@ -326,7 +326,7 @@ class EpisodeTableViewController: PVViewController {
                     
                     activityVC.completionWithItemsHandler = { activityType, success, items, error in
                         if activityType == UIActivityType.copyToPasteboard {
-                            self.showToast(message: kLinkCopiedToast)
+                            self.showToast(message: kOfficialLinkCopiedToast)
                         }
                     }
                     
@@ -341,7 +341,7 @@ class EpisodeTableViewController: PVViewController {
                 
                 activityVC.completionWithItemsHandler = { activityType, success, items, error in
                     if activityType == UIActivityType.copyToPasteboard {
-                        self.showToast(message: kLinkCopiedToast)
+                        self.showToast(message: kPodverseLinkCopiedToast)
                     }
                 }
                 

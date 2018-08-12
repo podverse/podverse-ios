@@ -455,7 +455,7 @@ class MakeClipTimeViewController: UIViewController, UITextFieldDelegate {
                 
                 activityVC.completionWithItemsHandler = { activityType, success, items, error in
                     if activityType == UIActivityType.copyToPasteboard {
-                        self.showToast(message: kLinkCopiedToast)
+                        self.showToast(message: kClipLinkCopiedToast)
                     }
                     
                     self.navigationController?.popViewController(animated: true)
