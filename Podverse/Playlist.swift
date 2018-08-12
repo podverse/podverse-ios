@@ -384,46 +384,51 @@ class Playlist {
         if let url = URL(string: urlString) {
             
             var request = URLRequest(url: url, cachePolicy: NSURLRequest.CachePolicy.reloadIgnoringLocalAndRemoteCacheData, timeoutInterval: 60)
+            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
             request.httpMethod = "POST"
             
             if let idToken = UserDefaults.standard.string(forKey: "idToken") {
                 request.setValue(idToken, forHTTPHeaderField: "Authorization")
             }
             
-            let postString = item.convertToMediaRefPostString(shouldSaveFullEpisode: shouldSaveFullEpisode)
+            let postBody = item.convertToMediaRefPostString(shouldSaveFullEpisode: shouldSaveFullEpisode)
             
-            request.httpBody = postString.data(using: .utf8)
-            
-            showNetworkActivityIndicator()
-            
-            let task = URLSession.shared.dataTask(with: request) { data, response, error in
+            do {
+                request.httpBody = try JSONSerialization.data(withJSONObject: postBody, options: JSONSerialization.WritingOptions())
                 
                 showNetworkActivityIndicator()
                 
-                guard error == nil else {
-                    DispatchQueue.main.async {
-                        completion(nil)
-                    }
-                    return
-                }
-                
-                if let data = data {
-                    do {
-                        if let itemCount = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as? Int {
-                            DispatchQueue.main.async {
-                                completion(itemCount)
-                            }
-                        }
-                    } catch {
-                        print(error.localizedDescription)
+                let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                    
+                    showNetworkActivityIndicator()
+                    
+                    guard error == nil else {
                         DispatchQueue.main.async {
                             completion(nil)
                         }
+                        return
+                    }
+                    
+                    if let data = data {
+                        do {
+                            if let itemCount = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as? Int {
+                                DispatchQueue.main.async {
+                                    completion(itemCount)
+                                }
+                            }
+                        } catch {
+                            print(error.localizedDescription)
+                            DispatchQueue.main.async {
+                                completion(nil)
+                            }
+                        }
                     }
                 }
+                
+                task.resume()
+            } catch {
+                print(error.localizedDescription)
             }
-            
-            task.resume()
             
         }
         

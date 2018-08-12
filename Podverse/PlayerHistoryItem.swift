@@ -150,85 +150,85 @@ class PlayerHistoryItem: NSObject, NSCoding {
         return time
     }
     
-    func convertToMediaRefPostString(shouldSaveFullEpisode: Bool = false) -> String {
+    func convertToMediaRefPostString(shouldSaveFullEpisode: Bool = false) -> [String: Any] {
         
-        var postString = ""
+        var values: [String: Any] = [:]
         
         if shouldSaveFullEpisode {
             if let episodeMediaUrl = self.episodeMediaUrl {
-                postString += "mediaRefId=" + "episode_" + episodeMediaUrl + "&"
+                values["mediaRefId"] = "episode_" + episodeMediaUrl
             }
         } else {
             if let mediaRefId = self.mediaRefId {
-                postString += "mediaRefId=" + mediaRefId + "&"
+                values["mediaRefId"] = mediaRefId
             }
         }
         
         if let podcastId = self.podcastId {
-            postString += "podcastId=" + podcastId + "&"
+            values["podcastId"] = podcastId
         }
         
         if let podcastFeedUrl = self.podcastFeedUrl {
-            postString += "podcastFeedUrl=" + podcastFeedUrl + "&"
+            values["podcastFeedUrl"] = podcastFeedUrl
         }
         
         if let podcastTitle = self.podcastTitle {
-            postString += "podcastTitle=" + podcastTitle + "&"
+            values["podcastTitle"] = podcastTitle
         }
         
         if let podcastImageUrl = self.podcastImageUrl {
-            postString += "podcastImageUrl=" + podcastImageUrl + "&"
+            values["podcastImageUrl"] = podcastImageUrl
         }
 
         if let episodeDuration = self.episodeDuration {
-            postString += "episodeDuration=" + String(episodeDuration) + "&"
+            values["episodeDuration"] = String(episodeDuration)
         }
 
         if let episodeImageUrl = self.episodeImageUrl {
-            postString += "episodeImageUrl=" + episodeImageUrl + "&"
+            values["episodeImageUrl"] = episodeImageUrl
         }
         
         if let episodeMediaUrl = self.episodeMediaUrl {
-            postString += "episodeMediaUrl=" + episodeMediaUrl + "&"
+            values["episodeMediaUrl"] = episodeMediaUrl
         }
         
         if let episodePubDate = self.episodePubDate {
-            postString += "episodePubDate=" + episodePubDate.toString() + "&"
+            values["episodePubDate"] = episodePubDate.toString()
         }
         
         if let episodeSummary = self.episodeSummary {
-            postString += "episodeSummary=" + episodeSummary + "&"
+            values["episodeSummary"] = episodeSummary
         }
         
         if let episodeTitle = self.episodeTitle {
-            postString += "episodeTitle=" + episodeTitle + "&"
+            values["episodeTitle"] = episodeTitle
         }
         
         if let startTime = self.startTime {
-            postString += "startTime=" + String(startTime) + "&"
+            values["startTime"] = String(startTime)
         }
         
         if let endTime = self.endTime {
-            postString += "endTime=" + String(endTime) + "&"
+            values["endTime"] = String(endTime)
         }
         
         if let clipTitle = self.clipTitle {
-            postString += "title=" + clipTitle + "&"
+            values["title"] = clipTitle
         }
         
         if let ownerName = self.ownerName {
-            postString += "ownerName=" + ownerName + "&"
+            values["ownerName"] = ownerName
         }
         
         if let ownerId = self.ownerId {
-            postString += "ownerId=" + ownerId + "&"
+            values["ownerId"] = ownerId
         }
         
         if let isPublic = self.isPublic {
-            postString += "isPublic=" + isPublic.description + "&"
+            values["isPublic"] = isPublic.description
         }
         
-        return postString
+        return values
     }
     
     func convertToMediaRefUpdateBody() -> [String: Any] {
@@ -310,49 +310,55 @@ class PlayerHistoryItem: NSObject, NSCoding {
         if let url = URL(string: BASE_URL + "clips/") {
             
             var request = URLRequest(url: url, cachePolicy: NSURLRequest.CachePolicy.reloadIgnoringLocalAndRemoteCacheData, timeoutInterval: 20)
-                        
+            
+            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
             request.httpMethod = "POST"
             
             if let idToken = UserDefaults.standard.string(forKey: "idToken") {
                 request.setValue(idToken, forHTTPHeaderField: "Authorization")
             }
             
-            let postString = self.convertToMediaRefPostString()
+            let postBody = self.convertToMediaRefPostString()
             
-            request.httpBody = postString.data(using: .utf8)
-            
-            showNetworkActivityIndicator()
-            
-            let task = URLSession.shared.dataTask(with: request) { data, response, error in
+            do {
+                request.httpBody = try JSONSerialization.data(withJSONObject: postBody, options: JSONSerialization.WritingOptions())
                 
-                hideNetworkActivityIndicator()
+                showNetworkActivityIndicator()
                 
-                guard error == nil else {
-                    DispatchQueue.main.async {
-                        completion(nil)
-                    }
-                    return
-                }
-                
-                if let data = data {
-                    do {
-                        let mediaRef: MediaRef?
-                        
-                        if let item = try JSONSerialization.jsonObject(with: data, options: []) as? [String:Any] {
-                            mediaRef = MediaRef.jsonToMediaRef(item: item)
-                            
-                            DispatchQueue.main.async {
-                                completion(mediaRef)
-                            }
+                let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                    
+                    hideNetworkActivityIndicator()
+                    
+                    guard error == nil else {
+                        DispatchQueue.main.async {
+                            completion(nil)
                         }
-                    } catch {
-                        print("Error: " + error.localizedDescription)
+                        return
                     }
+                    
+                    if let data = data {
+                        do {
+                            let mediaRef: MediaRef?
+                            
+                            if let item = try JSONSerialization.jsonObject(with: data, options: []) as? [String:Any] {
+                                mediaRef = MediaRef.jsonToMediaRef(item: item)
+                                
+                                DispatchQueue.main.async {
+                                    completion(mediaRef)
+                                }
+                            }
+                        } catch {
+                            print("Error: " + error.localizedDescription)
+                        }
+                    }
+                    
                 }
                 
+                task.resume()
+                
+            } catch {
+                print(error.localizedDescription)
             }
-            
-            task.resume()
             
         }
         
