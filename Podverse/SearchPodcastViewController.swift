@@ -434,7 +434,11 @@ extension SearchPodcastViewController: UITableViewDataSource, UITableViewDelegat
                 cell.summary?.text = trimmed.removeHTMLFromString()?.trimmingCharacters(in: .whitespacesAndNewlines)
             }
             
-            cell.duration?.text = String(describing: episode.duration)
+            if let duration = episode.duration {
+                cell.duration?.text = String(describing: duration)
+            } else {
+                cell.duration?.text = nil
+            }
 
             cell.pubDate.text = episode.pubDate?.toServerDate()?.toShortFormatString()
             
