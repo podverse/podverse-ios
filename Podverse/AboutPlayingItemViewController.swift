@@ -51,8 +51,10 @@ class AboutPlayingItemViewController: UIViewController, UIWebViewDelegate {
             var text = ""
             
             if item.isClip() {
-                if let title = item.clipTitle {
+                if let title = item.clipTitle, !title.isEmpty {
                     text += "<strong>" + title + "</strong>" + "<br><br>"
+                } else {
+                    text += "<strong>Untitled clip</strong>" + "<br><br>"
                 }
                 
                 if let time = item.readableStartAndEndTime() {
