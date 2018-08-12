@@ -268,7 +268,7 @@ class PlaylistDetailTableViewController: PVViewController {
             
             activityVC.completionWithItemsHandler = { activityType, success, items, error in
                 if activityType == UIActivityType.copyToPasteboard {
-                    self.showToast(message: kPlaylistLinkCopied)
+                    self.showToast(message: kPlaylistLinkCopiedToast)
                 }
             }
             
