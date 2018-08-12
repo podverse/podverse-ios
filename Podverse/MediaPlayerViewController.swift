@@ -354,6 +354,13 @@ class MediaPlayerViewController: PVViewController {
         }
     }
     
+    func presentLogin() {
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        if let loginVC = storyboard.instantiateViewController(withIdentifier: "LoginVC") as? LoginViewController {
+            self.present(loginVC, animated: true, completion: nil)
+        }
+    }
+    
     @objc func showAddToPlaylist() {
         
         if !self.pvMediaPlayer.isDataAvailable {
@@ -362,6 +369,16 @@ class MediaPlayerViewController: PVViewController {
         
         if !checkForConnectivity() {
             self.showInternetNeededAlertWithDescription(message: "You must be connected to the internet to add to playlists.")
+            return
+        }
+        
+        guard PVAuth.userIsLoggedIn else {
+            let alert = UIAlertController(title: "Login Required", message: "You must be logged in to create playlists.", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "Cancel", style: .default, handler: nil))
+            alert.addAction(UIAlertAction(title: "Login", style: .default, handler: { action in
+                self.presentLogin()
+            }))
+            self.present(alert, animated: true, completion: nil)
             return
         }
         

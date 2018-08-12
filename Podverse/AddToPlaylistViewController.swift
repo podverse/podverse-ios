@@ -227,9 +227,7 @@ extension AddToPlaylistViewController:UITableViewDelegate, UITableViewDataSource
             cell.lastUpdated?.text = lastUpdated.toShortFormatString()
         }
         
-        if let itemCount = playlist.itemCount {
-            cell.itemCount.text = "Items: " + itemCount
-        }
+        cell.itemCount.text = "Items: " + String(playlist.mediaRefs.count)
 
         return cell
     }
