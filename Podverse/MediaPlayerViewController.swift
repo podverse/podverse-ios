@@ -66,6 +66,8 @@ class MediaPlayerViewController: PVViewController {
         
         if (self.pvMediaPlayer.isDataAvailable) {
             populatePlayerInfo()
+        } else {
+            clearPlayerData()
         }
         
         setupContainerView()
