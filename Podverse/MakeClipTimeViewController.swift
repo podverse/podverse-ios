@@ -438,8 +438,10 @@ class MakeClipTimeViewController: UIViewController, UITextFieldDelegate {
     }
     
     private func hideLoadingOverlay() {
-        self.loadingOverlay.isHidden = true
-        self.loadingActivityInidicator.stopAnimating()
+        DispatchQueue.main.async {
+            self.loadingOverlay.isHidden = true
+            self.loadingActivityInidicator.stopAnimating()            
+        }
     }
     
     private func displayClipCreatedAlert(mediaRefId: String) {
