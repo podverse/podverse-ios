@@ -278,7 +278,17 @@ class SearchPodcastViewController: PVViewController {
         
         if let podcast = self.searchPodcast, let id = podcast.id {
             SearchPodcast.retrievePodcastFromServer(id: id) { (searchPodcast) -> Void in
-                self.reloadSearchEpisodeData(searchPodcast?.searchEpisodes)
+                let episodes = searchPodcast?.searchEpisodes
+                
+                let sortedEpisodes = episodes?.sorted(by: { (prevEp, nextEp) -> Bool in
+                    if let prevTimeInterval = prevEp.pubDate, let nextTimeInterval = nextEp.pubDate {
+                        return (prevTimeInterval > nextTimeInterval)
+                    }
+                    
+                    return false
+                })
+                
+                self.reloadSearchEpisodeData(sortedEpisodes)
             }
         }
         
