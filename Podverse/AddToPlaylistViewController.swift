@@ -36,7 +36,11 @@ class AddToPlaylistViewController: UIViewController {
             
             if shouldSaveFullEpisode {
                 self.clipTitle.text = "Full Episode"
-                self.time.text = "--:--"
+                
+                if let duration = item.episodeDuration {
+                    self.time.text = duration.toDurationString()
+                }
+                
             } else {
                 self.clipTitle.text = item.clipTitle
                 
