@@ -478,6 +478,11 @@ class MediaPlayerViewController: PVViewController {
     }
     
     func handleEpisodeLink(_ item: PlayerHistoryItem) {
+        if !checkForConnectivity() {
+            self.showInternetNeededAlertWithDescription(message: "You must be connected to the internet to share links.")
+            return
+        }
+        
         if let episodeId = item.episodeId {
             self.loadActivityViewWithEpisodeLink(episodeId: episodeId)
         } else if let mediaUrl = item.episodeMediaUrl {
