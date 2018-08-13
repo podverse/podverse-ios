@@ -59,7 +59,7 @@ class Episode: NSManagedObject {
     static func retrieveEpisodeFromServer(id:String, completion: @escaping (_ playerHistoryItem:PlayerHistoryItem?) -> Void) {
         if let url = URL(string: BASE_URL + "api/episodes") {
             
-            let request = NSMutableURLRequest(url: url, cachePolicy: NSURLRequest.CachePolicy.reloadIgnoringLocalAndRemoteCacheData, timeoutInterval: 60)
+            let request = NSMutableURLRequest(url: url, cachePolicy: NSURLRequest.CachePolicy.reloadIgnoringLocalAndRemoteCacheData, timeoutinterval: 30)
             
             request.setValue("application/json", forHTTPHeaderField: "Content-Type")
             
@@ -109,7 +109,7 @@ class Episode: NSManagedObject {
     static func retrieveEpisodeIdFromServer(mediaUrl:String, completion: @escaping (_ episodeId:String?) -> Void) {
         if let url = URL(string: BASE_URL + "api/episodes/id") {
             
-            let request = NSMutableURLRequest(url: url, cachePolicy: NSURLRequest.CachePolicy.reloadIgnoringLocalAndRemoteCacheData, timeoutInterval: 60)
+            let request = NSMutableURLRequest(url: url, cachePolicy: NSURLRequest.CachePolicy.reloadIgnoringLocalAndRemoteCacheData, timeoutinterval: 30)
             
             request.setValue("application/json", forHTTPHeaderField: "Content-Type")
             request.httpMethod = "POST"

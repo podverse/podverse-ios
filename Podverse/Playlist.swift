@@ -66,7 +66,7 @@ class Playlist {
     static func retrievePlaylistFromServer(id: String, completion: @escaping (_ playlist: Playlist?) -> Void) {
         
         if let url = URL(string: BASE_URL + "api/playlist") {
-            var request = URLRequest(url: url, cachePolicy: NSURLRequest.CachePolicy.reloadIgnoringLocalAndRemoteCacheData, timeoutInterval: 60)
+            var request = URLRequest(url: url, cachePolicy: NSURLRequest.CachePolicy.reloadIgnoringLocalAndRemoteCacheData, timeoutinterval: 30)
             
             request.httpMethod = "POST"
             
@@ -114,7 +114,7 @@ class Playlist {
     static func retrievePlaylistsFromServer(completion: @escaping (_ playlists: [Playlist]) -> Void) {
         
         if let url = URL(string: BASE_URL + "api/user/playlists") {
-            var request = URLRequest(url: url, cachePolicy: NSURLRequest.CachePolicy.reloadIgnoringLocalAndRemoteCacheData, timeoutInterval: 60)
+            var request = URLRequest(url: url, cachePolicy: NSURLRequest.CachePolicy.reloadIgnoringLocalAndRemoteCacheData, timeoutinterval: 30)
             request.httpMethod = "POST"
             
             if let idToken = UserDefaults.standard.string(forKey: "idToken") {
@@ -169,7 +169,7 @@ class Playlist {
         
         if let url = URL(string: BASE_URL + "playlists/") {
             
-            var request = URLRequest(url: url, cachePolicy: NSURLRequest.CachePolicy.reloadIgnoringLocalAndRemoteCacheData, timeoutInterval: 60)
+            var request = URLRequest(url: url, cachePolicy: NSURLRequest.CachePolicy.reloadIgnoringLocalAndRemoteCacheData, timeoutinterval: 30)
             request.httpMethod = "POST"
             
             guard let idToken = UserDefaults.standard.string(forKey: "idToken") else {
@@ -235,7 +235,7 @@ class Playlist {
         if let url = URL(string: BASE_URL + "playlists/" + id), let idToken = UserDefaults.standard.string(forKey: "idToken") {
             showNetworkActivityIndicator()
             
-            let request = NSMutableURLRequest(url: url, cachePolicy: NSURLRequest.CachePolicy.reloadIgnoringLocalAndRemoteCacheData, timeoutInterval: 60)
+            let request = NSMutableURLRequest(url: url, cachePolicy: NSURLRequest.CachePolicy.reloadIgnoringLocalAndRemoteCacheData, timeoutinterval: 30)
             
             request.setValue("application/json", forHTTPHeaderField: "Content-Type")
             request.setValue(idToken, forHTTPHeaderField: "Authorization")
@@ -324,7 +324,7 @@ class Playlist {
         if let url = URL(string: BASE_URL + "playlists/subscribe/" + id), let idToken = UserDefaults.standard.string(forKey: "idToken") {
             showNetworkActivityIndicator()
             
-            let request = NSMutableURLRequest(url: url, cachePolicy: NSURLRequest.CachePolicy.reloadIgnoringLocalAndRemoteCacheData, timeoutInterval: 60)
+            let request = NSMutableURLRequest(url: url, cachePolicy: NSURLRequest.CachePolicy.reloadIgnoringLocalAndRemoteCacheData, timeoutinterval: 30)
             
             request.setValue("application/json", forHTTPHeaderField: "Content-Type")
             request.setValue(idToken, forHTTPHeaderField: "Authorization")
@@ -352,7 +352,7 @@ class Playlist {
         if let url = URL(string: BASE_URL + "playlists/unsubscribe/" + id), let idToken = UserDefaults.standard.string(forKey: "idToken") {
             showNetworkActivityIndicator()
             
-            let request = NSMutableURLRequest(url: url, cachePolicy: NSURLRequest.CachePolicy.reloadIgnoringLocalAndRemoteCacheData, timeoutInterval: 60)
+            let request = NSMutableURLRequest(url: url, cachePolicy: NSURLRequest.CachePolicy.reloadIgnoringLocalAndRemoteCacheData, timeoutinterval: 30)
             
             request.setValue("application/json", forHTTPHeaderField: "Content-Type")
             request.setValue(idToken, forHTTPHeaderField: "Authorization")
@@ -383,7 +383,7 @@ class Playlist {
         
         if let url = URL(string: urlString) {
             
-            var request = URLRequest(url: url, cachePolicy: NSURLRequest.CachePolicy.reloadIgnoringLocalAndRemoteCacheData, timeoutInterval: 60)
+            var request = URLRequest(url: url, cachePolicy: NSURLRequest.CachePolicy.reloadIgnoringLocalAndRemoteCacheData, timeoutinterval: 30)
             request.setValue("application/json", forHTTPHeaderField: "Content-Type")
             request.httpMethod = "POST"
             
@@ -441,7 +441,7 @@ class Playlist {
         
         if let url = URL(string: urlString) {
             
-            var request = URLRequest(url: url, cachePolicy: NSURLRequest.CachePolicy.reloadIgnoringLocalAndRemoteCacheData, timeoutInterval: 60)
+            var request = URLRequest(url: url, cachePolicy: NSURLRequest.CachePolicy.reloadIgnoringLocalAndRemoteCacheData, timeoutinterval: 30)
             request.httpMethod = "POST"
             
             if let idToken = UserDefaults.standard.string(forKey: "idToken") {
