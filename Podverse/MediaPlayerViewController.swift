@@ -452,6 +452,11 @@ class MediaPlayerViewController: PVViewController {
             return
         }
         
+        if !checkForConnectivity() {
+            self.showInternetNeededAlertWithDescription(message: "You must be connected to the internet to share links.")
+            return
+        }
+        
         if let item = self.playerHistoryManager.historyItems.first {
             
             // If a mediaRefId is present, then allow the option to copy the link to the Episode or Clip. Else, copy the link to the Episode.
@@ -478,11 +483,6 @@ class MediaPlayerViewController: PVViewController {
     }
     
     func handleEpisodeLink(_ item: PlayerHistoryItem) {
-        if !checkForConnectivity() {
-            self.showInternetNeededAlertWithDescription(message: "You must be connected to the internet to share links.")
-            return
-        }
-        
         if let episodeId = item.episodeId {
             self.loadActivityViewWithEpisodeLink(episodeId: episodeId)
         } else if let mediaUrl = item.episodeMediaUrl {
