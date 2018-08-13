@@ -12,11 +12,12 @@ class SearchPodcastViewController: PVViewController {
 
     var clipsArray = [MediaRef]()
     var searchEpisodesArray = [SearchEpisode]()
-    var filterTypeOverride:SearchPodcastFilter = .about
+    var filterTypeOverride:SearchPodcastFilter = .episodes
     let reachability = PVReachability.shared
     var searchPodcast:SearchPodcast?
+    var podcastId:String?
     
-    var filterTypeSelected:SearchPodcastFilter = .about {
+    var filterTypeSelected:SearchPodcastFilter = .episodes {
         didSet {
             self.resetClipQuery()
             self.tableViewHeader.filterTitle = self.filterTypeSelected.text
@@ -25,6 +26,10 @@ class SearchPodcastViewController: PVViewController {
                 self.webView.isHidden = true
                 self.tableViewHeader.sortingButton.isHidden = false
                 self.clipQueryStatusView.isHidden = false
+            } else if filterTypeSelected == .episodes {
+                self.webView.isHidden = true
+                self.tableViewHeader.sortingButton.isHidden = true
+                self.clipQueryStatusView.isHidden = true
             } else {
                 self.webView.isHidden = false
                 self.tableViewHeader.sortingButton.isHidden = true
@@ -78,7 +83,7 @@ class SearchPodcastViewController: PVViewController {
         
         if let podcast = self.searchPodcast {
             let isSubscribed = PVSubscriber.checkIfSubscribed(podcastId: podcast.id)
-            loadSubscribeButton(isSubscribed)
+            self.loadSubscribeButton(isSubscribed)
         }
         
         loadPodcastData()
@@ -97,14 +102,18 @@ class SearchPodcastViewController: PVViewController {
     }
     
     @IBAction func subscribeTapped(_ sender: Any) {
-        if let podcast = self.searchPodcast {
-            let isSubscribed = PVSubscriber.checkIfSubscribed(podcastId: podcast.id)
+        if let id = self.podcastId {
+            let isSubscribed = PVSubscriber.checkIfSubscribed(podcastId: id)
             
             if isSubscribed {
-                PVSubscriber.unsubscribeFromPodcast(podcastId: podcast.id, feedUrl: nil)
+                PVSubscriber.unsubscribeFromPodcast(podcastId: id, feedUrl: nil)
             } else {
                 DispatchQueue.global().async {
-                    PVSubscriber.subscribeToPodcast(podcastId: podcast.id, feedUrl: nil)
+                    SearchPodcast.authorityFeedUrlForPodcast(id: id) { feedUrl in
+                        if let feedUrl = feedUrl {
+                            PVSubscriber.subscribeToPodcast(podcastId: id, feedUrl: feedUrl)
+                        }
+                    }
                 }
             }
             
@@ -113,12 +122,22 @@ class SearchPodcastViewController: PVViewController {
     }
     
     func loadPodcastData() {
-        if let podcast = self.searchPodcast, let id = podcast.id {
+        if let podcast = self.searchPodcast {
+            self.podcastId = podcast.id
+        }
+        
+        if let id = self.podcastId {
             showPodcastHeaderActivity()
+            showActivityIndicator()
             
             SearchPodcast.retrievePodcastFromServer(id: id, completion:{ podcast in
                 self.loadPodcastHeader(podcast)
                 self.loadAbout(podcast)
+                
+                if let podcast = podcast {
+                    let isSubscribed = PVSubscriber.checkIfSubscribed(podcastId: podcast.id)
+                    self.loadSubscribeButton(isSubscribed)
+                }
             })
         }
     }
@@ -255,7 +274,7 @@ class SearchPodcastViewController: PVViewController {
         
         self.clipQueryPage += 1
         
-        if let podcast = self.searchPodcast, let id = podcast.id {
+        if let id = self.podcastId {
             MediaRef.retrieveMediaRefsFromServer(podcastIds: [id], sortingTypeRequestParam: self.sortingTypeSelected.requestParam, page: self.clipQueryPage) { (mediaRefs) -> Void in
                 self.reloadClipData(mediaRefs)
             }
@@ -276,7 +295,9 @@ class SearchPodcastViewController: PVViewController {
         
         self.hideNoDataView()
         
-        if let podcast = self.searchPodcast, let id = podcast.id {
+        if let id = self.podcastId {
+            showActivityIndicator()
+            
             SearchPodcast.retrievePodcastFromServer(id: id) { (searchPodcast) -> Void in
                 let episodes = searchPodcast?.searchEpisodes
                 
@@ -432,6 +453,8 @@ extension SearchPodcastViewController: UITableViewDataSource, UITableViewDelegat
                 let trimmed = summary.replacingOccurrences(of: "\\n*", with: "", options: .regularExpression)
 
                 cell.summary?.text = trimmed.removeHTMLFromString()?.trimmingCharacters(in: .whitespacesAndNewlines)
+            } else {
+                cell.summary?.text = "No show notes available"
             }
             
             if let duration = episode.duration {
@@ -495,14 +518,19 @@ extension SearchPodcastViewController:FilterSelectionProtocol {
         
         let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         
-        alert.addAction(UIAlertAction(title: SearchPodcastFilter.about.text, style: .default, handler: { action in
-            self.filterTypeSelected = .about
-            self.showAbout()
+        alert.addAction(UIAlertAction(title: SearchPodcastFilter.episodes.text, style: .default, handler: { action in
+            self.filterTypeSelected = .episodes
+            self.retrieveEpisodes()
         }))
         
         alert.addAction(UIAlertAction(title: SearchPodcastFilter.clips.text, style: .default, handler: { action in
             self.filterTypeSelected = .clips
             self.retrieveClips()
+        }))
+        
+        alert.addAction(UIAlertAction(title: SearchPodcastFilter.about.text, style: .default, handler: { action in
+            self.filterTypeSelected = .about
+            self.showAbout()
         }))
         
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))

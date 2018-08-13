@@ -1264,7 +1264,7 @@
         <!--Search Podcast View Controller-->
         <scene sceneID="Aqj-WK-IPL">
             <objects>
-                <viewController id="1hU-oK-T3A" customClass="SearchPodcastViewController" customModule="Podverse" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="SearchPodcastVC" id="1hU-oK-T3A" customClass="SearchPodcastViewController" customModule="Podverse" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="WcY-6x-vc2"/>
                         <viewControllerLayoutGuide type="bottom" id="bPX-9R-nmu"/>

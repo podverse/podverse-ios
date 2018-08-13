@@ -153,6 +153,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
                         tabBar.goToPlaylistDetail(id: id)
                     }
                 }
+            } else if pathValues[1] == "podcasts" {
+                let id = pathValues[2]
+                if let tabBar = self.window?.rootViewController as? UITabBarController {
+                    DispatchQueue.main.async {
+                        tabBar.gotoSearchPodcastView(id: id)
+                    }
+                }
             }
         } else if let queryItems = components.queryItems, queryItems.count > 0 {
             var filterType:ClipFilter? = nil
