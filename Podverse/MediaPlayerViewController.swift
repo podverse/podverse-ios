@@ -94,12 +94,14 @@ class MediaPlayerViewController: PVViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(hideClipData), name: .hideClipData, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(handleDidFinishPlaying), name: .playerHasFinished, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(setupClipFlags), name: .clipUpdated, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(hideClipData), name: .clipDeleted, object: nil)
     }
     
     fileprivate func removeObservers() {
         NotificationCenter.default.removeObserver(self, name: .hideClipData, object: nil)
         NotificationCenter.default.removeObserver(self, name: .playerHasFinished, object: nil)
         NotificationCenter.default.removeObserver(self, name: .clipUpdated, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .clipDeleted, object: nil)
     }
     
     @IBAction func pageControlAction(_ sender: Any) {

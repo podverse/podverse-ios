@@ -8,6 +8,11 @@
 
 import UIKit
 
+extension Notification.Name {
+    static let clipDeleted = Notification.Name("clipDeleted")
+}
+
+
 class MediaRef {
     
     var id:String?
@@ -232,7 +237,14 @@ class MediaRef {
                     return
                 }
                 
-                completion(true)
+                if let item = PVMediaPlayer.shared.nowPlayingItem, item.mediaRefId == id {
+                    item.removeClipData()
+                }
+                
+                DispatchQueue.main.async {
+                    NotificationCenter.default.post(name:NSNotification.Name(rawValue: kClipDeleted), object: self, userInfo: nil)
+                    completion(true)
+                }
             }
             
             task.resume()

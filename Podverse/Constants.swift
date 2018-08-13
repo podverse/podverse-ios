@@ -60,6 +60,8 @@ let kUpdateDownloadsTable = "updateDownloadTable"
 
 let kClipUpdated = "clipUpdated"
 
+let kClipDeleted = "clipDeleted"
+
 let kNowPlayingTimeHasChanged = "nowPlayingTimeHasChanged"
 
 let kPlayerHasNoItem = "playerHasNoItem"
