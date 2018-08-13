@@ -182,8 +182,15 @@ class PlaylistsTableViewController: PVViewController {
     func reloadPlaylistData() {
         self.filterPlaylists()
         hideActivityIndicator()
-        self.tableView.isHidden = false
-        self.tableView.reloadData()
+        
+        if filterTypeSelected == .following, self.filteredPlaylistsArray.count < 1 {
+            let message = "Other people's playlists that you follow will be listed here."
+            loadNoDataView(message: message, buttonTitle: nil, buttonPressed: nil)
+        } else {
+            self.tableView.isHidden = false
+            self.tableView.reloadData()
+        }
+        
     }
     
     @objc func presentLogin() {
