@@ -96,7 +96,7 @@ class MediaRef {
     static func retrieveMediaRefFromServer(id:String, completion: @escaping (_ item:PlayerHistoryItem?) -> Void) {
         if let url = URL(string: BASE_URL + "api/clips") {
             
-            let request = NSMutableURLRequest(url: url, cachePolicy: NSURLRequest.CachePolicy.reloadIgnoringLocalAndRemoteCacheData, timeoutinterval: 30)
+            let request = NSMutableURLRequest(url: url, cachePolicy: NSURLRequest.CachePolicy.reloadIgnoringLocalAndRemoteCacheData, timeoutInterval: 30)
             
             request.setValue("application/json", forHTTPHeaderField: "Content-Type")
             
@@ -145,7 +145,7 @@ class MediaRef {
         showNetworkActivityIndicator()
         if let url = URL(string: BASE_URL + "api/clips") {
             
-            let request = NSMutableURLRequest(url: url, cachePolicy: NSURLRequest.CachePolicy.reloadIgnoringLocalAndRemoteCacheData, timeoutinterval: 30)
+            let request = NSMutableURLRequest(url: url, cachePolicy: NSURLRequest.CachePolicy.reloadIgnoringLocalAndRemoteCacheData, timeoutInterval: 30)
             
             request.setValue("application/json", forHTTPHeaderField: "Content-Type")
             
@@ -220,7 +220,7 @@ class MediaRef {
         if let url = URL(string: BASE_URL + "clips/" + id), let idToken = UserDefaults.standard.string(forKey: "idToken") {
             showNetworkActivityIndicator()
             
-            let request = NSMutableURLRequest(url: url, cachePolicy: NSURLRequest.CachePolicy.reloadIgnoringLocalAndRemoteCacheData, timeoutinterval: 30)
+            let request = NSMutableURLRequest(url: url, cachePolicy: NSURLRequest.CachePolicy.reloadIgnoringLocalAndRemoteCacheData, timeoutInterval: 30)
             
             request.setValue("application/json", forHTTPHeaderField: "Content-Type")
             request.setValue(idToken, forHTTPHeaderField: "Authorization")
