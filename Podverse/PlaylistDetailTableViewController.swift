@@ -323,7 +323,9 @@ extension PlaylistDetailTableViewController:UITableViewDelegate, UITableViewData
                 cell.time.text = time
             }
         } else {
-            cell.time.text = "--:--"
+            if let duration = mediaRef.episodeDuration {
+                cell.time.text = duration
+            }
             cell.clipTitle.text = "Full Episode"
         }
         
