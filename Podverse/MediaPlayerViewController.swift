@@ -459,9 +459,7 @@ class MediaPlayerViewController: PVViewController {
                 let shareActions = UIAlertController(title: "Share", message: nil, preferredStyle: .actionSheet)
                 
                 shareActions.addAction(UIAlertAction(title: "Episode Link", style: .default, handler: { action in
-                    if let episodeMediaUrl = item.episodeMediaUrl {
-                        self.loadActivityViewWithEpisodeLink(episodeMediaUrl: episodeMediaUrl)
-                    }
+                    self.handleEpisodeLink(item)
                 }))
                 
                 shareActions.addAction(UIAlertAction(title: "Clip Link", style: .default, handler: { action in
@@ -473,16 +471,37 @@ class MediaPlayerViewController: PVViewController {
                 self.present(shareActions, animated: true, completion: nil)
                 
             } else {
-                if let episodeMediaUrl = item.episodeMediaUrl {
-                    loadActivityViewWithEpisodeLink(episodeMediaUrl: episodeMediaUrl)
-                }
+                handleEpisodeLink(item)
             }
         }
         
     }
     
-    func loadActivityViewWithEpisodeLink(episodeMediaUrl:String) {
-        let episodeUrlItem = [BASE_URL + "episodes/alias?mediaUrl=" + episodeMediaUrl]
+    func handleEpisodeLink(_ item: PlayerHistoryItem) {
+        if let episodeId = item.episodeId {
+            self.loadActivityViewWithEpisodeLink(episodeId: episodeId)
+        } else if let mediaUrl = item.episodeMediaUrl {
+            Episode.retrieveEpisodeIdFromServer(mediaUrl: mediaUrl) { episodeId in
+                if let episodeId = episodeId {
+                    self.loadActivityViewWithEpisodeLink(episodeId: episodeId)
+                } else {
+                    self.episodeDataNotFoundAlert()
+                }
+            }
+        } else {
+            self.episodeDataNotFoundAlert()
+        }
+    }
+    
+    func episodeDataNotFoundAlert() {
+        let alert = UIAlertController(title: "Not Supported", message: "Data for this episode is unavailable on podverse.fm.", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
+        self.present(alert, animated: true, completion: nil)
+        return
+    }
+    
+    func loadActivityViewWithEpisodeLink(episodeId:String) {
+        let episodeUrlItem = [BASE_URL + "episodes/" + episodeId]
         let activityVC = UIActivityViewController(activityItems: episodeUrlItem, applicationActivities: nil)
         activityVC.popoverPresentationController?.sourceView = self.view
         

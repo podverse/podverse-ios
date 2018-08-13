@@ -20,6 +20,7 @@ class PlayerHistoryItem: NSObject, NSCoding {
     let podcastTitle:String?
     let podcastImageUrl:String?
     let episodeDuration:Int64?
+    let episodeId:String?
     let episodeImageUrl:String?
     let episodeMediaUrl:String?
     let episodePubDate:Date?
@@ -35,13 +36,14 @@ class PlayerHistoryItem: NSObject, NSCoding {
     var lastUpdated:Date?
     var isPublic:Bool?
     
-    required init(mediaRefId:String? = nil, podcastId:String?, podcastFeedUrl:String? = nil, podcastTitle:String? = nil, podcastImageUrl:String? = nil, episodeDuration: Int64? = nil, episodeMediaUrl:String? = nil, episodeTitle:String? = nil, episodeImageUrl:String? = nil, episodeSummary:String? = nil, episodePubDate:Date? = nil, startTime:Int64? = nil, endTime:Int64? = nil, clipTitle:String? = nil, ownerName:String? = nil, ownerId:String? = nil, hasReachedEnd:Bool, lastPlaybackPosition:Int64? = 0, lastUpdated:Date? = nil, isPublic:Bool? = false) {
+    required init(mediaRefId:String? = nil, podcastId:String?, podcastFeedUrl:String? = nil, podcastTitle:String? = nil, podcastImageUrl:String? = nil, episodeDuration: Int64? = nil, episodeId:String? = nil, episodeMediaUrl:String? = nil, episodeTitle:String? = nil, episodeImageUrl:String? = nil, episodeSummary:String? = nil, episodePubDate:Date? = nil, startTime:Int64? = nil, endTime:Int64? = nil, clipTitle:String? = nil, ownerName:String? = nil, ownerId:String? = nil, hasReachedEnd:Bool, lastPlaybackPosition:Int64? = 0, lastUpdated:Date? = nil, isPublic:Bool? = false) {
         self.mediaRefId = mediaRefId
         self.podcastId = podcastId
         self.podcastFeedUrl = podcastFeedUrl
         self.podcastTitle = podcastTitle
         self.podcastImageUrl = podcastImageUrl
         self.episodeDuration = episodeDuration
+        self.episodeId = episodeId
         self.episodeMediaUrl = episodeMediaUrl
         self.episodeImageUrl = episodeImageUrl
         self.episodePubDate = episodePubDate
@@ -65,6 +67,7 @@ class PlayerHistoryItem: NSObject, NSCoding {
         self.podcastTitle = decoder.decodeObject(forKey: "podcastTitle") as? String
         self.podcastImageUrl = decoder.decodeObject(forKey: "podcastImageUrl") as? String
         self.episodeDuration = decoder.decodeObject(forKey: "episodeDuration") as? Int64
+        self.episodeId = decoder.decodeObject(forKey: "episodeId") as? String
         self.episodeImageUrl = decoder.decodeObject(forKey: "episodeImageUrl") as? String
         self.episodeMediaUrl = decoder.decodeObject(forKey: "episodeMediaUrl") as? String
         self.episodeSummary = decoder.decodeObject(forKey: "episodeSummary") as? String
@@ -88,6 +91,7 @@ class PlayerHistoryItem: NSObject, NSCoding {
         coder.encode(podcastTitle, forKey:"podcastTitle")
         coder.encode(podcastImageUrl, forKey:"podcastImageUrl")
         coder.encode(episodeDuration, forKey:"episodeDuration")
+        coder.encode(episodeId, forKey:"episodeId")
         coder.encode(episodeImageUrl, forKey:"episodeImageUrl")
         coder.encode(episodeMediaUrl, forKey:"episodeMediaUrl")
         coder.encode(episodePubDate, forKey:"episodePubDate")
@@ -182,6 +186,10 @@ class PlayerHistoryItem: NSObject, NSCoding {
 
         if let episodeDuration = self.episodeDuration {
             values["episodeDuration"] = String(episodeDuration)
+        }
+        
+        if let episodeId = self.episodeId {
+            values["episodeId"] = episodeId
         }
 
         if let episodeImageUrl = self.episodeImageUrl {
@@ -365,7 +373,7 @@ class PlayerHistoryItem: NSObject, NSCoding {
     }
     
     func copyPlayerHistoryItem() -> PlayerHistoryItem {
-        let copy = PlayerHistoryItem(mediaRefId: mediaRefId, podcastId: podcastId, podcastFeedUrl: podcastFeedUrl, podcastTitle: podcastTitle, podcastImageUrl: podcastImageUrl, episodeDuration: episodeDuration, episodeMediaUrl: episodeMediaUrl, episodeTitle: episodeTitle, episodeImageUrl: episodeImageUrl, episodeSummary: episodeSummary, episodePubDate: episodePubDate, startTime: startTime, endTime: endTime, clipTitle: clipTitle, ownerName: ownerName, ownerId: ownerId, hasReachedEnd: false, lastPlaybackPosition: lastPlaybackPosition, lastUpdated: lastUpdated, isPublic: isPublic)
+        let copy = PlayerHistoryItem(mediaRefId: mediaRefId, podcastId: podcastId, podcastFeedUrl: podcastFeedUrl, podcastTitle: podcastTitle, podcastImageUrl: podcastImageUrl, episodeDuration: episodeDuration, episodeId: episodeId, episodeMediaUrl: episodeMediaUrl, episodeTitle: episodeTitle, episodeImageUrl: episodeImageUrl, episodeSummary: episodeSummary, episodePubDate: episodePubDate, startTime: startTime, endTime: endTime, clipTitle: clipTitle, ownerName: ownerName, ownerId: ownerId, hasReachedEnd: false, lastPlaybackPosition: lastPlaybackPosition, lastUpdated: lastUpdated, isPublic: isPublic)
         return copy
     }
     

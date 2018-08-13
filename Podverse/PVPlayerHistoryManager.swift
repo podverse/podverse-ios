@@ -93,6 +93,7 @@ class PlayerHistory {
             podcastFeedUrl: nil, // Since it is a searchPodcast, we can use podcastId instead of podcastFeedUrl
             podcastTitle: searchPodcast.title,
             podcastImageUrl: searchPodcast.imageUrl,
+            episodeId: searchEpisode.id,
             episodeMediaUrl: searchEpisode.mediaUrl,
             episodeTitle: searchEpisode.title,
             episodeSummary: searchEpisode.summary,
@@ -126,6 +127,7 @@ class PlayerHistory {
             podcastFeedUrl: mediaRef.podcastFeedUrl,
             podcastTitle: mediaRef.podcastTitle,
             podcastImageUrl: mediaRef.podcastImageUrl,
+            episodeId: mediaRef.episodeId,
             episodeMediaUrl: mediaRef.episodeMediaUrl,
             episodeTitle: mediaRef.episodeTitle,
             episodeSummary: mediaRef.episodeSummary,
