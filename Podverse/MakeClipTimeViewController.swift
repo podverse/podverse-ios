@@ -20,7 +20,7 @@ class MakeClipTimeViewController: UIViewController, UITextFieldDelegate {
     var timer: Timer?
     var isPublic = false
     var editingItem: PlayerHistoryItem?
-    let hasSeenHint = false//UserDefaults.standard.bool(forKey: "HAS_SEEN_CLIP_HINT")
+    let hasSeenHint = UserDefaults.standard.bool(forKey: "HAS_SEEN_CLIP_HINT")
     var shouldAnimate = true
 
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
@@ -144,26 +144,6 @@ class MakeClipTimeViewController: UIViewController, UITextFieldDelegate {
             hintViewImage.animationDuration = 1.5
             hintViewImage.animationRepeatCount = 500
             hintViewImage.startAnimating()
-        }
-    }
-    
-    func animateHelper() {
-        if(self.shouldAnimate) {
-//            if self.hintImageHorizontalConstraint != nil {
-//                self.hintImageHorizontalConstraint.constant += 200
-//                UIView.animate(withDuration: 1.5, animations: {
-//                   self.view.layoutIfNeeded()
-//                }) { (_) in
-//                    if self.hintImageHorizontalConstraint != nil {
-//                        self.hintImageHorizontalConstraint.constant -= 200
-//                        UIView.animate(withDuration: 1.5, animations: {
-//                            self.view.layoutIfNeeded()
-//                        }) { (_) in
-//                            self.animateHelper()
-//                        }
-//                    }
-//                }
-//            }
         }
     }
     

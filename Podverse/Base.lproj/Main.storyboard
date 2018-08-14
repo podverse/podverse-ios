@@ -2604,14 +2604,14 @@
                                         <rect key="frame" x="16" y="559" width="343" height="54"/>
                                         <subviews>
                                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="icon_grab" translatesAutoresizingMaskIntoConstraints="NO" id="RyU-SA-l2C">
-                                                <rect key="frame" x="-3.5" y="2" width="150" height="50"/>
+                                                <rect key="frame" x="96" y="2" width="150" height="50"/>
                                             </imageView>
                                         </subviews>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         <gestureRecognizers/>
                                         <constraints>
-                                            <constraint firstItem="RyU-SA-l2C" firstAttribute="centerX" secondItem="ZD4-BH-Z8w" secondAttribute="centerX" constant="-100" id="NMT-2L-4Av"/>
-                                            <constraint firstItem="RyU-SA-l2C" firstAttribute="centerY" secondItem="ZD4-BH-Z8w" secondAttribute="centerY" id="agZ-yb-Mg1"/>
+                                            <constraint firstItem="RyU-SA-l2C" firstAttribute="centerY" secondItem="ZD4-BH-Z8w" secondAttribute="centerY" id="ALA-cc-CVD"/>
+                                            <constraint firstItem="RyU-SA-l2C" firstAttribute="centerX" secondItem="ZD4-BH-Z8w" secondAttribute="centerX" id="bVz-hz-aeR"/>
                                             <constraint firstAttribute="height" constant="54" id="dw7-mP-rP5"/>
                                         </constraints>
                                     </view>
@@ -2657,7 +2657,6 @@
                         <outlet property="endPreview" destination="FKV-Rw-gK1" id="k9w-9C-Rq6"/>
                         <outlet property="endTimeInputView" destination="i58-Vl-hs5" id="k9B-uB-fGD"/>
                         <outlet property="endTimeLabel" destination="w7M-2E-j55" id="t7A-bY-2eu"/>
-                        <outlet property="hintImageHorizontalConstraint" destination="NMT-2L-4Av" id="qCI-XT-nlW"/>
                         <outlet property="hintView" destination="D6O-1A-MqJ" id="tcg-7m-eHa"/>
                         <outlet property="hintViewImage" destination="RyU-SA-l2C" id="IcH-gw-vGN"/>
                         <outlet property="loadingActivityInidicator" destination="dvE-af-IQJ" id="RmD-5q-tFu"/>
@@ -2972,10 +2971,10 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="qdj-xb-QLu">
-                                <rect key="frame" x="0.0" y="132" width="375" height="597"/>
+                                <rect key="frame" x="0.0" y="108" width="375" height="510"/>
                                 <subviews>
                                     <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="04T-jm-gw0">
-                                        <rect key="frame" x="169" y="280" width="37" height="37"/>
+                                        <rect key="frame" x="169" y="236.5" width="37" height="37"/>
                                         <color key="color" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     </activityIndicatorView>
                                 </subviews>
@@ -2986,7 +2985,7 @@
                                 </constraints>
                             </view>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="69" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="XS3-BK-jNT">
-                                <rect key="frame" x="0.0" y="132" width="375" height="597"/>
+                                <rect key="frame" x="0.0" y="108" width="375" height="510"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <color key="separatorColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <prototypes>
@@ -3039,7 +3038,7 @@
                                 </connections>
                             </tableView>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="v02-vC-DMw" customClass="FiltersTableHeaderView" customModule="Podverse" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="88" width="375" height="44"/>
+                                <rect key="frame" x="0.0" y="64" width="375" height="44"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="44" id="TO0-Lw-hgk"/>
@@ -3231,7 +3230,7 @@
                                 </constraints>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Fcx-S9-UJ5">
-                                <rect key="frame" x="0.0" y="88" width="375" height="58"/>
+                                <rect key="frame" x="0.0" y="64" width="375" height="58"/>
                                 <subviews>
                                     <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="type playlist title" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="o41-zA-VH2">
                                         <rect key="frame" x="8" y="9" width="359" height="40"/>
