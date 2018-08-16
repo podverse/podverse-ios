@@ -125,32 +125,25 @@ class MakeClipTimeViewController: UIViewController, UITextFieldDelegate {
             self.title = "Edit Clip"
             loadEditClipInputs()
         }
+
+        let dataAssetImages = (1...20).map { NSDataAsset(name: "animation-\($0)")! }
+        var loadingImages = [UIImage]()
         
-        if (!hasSeenHint) {
-            animateHelper()
-        } else {
+        for asset in dataAssetImages {
+            if let image = UIImage(data: asset.data) {
+                loadingImages.append(image)
+            }
+        }
+        
+        hintViewImage.animationImages = loadingImages
+        
+        if (hasSeenHint) {
             self.hintView.removeFromSuperview()
             setupBarButtonItems()
-        }
-    }
-    
-    func animateHelper() {
-        if(self.shouldAnimate) {
-            if self.hintImageHorizontalConstraint != nil {
-                self.hintImageHorizontalConstraint.constant += 200
-                UIView.animate(withDuration: 1.5, animations: {
-                   self.view.layoutIfNeeded()
-                }) { (_) in
-                    if self.hintImageHorizontalConstraint != nil {
-                        self.hintImageHorizontalConstraint.constant -= 200
-                        UIView.animate(withDuration: 1.5, animations: {
-                            self.view.layoutIfNeeded()
-                        }) { (_) in
-                            self.animateHelper()
-                        }
-                    }
-                }
-            }
+        } else {
+            hintViewImage.animationDuration = 1.5
+            hintViewImage.animationRepeatCount = 500
+            hintViewImage.startAnimating()
         }
     }
     

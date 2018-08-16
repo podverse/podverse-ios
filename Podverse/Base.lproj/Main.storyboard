@@ -2610,14 +2610,14 @@
                                         <rect key="frame" x="16" y="559" width="343" height="54"/>
                                         <subviews>
                                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="icon_grab" translatesAutoresizingMaskIntoConstraints="NO" id="RyU-SA-l2C">
-                                                <rect key="frame" x="-3.5" y="2" width="150" height="50"/>
+                                                <rect key="frame" x="96" y="2" width="150" height="50"/>
                                             </imageView>
                                         </subviews>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         <gestureRecognizers/>
                                         <constraints>
-                                            <constraint firstItem="RyU-SA-l2C" firstAttribute="centerX" secondItem="ZD4-BH-Z8w" secondAttribute="centerX" constant="-100" id="NMT-2L-4Av"/>
-                                            <constraint firstItem="RyU-SA-l2C" firstAttribute="centerY" secondItem="ZD4-BH-Z8w" secondAttribute="centerY" id="agZ-yb-Mg1"/>
+                                            <constraint firstItem="RyU-SA-l2C" firstAttribute="centerY" secondItem="ZD4-BH-Z8w" secondAttribute="centerY" id="ALA-cc-CVD"/>
+                                            <constraint firstItem="RyU-SA-l2C" firstAttribute="centerX" secondItem="ZD4-BH-Z8w" secondAttribute="centerX" id="bVz-hz-aeR"/>
                                             <constraint firstAttribute="height" constant="54" id="dw7-mP-rP5"/>
                                         </constraints>
                                     </view>
@@ -2663,7 +2663,6 @@
                         <outlet property="endPreview" destination="FKV-Rw-gK1" id="k9w-9C-Rq6"/>
                         <outlet property="endTimeInputView" destination="i58-Vl-hs5" id="k9B-uB-fGD"/>
                         <outlet property="endTimeLabel" destination="w7M-2E-j55" id="t7A-bY-2eu"/>
-                        <outlet property="hintImageHorizontalConstraint" destination="NMT-2L-4Av" id="qCI-XT-nlW"/>
                         <outlet property="hintView" destination="D6O-1A-MqJ" id="tcg-7m-eHa"/>
                         <outlet property="hintViewImage" destination="RyU-SA-l2C" id="IcH-gw-vGN"/>
                         <outlet property="loadingActivityInidicator" destination="dvE-af-IQJ" id="RmD-5q-tFu"/>
