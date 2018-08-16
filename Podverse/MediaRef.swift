@@ -8,16 +8,23 @@
 
 import UIKit
 
+extension Notification.Name {
+    static let clipDeleted = Notification.Name("clipDeleted")
+}
+
+
 class MediaRef {
     
     var id:String?
     var title:String?
     var startTime:Int64?
     var endTime:Int64?
+    var episodeId:String?
     var episodeTitle:String?
     var episodeMediaUrl:String?
     var episodePubDate:Date?
     var episodeSummary:String?
+    var episodeDuration:String?
     var podcastId:String?
     var podcastFeedUrl:String?
     var podcastImageUrl:String?
@@ -34,9 +41,11 @@ class MediaRef {
         mediaRef.startTime = item["startTime"] as? Int64
         mediaRef.endTime = item["endTime"] as? Int64
         
+        mediaRef.episodeId = item["episodeId"] as? String
         mediaRef.episodeTitle = item["episodeTitle"] as? String
         mediaRef.episodeMediaUrl = item["episodeMediaUrl"] as? String
         mediaRef.episodeSummary = item["episodeSummary"] as? String
+        mediaRef.episodeDuration = item["episodeDuration"] as? String
         
         mediaRef.podcastTitle = item["podcastTitle"] as? String
         mediaRef.podcastId = item["podcastId"] as? String
@@ -63,6 +72,7 @@ class MediaRef {
             let podcastTitle = json["podcastTitle"] as? String
             let podcastImageUrl = json["podcastImageUrl"] as? String
             let episodeDuration = json["episodeDuration"] as? Int64
+            let episodeId = json["episodeId"] as? String
             let episodeMediaUrl = json["episodeMediaUrl"] as? String
             let episodeTitle = json["episodeTitle"] as? String
             let episodeImageUrl = json["episodeImageUrl"] as? String
@@ -75,7 +85,7 @@ class MediaRef {
             let ownerName = json["ownerName"] as? String
             let ownerId = json["ownerId"] as? String
             
-            let item = PlayerHistoryItem(mediaRefId: mediaRefId, podcastId: podcastId, podcastFeedUrl: podcastFeedUrl, podcastTitle: podcastTitle, podcastImageUrl: podcastImageUrl, episodeDuration: episodeDuration, episodeMediaUrl: episodeMediaUrl, episodeTitle: episodeTitle, episodeImageUrl: episodeImageUrl, episodeSummary: episodeSummary, episodePubDate: episodePubDate, startTime: startTime, endTime: endTime, clipTitle: title, ownerName: ownerName, ownerId: ownerId, hasReachedEnd: false, lastPlaybackPosition: nil, lastUpdated: lastUpdated, isPublic: isPublic)
+            let item = PlayerHistoryItem(mediaRefId: mediaRefId, podcastId: podcastId, podcastFeedUrl: podcastFeedUrl, podcastTitle: podcastTitle, podcastImageUrl: podcastImageUrl, episodeDuration: episodeDuration, episodeId: episodeId, episodeMediaUrl: episodeMediaUrl, episodeTitle: episodeTitle, episodeImageUrl: episodeImageUrl, episodeSummary: episodeSummary, episodePubDate: episodePubDate, startTime: startTime, endTime: endTime, clipTitle: title, ownerName: ownerName, ownerId: ownerId, hasReachedEnd: false, lastPlaybackPosition: nil, lastUpdated: lastUpdated, isPublic: isPublic)
             
             return item
         }
@@ -86,7 +96,7 @@ class MediaRef {
     static func retrieveMediaRefFromServer(id:String, completion: @escaping (_ item:PlayerHistoryItem?) -> Void) {
         if let url = URL(string: BASE_URL + "api/clips") {
             
-            let request = NSMutableURLRequest(url: url, cachePolicy: NSURLRequest.CachePolicy.reloadIgnoringLocalAndRemoteCacheData, timeoutInterval: 60)
+            let request = NSMutableURLRequest(url: url, cachePolicy: NSURLRequest.CachePolicy.reloadIgnoringLocalAndRemoteCacheData, timeoutInterval: 30)
             
             request.setValue("application/json", forHTTPHeaderField: "Content-Type")
             
@@ -135,7 +145,7 @@ class MediaRef {
         showNetworkActivityIndicator()
         if let url = URL(string: BASE_URL + "api/clips") {
             
-            let request = NSMutableURLRequest(url: url, cachePolicy: NSURLRequest.CachePolicy.reloadIgnoringLocalAndRemoteCacheData, timeoutInterval: 60)
+            let request = NSMutableURLRequest(url: url, cachePolicy: NSURLRequest.CachePolicy.reloadIgnoringLocalAndRemoteCacheData, timeoutInterval: 30)
             
             request.setValue("application/json", forHTTPHeaderField: "Content-Type")
             
@@ -210,7 +220,7 @@ class MediaRef {
         if let url = URL(string: BASE_URL + "clips/" + id), let idToken = UserDefaults.standard.string(forKey: "idToken") {
             showNetworkActivityIndicator()
             
-            let request = NSMutableURLRequest(url: url, cachePolicy: NSURLRequest.CachePolicy.reloadIgnoringLocalAndRemoteCacheData, timeoutInterval: 60)
+            let request = NSMutableURLRequest(url: url, cachePolicy: NSURLRequest.CachePolicy.reloadIgnoringLocalAndRemoteCacheData, timeoutInterval: 30)
             
             request.setValue("application/json", forHTTPHeaderField: "Content-Type")
             request.setValue(idToken, forHTTPHeaderField: "Authorization")
@@ -227,7 +237,14 @@ class MediaRef {
                     return
                 }
                 
-                completion(true)
+                if let item = PVMediaPlayer.shared.nowPlayingItem, item.mediaRefId == id {
+                    item.removeClipData()
+                }
+                
+                DispatchQueue.main.async {
+                    NotificationCenter.default.post(name:NSNotification.Name(rawValue: kClipDeleted), object: self, userInfo: nil)
+                    completion(true)
+                }
             }
             
             task.resume()

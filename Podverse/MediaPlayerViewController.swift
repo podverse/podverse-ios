@@ -66,6 +66,8 @@ class MediaPlayerViewController: PVViewController {
         
         if (self.pvMediaPlayer.isDataAvailable) {
             populatePlayerInfo()
+        } else {
+            clearPlayerData()
         }
         
         setupContainerView()
@@ -92,12 +94,14 @@ class MediaPlayerViewController: PVViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(hideClipData), name: .hideClipData, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(handleDidFinishPlaying), name: .playerHasFinished, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(setupClipFlags), name: .clipUpdated, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(hideClipData), name: .clipDeleted, object: nil)
     }
     
     fileprivate func removeObservers() {
         NotificationCenter.default.removeObserver(self, name: .hideClipData, object: nil)
         NotificationCenter.default.removeObserver(self, name: .playerHasFinished, object: nil)
         NotificationCenter.default.removeObserver(self, name: .clipUpdated, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .clipDeleted, object: nil)
     }
     
     @IBAction func pageControlAction(_ sender: Any) {
@@ -354,6 +358,13 @@ class MediaPlayerViewController: PVViewController {
         }
     }
     
+    func presentLogin() {
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        if let loginVC = storyboard.instantiateViewController(withIdentifier: "LoginVC") as? LoginViewController {
+            self.present(loginVC, animated: true, completion: nil)
+        }
+    }
+    
     @objc func showAddToPlaylist() {
         
         if !self.pvMediaPlayer.isDataAvailable {
@@ -362,6 +373,16 @@ class MediaPlayerViewController: PVViewController {
         
         if !checkForConnectivity() {
             self.showInternetNeededAlertWithDescription(message: "You must be connected to the internet to add to playlists.")
+            return
+        }
+        
+        guard PVAuth.userIsLoggedIn else {
+            let alert = UIAlertController(title: "Login Required", message: "You must be logged in to create playlists.", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "Cancel", style: .default, handler: nil))
+            alert.addAction(UIAlertAction(title: "Login", style: .default, handler: { action in
+                self.presentLogin()
+            }))
+            self.present(alert, animated: true, completion: nil)
             return
         }
         
@@ -433,6 +454,11 @@ class MediaPlayerViewController: PVViewController {
             return
         }
         
+        if !checkForConnectivity() {
+            self.showInternetNeededAlertWithDescription(message: "You must be connected to the internet to share links.")
+            return
+        }
+        
         if let item = self.playerHistoryManager.historyItems.first {
             
             // If a mediaRefId is present, then allow the option to copy the link to the Episode or Clip. Else, copy the link to the Episode.
@@ -440,9 +466,7 @@ class MediaPlayerViewController: PVViewController {
                 let shareActions = UIAlertController(title: "Share", message: nil, preferredStyle: .actionSheet)
                 
                 shareActions.addAction(UIAlertAction(title: "Episode Link", style: .default, handler: { action in
-                    if let episodeMediaUrl = item.episodeMediaUrl {
-                        self.loadActivityViewWithEpisodeLink(episodeMediaUrl: episodeMediaUrl)
-                    }
+                    self.handleEpisodeLink(item)
                 }))
                 
                 shareActions.addAction(UIAlertAction(title: "Clip Link", style: .default, handler: { action in
@@ -454,22 +478,43 @@ class MediaPlayerViewController: PVViewController {
                 self.present(shareActions, animated: true, completion: nil)
                 
             } else {
-                if let episodeMediaUrl = item.episodeMediaUrl {
-                    loadActivityViewWithEpisodeLink(episodeMediaUrl: episodeMediaUrl)
-                }
+                handleEpisodeLink(item)
             }
         }
         
     }
     
-    func loadActivityViewWithEpisodeLink(episodeMediaUrl:String) {
-        let episodeUrlItem = [BASE_URL + "episodes/alias?mediaUrl=" + episodeMediaUrl]
+    func handleEpisodeLink(_ item: PlayerHistoryItem) {
+        if let episodeId = item.episodeId {
+            self.loadActivityViewWithEpisodeLink(episodeId: episodeId)
+        } else if let mediaUrl = item.episodeMediaUrl {
+            Episode.retrieveEpisodeIdFromServer(mediaUrl: mediaUrl) { episodeId in
+                if let episodeId = episodeId {
+                    self.loadActivityViewWithEpisodeLink(episodeId: episodeId)
+                } else {
+                    self.episodeDataNotFoundAlert()
+                }
+            }
+        } else {
+            self.episodeDataNotFoundAlert()
+        }
+    }
+    
+    func episodeDataNotFoundAlert() {
+        let alert = UIAlertController(title: "Not Supported", message: "Data for this episode is unavailable on podverse.fm.", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
+        self.present(alert, animated: true, completion: nil)
+        return
+    }
+    
+    func loadActivityViewWithEpisodeLink(episodeId:String) {
+        let episodeUrlItem = [BASE_URL + "episodes/" + episodeId]
         let activityVC = UIActivityViewController(activityItems: episodeUrlItem, applicationActivities: nil)
         activityVC.popoverPresentationController?.sourceView = self.view
         
         activityVC.completionWithItemsHandler = { activityType, success, items, error in
             if activityType == UIActivityType.copyToPasteboard {
-                self.showToast(message: kLinkCopiedToast)
+                self.showToast(message: kEpisodeLinkCopiedToast)
             }
         }
         
@@ -483,7 +528,7 @@ class MediaPlayerViewController: PVViewController {
         
         activityVC.completionWithItemsHandler = { activityType, success, items, error in
             if activityType == UIActivityType.copyToPasteboard {
-                self.showToast(message: kLinkCopiedToast)
+                self.showToast(message: kClipLinkCopiedToast)
             }
         }
         

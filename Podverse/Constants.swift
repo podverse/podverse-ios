@@ -60,6 +60,8 @@ let kUpdateDownloadsTable = "updateDownloadTable"
 
 let kClipUpdated = "clipUpdated"
 
+let kClipDeleted = "clipDeleted"
+
 let kNowPlayingTimeHasChanged = "nowPlayingTimeHasChanged"
 
 let kPlayerHasNoItem = "playerHasNoItem"
@@ -132,7 +134,15 @@ let kNoShowNotesMessage = "No show notes available for this episode."
 
 let kNoPodcastAboutMessage = "No information available for this podcast."
 
-let kLinkCopiedToast = "Link Copied"
+let kEpisodeLinkCopiedToast = "Episode Link Copied"
+
+let kClipLinkCopiedToast = "Clip Link Copied"
+
+let kPlaylistLinkCopiedToast = "Playlist Link Copied"
+
+let kOfficialLinkCopiedToast = "Official Link Copied"
+
+let kPodverseLinkCopiedToast = "Podverse Link Copied"
 
 let kShouldPlayContinuously = "shouldPlayContinuously"
 

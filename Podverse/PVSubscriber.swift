@@ -56,7 +56,7 @@ class PVSubscriber {
         let urlEnding = shouldSubscribe == true ? "subscribe" : "unsubscribe"
         
         if let podcastId = podcastId, let url = URL(string: BASE_URL + "podcasts/" + urlEnding) {
-            var request = URLRequest(url: url, cachePolicy: NSURLRequest.CachePolicy.reloadIgnoringLocalAndRemoteCacheData, timeoutInterval: 60)
+            var request = URLRequest(url: url, cachePolicy: NSURLRequest.CachePolicy.reloadIgnoringLocalAndRemoteCacheData, timeoutInterval: 30)
             request.httpMethod = "POST"
             
             guard let idToken = UserDefaults.standard.string(forKey: "idToken") else {

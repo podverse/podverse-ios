@@ -326,7 +326,7 @@ class EpisodeTableViewController: PVViewController {
                     
                     activityVC.completionWithItemsHandler = { activityType, success, items, error in
                         if activityType == UIActivityType.copyToPasteboard {
-                            self.showToast(message: kLinkCopiedToast)
+                            self.showToast(message: kOfficialLinkCopiedToast)
                         }
                     }
                     
@@ -335,17 +335,29 @@ class EpisodeTableViewController: PVViewController {
             }
             
             shareActions.addAction(UIAlertAction(title: "Podverse Link", style: .default, handler: { action in
-                let podverseLinkUrlItem = [BASE_URL + "episodes/alias?mediaUrl=" + mediaUrl]
-                let activityVC = UIActivityViewController(activityItems: podverseLinkUrlItem, applicationActivities: nil)
-                activityVC.popoverPresentationController?.sourceView = self.view
                 
-                activityVC.completionWithItemsHandler = { activityType, success, items, error in
-                    if activityType == UIActivityType.copyToPasteboard {
-                        self.showToast(message: kLinkCopiedToast)
-                    }
+                guard checkForConnectivity() else {
+                    self.showInternetNeededAlertWithDescription(message: "You must be connected to the internet get the Podverse episode link.")
+                    return
                 }
                 
-                self.present(activityVC, animated: true, completion: nil)
+                Episode.retrieveEpisodeIdFromServer(mediaUrl: mediaUrl) { episodeId in
+                    if let episodeId = episodeId {
+                        let podverseLinkUrlItem = [BASE_URL + "episodes/" + episodeId]
+                        let activityVC = UIActivityViewController(activityItems: podverseLinkUrlItem, applicationActivities: nil)
+                        activityVC.popoverPresentationController?.sourceView = self.view
+                        
+                        activityVC.completionWithItemsHandler = { activityType, success, items, error in
+                            if activityType == UIActivityType.copyToPasteboard {
+                                self.showToast(message: kPodverseLinkCopiedToast)
+                            }
+                        }
+                        
+                        self.present(activityVC, animated: true, completion: nil)
+                    } else {
+                        self.episodeDataNotFoundAlert()
+                    }
+                }
             }))
             
             shareActions.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
@@ -354,6 +366,13 @@ class EpisodeTableViewController: PVViewController {
             
         }
         
+    }
+    
+    func episodeDataNotFoundAlert() {
+        let alert = UIAlertController(title: "Not Supported", message: "Data for this episode is unavailable on podverse.fm.", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
+        self.present(alert, animated: true, completion: nil)
+        return
     }
     
     func showActivityIndicator() {

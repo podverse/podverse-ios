@@ -438,8 +438,10 @@ class MakeClipTimeViewController: UIViewController, UITextFieldDelegate {
     }
     
     private func hideLoadingOverlay() {
-        self.loadingOverlay.isHidden = true
-        self.loadingActivityInidicator.stopAnimating()
+        DispatchQueue.main.async {
+            self.loadingOverlay.isHidden = true
+            self.loadingActivityInidicator.stopAnimating()            
+        }
     }
     
     private func displayClipCreatedAlert(mediaRefId: String) {
@@ -455,7 +457,7 @@ class MakeClipTimeViewController: UIViewController, UITextFieldDelegate {
                 
                 activityVC.completionWithItemsHandler = { activityType, success, items, error in
                     if activityType == UIActivityType.copyToPasteboard {
-                        self.showToast(message: kLinkCopiedToast)
+                        self.showToast(message: kClipLinkCopiedToast)
                     }
                     
                     self.navigationController?.popViewController(animated: true)

@@ -268,7 +268,7 @@ class PlaylistDetailTableViewController: PVViewController {
             
             activityVC.completionWithItemsHandler = { activityType, success, items, error in
                 if activityType == UIActivityType.copyToPasteboard {
-                    self.showToast(message: kLinkCopiedToast)
+                    self.showToast(message: kPlaylistLinkCopiedToast)
                 }
             }
             
@@ -323,7 +323,9 @@ extension PlaylistDetailTableViewController:UITableViewDelegate, UITableViewData
                 cell.time.text = time
             }
         } else {
-            cell.time.text = "--:--"
+            if let duration = mediaRef.episodeDuration {
+                cell.time.text = duration
+            }
             cell.clipTitle.text = "Full Episode"
         }
         

@@ -20,6 +20,7 @@ class PlayerHistoryItem: NSObject, NSCoding {
     let podcastTitle:String?
     let podcastImageUrl:String?
     let episodeDuration:Int64?
+    let episodeId:String?
     let episodeImageUrl:String?
     let episodeMediaUrl:String?
     let episodePubDate:Date?
@@ -35,13 +36,14 @@ class PlayerHistoryItem: NSObject, NSCoding {
     var lastUpdated:Date?
     var isPublic:Bool?
     
-    required init(mediaRefId:String? = nil, podcastId:String?, podcastFeedUrl:String? = nil, podcastTitle:String? = nil, podcastImageUrl:String? = nil, episodeDuration: Int64? = nil, episodeMediaUrl:String? = nil, episodeTitle:String? = nil, episodeImageUrl:String? = nil, episodeSummary:String? = nil, episodePubDate:Date? = nil, startTime:Int64? = nil, endTime:Int64? = nil, clipTitle:String? = nil, ownerName:String? = nil, ownerId:String? = nil, hasReachedEnd:Bool, lastPlaybackPosition:Int64? = 0, lastUpdated:Date? = nil, isPublic:Bool? = false) {
+    required init(mediaRefId:String? = nil, podcastId:String?, podcastFeedUrl:String? = nil, podcastTitle:String? = nil, podcastImageUrl:String? = nil, episodeDuration: Int64? = nil, episodeId:String? = nil, episodeMediaUrl:String? = nil, episodeTitle:String? = nil, episodeImageUrl:String? = nil, episodeSummary:String? = nil, episodePubDate:Date? = nil, startTime:Int64? = nil, endTime:Int64? = nil, clipTitle:String? = nil, ownerName:String? = nil, ownerId:String? = nil, hasReachedEnd:Bool, lastPlaybackPosition:Int64? = 0, lastUpdated:Date? = nil, isPublic:Bool? = false) {
         self.mediaRefId = mediaRefId
         self.podcastId = podcastId
         self.podcastFeedUrl = podcastFeedUrl
         self.podcastTitle = podcastTitle
         self.podcastImageUrl = podcastImageUrl
         self.episodeDuration = episodeDuration
+        self.episodeId = episodeId
         self.episodeMediaUrl = episodeMediaUrl
         self.episodeImageUrl = episodeImageUrl
         self.episodePubDate = episodePubDate
@@ -65,6 +67,7 @@ class PlayerHistoryItem: NSObject, NSCoding {
         self.podcastTitle = decoder.decodeObject(forKey: "podcastTitle") as? String
         self.podcastImageUrl = decoder.decodeObject(forKey: "podcastImageUrl") as? String
         self.episodeDuration = decoder.decodeObject(forKey: "episodeDuration") as? Int64
+        self.episodeId = decoder.decodeObject(forKey: "episodeId") as? String
         self.episodeImageUrl = decoder.decodeObject(forKey: "episodeImageUrl") as? String
         self.episodeMediaUrl = decoder.decodeObject(forKey: "episodeMediaUrl") as? String
         self.episodeSummary = decoder.decodeObject(forKey: "episodeSummary") as? String
@@ -88,6 +91,7 @@ class PlayerHistoryItem: NSObject, NSCoding {
         coder.encode(podcastTitle, forKey:"podcastTitle")
         coder.encode(podcastImageUrl, forKey:"podcastImageUrl")
         coder.encode(episodeDuration, forKey:"episodeDuration")
+        coder.encode(episodeId, forKey:"episodeId")
         coder.encode(episodeImageUrl, forKey:"episodeImageUrl")
         coder.encode(episodeMediaUrl, forKey:"episodeMediaUrl")
         coder.encode(episodePubDate, forKey:"episodePubDate")
@@ -150,85 +154,89 @@ class PlayerHistoryItem: NSObject, NSCoding {
         return time
     }
     
-    func convertToMediaRefPostString(shouldSaveFullEpisode: Bool = false) -> String {
+    func convertToMediaRefPostString(shouldSaveFullEpisode: Bool = false) -> [String: Any] {
         
-        var postString = ""
+        var values: [String: Any] = [:]
         
         if shouldSaveFullEpisode {
             if let episodeMediaUrl = self.episodeMediaUrl {
-                postString += "mediaRefId=" + "episode_" + episodeMediaUrl + "&"
+                values["mediaRefId"] = "episode_" + episodeMediaUrl
             }
         } else {
             if let mediaRefId = self.mediaRefId {
-                postString += "mediaRefId=" + mediaRefId + "&"
+                values["mediaRefId"] = mediaRefId
             }
         }
         
         if let podcastId = self.podcastId {
-            postString += "podcastId=" + podcastId + "&"
+            values["podcastId"] = podcastId
         }
         
         if let podcastFeedUrl = self.podcastFeedUrl {
-            postString += "podcastFeedUrl=" + podcastFeedUrl + "&"
+            values["podcastFeedUrl"] = podcastFeedUrl
         }
         
         if let podcastTitle = self.podcastTitle {
-            postString += "podcastTitle=" + podcastTitle + "&"
+            values["podcastTitle"] = podcastTitle
         }
         
         if let podcastImageUrl = self.podcastImageUrl {
-            postString += "podcastImageUrl=" + podcastImageUrl + "&"
+            values["podcastImageUrl"] = podcastImageUrl
         }
 
         if let episodeDuration = self.episodeDuration {
-            postString += "episodeDuration=" + String(episodeDuration) + "&"
+            values["episodeDuration"] = String(episodeDuration)
+        }
+        
+        if let episodeId = self.episodeId {
+            values["episodeId"] = episodeId
         }
 
         if let episodeImageUrl = self.episodeImageUrl {
-            postString += "episodeImageUrl=" + episodeImageUrl + "&"
+            values["episodeImageUrl"] = episodeImageUrl
         }
         
         if let episodeMediaUrl = self.episodeMediaUrl {
-            postString += "episodeMediaUrl=" + episodeMediaUrl + "&"
+            values["episodeMediaUrl"] = episodeMediaUrl
         }
         
         if let episodePubDate = self.episodePubDate {
-            postString += "episodePubDate=" + episodePubDate.toString() + "&"
+            values["episodePubDate"] = episodePubDate.toString()
         }
         
         if let episodeSummary = self.episodeSummary {
-            postString += "episodeSummary=" + episodeSummary + "&"
+            values["episodeSummary"] = episodeSummary
         }
         
         if let episodeTitle = self.episodeTitle {
-            postString += "episodeTitle=" + episodeTitle + "&"
+            values["episodeTitle"] = episodeTitle
         }
         
         if let startTime = self.startTime {
-            postString += "startTime=" + String(startTime) + "&"
+            values["startTime"] = String(startTime)
         }
         
         if let endTime = self.endTime {
-            postString += "endTime=" + String(endTime) + "&"
+            values["endTime"] = String(endTime)
         }
         
         if let clipTitle = self.clipTitle {
-            postString += "title=" + clipTitle + "&"
+            values["title"] = clipTitle
         }
         
         if let ownerName = self.ownerName {
-            postString += "ownerName=" + ownerName + "&"
+            values["ownerName"] = ownerName
         }
         
         if let ownerId = self.ownerId {
-            postString += "ownerId=" + ownerId + "&"
+            values["ownerId"] = ownerId
         }
         
         if let isPublic = self.isPublic {
-            postString += "isPublic=" + isPublic.description + "&"
+            values["isPublic"] = isPublic.description
         }
         
-        return postString
+        return values
     }
     
     func convertToMediaRefUpdateBody() -> [String: Any] {
@@ -310,56 +318,62 @@ class PlayerHistoryItem: NSObject, NSCoding {
         if let url = URL(string: BASE_URL + "clips/") {
             
             var request = URLRequest(url: url, cachePolicy: NSURLRequest.CachePolicy.reloadIgnoringLocalAndRemoteCacheData, timeoutInterval: 20)
-                        
+            
+            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
             request.httpMethod = "POST"
             
             if let idToken = UserDefaults.standard.string(forKey: "idToken") {
                 request.setValue(idToken, forHTTPHeaderField: "Authorization")
             }
             
-            let postString = self.convertToMediaRefPostString()
+            let postBody = self.convertToMediaRefPostString()
             
-            request.httpBody = postString.data(using: .utf8)
-            
-            showNetworkActivityIndicator()
-            
-            let task = URLSession.shared.dataTask(with: request) { data, response, error in
+            do {
+                request.httpBody = try JSONSerialization.data(withJSONObject: postBody, options: JSONSerialization.WritingOptions())
                 
-                hideNetworkActivityIndicator()
+                showNetworkActivityIndicator()
                 
-                guard error == nil else {
-                    DispatchQueue.main.async {
-                        completion(nil)
-                    }
-                    return
-                }
-                
-                if let data = data {
-                    do {
-                        let mediaRef: MediaRef?
-                        
-                        if let item = try JSONSerialization.jsonObject(with: data, options: []) as? [String:Any] {
-                            mediaRef = MediaRef.jsonToMediaRef(item: item)
-                            
-                            DispatchQueue.main.async {
-                                completion(mediaRef)
-                            }
+                let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                    
+                    hideNetworkActivityIndicator()
+                    
+                    guard error == nil else {
+                        DispatchQueue.main.async {
+                            completion(nil)
                         }
-                    } catch {
-                        print("Error: " + error.localizedDescription)
+                        return
                     }
+                    
+                    if let data = data {
+                        do {
+                            let mediaRef: MediaRef?
+                            
+                            if let item = try JSONSerialization.jsonObject(with: data, options: []) as? [String:Any] {
+                                mediaRef = MediaRef.jsonToMediaRef(item: item)
+                                
+                                DispatchQueue.main.async {
+                                    completion(mediaRef)
+                                }
+                            }
+                        } catch {
+                            print("Error: " + error.localizedDescription)
+                        }
+                    }
+                    
                 }
                 
+                task.resume()
+                
+            } catch {
+                print(error.localizedDescription)
             }
-            
-            task.resume()
             
         }
         
     }
     
     func copyPlayerHistoryItem() -> PlayerHistoryItem {
-        let copy = PlayerHistoryItem(mediaRefId: mediaRefId, podcastId: podcastId, podcastFeedUrl: podcastFeedUrl, podcastTitle: podcastTitle, podcastImageUrl: podcastImageUrl, episodeDuration: episodeDuration, episodeMediaUrl: episodeMediaUrl, episodeTitle: episodeTitle, episodeImageUrl: episodeImageUrl, episodeSummary: episodeSummary, episodePubDate: episodePubDate, startTime: startTime, endTime: endTime, clipTitle: clipTitle, ownerName: ownerName, ownerId: ownerId, hasReachedEnd: false, lastPlaybackPosition: lastPlaybackPosition, lastUpdated: lastUpdated, isPublic: isPublic)
+        let copy = PlayerHistoryItem(mediaRefId: mediaRefId, podcastId: podcastId, podcastFeedUrl: podcastFeedUrl, podcastTitle: podcastTitle, podcastImageUrl: podcastImageUrl, episodeDuration: episodeDuration, episodeId: episodeId, episodeMediaUrl: episodeMediaUrl, episodeTitle: episodeTitle, episodeImageUrl: episodeImageUrl, episodeSummary: episodeSummary, episodePubDate: episodePubDate, startTime: startTime, endTime: endTime, clipTitle: clipTitle, ownerName: ownerName, ownerId: ownerId, hasReachedEnd: false, lastPlaybackPosition: lastPlaybackPosition, lastUpdated: lastUpdated, isPublic: isPublic)
         return copy
     }
     

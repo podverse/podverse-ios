@@ -412,7 +412,7 @@ class EpisodesTableViewController: PVViewController {
                     
                     activityVC.completionWithItemsHandler = { activityType, success, items, error in
                         if activityType == UIActivityType.copyToPasteboard {
-                            self.showToast(message: kLinkCopiedToast)
+                            self.showToast(message: kOfficialLinkCopiedToast)
                         }
                     }
                     
@@ -420,19 +420,21 @@ class EpisodesTableViewController: PVViewController {
                 }))
             }
             
-            shareActions.addAction(UIAlertAction(title: "Podverse Link", style: .default, handler: { action in
-                let podverseLinkUrlItem = [BASE_URL + "podcasts/alias?feedUrl=" + feedUrl]
-                let activityVC = UIActivityViewController(activityItems: podverseLinkUrlItem, applicationActivities: nil)
-                activityVC.popoverPresentationController?.sourceView = self.view
-                
-                activityVC.completionWithItemsHandler = { activityType, success, items, error in
-                    if activityType == UIActivityType.copyToPasteboard {
-                        self.showToast(message: kLinkCopiedToast)
+            if let id = podcast.id {
+                shareActions.addAction(UIAlertAction(title: "Podverse Link", style: .default, handler: { action in
+                    let podverseLinkUrlItem = [BASE_URL + "podcasts/" + id]
+                    let activityVC = UIActivityViewController(activityItems: podverseLinkUrlItem, applicationActivities: nil)
+                    activityVC.popoverPresentationController?.sourceView = self.view
+                    
+                    activityVC.completionWithItemsHandler = { activityType, success, items, error in
+                        if activityType == UIActivityType.copyToPasteboard {
+                            self.showToast(message: kPodverseLinkCopiedToast)
+                        }
                     }
-                }
-                
-                self.present(activityVC, animated: true, completion: nil)
-            }))
+                    
+                    self.present(activityVC, animated: true, completion: nil)
+                }))
+            }
             
             shareActions.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
             

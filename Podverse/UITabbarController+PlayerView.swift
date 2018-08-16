@@ -129,6 +129,16 @@ extension UITabBarController:PlayerViewProtocol {
             }
         }
     }
+    
+    func gotoSearchPodcastView(id:String) {
+        if let currentNavVC = self.selectedViewController?.childViewControllers.first?.navigationController {
+            
+            if let searchPodcastVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "SearchPodcastVC") as? SearchPodcastViewController {
+                searchPodcastVC.podcastId = id
+                currentNavVC.pushViewController(searchPodcastVC, animated: true)
+            }
+        }
+    }
 }
 
 extension UITabBarController:NowPlayingBarDelegate {

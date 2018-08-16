@@ -36,7 +36,11 @@ class AddToPlaylistViewController: UIViewController {
             
             if shouldSaveFullEpisode {
                 self.clipTitle.text = "Full Episode"
-                self.time.text = "--:--"
+                
+                if let duration = item.episodeDuration {
+                    self.time.text = duration.toDurationString()
+                }
+                
             } else {
                 self.clipTitle.text = item.clipTitle
                 
@@ -227,9 +231,7 @@ extension AddToPlaylistViewController:UITableViewDelegate, UITableViewDataSource
             cell.lastUpdated?.text = lastUpdated.toShortFormatString()
         }
         
-        if let itemCount = playlist.itemCount {
-            cell.itemCount.text = "Items: " + itemCount
-        }
+        cell.itemCount.text = "Items: " + String(playlist.mediaRefs.count)
 
         return cell
     }

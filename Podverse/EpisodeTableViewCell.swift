@@ -17,6 +17,9 @@ class EpisodeTableViewCell: UITableViewCell {
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     
     override func awakeFromNib() {
-        self.activityIndicator.hidesWhenStopped = true
+        // The activityIndicator can be nil in the SearchPodcastViewController
+        if self.activityIndicator != nil {
+            self.activityIndicator.hidesWhenStopped = true
+        }
     }
 }

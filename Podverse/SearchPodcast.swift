@@ -79,7 +79,7 @@ class SearchPodcast {
         if let id = id {
             
             if let url = URL(string: BASE_URL + "api/podcasts?id=" + id) {
-                var request = URLRequest(url: url, cachePolicy: NSURLRequest.CachePolicy.reloadIgnoringLocalAndRemoteCacheData, timeoutInterval: 60)
+                var request = URLRequest(url: url, cachePolicy: NSURLRequest.CachePolicy.reloadIgnoringLocalAndRemoteCacheData, timeoutInterval: 30)
                 request.httpMethod = "GET"
                 
                 let task = URLSession.shared.dataTask(with: request) { data, response, error in
@@ -123,7 +123,7 @@ class SearchPodcast {
         
         if let url = URL(string: BASE_URL + "api/podcasts/authorityFeedUrl?id=" + id) {
             
-            var request = URLRequest(url: url, cachePolicy: NSURLRequest.CachePolicy.reloadIgnoringLocalAndRemoteCacheData, timeoutInterval: 60)
+            var request = URLRequest(url: url, cachePolicy: NSURLRequest.CachePolicy.reloadIgnoringLocalAndRemoteCacheData, timeoutInterval: 30)
             request.httpMethod = "GET"
             
             let task = URLSession.shared.dataTask(with: request) { data, response, error in
@@ -152,7 +152,7 @@ class SearchPodcast {
         if let encodedTitle = title.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed) {
             if let url = URL(string: BASE_URL + "podcasts?title=" + encodedTitle) {
                 
-                var request = URLRequest(url: url, cachePolicy: NSURLRequest.CachePolicy.reloadIgnoringLocalAndRemoteCacheData, timeoutInterval: 60)
+                var request = URLRequest(url: url, cachePolicy: NSURLRequest.CachePolicy.reloadIgnoringLocalAndRemoteCacheData, timeoutInterval: 30)
                 request.httpMethod = "GET"
                 
                 let task = URLSession.shared.dataTask(with: request) { data, response, error in

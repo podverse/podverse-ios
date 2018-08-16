@@ -38,11 +38,13 @@ class AboutPlayingItemViewController: UIViewController, UIWebViewDelegate {
     fileprivate func addObservers() {
         NotificationCenter.default.addObserver(self, selector: #selector(loadWebView), name: .hideClipData, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(loadWebView), name: .clipUpdated, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(loadWebView), name: .clipDeleted, object: nil)
     }
     
     fileprivate func removeObservers() {
         NotificationCenter.default.removeObserver(self, name: .hideClipData, object: nil)
         NotificationCenter.default.removeObserver(self, name: .clipUpdated, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .clipDeleted, object: nil)
     }
     
     @objc fileprivate func loadWebView() {
@@ -51,8 +53,10 @@ class AboutPlayingItemViewController: UIViewController, UIWebViewDelegate {
             var text = ""
             
             if item.isClip() {
-                if let title = item.clipTitle {
+                if let title = item.clipTitle, !title.isEmpty {
                     text += "<strong>" + title + "</strong>" + "<br><br>"
+                } else {
+                    text += "<strong>Untitled clip</strong>" + "<br><br>"
                 }
                 
                 if let time = item.readableStartAndEndTime() {
