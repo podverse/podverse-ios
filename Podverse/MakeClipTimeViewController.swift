@@ -44,7 +44,10 @@ class MakeClipTimeViewController: UIViewController, UITextFieldDelegate {
     @IBOutlet weak var speed: UIButton!
     @IBOutlet weak var hintView: UIView!
     @IBOutlet weak var hintViewImage: UIImageView!
-    @IBOutlet weak var hintImageHorizontalConstraint: NSLayoutConstraint!
+    @IBOutlet weak var startTimeFlagView: UIView!
+    @IBOutlet weak var endTimeFlagView: UIView!
+    @IBOutlet weak var startTimeLeadingConstraint: NSLayoutConstraint!
+    @IBOutlet weak var endTimeLeadingConstraint: NSLayoutConstraint!
     
     func loadMakeClipInputs() {
         self.startTimeLabel.text = PVTimeHelper.convertIntToHMSString(time: self.startTime)
@@ -125,6 +128,8 @@ class MakeClipTimeViewController: UIViewController, UITextFieldDelegate {
             self.title = "Edit Clip"
             loadEditClipInputs()
         }
+        
+        setupClipFlags()
 
         let dataAssetImages = (1...20).map { NSDataAsset(name: "animation-\($0)")! }
         var loadingImages = [UIImage]()
@@ -245,6 +250,7 @@ class MakeClipTimeViewController: UIViewController, UITextFieldDelegate {
         let currentTime = Int(self.pvMediaPlayer.progress)
         self.startTime = Int(currentTime)
         self.startTimeLabel.text = PVTimeHelper.convertIntToHMSString(time: currentTime)
+        setupClipFlags()
     }
 
     @IBAction func setEndTime(_ sender: Any) {
@@ -253,6 +259,7 @@ class MakeClipTimeViewController: UIViewController, UITextFieldDelegate {
         self.endTimeLabel.text = PVTimeHelper.convertIntToHMSString(time: currentTime)
         self.endTimeLabel.textColor = UIColor.black
         self.clearEndTimeButton.isHidden = false
+        setupClipFlags()
     }
     
     @IBAction func clearEndTime(_ sender: Any) {
@@ -260,6 +267,7 @@ class MakeClipTimeViewController: UIViewController, UITextFieldDelegate {
         self.endTimeLabel.text = "optional"
         self.endTimeLabel.textColor = UIColor.lightGray
         self.clearEndTimeButton.isHidden = true
+        setupClipFlags()
     }
         
     @IBAction func showVisibilityMenu(_ sender: Any) {
@@ -311,6 +319,26 @@ class MakeClipTimeViewController: UIViewController, UITextFieldDelegate {
         }
         
         return true
+    }
+    
+    @objc fileprivate func setupClipFlags() {
+        self.startTimeLeadingConstraint.constant = 0
+        self.endTimeLeadingConstraint.constant = 0
+        let sliderThumbWidthAdjustment:CGFloat = 2.0
+        
+        if let startTime = self.startTime,
+            let dur = self.pvMediaPlayer.duration,
+            dur > 0 {
+            
+            self.startTimeFlagView.isHidden = false
+            self.endTimeFlagView.isHidden = self.endTime == nil
+            
+            // Use UIScreen.main.bounds.width because self.progress.frame.width was giving inconsistent sizes.
+            self.startTimeLeadingConstraint.constant = (CGFloat(Double(startTime) / dur) * UIScreen.main.bounds.width) - sliderThumbWidthAdjustment
+            if let endTime = self.endTime {
+                self.endTimeLeadingConstraint.constant = (CGFloat(Double(endTime) / dur) * UIScreen.main.bounds.width) - sliderThumbWidthAdjustment                
+            }
+        }
     }
     
     @objc func save() {
@@ -632,6 +660,7 @@ extension MakeClipTimeViewController:PVMediaPlayerUIDelegate {
     
     func playerHistoryItemLoaded() {
         DispatchQueue.main.async {
+            self.setupClipFlags()
             self.updateTime()
             self.togglePlayIcon()
         }

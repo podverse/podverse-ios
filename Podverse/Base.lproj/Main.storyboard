@@ -2530,6 +2530,22 @@
                                             <action selector="sliderAction:forEvent:" destination="sZL-lu-ysp" eventType="valueChanged" id="bXU-P7-QPU"/>
                                         </connections>
                                     </slider>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="u5S-WR-F8q" userLabel="Start Time Flag View">
+                                        <rect key="frame" x="0.0" y="117" width="2" height="30"/>
+                                        <color key="backgroundColor" red="1" green="0.90980392156862744" blue="0.20784313725490194" alpha="1" colorSpace="calibratedRGB"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="2" id="SLR-DO-19x"/>
+                                            <constraint firstAttribute="height" constant="30" id="gBs-WH-K54"/>
+                                        </constraints>
+                                    </view>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="hBd-wa-eXm" userLabel="End Time Flag View">
+                                        <rect key="frame" x="0.0" y="117" width="2" height="30"/>
+                                        <color key="backgroundColor" red="1" green="0.90980392156862744" blue="0.20784313725490194" alpha="1" colorSpace="calibratedRGB"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="2" id="JtF-Qe-oiQ"/>
+                                            <constraint firstAttribute="height" constant="30" id="Phg-s5-rvW"/>
+                                        </constraints>
+                                    </view>
                                     <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" adjustsImageSizeForAccessibilityContentSizeCategory="YES" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8jD-Pu-kow">
                                         <rect key="frame" x="16" y="242" width="44" height="30"/>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -2550,10 +2566,14 @@
                                 <constraints>
                                     <constraint firstItem="qlt-9K-uGz" firstAttribute="top" secondItem="KGI-1C-LuB" secondAttribute="bottom" constant="24" id="1fj-LZ-h1w"/>
                                     <constraint firstAttribute="bottom" secondItem="fJ9-Dt-F7s" secondAttribute="bottom" constant="46" id="ADx-5f-Wio"/>
+                                    <constraint firstItem="u5S-WR-F8q" firstAttribute="centerY" secondItem="qlt-9K-uGz" secondAttribute="centerY" id="B3Y-Dv-ucR"/>
+                                    <constraint firstItem="hBd-wa-eXm" firstAttribute="centerY" secondItem="qlt-9K-uGz" secondAttribute="centerY" id="CKa-Bg-A3c"/>
                                     <constraint firstAttribute="trailing" secondItem="KGI-1C-LuB" secondAttribute="trailing" constant="16" id="D41-25-bmN"/>
                                     <constraint firstAttribute="trailing" secondItem="fJ9-Dt-F7s" secondAttribute="trailing" constant="16" id="F6w-AE-Eiv"/>
+                                    <constraint firstItem="hBd-wa-eXm" firstAttribute="leading" secondItem="qlt-9K-uGz" secondAttribute="leading" id="FJI-wg-Okh"/>
                                     <constraint firstAttribute="bottom" secondItem="8jD-Pu-kow" secondAttribute="bottom" constant="8" id="QeY-mB-a2a"/>
                                     <constraint firstItem="fJ9-Dt-F7s" firstAttribute="top" secondItem="Dh2-u6-8zp" secondAttribute="bottom" constant="12" id="TeJ-r3-dxp"/>
+                                    <constraint firstItem="u5S-WR-F8q" firstAttribute="leading" secondItem="qlt-9K-uGz" secondAttribute="leading" id="WOO-Vk-DsL"/>
                                     <constraint firstItem="fJ9-Dt-F7s" firstAttribute="top" secondItem="OSE-D0-cPZ" secondAttribute="bottom" constant="12" id="Zz8-5f-VWT"/>
                                     <constraint firstItem="Dh2-u6-8zp" firstAttribute="top" secondItem="qlt-9K-uGz" secondAttribute="bottom" constant="4" id="f6t-4F-t0x"/>
                                     <constraint firstAttribute="trailing" secondItem="qlt-9K-uGz" secondAttribute="trailing" id="fvU-Va-EcP"/>
@@ -2576,8 +2596,8 @@
                             <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="4Zc-Kr-hC7">
                                 <rect key="frame" x="16" y="147.5" width="343" height="229.5"/>
                             </imageView>
-                            <view alpha="0.84999999999999998" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="cls-rQ-4hj">
-                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                            <view alpha="0.84999999999999998" contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="cls-rQ-4hj">
+                                <rect key="frame" x="0.0" y="-225" width="375" height="667"/>
                                 <subviews>
                                     <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="dvE-af-IQJ">
                                         <rect key="frame" x="169.5" y="315.5" width="37" height="37"/>
@@ -2597,8 +2617,8 @@
                                     <constraint firstItem="dvE-af-IQJ" firstAttribute="top" secondItem="9CR-Xw-ICL" secondAttribute="bottom" constant="16" id="lpV-U3-yfE"/>
                                 </constraints>
                             </view>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="D6O-1A-MqJ">
-                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                            <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="D6O-1A-MqJ">
+                                <rect key="frame" x="0.0" y="-250" width="375" height="667"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Swipe inside the rectangle to adjust clip time" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="H6Y-Yc-ORV">
                                         <rect key="frame" x="0.0" y="407" width="375" height="72"/>
@@ -2661,8 +2681,10 @@
                         <outlet property="currentTime" destination="OSE-D0-cPZ" id="lnl-Oa-u1U"/>
                         <outlet property="duration" destination="Dh2-u6-8zp" id="ZW8-id-y36"/>
                         <outlet property="endPreview" destination="FKV-Rw-gK1" id="k9w-9C-Rq6"/>
+                        <outlet property="endTimeFlagView" destination="hBd-wa-eXm" id="epz-qr-LNN"/>
                         <outlet property="endTimeInputView" destination="i58-Vl-hs5" id="k9B-uB-fGD"/>
                         <outlet property="endTimeLabel" destination="w7M-2E-j55" id="t7A-bY-2eu"/>
+                        <outlet property="endTimeLeadingConstraint" destination="FJI-wg-Okh" id="ALs-mz-RkH"/>
                         <outlet property="hintView" destination="D6O-1A-MqJ" id="tcg-7m-eHa"/>
                         <outlet property="hintViewImage" destination="RyU-SA-l2C" id="IcH-gw-vGN"/>
                         <outlet property="loadingActivityInidicator" destination="dvE-af-IQJ" id="RmD-5q-tFu"/>
@@ -2673,8 +2695,10 @@
                         <outlet property="progress" destination="qlt-9K-uGz" id="1V3-JO-ZHj"/>
                         <outlet property="speed" destination="8jD-Pu-kow" id="MLH-dA-wrb"/>
                         <outlet property="startPreview" destination="iIG-wF-Pn0" id="OXc-TX-wCN"/>
+                        <outlet property="startTimeFlagView" destination="u5S-WR-F8q" id="9e4-R4-tWi"/>
                         <outlet property="startTimeInputView" destination="ri5-mB-jG0" id="p5O-KW-abS"/>
                         <outlet property="startTimeLabel" destination="wGc-cR-cvy" id="Ly6-br-BX0"/>
+                        <outlet property="startTimeLeadingConstraint" destination="WOO-Vk-DsL" id="Li7-aq-wNi"/>
                         <outlet property="titleInput" destination="yw9-eu-uHT" id="kd4-aU-Bck"/>
                         <outlet property="visibilityButton" destination="AKi-Y6-Alj" id="0EZ-r4-7IH"/>
                     </connections>
@@ -2717,7 +2741,7 @@
                         <subviews>
                             <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="SBa-Dx-9rx">
                                 <rect key="frame" x="0.0" y="504" width="2" height="30"/>
-                                <color key="backgroundColor" red="1" green="0.91107144290289366" blue="0.20899878725641041" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <color key="backgroundColor" red="1" green="0.90980392156862744" blue="0.20784313725490194" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="2" id="7O8-w3-u9w"/>
                                     <constraint firstAttribute="height" constant="30" id="u2u-A5-up8"/>

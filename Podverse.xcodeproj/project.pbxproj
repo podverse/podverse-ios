@@ -577,7 +577,7 @@
 				TargetAttributes = {
 					E79515D81E03853400382BF8 = {
 						CreatedOnToolsVersion = 8.2;
-						DevelopmentTeam = NVBK9KF43L;
+						DevelopmentTeam = DF9KG8H54B;
 						LastSwiftMigration = 0930;
 						ProvisioningStyle = Automatic;
 						SystemCapabilities = {
@@ -1028,7 +1028,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = NVBK9KF43L;
+				DEVELOPMENT_TEAM = DF9KG8H54B;
 				INFOPLIST_FILE = Podverse/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.podverse.fm;
@@ -1050,7 +1050,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = NVBK9KF43L;
+				DEVELOPMENT_TEAM = DF9KG8H54B;
 				INFOPLIST_FILE = Podverse/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.podverse.fm;
