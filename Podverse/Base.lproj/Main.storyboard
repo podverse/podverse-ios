@@ -293,7 +293,10 @@
                                                 <constraint firstItem="uk6-qB-t6M" firstAttribute="top" secondItem="HcB-O2-XAh" secondAttribute="top" id="WW5-Hs-jVs"/>
                                                 <constraint firstItem="uk6-qB-t6M" firstAttribute="leading" secondItem="HcB-O2-XAh" secondAttribute="leading" id="XBd-mu-1Dj"/>
                                                 <constraint firstItem="H5L-K1-HNR" firstAttribute="trailing" secondItem="HcB-O2-XAh" secondAttribute="trailingMargin" id="dxd-hp-bsv"/>
+                                                <constraint firstItem="wxe-bv-W6i" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="HcB-O2-XAh" secondAttribute="leadingMargin" id="gkf-dw-NqH"/>
+                                                <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="tvC-4n-69O" secondAttribute="trailing" constant="20" symbolic="YES" id="mtW-g0-S6z"/>
                                                 <constraint firstItem="wxe-bv-W6i" firstAttribute="trailing" secondItem="HcB-O2-XAh" secondAttribute="trailingMargin" id="muK-Kb-3mm"/>
+                                                <constraint firstItem="H5L-K1-HNR" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="HcB-O2-XAh" secondAttribute="leadingMargin" id="q2W-9e-mCT"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                         <connections>
@@ -350,6 +353,7 @@
                                     <constraint firstItem="yzx-Rk-Jug" firstAttribute="leading" secondItem="3VS-XD-zBF" secondAttribute="trailing" constant="8" id="2g3-0y-wub"/>
                                     <constraint firstItem="DGq-af-fGx" firstAttribute="leading" secondItem="oif-Up-GTP" secondAttribute="leading" id="Jbw-86-c1g"/>
                                     <constraint firstItem="6cZ-td-vhZ" firstAttribute="leading" secondItem="oif-Up-GTP" secondAttribute="leading" constant="8" id="Kmm-EZ-srG"/>
+                                    <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="6cZ-td-vhZ" secondAttribute="trailing" constant="20" symbolic="YES" id="LPD-v7-1Rb"/>
                                     <constraint firstAttribute="trailing" secondItem="yzx-Rk-Jug" secondAttribute="trailing" constant="8" id="VJ3-wY-Se0"/>
                                     <constraint firstAttribute="bottom" secondItem="DGq-af-fGx" secondAttribute="bottom" id="bxV-j9-2MG"/>
                                     <constraint firstItem="yzx-Rk-Jug" firstAttribute="top" secondItem="oif-Up-GTP" secondAttribute="top" constant="13" id="c5e-iQ-jlH"/>
@@ -433,6 +437,11 @@
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="96g-Cx-VYa">
                                 <rect key="frame" x="0.0" y="64" width="375" height="554"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <view key="tableFooterView" contentMode="scaleToFill" id="yQk-Xg-jtt">
+                                    <rect key="frame" x="0.0" y="72" width="375" height="0.0"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                    <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                </view>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="cell" textLabel="QSa-fk-c2S" style="IBUITableViewCellStyleDefault" id="B7z-2H-lHL">
                                         <rect key="frame" x="0.0" y="28" width="375" height="44"/>
@@ -531,6 +540,11 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <view key="tableFooterView" contentMode="scaleToFill" id="KPl-tA-tsn">
+                            <rect key="frame" x="0.0" y="152" width="375" height="0.0"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        </view>
                         <sections>
                             <tableViewSection id="Lfc-fT-Wiq">
                                 <cells>
@@ -657,6 +671,11 @@
                                 <rect key="frame" x="0.0" y="64" width="375" height="554"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <inset key="separatorInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                <view key="tableFooterView" contentMode="scaleToFill" id="S7m-Zv-PAs">
+                                    <rect key="frame" x="0.0" y="124" width="375" height="0.0"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                    <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                </view>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="cell" rowHeight="96" id="jVN-kB-ruM" customClass="DownloadTableViewCell" customModule="Podverse" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="28" width="375" height="96"/>
@@ -702,6 +721,8 @@
                                             </subviews>
                                             <constraints>
                                                 <constraint firstItem="s88-sk-5av" firstAttribute="leading" secondItem="WoL-IB-epv" secondAttribute="leading" id="3EB-Oi-oSa"/>
+                                                <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="y0l-eT-lNh" secondAttribute="trailing" constant="20" symbolic="YES" id="65S-4e-LPV"/>
+                                                <constraint firstItem="Oxa-jJ-Wn1" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="WoL-IB-epv" secondAttribute="leading" constant="20" symbolic="YES" id="DTr-IK-zQ8"/>
                                                 <constraint firstItem="s88-sk-5av" firstAttribute="top" secondItem="WoL-IB-epv" secondAttribute="top" id="Di5-TW-Q19"/>
                                                 <constraint firstAttribute="trailing" secondItem="Oxa-jJ-Wn1" secondAttribute="trailing" constant="8" id="GU9-0j-qMS"/>
                                                 <constraint firstAttribute="bottom" secondItem="y0l-eT-lNh" secondAttribute="bottom" constant="5.5" id="HMm-nx-Yxm"/>
@@ -956,6 +977,11 @@
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="rZ5-gI-Z44">
                                 <rect key="frame" x="0.0" y="64" width="375" height="554"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <view key="tableFooterView" contentMode="scaleToFill" id="aRp-5s-N9L">
+                                    <rect key="frame" x="0.0" y="72" width="375" height="0.0"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                    <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                </view>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="Cell" rowHeight="44" id="k7P-Gx-24r">
                                         <rect key="frame" x="0.0" y="28" width="375" height="44"/>
@@ -989,7 +1015,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="gxH-qg-89B" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="790" y="-313"/>
+            <point key="canvasLocation" x="789.60000000000002" y="-313.49325337331339"/>
         </scene>
         <!--Find Search Table View Controller-->
         <scene sceneID="zdL-EA-nkf">
@@ -1134,6 +1160,11 @@
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="dE8-Uq-w4t">
                                 <rect key="frame" x="0.0" y="64" width="375" height="554"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <view key="tableFooterView" contentMode="scaleToFill" id="9Mw-ze-k45">
+                                    <rect key="frame" x="0.0" y="72" width="375" height="1"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                    <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                </view>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="cell" id="eNd-0S-Srp">
                                         <rect key="frame" x="0.0" y="28" width="375" height="44"/>
@@ -1165,7 +1196,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="IJw-zx-F3i" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2148" y="94"/>
+            <point key="canvasLocation" x="2148" y="93.103448275862078"/>
         </scene>
         <!--Find Browse Podcasts View Controller-->
         <scene sceneID="1zK-zc-Mut">
@@ -1182,6 +1213,11 @@
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="Hqi-My-7gW">
                                 <rect key="frame" x="0.0" y="64" width="375" height="554"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <view key="tableFooterView" contentMode="scaleToFill" id="b3L-Jy-jXt">
+                                    <rect key="frame" x="0.0" y="124" width="375" height="0.0"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                    <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                </view>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="cell" rowHeight="96" id="KBE-pk-ye2" customClass="PodcastSearchResultTableViewCell" customModule="Podverse" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="28" width="375" height="96"/>
@@ -1259,7 +1295,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Wjj-Rr-JT4" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3078" y="94"/>
+            <point key="canvasLocation" x="3077.5999999999999" y="93.103448275862078"/>
         </scene>
         <!--Search Podcast View Controller-->
         <scene sceneID="Aqj-WK-IPL">
@@ -3018,6 +3054,11 @@
                                 <rect key="frame" x="0.0" y="108" width="375" height="510"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <color key="separatorColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <view key="tableFooterView" contentMode="scaleToFill" id="a2m-Jc-LG0">
+                                    <rect key="frame" x="0.0" y="86" width="375" height="0.0"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                    <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                </view>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="playlistCell" rowHeight="58" id="ebi-qS-jVN" customClass="PlaylistTableViewCell" customModule="Podverse" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="28" width="375" height="58"/>
@@ -3132,6 +3173,11 @@
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="108" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="QyI-Lc-3yM">
                                 <rect key="frame" x="0.0" y="122" width="375" height="496"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <view key="tableFooterView" contentMode="scaleToFill" id="LSb-Yf-RWz">
+                                    <rect key="frame" x="0.0" y="164" width="375" height="1"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                    <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                </view>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="cell" rowHeight="136" id="VOS-2J-V6G" customClass="PlaylistDetailTableViewCell" customModule="Podverse" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="28" width="375" height="136"/>
@@ -3314,7 +3360,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="GWx-j9-urR" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2613.5999999999999" y="1306.4039408866995"/>
+            <point key="canvasLocation" x="2613.5999999999999" y="1305.697151424288"/>
         </scene>
         <!--Clips List Container View Controller-->
         <scene sceneID="RCj-Wg-8mW">

@@ -37,6 +37,7 @@ class FindSearchTableViewController: PVViewController {
     }
     
     @objc func segueToRequestPodcastForm() {
+        self.tableView.reloadData()
         if let webKitVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "WebKitVC") as? WebKitViewController {
             webKitVC.urlString = kFormRequestPodcastUrl
             self.hideNowPlayingBar()
@@ -172,9 +173,5 @@ extension FindSearchTableViewController: UISearchBarDelegate {
 
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         searchBar.resignFirstResponder()
-        
-        if let text = searchBar.text {
-            searchPodcasts(text)
-        }
     }
 }
