@@ -38,10 +38,12 @@ class PVAuth: NSObject {
                 $0.usernameStyle = [.Email]
             }
             .withStyle {
-                $0.title = "Podverse"
+                $0.title = ""
                 $0.headerColor = UIColor(red: 0.15, green: 0.41, blue: 0.70, alpha: 1.0)
                 $0.primaryColor = UIColor(red: 0.15, green: 0.41, blue: 0.70, alpha: 1.0)
                 $0.titleColor = UIColor.white
+                $0.logo = LazyImage(name: "banner-auth0")
+
             }
             .onAuth {
                 
